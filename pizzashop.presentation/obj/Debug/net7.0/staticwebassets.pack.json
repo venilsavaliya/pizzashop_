@@ -1,0 +1,449 @@
+{
+  "Files": [
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\pizzashop.presentation.bundle.scp.css",
+      "PackagePath": "staticwebassets\\pizzashop.presentation.bundle.scp.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\HtmlTemplate\\ResetPassword.html",
+      "PackagePath": "staticwebassets\\HtmlTemplate\\ResetPassword.html"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\Default_pfp.svg.png",
+      "PackagePath": "staticwebassets\\images\\Default_pfp.svg.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\QR.png",
+      "PackagePath": "staticwebassets\\images\\QR.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\dining-menu.png",
+      "PackagePath": "staticwebassets\\images\\dining-menu.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\dominos_background.jpg",
+      "PackagePath": "staticwebassets\\images\\dominos_background.jpg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\Warning-PNG-Clipart.png",
+      "PackagePath": "staticwebassets\\images\\icons\\Warning-PNG-Clipart.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\arrow-clockwise.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\arrow-clockwise.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\arrow-down-up.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\arrow-down-up.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\box-arrow-right.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\box-arrow-right.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\cloud-upload.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\cloud-upload.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\columns.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\columns.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\customer.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\customer.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\dinner-table.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\dinner-table.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\eye-fill.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\eye-fill.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\eye-slash-fill.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\eye-slash-fill.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\grid-3x2-gap-fill.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\grid-3x2-gap-fill.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\hamburger-md-svgrepo-com.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\hamburger-md-svgrepo-com.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\list-check.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\list-check.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\non-veg-icon.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\non-veg-icon.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\order-value.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\order-value.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\pen.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\pen.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\person-fill.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\person-fill.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\search.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\search.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\total-orders.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\total-orders.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\total-sales.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\total-sales.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\trash.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\trash.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\veg-icon.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\veg-icon.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\vegan-icon.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\vegan-icon.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\waiting-list.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\waiting-list.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\waiting-time.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\waiting-time.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\logos\\icons8-facebook-48.png",
+      "PackagePath": "staticwebassets\\images\\logos\\icons8-facebook-48.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\logos\\icons8-github-48.png",
+      "PackagePath": "staticwebassets\\images\\logos\\icons8-github-48.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\logos\\icons8-google-48.png",
+      "PackagePath": "staticwebassets\\images\\logos\\icons8-google-48.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\logos\\pizzashop_logo.png",
+      "PackagePath": "staticwebassets\\images\\logos\\pizzashop_logo.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\profile_div_bg.jpg",
+      "PackagePath": "staticwebassets\\images\\profile_div_bg.jpg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\qr-code.png",
+      "PackagePath": "staticwebassets\\images\\qr-code.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\customers.svg",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\customers.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\dashboard.png",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\dashboard.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\menu.png",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\menu.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\orders.svg",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\orders.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\roles_permission.png",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\roles_permission.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\tables.svg",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\tables.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\taxes.svg",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\taxes.svg"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\sidebar icons\\users.png",
+      "PackagePath": "staticwebassets\\images\\sidebar icons\\users.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\transperent-pizza.png",
+      "PackagePath": "staticwebassets\\images\\transperent-pizza.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\warning.png",
+      "PackagePath": "staticwebassets\\images\\warning.png"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "d:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.pizzashop.presentation.props",
+      "PackagePath": "build\\pizzashop.presentation.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.pizzashop.presentation.props",
+      "PackagePath": "buildMultiTargeting\\pizzashop.presentation.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.pizzashop.presentation.props",
+      "PackagePath": "buildTransitive\\pizzashop.presentation.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.pizzashop.presentation.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

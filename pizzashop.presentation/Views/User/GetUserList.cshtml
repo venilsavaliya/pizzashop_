@@ -1,0 +1,100 @@
+@model DAL.ViewModels.UserListViewModel
+@{
+     var startIndex = (@Model.CurrentPage - 1) * @Model.PageSize + 1;
+}
+
+<div class="user-list-container p-3">
+    <div class="head-section d-flex justify-content-between align-items-center">
+        <h3 class="custom-blue d-none d-md-block">Users</h3>
+        <div class="search-section d-flex gap-2">
+            <div class="position-relative">
+                <input type="text" class="p-2 w-100" placeholder="Search" id="search-field" value="@Model.SearchKeyword">
+                <img src="~/images/icons/search.svg" alt="" class="searchicon-img" onclick="search()">
+            </div>
+            <a asp-action="AddUser" asp-controller="User"><button type="button" class=" custom-btn-bg text-white p-2 border">+ Add
+                    user</button></a>
+        </div>
+    </div>
+
+    <div class="table-section bg-white shadow bg-body-tertiary rounded table-responsive mt-5 p-2">
+        <table class="table text-center">
+            <tr>
+                <th class="text-start ps-5"><span>Name</span>
+                <a href="@Url.Action("GetUserList", new { searchKeyword = Model.SearchKeyword, sortColumn = "Name", sortOrder = Model.SortColumn == "Name" && Model.SortOrder == "asc" ? "desc" : "asc", pageNumber = Model.CurrentPage, pageSize = Model.PageSize })">
+                <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt=""> </th>
+                </a>
+                <th>Email</th>
+                <th>Phone</th>
+                <th><span>Role</span>
+                <a href="@Url.Action("GetUserList", new { searchKeyword = Model.SearchKeyword, sortColumn = "Role", sortOrder = Model.SortColumn == "Role" && Model.SortOrder == "asc" ? "desc" : "asc", pageNumber = Model.CurrentPage, pageSize = Model.PageSize })"><img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt=""></a>
+                 </th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            @foreach (var u in Model.Users)
+            {
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content-start gap-4">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <img src="~/images/Default_pfp.svg.png" alt="" style="width: 25px;">
+                            </div>
+                            <span>@u.Name</span>
+                        </div>
+                    </td>
+                    <td>@u.Email</td>
+                    <td>@u.Phone</td>
+                    <td>@u.Role</td>
+                    <td><span class="badge @(u.Status.ToLower()=="active"?"custom-bg-green":"bg-danger")">@u.Status</span></td>
+                    <td>
+                        <div class="d-flex justify-content-center gap-5">
+                            <a asp-action="edituser" asp-controller="Profile" asp-route-id="@u.Id"><img src="~/images/icons/pen.svg" alt=""></a>
+                            <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteusermodal" onclick="setDeleteUserId(this)" data-id="@u.Id"
+                                alt="">
+                        </div>
+                    </td>
+                </tr>
+            }
+        </table>
+        <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+            <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
+                <div>Items per page: </div>
+                <select class="form-select" style="width:68px ;" aria-label="Default select example" id="pageSizeDropdown" onchange="changePageSize()">
+                    <option selected>@Model.PageSize</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                </select>
+                <div>Showing @Model.StartIndex - @Model.EndIndex of @Model.TotalCount</div>
+                @if (Model.CurrentPage > 1){
+                    <a href="@Url.Action("GetUserList", new { pageNumber = Model.CurrentPage - 1, pageSize = Model.PageSize })" class="text-black" style="text-decoration: none;"><div class="border p-2 px-3"> &lt; </div></a>
+                }
+                @if (Model.CurrentPage < Model.TotalPages){
+                    <a href="@Url.Action("GetUserList", new { pageNumber = Model.CurrentPage + 1, pageSize = Model.PageSize })" class="text-black" style="text-decoration: none;">
+                        <div class="border p-2 px-3">&gt;</div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changePageSize() {
+        var pageSize = document.getElementById("pageSizeDropdown").value;
+        var currentPage = @Model.CurrentPage;
+        window.location.href = '@Url.Action("GetUserList", "User")' + '?pageNumber=' + currentPage + '&pageSize=' + pageSize+ '&searchKeyword=' + '@Model.SearchKeyword';
+    }
+
+    function search(){
+        var search_keyword = document.getElementById("search-field").value;
+        var pageSize = document.getElementById("pageSizeDropdown").value;
+        window.location.href = '@Url.Action("GetUserList", "User")' + '?searchKeyword=' + search_keyword + '&pageSize=' + pageSize;
+    }
+
+    function setDeleteUserId(element) {
+        var userId = element.getAttribute("data-id");
+        var deleteBtn = document.getElementById("deleteUserBtn");
+        deleteBtn.href = '@Url.Action("deleteuser", "User")' + '?id=' + userId;
+    }
+</script>

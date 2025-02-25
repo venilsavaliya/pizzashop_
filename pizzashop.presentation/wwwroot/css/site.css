@@ -1,0 +1,297 @@
+/* html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+} */
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.roboto-font {
+  font-family: "Roboto", serif;
+  font-optical-sizing: auto;
+}
+
+.login-container {
+  height: 100vh;
+  width: 100vw;
+}
+
+.filter-screen {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  background: #00000083;
+}
+
+.pizza-logo {
+  width: 18%;
+}
+
+.offcanvas {
+  z-index: 1300;
+}
+
+.custom-skyblue {
+  color: #1f74ad;
+}
+
+.custom-btn-bg {
+  background-color: #0066a7;
+}
+
+.custom-bg-green {
+  background-color: #99d363;
+}
+
+.custom-blue {
+  color: #0066a7;
+}
+
+.custom-blue-border {
+  border: 2px solid #0066a7;
+}
+
+.custom-bg-grey {
+  background-color: #e2e2e2;
+}
+
+.custom-bg-blue {
+  background-color: #ddf1ff;
+}
+
+.form-group img {
+  position: absolute;
+  right: 10px;
+  top: 25%;
+  width: 20px;
+}
+
+.error-message {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.sidebar {
+  width: 240px;
+
+}
+
+.sidebar-option img {
+  width: 25px;
+}
+
+.small-img {
+  width: 25px;
+}
+
+
+.sidebar-link {
+  text-decoration: none;
+  color: grey;
+}
+
+.main-content {
+  margin-left: 240px;
+  height: 100vh;
+  overflow: auto;
+}
+
+.navbar {
+  height: 70px;
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+}
+
+.active-option {
+  background-color: #e2e2e2;
+  color: #1f74ad;
+}
+
+.active-option img {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+}
+
+.active-option-img {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+}
+
+.category-option img {
+  transform: rotate(90deg);
+}
+
+.category-active-option {
+  color: #1f74ad;
+}
+
+.category-active-option img {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+}
+
+.CategoryForSmallScreen {
+  height: 200px;
+  overflow: hidden;
+}
+
+.pagination-section>div {
+  width: fit-content;
+  text-wrap: nowrap;
+}
+
+.pagination-section div {
+  /* width: fit-content; */
+}
+
+.hamburger-img {
+  filter: invert(100%);
+}
+
+.searchicon-img {
+  width: 18px;
+  position: absolute;
+  top: 13px;
+  right: 5px;
+}
+
+.shadow-box {
+  box-shadow: 0px 0px 26px -13px black;
+}
+
+.file-input {
+  height: 96px;
+}
+
+/* .form-floating>.form-control-plaintext~label, .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
+  color: rgba(var(--bs-body-color-rgb), .65);
+  transform: scale(.85) translateY(-1.8rem) translateX(.25rem);
+  background-color: white;
+  opacity: 1;
+} */
+
+/* label {
+  background-color: white;
+  height: fit-content !important;
+  opacity: 1 !important;
+   padding: 0!important;
+
+} */
+.toggle-btn {
+  height: 20px;
+  width: 40px !important;
+}
+
+.category-menu {
+  width: 250px;
+}
+
+.nav-link.active {
+  border-bottom: 3px solid #1f74ad;
+  color: #1f74ad;
+}
+
+.nav-link.active img {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+}
+
+.tab-content>.active {
+  display: flex;
+}
+
+@media only screen and (min-width:992px) {
+  .pizza-logo {
+    width: 100px;
+  }
+
+  .login-form {
+    width: 75% !important;
+  }
+
+  .category-menu {
+    border-right: 2px solid #1f74ad !important;
+  }
+
+  .forgot-password-form {
+    width: 40% !important;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .main-content {
+    margin-left: 0px;
+  }
+
+  .hamburger-img {
+    opacity: 1 !important;
+  }
+
+  .roles-container {
+    width: 100% !important;
+  }
+}
+
+
+input[type=password]::-ms-reveal,
+input[type=password]::-ms-clear {
+  display: none;
+}
+
+.admin-img {
+  margin-left: 30px;
+  height: 120px;
+  top: -30px;
+  /* left: 30px; */
+}
+
+@media (min-width: 1200px) {
+  .admin-img {
+    height: 120px;
+  }
+}
+
+/* For medium screens (Tablets) */
+@media (max-width: 1199px) and (min-width: 768px) {
+  .admin-img {
+    height: 120px;
+  }
+}
+
+/* For small screens (Mobile devices) */
+@media (max-width: 767px) {
+  .admin-img {
+    height: 80px;
+    /* left: 15px; */
+    top: -20px;
+  }
+}
+
+/* For very small screens (Extra small phones) */
+@media (max-width: 480px) {
+  .admin-img {
+    height: 70px;
+    margin-left: 10px;
+    /* left: 10px; */
+    top: -15px;
+  }
+}

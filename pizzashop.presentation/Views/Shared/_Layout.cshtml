@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - pizzashop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/pizzashop.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+    <div class="main-container roboto-font">
+        <div class="sidebar vh-100 d-none d-xl-block position-fixed">
+            <div class="sidebar-options-list  d-flex flex-column align-items-start  gap-1 fw-medium">
+                <div class="sidebar-option px-2 py-1">
+                    <a href="./superadmindashboard.html" class="sidebar-link">
+                        <div class=" d-flex  justify-content-start align-items-center gap-3 mt-2">
+                            <img src="~/images/logos/pizzashop_logo.png" alt="" class="w-25">
+                            <h5 class="custom-skyblue">PIZZASHOP</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option mt-4 w-100  p-3 active-option ">
+                    <a  asp-action="Index" asp-controller="Home" class="sidebar-link active-option ">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/sidebar icons/dashboard.png" alt="">
+                            <div>Dashbaord</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option w-100 p-3">
+                    <a asp-action="GetUserList" asp-controller="User" class="sidebar-link">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/icons/customer.svg" alt="">
+                            <div>Users</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option w-100 p-3 ">
+                    <a href="./roles.html" class="sidebar-link">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/sidebar icons/roles_permission.png" alt="">
+                            <div>Roles and Permission</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option w-100 p-3">
+                    <a href="./Menu.html" class="sidebar-link">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/sidebar icons/menu.png" alt="">
+                            <div>Menus</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option w-100 p-3">
+                    <a href="./superadmindashboard.html" class="sidebar-link">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/sidebar icons/taxes.svg" alt="">
+                            <div>Taxes and Fees</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option w-100 p-3">
+                    <a href="./superadmindashboard.html" class="sidebar-link">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/sidebar icons/tables.svg" alt="">
+                            <div>Table and Sections</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option w-100 p-3">
+                    <a href="./superadmindashboard.html" class="sidebar-link">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/sidebar icons/orders.svg" alt="">
+                            <div>Orders</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="sidebar-option w-100 p-3">
+                    <a href="./superadmindashboard.html" class="sidebar-link">
+                        <div class=" d-flex justify-content-start align-items-center gap-3">
+                            <img src="~/images/sidebar icons/customers.svg" alt="">
+                            <div>Customers</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="main-content vh-100 custom-bg-grey">
+            <nav class="navbar custom-btn-bg">
+
+                <div class="user-img h-100 w-100 d-flex justify-content-between pe-3">
+                    <img src="~/images/icons/hamburger-md-svgrepo-com.svg" alt="" srcset=""
+                        class="hamburger-img opacity-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+                        aria-controls="offcanvasExample">
+                    @* <img src="~/images/Default_pfp.svg.png" alt="" class="h-75 my-auto"> *@
+                    <div class="dropdown">
+                        @* <div class=" dropdown-toggle"  data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="~/images/Default_pfp.svg.png" alt="" class="my-auto"
+                                style="height: 50px !important;">
+                        </div> *@
+                        <img class="me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" width="50"
+                                src="~/images/Default_pfp.svg.png" alt="">
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="d-flex justify-content-start gap-2 align-items-center border py-2 border-top-0 dropdown-item">
+                                <img src="@Context.Request.Cookies["UserName"]" alt="" class="my-auto"
+                                    style="height: 40px !important;">
+                                <div>@Context.Request.Cookies["UserName"]</div>
+                            </li>
+
+                            <div class="">
+                                <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
+                                        src="~/images/Default_pfp.svg.png" alt="" class="my-auto"
+                                        style="height: 20px !important;"><a class="dropdown-item text-black" asp-action="Profile" asp-controller="User">My
+                                        Profile</a></li>
+                                <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
+                                        src="~/images/icons/arrow-clockwise.svg" alt=""> <a class="dropdown-item text-black"
+                                        asp-action="ChangePassword" asp-controller="Profile">Change Password</a></li>
+                                <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmationmodal"><img
+                                        src="~/images/icons/box-arrow-right.svg" alt=""> <a class="dropdown-item text-black"
+                                        >Log Out</a></li>
+                            </div>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <main role="main" class="pb-3">
+                @TempData["success"]
+                @RenderBody()
+            </main>
+
+
+        </div>
+        <!-- offcanvas body -->
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample"
+            aria-labelledby="offcanvasExampleLabel">
+            <div class="offcanvas-header align-items-center">
+                <div class="sidebar-option">
+                    <a href="./superadmindashboard.html" class="sidebar-link">
+                        <div class=" d-flex  justify-content-start align-items-center gap-3 mt-2">
+                            <img src="~/images/logos/pizzashop_logo.png" alt="" class="w-25">
+                            <h6 class="custom-skyblue">PIZZASHOP</h6>
+                        </div>
+                    </a>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="sidebar-options-list  d-flex flex-column align-items-start  gap-3 fw-medium">
+
+                    <div class="sidebar-option mt-3 w-100  p-2 active-option">
+                        <a asp-action="Index" asp-controller="Home" class="sidebar-link active-option">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/dashboard.png" alt="">
+                                <div>Dashbaord</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="sidebar-option w-100 p-2">
+                        <a asp-action="GetUserList" asp-controller="User" class="sidebar-link">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/users.png" alt="">
+                                <div>Users</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="sidebar-option w-100 p-2 ">
+                        <a href="./roles.html" class="sidebar-link">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/roles_permission.png" alt="">
+                                <div>Roles and Permission</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="sidebar-option w-100 p-2">
+                        <a href="./Menu.html" class="sidebar-link">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/menu.png" alt="">
+                                <div>Menus</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="sidebar-option w-100 p-2">
+                        <a href="./superadmindashboard.html" class="sidebar-link">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/taxes.svg" alt="">
+                                <div>Taxes and Fees</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="sidebar-option w-100 p-2">
+                        <a href="./superadmindashboard.html" class="sidebar-link">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/tables.svg" alt="">
+                                <div>Table and Sections</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="sidebar-option w-100 p-2">
+                        <a href="./superadmindashboard.html" class="sidebar-link">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/orders.svg" alt="">
+                                <div>Orders</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="sidebar-option w-100 p-2">
+                        <a href="./superadmindashboard.html" class="sidebar-link">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/icons/customer.svg" alt="">
+                                <div>Customers</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @* ----------------modal body------------------- *@
+
+    <div class="modal" tabindex="-1" id="confirmationmodal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3" style="width: 330px !important;">
+ 
+      <div class="modal-body">
+        <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
+        <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Logout?</div>
+      </div>
+      <div class="d-flex justify-content-center align-items-center gap-2">
+       <a  asp-action="Logout" asp-controller="User"><button type="button" class="btn btn-primary px-4">Yes</button></a> 
+        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@* -------------------------------------------------------------- *@
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

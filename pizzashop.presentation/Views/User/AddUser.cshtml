@@ -1,0 +1,156 @@
+@model DAL.ViewModels.AddUserViewModel
+
+<div class="add-user-container p-3">
+    <div class="head-section d-flex justify-content-between align-items-center">
+        <h3 class="custom-blue">Add New Users</h3>
+        <div class="search-section d-flex gap-2">
+            <!-- <a href="/Userlist.html"><button type="button" class=" custom-btn-bg text-white custom-blue p-2 border">Back</button></a> -->
+            <a href="/Userlist.html"><button type="button" class="btn custom-blue border border-primary">
+                    < Back</button></a>
+        </div>
+    </div>
+
+    <div class="form-section mt-3 p-4 border rounded shadow-box">
+        <Form asp-action="AddUser" asp-controller="User" method="post">
+            @* ********************** hidden fields for passing to the view model*********************** *@
+
+            <input type="hidden" asp-for="Createdby" value="" />
+
+
+            @* ***************************************************************************************** *@
+            <div class="d-flex gap-4 flex-column flex-md-row">
+                <div class="form-floating mb-3 col">
+                    <input asp-for="FirstName" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">First Name</label>
+                </div>
+                <div class="form-floating mb-3 col">
+                    <input asp-for="LastName" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">Last Name</label>
+                </div>
+            </div>
+            <div class="d-flex gap-4 flex-column flex-md-row">
+                <div class="form-floating mb-3 col ">
+                    <input asp-for="UserName" type="text" class="form-control" id="floatingInput" placeholder="User name">
+                    <label for="floatingInput">User Name</label>
+                </div>
+                <div class="form-floating col">
+                    <select asp-for="RoleName" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>select Role</option>
+                        <option value="Chef">Chef</option>
+                        <option value="Account Manager">Account Manager</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <label for="floatingSelect">Role</label>
+                </div>
+            </div>
+            <div class="d-flex gap-4 flex-column flex-md-row mt-3 mt-md-0">
+                <div class="form-floating mb-3 col">
+                    <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email">
+                    <label for="floatingInput">Email</label>
+                </div>
+                <div class="form-floating mb-3 col">
+                    <input asp-for="Password" type="password" class="form-control" id="floatingInput" placeholder="Password">
+                    <label for="floatingInput">Password</label>
+                </div>
+            </div>
+            <div>
+                <input type="file" name="" id="" class="bg-primary w-100 file-input position-absolute opacity-0">
+                <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
+                    <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
+                    <div>Browse Files</div>
+                </div>
+            </div>
+            <div class="d-flex gap-4 mt-3 flex-column flex-md-row">
+
+                <div class="form-floating col">
+                    <select asp-for="Country" class="form-select" id="Country"
+                        aria-label="Floating label select example">
+                    </select>
+                    <label for="floatingSelect">Country</label>
+                </div>
+                <div class="form-floating col">
+                    <select asp-for="State" class="form-select" id="State" aria-label="Floating label select example">
+                        @* <option selected>@(Model.State)</option> *@
+
+                    </select>
+                    <label for="floatingSelect">State</label>
+                </div>
+                <div class="form-floating col">
+                    <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example">
+                        @* <option selected>@(Model.City)</option> *@
+
+                    </select>
+                    <label for="floatingSelect">city</label>
+                </div>
+            </div>
+            <div class="d-flex gap-4 mt-3 flex-column flex-md-row">
+                <div class="form-floating mb-md-3 col">
+                    <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" placeholder="Zipcode">
+                    <label for="floatingInput">Zipcode</label>
+                </div>
+                <div class="form-floating mb-md-3 col">
+                    <input asp-for="Address" type="text" class="form-control" id="floatingInput" placeholder="Address">
+                    <label for="floatingInput">Address</label>
+                </div>
+                <div class="form-floating mb-md-3 col">
+                    <input asp-for="Phone" type="text" class="form-control" id="floatingInput" placeholder="phone">
+                    <label for="floatingInput">phone</label>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <button class="custom-btn-bg text-white p-2 border rounded">Add User</button>
+                <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a href="./Userlist.html"
+                        class="custom-blue" style="text-decoration: none;">cancel</a></button>
+            </div>
+        </Form>
+    </div>
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        console.log("jQuery is working!");
+
+        // Fetch and populate countries on page load
+        $.getJSON('/GetData/GetCountries', function (data) {
+            @* $("#Country").html('<option selected>@(Model.Country)</option>'); // Default option *@
+            $.each(data, function (index, country) {
+                $("#Country").append(`<option value="${country.countryId}">${country.countryName}</option>`);
+            });
+        });
+
+        // Fetch states when a country is selected
+        $("#Country").change(function () {
+            var countryId = $(this).val();
+            $("#State").html('<option value="">Select State</option>').prop("disabled", true);
+            $("#City").html('<option value="">Select City</option>').prop("disabled", true);
+
+            if (countryId) {
+                $.getJSON(`/GetData/GetStates?countryId=${countryId}`, function (data) {
+                    $("#State").prop("disabled", false);
+                    $.each(data, function (index, state) {
+                        $("#State").append(`<option value="${state.stateId}">${state.stateName}</option>`);
+                    });
+                });
+            }
+        });
+
+        // Fetch cities when a state is selected
+        $("#State").change(function () {
+            var stateId = $(this).val();
+            $("#City").html('<option value="">Select City</option>').prop("disabled", true);
+
+            if (stateId) {
+                $.getJSON(`/GetData/GetCities?stateId=${stateId}`, function (data) {
+                    $("#City").prop("disabled", false);
+                    $.each(data, function (index, city) {
+                        $("#City").append(`<option value="${city.cityId}">${city.cityName}</option>`);
+                    });
+                });
+            }
+        });
+    });
+</script>
