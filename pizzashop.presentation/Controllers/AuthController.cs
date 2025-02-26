@@ -28,7 +28,6 @@ public class AuthController : Controller
     // GET : Auth/Login
     public IActionResult Login()
     {
-
         return View();
     }
 
@@ -97,6 +96,8 @@ public class AuthController : Controller
 
         }
 
+        TempData["SuccessMessage"] = "Logged in successfully!";
+
         return RedirectToAction("Index", "Home");
     }
 
@@ -121,7 +122,11 @@ public class AuthController : Controller
 
         if (AuthResponse.Result.Success)
         {
-            Console.WriteLine("Email Sent Successfully");
+            // TempData["SuccessMessage"] = "Email Sent Successfully";
+            ViewBag.Message = "Email Sent Successfully";
+        }
+        else{
+            ModelState.AddModelError("InvalidEmail", AuthResponse.Result.Message ?? "Could Not Send Email");
         }
 
         return View();
@@ -156,6 +161,18 @@ public class AuthController : Controller
         }
 
         return View();
+    }
+
+
+    // GET: Auth/Logout
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("jwt");
+        Response.Cookies.Delete("email");
+        Response.Cookies.Delete("UserName");
+        Response.Cookies.Delete("ProfileUrl");
+
+        return RedirectToAction("Login", "Auth");
     }
 
 }

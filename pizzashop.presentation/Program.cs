@@ -11,6 +11,8 @@ var jwtConfig = builder.Configuration.GetSection("jwt");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+
 
 
 // Add DbContext using Dependency Injection
@@ -59,6 +61,7 @@ builder.Services.AddAuthentication(x=>{
 // Add services to the container.
 builder.Services.AddScoped<IAuthService, AuthService>(); 
 builder.Services.AddScoped<IUserService, UserService>(); 
+builder.Services.AddScoped<IDataService, DataService>(); 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
@@ -83,5 +86,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-    
+
 app.Run();

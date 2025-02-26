@@ -26,9 +26,5 @@ public class UpdateUserViewModel
 
     public string? Profile { get; set; }
 
-    public Guid? Modifiedby { get; set; }
-    public Guid? Createdby { get; set; }
-
-    public bool? Isdeleted { get; set; }
 
 }

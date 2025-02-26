@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using BLL.Interfaces;
 using DAL.Models;
@@ -19,7 +21,11 @@ public class UserController : Controller
     // GET : User/Profile
     public IActionResult Profile()
     {
-        var email = Request.Cookies["email"];
+        var token = Request.Cookies["jwt"];
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
         var user = _userService.GetUserDetailByemail(email);
 
@@ -30,7 +36,19 @@ public class UserController : Controller
         else
         {
             return View(user);
+        } 
+    }
+
+    // POST : User/UpdateProfile
+    [HttpPost]
+    public IActionResult UpdateProfile(UpdateUserViewModel model)
+    {
+        var AuthResponse = _userService.UpdateUserProfile(model).Result;
+        if (!AuthResponse.Success)
+        {
+            return View(model);
         }
+        return RedirectToAction("Profile", "User");
     }
 
     // GET : User/userlist
@@ -47,7 +65,7 @@ public class UserController : Controller
     {
         return View();
     }
-
+ 
 
     // POST : User/AddUser
 
@@ -56,10 +74,10 @@ public class UserController : Controller
     public IActionResult AddUser(AddUserViewModel model)
     {
 
-        // if(!ModelState.IsValid)
-        // {
-        //     return View(model);
-        // }
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
 
         var AuthResponse = _userService.AddUser(model).Result;
 
@@ -67,9 +85,88 @@ public class UserController : Controller
         {
             return View(model);
         }
-        else{
-            return RedirectToAction("GetUserList","user");
+        else
+        {
+            return RedirectToAction("GetUserList", "user");
         }
 
     }
+
+
+    // GET : User/EditUser
+
+    public IActionResult EditUser(string id)
+    {
+        var edituser = _userService.GetEditUserById(id);
+        return View(edituser);
+    }
+
+    // POST : User/EditUser
+    [HttpPost]
+    public IActionResult EditUser(EditUserViewModel model)
+    {
+        // if (!ModelState.IsValid)
+        // {
+        //     return View(model);
+        // }
+
+        var AuthResponse = _userService.EditUser(model).Result;
+
+        if (!AuthResponse.Success)
+        {
+            return View(model);
+        }
+        else
+        {
+            return RedirectToAction("GetUserList", "user");
+        }
+    }
+
+    // GET : User/ChangePassword
+
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+
+    // POST : User/ChangePassword
+    [HttpPost]
+
+    public IActionResult ChangePassword(ChangePasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var AuthResponse = _userService.ChangeProfilePassword(model).Result;
+
+        if (!AuthResponse.Success)
+        {
+            return View(model);
+        }
+        else
+        {
+            return RedirectToAction("Profile", "User");
+        }
+    }
+
+    // Get : User/DeleteUser
+
+    public IActionResult DeleteUser(string id)
+    {
+        var AuthResponse = _userService.DeleteUserById(id);
+
+        if (!AuthResponse.Success)
+        {
+            return RedirectToAction("GetUserList", "User");
+        }
+        else
+        {
+            return RedirectToAction("GetUserList", "User");
+        }
+
+    }
+
 }

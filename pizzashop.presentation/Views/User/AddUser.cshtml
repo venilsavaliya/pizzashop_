@@ -7,34 +7,36 @@
             <!-- <a href="/Userlist.html"><button type="button" class=" custom-btn-bg text-white custom-blue p-2 border">Back</button></a> -->
             <a href="/Userlist.html"><button type="button" class="btn custom-blue border border-primary">
                     < Back</button></a>
-        </div>
+        </div> 
     </div>
-
+ 
     <div class="form-section mt-3 p-4 border rounded shadow-box">
         <Form asp-action="AddUser" asp-controller="User" method="post">
-            @* ********************** hidden fields for passing to the view model*********************** *@
-
-            <input type="hidden" asp-for="Createdby" value="" />
-
-
-            @* ***************************************************************************************** *@
+            <span asp-validation-summary="All"></span>
+       
             <div class="d-flex gap-4 flex-column flex-md-row">
                 <div class="form-floating mb-3 col">
-                    <input asp-for="FirstName" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input asp-for="FirstName" type="text" class="form-control" id="floatingInput"
+                        placeholder="name@example.com">
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     <label for="floatingInput">First Name</label>
                 </div>
                 <div class="form-floating mb-3 col">
-                    <input asp-for="LastName" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input asp-for="LastName" type="text" class="form-control" id="floatingInput"
+                        placeholder="name@example.com">
                     <label for="floatingInput">Last Name</label>
                 </div>
             </div>
             <div class="d-flex gap-4 flex-column flex-md-row">
                 <div class="form-floating mb-3 col ">
-                    <input asp-for="UserName" type="text" class="form-control" id="floatingInput" placeholder="User name">
+                    <input asp-for="UserName" type="text" class="form-control" id="floatingInput"
+                        placeholder="User name">
+                        <span asp-validation-for="UserName" class="text-danger"></span>
                     <label for="floatingInput">User Name</label>
                 </div>
                 <div class="form-floating col">
-                    <select asp-for="RoleName" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                    <select asp-for="RoleName" class="form-select" id="floatingSelect"
+                        aria-label="Floating label select example">
                         <option selected>select Role</option>
                         <option value="Chef">Chef</option>
                         <option value="Account Manager">Account Manager</option>
@@ -46,10 +48,13 @@
             <div class="d-flex gap-4 flex-column flex-md-row mt-3 mt-md-0">
                 <div class="form-floating mb-3 col">
                     <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
                     <label for="floatingInput">Email</label>
                 </div>
                 <div class="form-floating mb-3 col">
-                    <input asp-for="Password" type="password" class="form-control" id="floatingInput" placeholder="Password">
+                    <input asp-for="Password" type="password" class="form-control" id="floatingInput"
+                        placeholder="Password">
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     <label for="floatingInput">Password</label>
                 </div>
             </div>
@@ -65,18 +70,19 @@
                 <div class="form-floating col">
                     <select asp-for="Country" class="form-select" id="Country"
                         aria-label="Floating label select example">
+                        <option selected>Select Country</option>
                     </select>
                     <label for="floatingSelect">Country</label>
                 </div>
                 <div class="form-floating col">
-                    <select asp-for="State" class="form-select" id="State" aria-label="Floating label select example">
-                        @* <option selected>@(Model.State)</option> *@
+                    <select asp-for="State" class="form-select" id="State" aria-label="Floating label select example" disabled>
+                        
 
                     </select>
                     <label for="floatingSelect">State</label>
                 </div>
                 <div class="form-floating col">
-                    <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example">
+                    <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example" disabled>
                         @* <option selected>@(Model.City)</option> *@
 
                     </select>
@@ -117,9 +123,9 @@
         // Fetch and populate countries on page load
         $.getJSON('/GetData/GetCountries', function (data) {
             @* $("#Country").html('<option selected>@(Model.Country)</option>'); // Default option *@
-            $.each(data, function (index, country) {
-                $("#Country").append(`<option value="${country.countryId}">${country.countryName}</option>`);
-            });
+                $.each(data, function (index, country) {
+                    $("#Country").append(`<option value="${country.countryId}">${country.countryName}</option>`);
+                });
         });
 
         // Fetch states when a country is selected

@@ -39,7 +39,7 @@
         </div>
 
 
-        <form class="p-4" method="post" asp-action="UpdateUserProfile" asp-controller="Profile">
+        <form class="p-4" method="post" asp-action="UpdateProfile" asp-controller="User">
 
             @* ********************** hidden fields for passing to the view model*********************** *@
 
@@ -79,24 +79,22 @@
 
             <div class="d-flex gap-4 mt-3 flex-column flex-md-row">
 
-                <div class="form-floating col">
+                 <div class="form-floating col">
                     <select asp-for="Country" class="form-select" id="Country"
                         aria-label="Floating label select example">
-                         <option selected>@(Model.Country)</option>
                     </select>
                     <label for="floatingSelect">Country</label>
                 </div>
                 <div class="form-floating col">
                     <select asp-for="State" class="form-select" id="State" aria-label="Floating label select example">
                         <option selected>@(Model.State)</option>
-                      
                     </select>
                     <label for="floatingSelect">State</label>
                 </div>
                 <div class="form-floating col">
                     <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example">
                         <option selected>@(Model.City)</option>
-                       
+
                     </select>
                     <label for="floatingSelect">city</label>
                 </div>
@@ -129,16 +127,15 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
+     $(document).ready(function () {
         console.log("jQuery is working!");
 
         // Fetch and populate countries on page load
         $.getJSON('/GetData/GetCountries', function (data) {
-            console.log("countries fetching...",data)
-            $("#Country").html('<option selected>@(Model.Country)</option>'); // Default option
-            $.each(data, function (index, country) {
-                $("#Country").append(`<option value="${country.countryId}">${country.countryName}</option>`);
-            });
+            @* $("#Country").html('<option selected>@(Model.Country)</option>'); // Default option *@
+                $.each(data, function (index, country) {
+                    $("#Country").append(`<option value="${country.countryId}">${country.countryName}</option>`);
+                });
         });
 
         // Fetch states when a country is selected

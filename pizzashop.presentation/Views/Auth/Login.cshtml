@@ -23,11 +23,8 @@
     </div>
 
     <div class="right w-100 h-100 custom-bg-blue d-flex flex-column justify-content-center ">
-        tatva.pce175@outlook.com
-
 
         @* ------------------ Login form ------------- *@
-
 
         <form
             class="login-form w-sm-100  d-flex flex-column justify-content-center  align-content-center p-4 gap-3 m-auto"
@@ -69,19 +66,21 @@
                     </label>
                 </div>
 
-                <span><a asp-controller="User" asp-action="ForgotPassword" style="text-decoration: none;">Forget Password?</a></span>
+                <span><a asp-controller="Auth" asp-action="ForgotPassword" style="text-decoration: none;">Forget
+                        Password?</a></span>
 
             </div>
             <input type="submit" value="Login" class="custom-btn-bg text-white py-2 border w-100 h-auto "></input>
 
 
             @*--------Need to add ViewContext to acces ModelState--------*@
+
             @*This is shown when there is custom error*@
 
             @if (ViewContext.ModelState.ContainsKey("InvalidCredentials"))
             {
                 <div class="text-danger">
-                    @ViewContext.ModelState["InvalidCredentials"].Errors[0].ErrorMessage
+                    @ViewContext.ModelState["InvalidCredentials"]?.Errors[0].ErrorMessage
                 </div>
             }
 
@@ -90,7 +89,32 @@
 
 </div>
 
-<script src="~/js/site.js" asp-append-version="true"></script>
+
+<script>
+
+    function changevisibility() {
+        var x = document.getElementById("passwordinput");
+        if (x.type === "password") {
+            x.type = "text";
+            var y = document.getElementById("seepassword");
+            y.classList.remove('d-none')
+            y.classList.add('d-block')
+            var z = document.getElementById("hidepassword");
+            z.classList.remove('d-block')
+            z.classList.add('d-none')
+
+
+        } else {
+            x.type = "password";
+            var y = document.getElementById("hidepassword");
+            y.classList.remove('d-none')
+            y.classList.add('d-block')
+            var z = document.getElementById("seepassword");
+            z.classList.remove('d-block')
+            z.classList.add('d-none')
+        }
+    }
+</script>
 
 </html>
 

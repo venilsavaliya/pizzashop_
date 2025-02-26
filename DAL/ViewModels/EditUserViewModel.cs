@@ -1,10 +1,8 @@
 namespace DAL.ViewModels;
 
-public partial class EditUserViewModel
+public partial class EditUserViewModel 
 {
     public Guid Id { get; set; }
-
-    public Guid? UserId { get; set; }
 
     public string FirstName { get; set; } = null!;
 
@@ -14,9 +12,7 @@ public partial class EditUserViewModel
 
     public string? Phone { get; set; }
 
-    public string Email { get; set; } = null!;
-
-    public string Password { get; set; } = null!;
+    public string? Email { get; set; }
 
     public bool Status { get; set; }
 
@@ -33,12 +29,5 @@ public partial class EditUserViewModel
     public string? RoleName { get; set; }
 
     public string? Profile { get; set; }
-
-    public Guid Modifiedby { get; set; }
-    
-    public Guid Createdby { get; set; }
-
-    public DateTime Modifieddate { get; set; } = DateTime.Now;
-
 
 }

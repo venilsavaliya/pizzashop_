@@ -1,8 +1,38 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
+    if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            showToast("success", "@TempData["SuccessMessage"]");
+        </script>
+    }
+    if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            showToast("error", "@TempData["ErrorMessage"]");
+        </script>
+    }
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+
+<script>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+            showToast("success", "@Html.Raw(TempData["SuccessMessage"])");
+        </text>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <text>
+            showToast("error", "@Html.Raw(TempData["ErrorMessage"])");
+        </text>
+    }
+</script>

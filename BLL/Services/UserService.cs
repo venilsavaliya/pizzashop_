@@ -6,6 +6,10 @@ using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using BLL.Models;
 using BLL.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 public class UserService : IUserService
 {
@@ -13,10 +17,21 @@ public class UserService : IUserService
 
     private readonly ApplicationDbContext _context;
 
-    public UserService(ApplicationDbContext context)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    private readonly IEmailService _emailService;
+
+    private readonly IWebHostEnvironment _env;
+    public UserService(ApplicationDbContext context, IHttpContextAccessor contextAccessor, IEmailService emailService, IWebHostEnvironment env)
     {
 
         _context = context;
+
+        _httpContextAccessor = contextAccessor;
+
+        _emailService = emailService;
+
+        _env = env;
     }
 
     public User GetUserByEmail(string email)
@@ -41,6 +56,7 @@ public class UserService : IUserService
         var query = from u in _context.Userdetails
                     join user in _context.Users on u.UserId equals user.Id
                     join role in _context.Roles on u.RoleId equals role.Roleid
+                    where u.Isdeleted == false
                     select new UserViewModel
                     {
                         Id = u.Id,
@@ -48,12 +64,14 @@ public class UserService : IUserService
                         Email = user.Email,
                         Role = role.Name,
                         Status = u.Status ? "Active" : "Inactive",
-                        Phone = u.Phone
+                        Phone = u.Phone,
+                        Isdeleted = u.Isdeleted
                     };
 
         if (!string.IsNullOrEmpty(searchKeyword))
         {
-            query = query.Where(u => u.Name.ToLower().Contains(searchKeyword) ||
+            query = query.Where(u =>
+                                 u.Name.ToLower().Contains(searchKeyword) ||
                                  u.Email.ToLower().Contains(searchKeyword) ||
                                  u.Role.ToLower().Contains(searchKeyword) ||
                                  u.Phone.Contains(searchKeyword));
@@ -97,10 +115,20 @@ public class UserService : IUserService
 
     public async Task<AuthResponse> AddUser(AddUserViewModel user)
     {
-        
-        var loggedinadmin = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-        user.Createdby = loggedinadmin.Id;
+        // getting jwt token from cookies
+        var token = _httpContextAccessor.HttpContext?.Request.Cookies["jwt"];
 
+        // decode jwt token to get email from it
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+        // getting id of logged in admin
+        var loggedinadmin = _context.Users.FirstOrDefault(u => u.Email == email);
+
+
+        // fetching country, state and city names
         var countryname = _context.Countries.FirstOrDefault(c => c.CountryId.ToString() == user.Country);
         var statename = _context.States.FirstOrDefault(c => c.StateId.ToString() == user.State);
         var cityname = _context.Cities.FirstOrDefault(c => c.CityId.ToString() == user.City);
@@ -109,7 +137,6 @@ public class UserService : IUserService
         user.State = statename?.StateName;
         user.City = cityname?.CityName;
 
-        Console.WriteLine(user);
 
         var usercredential = new User
         {
@@ -117,13 +144,27 @@ public class UserService : IUserService
             Password = PasswordService.HashPassword(user.Password)
         };
 
+        // save new user credentials in users table
         _context.Users.Add(usercredential);
         await _context.SaveChangesAsync();
 
-        var userid = _context.Users.FirstOrDefault(u => u.Email == user.Email).Id;
 
-        var roleid = _context.Roles.FirstOrDefault(r => r.Name == user.RoleName).Roleid;
+        // fetch html template from root folder
+        string htmltemplate = System.IO.File.ReadAllText(_env.WebRootPath + "/HtmlTemplate/AccountCreated.html");
 
+        htmltemplate.Replace("_username_", user.UserName);
+        htmltemplate.Replace("_password_", user.Password);
+
+
+        // send email to the newly created user
+        await _emailService.SendEmailAsync(user.Email, "Account Credentials", htmltemplate);
+
+        // get userid and role id to give reffrence to userdetail table 
+        var userid = _context.Users.FirstOrDefault(u => u.Email == user.Email)?.Id;
+        var roleid = _context.Roles.FirstOrDefault(r => r.Name == user.RoleName)?.Roleid;
+
+
+        // creating new userdetail object which will store in db
         var userdetail = new Userdetail
         {
             FirstName = user.FirstName,
@@ -139,9 +180,10 @@ public class UserService : IUserService
             Zipcode = user.Zipcode,
             RoleId = roleid,
             Profile = user.Profile,
-            Createdby = user.Createdby
+            Createdby = loggedinadmin?.Id ?? Guid.Empty
         };
 
+        // save new user detail in userdetails table
         _context.Userdetails.Add(userdetail);
         await _context.SaveChangesAsync();
 
@@ -149,6 +191,199 @@ public class UserService : IUserService
         {
             Success = true,
             Message = "User Added Successfully"
+        };
+    }
+
+
+    public Userdetail GetUserDetailById(string id)
+    {
+        var user = _context.Userdetails.FirstOrDefault(u => u.Id.ToString() == id.ToString());
+        return user;
+    }
+
+    public EditUserViewModel GetEditUserById(string id)
+    {
+        var user = _context.Userdetails.FirstOrDefault(u => u.Id.ToString() == id.ToString());
+        var email = _context.Users.FirstOrDefault(u => u.Id == user.UserId)?.Email;
+
+        var edituser = new EditUserViewModel
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserName = user.UserName,
+            Phone = user.Phone,
+            Email = email,
+            Status = user.Status,
+            Country = user.Country,
+            State = user.State,
+            City = user.City,
+            Address = user.Address,
+            Zipcode = user.Zipcode,
+            RoleName = _context.Roles.FirstOrDefault(r => r.Roleid == user.RoleId).Name,
+            Profile = user.Profile
+        };
+
+        return edituser;
+    }
+
+
+    public async Task<AuthResponse> EditUser(EditUserViewModel user)
+    {
+
+        // get jwt token from cookies
+        var token = _httpContextAccessor.HttpContext?.Request.Cookies["jwt"];
+
+        // decode jwt token to get email from it
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+        // get id of logged in admin
+        var loggedinadmin = _context.Users.FirstOrDefault(u => u.Email == email);
+
+        // get userdetail object from db which needs to be updated
+        var userdetail = _context.Userdetails.FirstOrDefault(u => u.Id == user.Id);
+
+        // get country, state and city names
+        var countryname = _context.Countries.FirstOrDefault(c => c.CountryId.ToString() == user.Country);
+        var statename = _context.States.FirstOrDefault(c => c.StateId.ToString() == user.State);
+        var cityname = _context.Cities.FirstOrDefault(c => c.CityId.ToString() == user.City);
+
+        if (countryname != null)
+        {
+            user.Country = countryname?.CountryName;
+        }
+        if (statename != null)
+        {
+            user.State = statename?.StateName;
+        }
+        if (cityname != null)
+        {
+            user.City = cityname?.CityName;
+        }
+
+        var roleid = _context.Roles.FirstOrDefault(r => r.Name == user.RoleName)?.Roleid;
+
+        userdetail.FirstName = user.FirstName;
+        userdetail.LastName = user.LastName;
+        userdetail.UserName = user.UserName;
+        userdetail.Phone = user.Phone;
+        userdetail.Status = user.Status;
+        userdetail.Country = user.Country;
+        userdetail.State = user.State;
+        userdetail.City = user.City;
+        userdetail.Address = user.Address;
+        userdetail.Zipcode = user.Zipcode;
+        userdetail.RoleId = roleid;
+        userdetail.Profile = user.Profile;
+        userdetail.Modifiedby = loggedinadmin?.Id;
+
+        _context.Userdetails.Update(userdetail);
+        await _context.SaveChangesAsync();
+
+        return new AuthResponse
+        {
+            Success = true,
+            Message = "User Updated Successfully"
+        };
+    }
+
+
+    public async Task<AuthResponse> ChangeProfilePassword(ChangePasswordViewModel model)
+    {
+        var token = _httpContextAccessor.HttpContext.Request.Cookies["jwt"];
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        var user = _context.Users.FirstOrDefault(u => u.Email == email);
+
+        if (PasswordService.VerifyPassword(model.OldPassword, user.Password))
+        {
+            user.Password = PasswordService.HashPassword(model.NewPassword);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Password Changed Successfully"
+            };
+        }
+        else
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Invalid Old Password"
+            };
+        }
+    }
+
+    public async Task<AuthResponse> UpdateUserProfile(UpdateUserViewModel model)
+    {
+
+        var token = _httpContextAccessor.HttpContext.Request.Cookies["jwt"];
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+        var userdetail = _context.Userdetails.FirstOrDefault(u => u.UserId == _context.Users.FirstOrDefault(u => u.Email == email).Id);
+
+        var statename = _context.States.FirstOrDefault(s => s.StateId.ToString() == model.State);
+        var countryname = _context.Countries.FirstOrDefault(c => c.CountryId.ToString() == model.Country);
+        var cityname = _context.Cities.FirstOrDefault(c => c.CityId.ToString() == model.City);
+
+        // userdetail.State = statename?.StateName;
+        // userdetail.Country = countryname?.CountryName;
+        // userdetail.City = cityname?.CityName;
+        if (countryname != null)
+        {
+            userdetail.Country = countryname?.CountryName;
+        }
+        if (statename != null)
+        {
+            userdetail.State = statename?.StateName;
+        }
+        if (cityname != null)
+        {
+            userdetail.City = cityname?.CityName;
+        }
+
+        userdetail.FirstName = model.FirstName;
+        userdetail.LastName = model.LastName;
+        userdetail.UserName = model.UserName;
+        userdetail.Phone = model.Phone;
+        userdetail.Address = model.Address;
+        userdetail.Zipcode = model.Zipcode;
+        // userdetail.Profile = model.Profile;
+
+        _context.Userdetails.Update(userdetail);
+        await _context.SaveChangesAsync();
+
+        return new AuthResponse
+        {
+            Success = true,
+            Message = "Profile Updated Successfully"
+        };
+    }
+
+
+    public AuthResponse DeleteUserById(string id)
+    {
+        var user = _context.Userdetails.FirstOrDefault(u => u.Id.ToString() == id.ToString());
+        user.Isdeleted = true;
+
+        _context.Userdetails.Update(user);
+        _context.SaveChanges();
+        return new AuthResponse
+        {
+            Success = true,
+            Message = "User Deleted Successfully"
         };
     }
 }

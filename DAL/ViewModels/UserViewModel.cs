@@ -8,5 +8,6 @@ public class UserViewModel
     public string? Role { get; set; }
     public string? Status { get; set; }
     public string? Phone { get; set; }
+    public bool? Isdeleted { get; set; }
 }
 
