@@ -1,6 +1,7 @@
 using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 namespace BLL.Interfaces;
 
 public interface IUserService
@@ -24,4 +25,6 @@ public interface IUserService
     public Task<AuthResponse> UpdateUserProfile(UpdateUserViewModel model);
 
     public AuthResponse DeleteUserById(string id);
+
+    public string UploadFile(IFormFile file);
 }

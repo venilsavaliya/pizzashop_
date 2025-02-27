@@ -1,0 +1,255 @@
+ @model IEnumerable<DAL.Models.Rolespermission>
+@{
+    ViewData["Title"] = "Permissions";
+}
+
+ <div class="permission-container p-3">
+                <div class="head-section d-flex justify-content-between align-items-center">
+                    <h3 class="custom-blue">Permissions</h3>
+                    <div class="search-section">
+                        <a href="/roles.html"><button type="button" class="btn custom-blue border border-primary">
+                                < Back</button></a>
+                    </div>
+                </div>
+
+                <div class="permission-section bg-white  mt-5 pt-4 px-2 pb-4">
+                    <div class="d-flex w-100">
+                        <div class="form-floating mb-3 w-50">
+                            <input type="email" class="form-control" id="floatingInput" value="Account Manager">
+                            <label for="floatingInput">Role</label>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>
+                                    <div class="form-check">
+                                        <input class="form-check-input outer_checkbox" type="checkbox" value="" id="flexCheckIndeterminate">
+                                        <label class="form-check-label" for="flexCheckIndeterminate">
+                                          Permissions
+                                        </label>
+                                      </div>
+                                </th>
+                                <th>Can view</th>
+                                <th>Can Add/Edit</th>
+                                <th>Can Delete</th>
+                            </tr>
+
+                            @foreach(var permission in Model){
+                                 <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value=@permission.Isenable id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            @permission.PermissionId
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                            }
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Users
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            RolesAndPermission
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Menu
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            TableAndSection
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            TaxandFees
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Order
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input inner_checkbox" type="checkbox" value="" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Customers
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                                      </div>
+                                </td>
+                                
+                            </tr>
+                        </table>
+                        <div class="d-flex justify-content-end gap-2 mat-3">
+                            <button class="custom-btn-bg text-white p-2 border rounded">Save</button>
+                            <button class="bg-white border border-primary rounded p-2 custom-blue">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>

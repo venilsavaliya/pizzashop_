@@ -1,4 +1,5 @@
 namespace DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 public partial class EditUserViewModel 
 {
@@ -28,6 +29,6 @@ public partial class EditUserViewModel
 
     public string? RoleName { get; set; }
 
-    public string? Profile { get; set; }
+    public IFormFile? Profile { get; set; }
 
 }

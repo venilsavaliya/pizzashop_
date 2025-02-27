@@ -1,4 +1,5 @@
 using System.Text;
+using AspNetCoreHero.ToastNotification;
 using BLL.Interfaces;
 using BLL.Services;
 using DAL.Models;
@@ -13,16 +14,25 @@ var jwtConfig = builder.Configuration.GetSection("jwt");
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddNotyf(config =>
+{
+    config.DurationInSeconds = 10;
+    config.IsDismissable = true;
+    config.Position = NotyfPosition.TopRight;
+}
+);
+
 
 
 // Add DbContext using Dependency Injection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")??""));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? ""));
 
 
 // Add JWT Authentication
 
-builder.Services.AddAuthentication(x=>{
+builder.Services.AddAuthentication(x =>
+{
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,11 +69,12 @@ builder.Services.AddAuthentication(x=>{
 );
 
 // Add services to the container.
-builder.Services.AddScoped<IAuthService, AuthService>(); 
-builder.Services.AddScoped<IUserService, UserService>(); 
-builder.Services.AddScoped<IDataService, DataService>(); 
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 var app = builder.Build();
 
@@ -85,6 +96,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();

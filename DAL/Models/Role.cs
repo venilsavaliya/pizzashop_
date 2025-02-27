@@ -19,6 +19,8 @@ public partial class Role
 
     public virtual User? CreatedByNavigation { get; set; }
 
+    public virtual ICollection<Rolespermission> Rolespermissions { get; } = new List<Rolespermission>();
+
     public virtual User? UpdatedByNavigation { get; set; }
 
     public virtual ICollection<Userdetail> Userdetails { get; } = new List<Userdetail>();

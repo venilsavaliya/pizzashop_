@@ -1,0 +1,28 @@
+@model IEnumerable<DAL.Models.Role>
+@{
+    ViewData["Title"] = "Roles";
+}
+
+
+<div class="roles-container w-75 p-5">
+
+    <div class=" w-100 w-lg-75 d-flex flex-column p-5 bg-white">
+
+        <div class="d-flex justify-content-between text-success fw-medium">
+            <div class="fw-bolder">Role</div>
+            <div class="fw-bolder">Action</div>
+        </div>
+        <hr>
+
+        @foreach (var role in Model)
+        {
+            <div class="d-flex justify-content-between text-success">
+                <div>@role.Name</div>
+                <div><a asp-action="permission" asp-route-id="@role.Roleid"><img src="~/images/icons/pen.svg" alt="" srcset=""></a></div>
+            </div>
+            <hr>
+        }
+    
+    </div>
+
+</div>

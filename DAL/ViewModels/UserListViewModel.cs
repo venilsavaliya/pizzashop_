@@ -11,6 +11,6 @@ public class UserListViewModel
     public int EndIndex { get; set; }
     public string? SortColumn { get; set; }
     public string? SortOrder { get; set; }
-    public string? SearchKeyword { get; set; }
+    public string? SearchKeyword { get; set; } 
 }
 

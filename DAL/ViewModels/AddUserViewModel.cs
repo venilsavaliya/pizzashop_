@@ -1,7 +1,7 @@
 namespace DAL.ViewModels;
 
 public partial class AddUserViewModel 
-{
+{ 
     
 
     public string FirstName { get; set; } = null!;

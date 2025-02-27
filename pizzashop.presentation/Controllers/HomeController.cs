@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using pizzashop.presentation.Models;
@@ -9,9 +10,12 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    private readonly IJwtService _jwtservice;
+
+    public HomeController(ILogger<HomeController> logger,IJwtService jwtService)
     {
         _logger = logger;
+        _jwtservice = jwtService;
     }
     [Authorize]
     public IActionResult Index()

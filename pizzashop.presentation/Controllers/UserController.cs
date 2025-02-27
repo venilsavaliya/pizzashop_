@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
@@ -12,9 +13,12 @@ public class UserController : Controller
 {
 
     private readonly IUserService _userService;
-    public UserController(IUserService userService)
+
+    private readonly INotyfService _notyf;
+    public UserController(IUserService userService, INotyfService notyfy)
     {
         _userService = userService;
+        _notyf = notyfy;
     }
 
 
@@ -36,18 +40,29 @@ public class UserController : Controller
         else
         {
             return View(user);
-        } 
+        }
     }
 
     // POST : User/UpdateProfile
     [HttpPost]
-    public IActionResult UpdateProfile(UpdateUserViewModel model)
+    public async Task<IActionResult> UpdateProfile(UpdateUserViewModel model)
     {
+
+        if (!ModelState.IsValid)
+        {
+            var user = _userService.GetUserDetailById(model.Id.ToString());
+            return View("Profile", user);
+        }
+
+
         var AuthResponse = _userService.UpdateUserProfile(model).Result;
         if (!AuthResponse.Success)
         {
-            return View(model);
+            _notyf.Error(AuthResponse.Message);
+            var user = _userService.GetUserDetailById(model.Id.ToString());
+            return View("Profile", user);
         }
+        _notyf.Success(AuthResponse.Message);
         return RedirectToAction("Profile", "User");
     }
 
@@ -65,7 +80,7 @@ public class UserController : Controller
     {
         return View();
     }
- 
+
 
     // POST : User/AddUser
 
@@ -83,6 +98,7 @@ public class UserController : Controller
 
         if (!AuthResponse.Success)
         {
+            _notyf.Error(AuthResponse.Message);
             return View(model);
         }
         else
@@ -114,6 +130,7 @@ public class UserController : Controller
 
         if (!AuthResponse.Success)
         {
+            _notyf.Error(AuthResponse.Message);
             return View(model);
         }
         else
@@ -144,10 +161,12 @@ public class UserController : Controller
 
         if (!AuthResponse.Success)
         {
+            _notyf.Error(AuthResponse.Message);
             return View(model);
         }
         else
         {
+            _notyf.Success(AuthResponse.Message);
             return RedirectToAction("Profile", "User");
         }
     }
@@ -160,10 +179,12 @@ public class UserController : Controller
 
         if (!AuthResponse.Success)
         {
+            _notyf.Error("Could Not Delete User");
             return RedirectToAction("GetUserList", "User");
         }
         else
         {
+            _notyf.Success("User Deleted Successfully");
             return RedirectToAction("GetUserList", "User");
         }
 

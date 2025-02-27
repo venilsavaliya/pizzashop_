@@ -52,7 +52,7 @@
                 <div class="form-floating mb-3 col">
                     <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email"
                         disabled>
-                    <label for="floatingInput">Email</label>
+                    
                 </div>
                 <div class="form-floating mb-3 col">
                     <select asp-for="Status" class="form-select" id="floatingSelect"
@@ -61,10 +61,11 @@
                         <option value="True">Active</option>
                         <option value="False">Inactive</option>
                     </select>
+                    <label for="floatingInput">Status</label>
                 </div>
             </div>
             <div>
-                <input type="file" name="" id="" class="bg-primary w-100 file-input position-absolute opacity-0">
+                <input type="file" asp-for="Profile" class="bg-primary w-100 file-input position-absolute opacity-0">
                 <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
                     <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
                     <div>Browse Files</div>

@@ -14,7 +14,7 @@ public class JwtService : IJwtService
     private readonly IConfiguration _config;
 
 
-    public JwtService(IConfiguration config) 
+    public JwtService(IConfiguration config)
     {
         _config = config;
     }
@@ -36,11 +36,26 @@ public class JwtService : IJwtService
             issuer: jwtConfig["issuer"],
             audience: jwtConfig["audience"],
             claims: claims,
-            expires: DateTime.Now.AddDays(7),
+            expires: DateTime.UtcNow.AddDays(7),
             signingCredentials: creds
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public bool IsTokenExpired(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        if (!tokenHandler.CanReadToken(token))
+            return true; // Invalid token, consider it expired
+
+        var jwtToken = tokenHandler.ReadToken(token);
+
+        if (jwtToken == null)
+            return true;
+
+        return jwtToken.ValidTo < DateTime.UtcNow; // Compare with current time
     }
 
 }

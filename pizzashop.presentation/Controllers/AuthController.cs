@@ -1,5 +1,6 @@
 
 using System.Security.Cryptography.X509Certificates;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,18 @@ public class AuthController : Controller
 
     private readonly IEmailService _emailService;
 
-    public AuthController(IUserService userService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService)
+    private readonly INotyfService _notyfy;
+
+    private readonly IJwtService _jwtService;
+
+    public AuthController(IUserService userService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, INotyfService notyfy, IJwtService jwtService)
     {
         _userService = userService;
         _authservice = authService;
         _env = env;
         _emailService = emailService;
+        _notyfy = notyfy;
+        _jwtService = jwtService;
     }
 
 
@@ -28,6 +35,11 @@ public class AuthController : Controller
     // GET : Auth/Login
     public IActionResult Login()
     {
+        if (Request.Cookies["jwt"] != null)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
         return View();
     }
 
@@ -48,6 +60,8 @@ public class AuthController : Controller
         if (!AuthResponse.Success)
         {
             ModelState.AddModelError("InvalidCredentials", AuthResponse.Message ?? "Invalid Credentials");
+            
+            TempData["ErrorMessage"] = "Invalid email or password.";
             return View(model);
         }
 
@@ -96,16 +110,21 @@ public class AuthController : Controller
 
         }
 
-        TempData["SuccessMessage"] = "Logged in successfully!";
+        _notyfy.Success("Login Successfull", 3);
 
         return RedirectToAction("Index", "Home");
     }
 
 
     // GET : Auth/ForgotPassword
-    public IActionResult ForgotPassword()
+    public IActionResult ForgotPassword(string email)
     {
-        return View();
+        var forgetpasswordmodel = new ForgotPasswordViewModel
+        {
+            Email = email
+        };
+
+        return View(forgetpasswordmodel);
     }
 
     // POST : Auth/ForgotPassword
@@ -115,21 +134,23 @@ public class AuthController : Controller
 
         if (!ModelState.IsValid)
         {
-            return View(model);
+            return View("ForgotPassword", model);
         }
 
         var AuthResponse = _authservice.ForgotPassword(model.Email);
 
         if (AuthResponse.Result.Success)
         {
-            // TempData["SuccessMessage"] = "Email Sent Successfully";
+            TempData["SuccessMessage"] = "Email Sent Successfully";
             ViewBag.Message = "Email Sent Successfully";
         }
-        else{
+        else
+        {
             ModelState.AddModelError("InvalidEmail", AuthResponse.Result.Message ?? "Could Not Send Email");
+            TempData["ErrorMessage"] = "Could Not Send Email";
         }
 
-        return View();
+        return View("ForgotPassword", model);
     }
 
 
@@ -154,10 +175,13 @@ public class AuthController : Controller
         if (AuthResponse.Success)
         {
             Console.WriteLine("Password Reset Successfully");
+            TempData["SuccessMessage"] = "Password Reset Successfully";
+            return RedirectToAction("Login", "Auth");
         }
         else
         {
             ModelState.AddModelError("CustomeError", AuthResponse.Message ?? "Could Not Change Password");
+            TempData["ErrorMessage"] = "Could Not Change Password";
         }
 
         return View();

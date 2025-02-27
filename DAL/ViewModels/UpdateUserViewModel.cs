@@ -1,5 +1,7 @@
-namespace DAL.ViewModels;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
+namespace DAL.ViewModels;
 public class UpdateUserViewModel
 {
      public Guid Id { get; set; }
@@ -10,6 +12,7 @@ public class UpdateUserViewModel
 
     public string UserName { get; set; } = null!;
 
+    [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone number must be exactly 10 digits.")]
     public string? Phone { get; set; }
 
     public bool Status { get; set; }
@@ -24,7 +27,7 @@ public class UpdateUserViewModel
 
     public string? Zipcode { get; set; }
 
-    public string? Profile { get; set; }
+    public IFormFile? Profile { get; set; }
 
 
 }

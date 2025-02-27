@@ -19,7 +19,11 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Country> Countries { get; set; }
 
+    public virtual DbSet<Permission> Permissions { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<Rolespermission> Rolespermissions { get; set; }
 
     public virtual DbSet<State> States { get; set; }
 
@@ -29,7 +33,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Password=Tatva@123;Username=postgres");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -77,6 +81,20 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("created_at");
         });
 
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasKey(e => e.PermissionId).HasName("permission_pkey");
+
+            entity.ToTable("permission");
+
+            entity.HasIndex(e => e.PermissionName, "permission_permission_name_key").IsUnique();
+
+            entity.Property(e => e.PermissionId).HasColumnName("permission_id");
+            entity.Property(e => e.PermissionName)
+                .HasMaxLength(20)
+                .HasColumnName("permission_name");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Roleid).HasName("roles_pkey");
@@ -107,6 +125,36 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.RoleUpdatedByNavigations)
                 .HasForeignKey(d => d.UpdatedBy)
                 .HasConstraintName("roles_updated_by_fkey");
+        });
+
+        modelBuilder.Entity<Rolespermission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("rolespermission_pkey");
+
+            entity.ToTable("rolespermission");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Candelete).HasColumnName("candelete");
+            entity.Property(e => e.Canedit).HasColumnName("canedit");
+            entity.Property(e => e.Canview).HasColumnName("canview");
+            entity.Property(e => e.Isenable)
+                .HasDefaultValueSql("false")
+                .HasColumnName("isenable");
+            entity.Property(e => e.Modifiedby).HasColumnName("modifiedby");
+            entity.Property(e => e.Modifieddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.PermissionId).HasColumnName("permission_id");
+            entity.Property(e => e.Roleid).HasColumnName("roleid");
+
+            entity.HasOne(d => d.Permission).WithMany(p => p.Rolespermissions)
+                .HasForeignKey(d => d.PermissionId)
+                .HasConstraintName("fk_permission");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Rolespermissions)
+                .HasForeignKey(d => d.Roleid)
+                .HasConstraintName("fk_role");
         });
 
         modelBuilder.Entity<State>(entity =>

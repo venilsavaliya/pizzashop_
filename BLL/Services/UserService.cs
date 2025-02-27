@@ -65,6 +65,7 @@ public class UserService : IUserService
                         Role = role.Name,
                         Status = u.Status ? "Active" : "Inactive",
                         Phone = u.Phone,
+                        Profile = u.Profile,
                         Isdeleted = u.Isdeleted
                     };
 
@@ -115,6 +116,35 @@ public class UserService : IUserService
 
     public async Task<AuthResponse> AddUser(AddUserViewModel user)
     {
+
+        // logic for checking unique username
+        if (_context.Userdetails.Any(u => u.UserName == user.UserName))
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Username already exists"
+            };
+        }
+        // logic for checking unique phone 
+        if (_context.Userdetails.Any(u => u.Phone == user.Phone))
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Phone already exists"
+            };
+        }
+        // logic for checking unique email
+        if (_context.Users.Any(u => u.Email == user.Email))
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Email already exists"
+            };
+        }
+
         // getting jwt token from cookies
         var token = _httpContextAccessor.HttpContext?.Request.Cookies["jwt"];
 
@@ -179,7 +209,7 @@ public class UserService : IUserService
             Address = user.Address,
             Zipcode = user.Zipcode,
             RoleId = roleid,
-            Profile = user.Profile,
+            // Profile = user.Profile,
             Createdby = loggedinadmin?.Id ?? Guid.Empty
         };
 
@@ -221,7 +251,7 @@ public class UserService : IUserService
             Address = user.Address,
             Zipcode = user.Zipcode,
             RoleName = _context.Roles.FirstOrDefault(r => r.Roleid == user.RoleId).Name,
-            Profile = user.Profile
+            // Profile = user.Profile
         };
 
         return edituser;
@@ -244,6 +274,21 @@ public class UserService : IUserService
 
         // get userdetail object from db which needs to be updated
         var userdetail = _context.Userdetails.FirstOrDefault(u => u.Id == user.Id);
+
+        // logic for checking unique username
+        if (_context.Userdetails.Any(u => u.UserName == user.UserName && u.Id != user.Id))
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Username already exists"
+            };
+        }
+
+        if(user.Profile != null)
+        {
+            userdetail.Profile = UploadFile(user.Profile);
+        }
 
         // get country, state and city names
         var countryname = _context.Countries.FirstOrDefault(c => c.CountryId.ToString() == user.Country);
@@ -276,7 +321,7 @@ public class UserService : IUserService
         userdetail.Address = user.Address;
         userdetail.Zipcode = user.Zipcode;
         userdetail.RoleId = roleid;
-        userdetail.Profile = user.Profile;
+        // userdetail.Profile = user.Profile;
         userdetail.Modifiedby = loggedinadmin?.Id;
 
         _context.Userdetails.Update(userdetail);
@@ -325,6 +370,17 @@ public class UserService : IUserService
     public async Task<AuthResponse> UpdateUserProfile(UpdateUserViewModel model)
     {
 
+
+        // logic for checking unique username
+        if (_context.Userdetails.Any(u => u.UserName == model.UserName && u.Id != model.Id))
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Username already exists"
+            };
+        }
+
         var token = _httpContextAccessor.HttpContext.Request.Cookies["jwt"];
 
         var handler = new JwtSecurityTokenHandler();
@@ -362,6 +418,11 @@ public class UserService : IUserService
         userdetail.Zipcode = model.Zipcode;
         // userdetail.Profile = model.Profile;
 
+        // if(model.Profile != null)
+        // {
+        //     userdetail.Profile = UploadFile(model.Profile);
+        // }
+
         _context.Userdetails.Update(userdetail);
         await _context.SaveChangesAsync();
 
@@ -385,5 +446,27 @@ public class UserService : IUserService
             Success = true,
             Message = "User Deleted Successfully"
         };
+    }
+
+    public string UploadFile(IFormFile file)
+    {
+        if (file != null && file.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "profile_images");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = Guid.NewGuid().ToString();
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            file.CopyTo(stream);
+
+            return filePath;
+        }
+      
+        return null;
     }
 }
