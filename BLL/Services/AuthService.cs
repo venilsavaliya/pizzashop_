@@ -1,8 +1,13 @@
+using System;
 using BLL.Interfaces;
 using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace BLL.Services;
 
@@ -10,18 +15,23 @@ public class AuthService : IAuthService
 {
     private readonly ApplicationDbContext _context;
 
+     private readonly IUrlHelper _urlHelper;
+
     private readonly IJwtService _jwtService;
 
     private readonly IEmailService _emailservice;
 
+    private readonly IHttpContextAccessor _httpcontext;
     private readonly IWebHostEnvironment _env;
 
-    public AuthService(ApplicationDbContext context, IJwtService jwtService, IEmailService emailService, IWebHostEnvironment env)
+    public AuthService(ApplicationDbContext context, IJwtService jwtService, IEmailService emailService, 
+                   IWebHostEnvironment env, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor)
     {
         _context = context;
         _jwtService = jwtService;
         _emailservice = emailService;
         _env = env;
+        _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
     }
 
 
@@ -92,8 +102,9 @@ public class AuthService : IAuthService
         // -- if user found than we send emai to the user --
 
         string htmltemplate = System.IO.File.ReadAllText(_env.WebRootPath + "/HtmlTemplate/ResetPassword.html");
-        // var uri = Url.Action("ResetPassword", "User", new { email = email }, Request.Scheme);
-        // htmltemplate = htmltemplate.Replace("resetlink",uri);
+        var jwtToken = _jwtService.GenerateJwtToken(email,"",1);
+        var uri = _urlHelper.Action("ResetPassword", "Auth", new { token = jwtToken}, "http");
+        htmltemplate = htmltemplate.Replace("resetlink",uri);
 
         await _emailservice.SendEmailAsync(email, "Reset Password", htmltemplate);
 

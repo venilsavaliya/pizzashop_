@@ -19,7 +19,7 @@ public class JwtService : IJwtService
         _config = config;
     }
 
-    public string GenerateJwtToken(string Email, string Role)
+    public string GenerateJwtToken(string Email, string Role, int day = 7)
     {
         var claims = new[]
         {
@@ -36,7 +36,7 @@ public class JwtService : IJwtService
             issuer: jwtConfig["issuer"],
             audience: jwtConfig["audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddDays(7),
+            expires: DateTime.UtcNow.AddDays(day),
             signingCredentials: creds
         );
 
@@ -56,6 +56,19 @@ public class JwtService : IJwtService
             return true;
 
         return jwtToken.ValidTo < DateTime.UtcNow; // Compare with current time
+    }
+
+    public string GetEmailDetailsFromToken(string Token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        if (Token == null)
+        {
+            return "nothing";
+        }
+        var jwtToken = handler.ReadJwtToken(Token);
+
+        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        return email;
     }
 
 }

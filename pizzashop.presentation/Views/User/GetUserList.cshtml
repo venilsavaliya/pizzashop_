@@ -34,7 +34,7 @@
                         href="@Url.Action("GetUserList", new { searchKeyword = Model.SearchKeyword, sortColumn = "Role", sortOrder = Model.SortColumn == "Role" && Model.SortOrder == "asc" ? "desc" : "asc", pageNumber = Model.CurrentPage, pageSize = Model.PageSize })"><img
                             src="~/images/icons/arrow-down-up.svg" class="mx-2" alt=""></a>
                 </th>
-                <th>Status</th>
+                <th>Status</th> 
                 <th>Action</th>
             </tr>
             @foreach (var u in Model.Users)

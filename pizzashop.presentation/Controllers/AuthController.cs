@@ -1,4 +1,5 @@
 
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
@@ -156,9 +157,17 @@ public class AuthController : Controller
 
     // GET : Auth/ResetPassword
 
-    public IActionResult ResetPassword()
+    public IActionResult ResetPassword(string token)
     {
-        return View();
+        if(_jwtService.IsTokenExpired(token)){
+            return RedirectToAction("LinkExpired","Error");
+        }
+
+        var email = _jwtService.GetEmailDetailsFromToken(token);
+        var model =  new ResetPasswordviewModel{
+            Email= email,
+        };
+        return View(model);
     }
 
     // POST : Auth/ResetPassword

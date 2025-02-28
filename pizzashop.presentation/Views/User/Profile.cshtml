@@ -9,7 +9,7 @@
     <div class="head-section d-flex justify-content-between align-items-center">
         <h2 class="custom-blue fw-bold">My Profile</h2>
         <div class="search-section d-flex gap-2">
-           
+
         </div>
     </div>
 
@@ -17,30 +17,10 @@
 
     <div class="form-section mt-3 border rounded shadow-box bg-white">
 
-        <div class="profile-head-section position-relative">
-            <div class=""
-                style="height:50px; background-image: url('@Url.Content("~/images/profile_div_bg.jpg")');background-size: cover;">
-            </div>
-            <div class="d-flex justify-content-between align-items-center" style="">
-                <div class="d-flex">
-                    <img src="~/images/Default_pfp.svg.png" alt="" class="admin-img position-relative img-fluid">
-                    <div class="ms-3" style="top: 90px; left: 30px;">
-                        <h1>@(Model.FirstName)</h1>
-                        <span>admin</span>
-                    </div>
-                </div>
-
-                <div class="me-4">
-                    <span>@(email)</span>
-                    <input type="file" asp-for="Profile" >
-                </div>
-
-            </div>
-
-        </div>
 
 
-        <form class="p-4" method="post" asp-action="UpdateProfile" asp-controller="User">
+
+        <form class="p-4" method="post" asp-action="UpdateProfile" asp-controller="User" enctype="multipart/form-data">
 
             @* ********************** hidden fields for passing to the view model*********************** *@
 
@@ -53,6 +33,34 @@
 
             @* ***************************************************************************************** *@
 
+            <div class="profile-head-section position-relative">
+                <div class=""
+                    style="height:50px; background-image: url('@Url.Content("~/images/profile_div_bg.jpg")');background-size: cover;">
+                </div>
+                <div class="d-flex justify-content-between align-items-center position-relative " style="">
+                    <div class="d-flex">
+                        @* <img src="@Model.Profile" alt="" class="admin-img position-relative img-fluid"> *@
+                        <div style="background-image: url(@Model.Profile); height:100px; width: 100px; background-size: cover;border-radius: 100%; border: 1px solid black;position: relative; " class="admin-img">
+                             <input type="file" asp-for="Profile" class="position-absolute opacity-0" style="right:0px; bottom:15px;width:20px;z-index:100"/>
+                             <img src="~/images/icons/camera.svg" alt="" class="position-absolute bg-white border round-circle" style="right:0px; bottom:15px;width:30px; border-radius: 100%; padding: 5px; ">
+                        </div>
+
+                        
+                        <div class="ms-3" style="top: 90px; left: 30px;">
+                            <h1>@(Model.FirstName)</h1>
+                            <span>admin</span>                         
+                        </div>  
+                    </div>
+
+                    <div class="me-4">
+                        <span>@(email)</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
             <div class="d-flex gap-4 flex-column flex-md-row">
                 <div class="form-floating mb-3 col">
                     <input asp-for="FirstName" type="text" class="form-control" id="floatingInput"
@@ -60,7 +68,7 @@
                     <label for="floatingInput" class="">First Name</label>
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
-                
+
                 
                 <div class="form-floating mb-3 col">
                     <input asp-for="LastName" type="text" class="form-control" id="floatingInput"
@@ -75,7 +83,7 @@
                     <label for="floatingInput">User Name</label>
                     <span asp-validation-for="UserName" class="text-danger"></span>
                 </div>
-                
+
                 <div class="form-floating mb-md-3 col">
                     <input asp-for="Phone" type="text" class="form-control" id="floatingInput" placeholder="phone">
                     <label for="floatingInput">phone</label>
@@ -86,12 +94,12 @@
 
             <div class="d-flex gap-4 mt-3 flex-column flex-md-row">
 
-                 <div class="form-floating col">
+                <div class="form-floating col">
                     <select asp-for="Country" class="form-select" id="Country"
                         aria-label="Floating label select example">
-                         <option selected>@(Model.Country)</option>
+                        <option selected>@(Model.Country)</option>
                     </select>
-                   
+
                     <label for="floatingSelect">Country</label>
                 </div>
                 <div class="form-floating col">
@@ -136,7 +144,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-     $(document).ready(function () {
+    $(document).ready(function () {
         console.log("jQuery is working!");
 
         // Fetch and populate countries on page load

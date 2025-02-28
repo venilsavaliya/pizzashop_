@@ -30,20 +30,40 @@ public class AdminController : Controller
     {
         // getting all roles from services
         var roles = _adminService.GetAllRoles();
-        
+
         return View(roles);
+    }
+
+    public IActionResult Permission(string id)
+    {
+        var rolesandpermission = _adminService.GetRolespermissionsByRoleId(id);
+        return View(rolesandpermission);
     }
 
     // GET : Admin/Permissions
 
-    
 
-    
-   
+    [HttpPost]
+    public IActionResult SavePermissions(RolesPermissionListViewModel permissions)
+    {
+        var AuthResponse = _adminService.SavePermission(permissions.Permissionlist).Result;
+
+        if(AuthResponse.Success){
+            TempData["SuccessMessage"]="Permission Change Successfully";
+        }
+
+        // Redirect to the same page or another page
+        return RedirectToAction("Index","Home");
+    }
 
 
-   
 
 
-   
+
+
+
+
+
+
+
 }

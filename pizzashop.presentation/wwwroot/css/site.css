@@ -259,28 +259,32 @@ input[type=password]::-ms-clear {
 
 .admin-img {
   margin-left: 30px;
-  height: 120px;
+  height: 120px !important;
+  width: 120px !important;
   top: -30px;
   /* left: 30px; */
 }
 
 @media (min-width: 1200px) {
   .admin-img {
-    height: 120px;
+    height: 120px !important;
+    width: 120px !important;
   }
 }
 
 /* For medium screens (Tablets) */
 @media (max-width: 1199px) and (min-width: 768px) {
   .admin-img {
-    height: 120px;
+    height: 120px !important;
+    width: 120px !important;
   }
 }
 
 /* For small screens (Mobile devices) */
 @media (max-width: 767px) {
   .admin-img {
-    height: 80px;
+    height: 80px !important;
+    width: 80px !important;
     /* left: 15px; */
     top: -20px;
   }
@@ -289,7 +293,8 @@ input[type=password]::-ms-clear {
 /* For very small screens (Extra small phones) */
 @media (max-width: 480px) {
   .admin-img {
-    height: 70px;
+    height: 70px !important;
+    width: 70px !important;
     margin-left: 10px;
     /* left: 10px; */
     top: -15px;

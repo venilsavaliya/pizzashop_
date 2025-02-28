@@ -285,7 +285,7 @@ public class UserService : IUserService
             };
         }
 
-        if(user.Profile != null)
+        if (user.Profile != null)
         {
             userdetail.Profile = UploadFile(user.Profile);
         }
@@ -370,7 +370,6 @@ public class UserService : IUserService
     public async Task<AuthResponse> UpdateUserProfile(UpdateUserViewModel model)
     {
 
-
         // logic for checking unique username
         if (_context.Userdetails.Any(u => u.UserName == model.UserName && u.Id != model.Id))
         {
@@ -418,13 +417,25 @@ public class UserService : IUserService
         userdetail.Zipcode = model.Zipcode;
         // userdetail.Profile = model.Profile;
 
-        // if(model.Profile != null)
-        // {
-        //     userdetail.Profile = UploadFile(model.Profile);
-        // }
+        if (model.Profile != null)
+        {
+            userdetail.Profile = UploadFile(model.Profile);
+        }
 
-        _context.Userdetails.Update(userdetail);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.Userdetails.Update(userdetail);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine($"DB Update Error: {ex.InnerException?.Message}");
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Database error occurred: " + ex.InnerException?.Message
+            };
+        }
 
         return new AuthResponse
         {
@@ -458,15 +469,15 @@ public class UserService : IUserService
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var uniqueFileName = Guid.NewGuid().ToString();
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
             using var stream = new FileStream(filePath, FileMode.Create);
             file.CopyTo(stream);
 
-            return filePath;
+            return $"/profile_images/{uniqueFileName}";
         }
-      
+
         return null;
     }
 }

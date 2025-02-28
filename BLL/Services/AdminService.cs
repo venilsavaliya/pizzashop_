@@ -1,5 +1,7 @@
 using BLL.Interfaces;
+using BLL.Models;
 using DAL.Models;
+using DAL.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -28,15 +30,63 @@ public class AdminService : IAdminService
     }
 
 
-    public IEnumerable<Role> GetAllRoles(){
-        
+    public IEnumerable<Role> GetAllRoles()
+    {
+
         return _context.Roles.ToList();
 
     }
 
-    public IEnumerable<Rolespermission> GetRolespermissionsByRoleId(string Roleid)
-    {   
-        return _context.Rolespermissions.Where(x => x.Roleid.ToString() == Roleid).ToList();
+    public string GetRoleNameByRoleId(string id)
+    {
+        var roledata = _context.Roles.FirstOrDefault(r => r.Roleid.ToString() == id);
+        return roledata.Name;
     }
-    
+
+    public RolesPermissionListViewModel GetRolespermissionsByRoleId(string Roleid)
+    {
+        // Fetch role permissions by Roleid
+        var rolesAndPermissions = _context.Rolespermissions
+            .Where(x => x.Roleid.ToString() == Roleid)
+            .Select(x => new RolesAndPermissionViewModel
+            {
+                // RoleName = GetRoleNameByRoleId(x.Roleid.ToString()), 
+                Id = x.Id.ToString(),
+                PermissionName = x.Permission.PermissionName,
+                Canedit = x.Canedit,
+                Canview = x.Canview,
+                Candelete = x.Candelete,
+                Isenable = x.Isenable ?? false
+            })
+            .ToList();
+
+        return new RolesPermissionListViewModel{
+            Permissionlist = rolesAndPermissions.ToList(),
+        };
+    }
+
+    public async Task<AuthResponse> SavePermission(List<RolesAndPermissionViewModel> permissionsList)
+    {
+        foreach (var permission in permissionsList)
+        {
+            var existingPermission = _context.Rolespermissions.FirstOrDefault(u => u.Id.ToString() == permission.Id.ToString());
+
+            if (existingPermission != null)
+            {
+                existingPermission.Isenable = permission.Isenable;
+                existingPermission.Canview = permission.Canview;
+                existingPermission.Canedit = permission.Canedit;
+                existingPermission.Candelete = permission.Candelete;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        return new AuthResponse
+        {
+            Success = true,
+            Message = "Permission Changes Successfully"
+        };
+    }
+
 }
