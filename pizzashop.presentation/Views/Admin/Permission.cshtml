@@ -2,27 +2,28 @@
 @{
     ViewData["Title"] = "Permissions";
     var permissionsList = Model.Permissionlist;
+    ViewBag.active="permission";
 
 }
 
-<div class="permission-container p-3">
+<div class="permission-container  p-3">
     <div class="head-section d-flex justify-content-between align-items-center">
         <h3 class="custom-blue">Permissions</h3>
         <div class="search-section">
-            <a href="/roles.html"><button type="button" class="btn custom-blue border border-primary">
+            <a asp-action="Roles" asp-controller="Admin"><button type="button" class="btn custom-blue border border-primary">
                     < Back</button></a>
         </div>
     </div>
 
-    <div class="permission-section bg-white  mt-5 pt-4 px-2 pb-4">
+    <div class="permission-section bg-white shadow  mt-5 pt-4 px-2 pb-4">
         <div class="d-flex w-100">
             <div class="form-floating mb-3 w-50">
-                <input type="email" class="form-control" id="floatingInput" value="Account Manager">
+                <input type="email" class="form-control" id="floatingInput" value="@ViewBag.RoleName" disabled>
                 <label for="floatingInput">Role</label>
             </div>
         </div>
 
-        <form asp-action="SavePermissions" asp-controller="Admin" method="post" enctype = "multipart/form-data">
+        <form asp-action="SavePermissions" asp-controller="Admin" method="post" enctype="multipart/form-data">
             <div class="table-responsive">
                 <table class="table">
                     <tr>
@@ -43,62 +44,38 @@
                     @for (int i = 0; i < permissionsList.Count; i++)
                     {
                         <tr>
-                            @* <td>
-                            <div class="form-check">
-                                <input type="hidden" asp-for="@permissionsList[i].Id" />
-                                <input class="form-check-input inner_checkbox" type="checkbox" id="flexCheckDefault_@i"
-                                     asp-for="@permissionsList[i].Isenable" />
 
-                                <label class="form-check-label" for="flexCheckDefault_@i">
-                                    @permissionsList[i].PermissionName
-                                </label>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input toggle-btn" type="checkbox" role="switch" asp-for="@permissionsList[i].Canview">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input toggle-btn" type="checkbox" role="switch" asp-for="@permissionsList[i].Canedit">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input toggle-btn" type="checkbox" role="switch" asp-for="@permissionsList[i].Candelete">
-                            </div>
-                        </td> *@
 
                             <td>
                                 <div class="form-check">
-                                    <input  asp-for="@permissionsList[i].Id" hidden/>
-                                    <input class="form-check-input inner_checkbox" type="checkbox" id="flexCheckDefault_@i"
-                                        asp-for="@permissionsList[i].Isenable" />
+                                    <input asp-for="@Model.Permissionlist[i].Id" hidden />
+
+                                    <input class="form-check-input inner_checkbox" type="checkbox"
+                                        asp-for="@Model.Permissionlist[i].Isenable" />
                                     <label class="form-check-label" for="flexCheckDefault_@i">
-                                        @permissionsList[i].PermissionName
+                                        @Model.Permissionlist[i].PermissionName
                                     </label>
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check form-switch">
-                                    @* <input type="hidden" name="permissions[@i].Canview" value="false" /> *@
+
                                     <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                        asp-for="@permissionsList[i].Canview">
+                                        asp-for="@Model.Permissionlist[i].Canview">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check form-switch">
-                                    @* <input type="hidden" name="permissions[@i].Canedit" value="false" /> *@
+
                                     <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                        asp-for="@permissionsList[i].Canedit">
+                                        asp-for="@Model.Permissionlist[i].Canedit">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check form-switch">
-                                    @* <input type="hidden" name="permissions[@i].Candelete" value="false" /> *@
+
                                     <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                        asp-for="@permissionsList[i].Candelete">
+                                        asp-for="@Model.Permissionlist[i].Candelete">
                                 </div>
                             </td>
 
@@ -107,7 +84,7 @@
                 </table>
                 <div class="d-flex justify-content-end gap-2 mat-3">
                     <button class="custom-btn-bg text-white p-2 border rounded" type="submit">Save</button>
-                    <button class="bg-white border border-primary rounded p-2 custom-blue">Cancel</button>
+                    <button class="bg-white border border-primary rounded p-2 custom-blue" type="reset">Cancel</button>
                 </div>
             </div>
         </form>

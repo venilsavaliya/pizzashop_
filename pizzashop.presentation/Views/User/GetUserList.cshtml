@@ -1,6 +1,7 @@
 @model DAL.ViewModels.UserListViewModel
 @{
     var startIndex = (@Model.CurrentPage - 1) * @Model.PageSize + 1;
+    ViewBag.active = "Users";
 }
 
 <div class="user-list-container p-3">

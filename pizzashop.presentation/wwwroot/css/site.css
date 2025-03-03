@@ -138,7 +138,7 @@ body {
   filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
 }
 
-.category-option img {
+.category-option-img {
   transform: rotate(90deg);
 }
 
@@ -146,7 +146,7 @@ body {
   color: #1f74ad;
 }
 
-.category-active-option img {
+.category-active-option>img {
   filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
 }
 
@@ -203,7 +203,7 @@ body {
 }
 
 .category-menu {
-  width: 250px;
+  width: 350px;
 }
 
 .nav-link.active {

@@ -1,4 +1,7 @@
 @model DAL.ViewModels.EditUserViewModel
+@{
+    ViewBag.active="Users";
+}
 
 <div class=" p-3 ">
     <div class="head-section d-flex justify-content-between align-items-center">
@@ -52,7 +55,7 @@
                 <div class="form-floating mb-3 col">
                     <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email"
                         disabled>
-                    
+                    <label asp-for="Email">Email</label>
                 </div>
                 <div class="form-floating mb-3 col">
                     <select asp-for="Status" class="form-select" id="floatingSelect"
