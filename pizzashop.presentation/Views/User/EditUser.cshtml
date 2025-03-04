@@ -79,6 +79,7 @@
                 <div class="form-floating col">
                     <select asp-for="Country" class="form-select" id="Country"
                         aria-label="Floating label select example">
+                        <option selected>@(Model.Country!=null ? Model.Country:"Select Country")</option>
                     </select>
                     <label for="floatingSelect">Country</label>
                 </div>

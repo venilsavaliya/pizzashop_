@@ -1,7 +1,7 @@
 namespace DAL.ViewModels;
 
 public class RolesAndPermissionViewModel
-{
+{ 
 
     // public string? RoleName { get; set; }
     public string Id { get; set; }

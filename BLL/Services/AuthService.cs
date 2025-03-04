@@ -99,7 +99,7 @@ public class AuthService : IAuthService
             };
         }
 
-        // -- if user found than we send emai to the user --
+        // -- if user found than we send email to the user --
 
         string htmltemplate = System.IO.File.ReadAllText(_env.WebRootPath + "/HtmlTemplate/ResetPassword.html");
         var jwtToken = _jwtService.GenerateJwtToken(email,"",1);

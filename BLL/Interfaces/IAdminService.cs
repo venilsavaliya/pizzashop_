@@ -12,7 +12,7 @@ public interface IAdminService
     
     public string GetRoleNameByRoleId(string id);
 
-    public  Task<AuthResponse> SavePermission(List<RolesAndPermissionViewModel> permissions);
+    public  Task<AuthResponse> SavePermission(RolesPermissionListViewModel p);
 
     
 

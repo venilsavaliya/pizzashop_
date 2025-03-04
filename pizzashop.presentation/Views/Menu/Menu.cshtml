@@ -1,8 +1,10 @@
-@model IEnumerable<DAL.ViewModels.CategoryNameViewModel>
+@* @model IEnumerable<DAL.ViewModels.CategoryNameViewModel> *@
+@model DAL.ViewModels.MenuViewModel;
 
 <div class="Menu-container p-3">
 
     <h3 class="custom-blue">Menu</h3>
+
 
     <div class="switching-tabs-section d-flex justify-content-start gap-4 bg-white px-3 nav
                 " role="tablist">
@@ -15,6 +17,7 @@
         <div class="d-flex justify-content-center gap-2 nav-link p-3" id="nav-profile-tab" data-bs-toggle="tab"
             data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
             <div><img src="~/images/sidebar icons/dashboard.png" alt="" class="small-img"></div>
+  
             <div class="">Modifiers</div>
         </div>
 
@@ -23,14 +26,7 @@
 
     <div class="CategoryForSmallScreen d-lg-none bg-white mt-2 p-2 ">
 
-        @* @foreach(var c in Model){
-                         <div class="d-flex justify-content-between align-items-center p-1">
-                        <h5 class="custom-blue">@c.Name</h5>
-                        <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
-                            data-bs-toggle="modal" data-bs-target="#staticBackdrop">+
-                        </div>
-                    </div>
-                    } *@
+       
         <div class="d-flex justify-content-between align-items-center p-1">
             <h5 class="custom-blue">Category</h5>
             <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;" data-bs-toggle="modal"
@@ -38,49 +34,13 @@
             </div>
         </div>
         <div class="d-flex flex-column p-2 gap-4 fw-medium overflow-auto h-100">
-            <div class="category-option d-flex justify-content-start align-items-center gap-2 category-active-option">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="active-option-img">
-                <div>Sandwitch</div>
+             @foreach(var c in Model.Categories){
+            <div class="category-option-smallscreen d-flex justify-content-start align-items-center gap-2 ">
+                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img">
+                <div>@c.Name</div>
             </div>
-            <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                <div>Pasta</div>
-            </div>
-
-
-            <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                <div>Sides And Appetizers</div>
-            </div>
-
-
-            <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                <div>Salads</div>
-            </div>
-
-
-            <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                <div>Deeps And Sauces</div>
-            </div>
-
-
-            <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                <div>Pizza</div>
-            </div>
-
-            <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                <div>Desserts</div>
-            </div>
-
-
-            <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                <div>Burger</div>
-            </div>
+        }
+            
         </div>
     </div>
 
@@ -98,16 +58,16 @@
                     </div>
                     <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75">
 
-                        @foreach (var c in Model)
+                        @foreach (var c in Model.Categories)
                         {
                             <div
-                                class="category-option d-flex justify-content-between align-items-center gap-2 category-active-option">
-                                <div class="d-flex gap-2">
-                                     <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="active-option-img category-option-img ">
-                                <div>@c.Name</div>
+                                class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedCategory == c.Name?"category-active-option":"")" id="category_option"  >
+                                <div class="d-flex gap-2" style="cursor: pointer;" onclick="loaditems(this)" category-name="@c.Name">
+                                    <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img ">
+                                    <div>@c.Name</div>
                                 </div>
                                
-                                <div class="d-flex justify-content-between gap-3" id="categoryoption_actionbtn">
+                                <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
                                     @* <a asp-action="Edit" asp-controller="Menu" asp-route-id="@c.Id"> *@
                                         <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editcategory" onclick="setEditData(this)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description" obj="@c">
                                         @* </a> *@
@@ -131,7 +91,7 @@
                         class="search-delete-section d-flex justify-content-start justify-content-md-end align-items-center">
                         <div class="search-section d-flex gap-2 ">
                             <div class="position-relative" style="width: 180px;">
-                                <input type="text" class="p-2 w-100" placeholder="Search">
+                                <input type="text" class="p-2 w-100" placeholder="Search" id="search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
                             <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3">
@@ -160,7 +120,10 @@
                                 <th>Available</th>
                                 <th>Action</th>
                             </tr>
-                            <tr>
+                            @foreach(var i in Model.Itemsmodel.Items)
+                            {
+
+                                 <tr>
                                 <td>
                                     <div class="d-flex justify-content-start gap-2 align-items-center">
                                         <div class="form-check">
@@ -168,13 +131,19 @@
                                                 id="flexCheckIndeterminate">
                                         </div>
                                         <img src="~/images/dining-menu.png" class="small-img">
-                                        <span>Punjabi Tadka Sandwitch</span>
+                                        <span>@i.ItemName</span>
                                     </div>
                                 </td>
-                                <td><img src="~/images/icons/non-veg-icon.svg" alt="" class="small-img ">
+                                <td>
+                                    @if(i.Type=="Veg"){
+                                        <img src="~/images/icons/veg-icon.svg" alt="" class="small-img ">
+                                    }else{
+
+                                    <img src="~/images/icons/non-veg-icon.svg" alt="" class="small-img ">
+                                    }
                                 </td>
-                                <td>200</td>
-                                <td>1</td>
+                                <td>@i.Rate</td>
+                                <td>@i.Quantity</td>
                                 <td>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input toggle-btn" type="checkbox" role="switch"
@@ -190,141 +159,37 @@
 
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-2 align-items-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input inner_checkbox" type="checkbox" value=""
-                                                id="flexCheckIndeterminate">
-                                        </div>
-                                        <img src="~/images/dining-menu.png" alt="" class="small-img">
-                                        <span>Chicken Sandwitch</span>
-                                    </div>
-                                </td>
-                                <td><img src="~/images/icons/non-veg-icon.svg" alt="" class="small-img">
-                                </td>
-                                <td>200</td>
-                                <td>1</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                            id="flexSwitchCheckDefault">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-5">
-                                        <img src="~/images/icons/pen.svg" alt="">
-                                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal" alt="">
-                                    </div>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-2 align-items-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input inner_checkbox" type="checkbox" value=""
-                                                id="flexCheckIndeterminate">
-                                        </div>
-                                        <img src="~/images/dining-menu.png" alt="" style="width: 25px;">
-                                        <span>Cheese Sandwitch</span>
-                                    </div>
-                                </td>
-                                <td><img src="~/images/icons/veg-icon.svg" alt="" srcset="" class="small-img">
-                                </td>
-                                <td>150</td>
-                                <td>1</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                            id="flexSwitchCheckDefault">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-5">
-                                        <img src="~/images/icons/pen.svg" alt="">
-                                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal" alt="">
-                                    </div>
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-2 align-items-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input inner_checkbox" type="checkbox" value=""
-                                                id="flexCheckIndeterminate">
-                                        </div>
-                                        <img src="~/images/dining-menu.png" alt="" style="width: 25px;">
-                                        <span>Alloo Sandwitch</span>
-                                    </div>
-                                </td>
-                                <td><img src="~/images/icons/veg-icon.svg" alt="" srcset="" class="small-img">
-                                </td>
-                                <td>120</td>
-                                <td>1</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                            id="flexSwitchCheckDefault">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-5">
-                                        <img src="~/images/icons/pen.svg" alt="">
-                                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal" alt="">
-                                    </div>
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-2 align-items-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input inner_checkbox" type="checkbox" value=""
-                                                id="flexCheckIndeterminate">
-                                        </div>
-                                        <img src="~/images/dining-menu.png" alt="" style="width: 25px;">
-                                        <span>Black Bean Sandwitch</span>
-                                    </div>
-                                </td>
-                                <td><img src="~/images/icons/veg-icon.svg" alt="" srcset="" class="small-img">
-                                </td>
-                                <td>100</td>
-                                <td>1</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                            id="flexSwitchCheckDefault">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-5">
-                                        <img src="~/images/icons/pen.svg" alt="">
-                                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal" alt="">
-                                    </div>
-
-                                </td>
-                            </tr>
+                            }
+                            
 
                         </table>
-                        <div
-                            class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
-                            <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
-                                <div>items per page: </div>
-                                <div class="border p-2 px-3">5</div>
-                                <div>showing 1 - 5 of 5</div>
-                                <div class="border p-2 px-3">
-                                    < </div>
-                                        <div class="border p-2 px-3">></div>
-
-                                </div>
-                            </div>
-
+                        <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+            <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
+                <div>Items per page: </div>
+                <select class="form-select" style="width:68px ;" aria-label="Default select example"
+                    id="pageSizeDropdown" onchange="changePageSize()">
+                    <option selected>@Model.Itemsmodel.PageSize</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                </select>
+                <div>Showing @Model.Itemsmodel.StartIndex - @Model.Itemsmodel.EndIndex of @Model.Itemsmodel.TotalCount</div>
+                @if (Model.Itemsmodel.CurrentPage > 1)
+                {
+                    <a href="@Url.Action("Menu", new { pageNumber = Model.Itemsmodel.CurrentPage - 1, pageSize = Model.Itemsmodel.PageSize, SearchKeyword = Model.Itemsmodel.SearchKeyword })"
+                        class="text-black" style="text-decoration: none;">
+                        <div class="border p-2 px-3"> &lt; </div>
+                    </a>
+                }
+                @if (Model.Itemsmodel.CurrentPage < Model.Itemsmodel.TotalPages)
+                {
+                    <a href="@Url.Action("Menu", new { pageNumber = Model.Itemsmodel.CurrentPage + 1, pageSize = Model.Itemsmodel.PageSize, SearchKeyword = Model.Itemsmodel.SearchKeyword })"
+                        class="text-black" style="text-decoration: none;">
+                        <div class="border p-2 px-3">&gt;</div>
+                    </a>
+                }
+            </div>
                         </div>
                     </div>
 
@@ -332,6 +197,8 @@
 
             </div>
 
+
+@* -----------second tab------------ *@
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
                 <div>
                     helllo
@@ -342,161 +209,11 @@
         </div>
 
     </div>
-    <!-- offcanvas body -->
-
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-        <div class="offcanvas-header align-items-center">
-            <div class="sidebar-option">
-                <a href="./superadmindashboard.html" class="sidebar-link">
-                    <div class=" d-flex  justify-content-start align-items-center gap-3 mt-2">
-                        <img src="~/images/logos/pizzashop_logo.png" alt="" class="w-25">
-                        <h6 class="custom-skyblue">PIZZASHOP</h6>
-                    </div>
-                </a>
-            </div>
-
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="sidebar-options-list  d-flex flex-column align-items-start  gap-3 fw-medium">
-
-                <div class="sidebar-option mt-3 w-100  p-2">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/dashboard.png" alt="">
-                            <div>Dashbaord</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="sidebar-option w-100  p-2">
-                    <a href="./Userlist.html" class="sidebar-link">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/users.png" alt="">
-                            <div>Users</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="sidebar-option w-100 p-2 ">
-                    <a href="./roles.html" class="sidebar-link ">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/roles_permission.png" alt="">
-                            <div>Roles and Permission</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="sidebar-option w-100 p-2 active-option">
-                    <a href="./Menu.html" class="sidebar-link active-option">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/menu.png" alt="">
-                            <div>Menus</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="sidebar-option w-100 p-2">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/taxes.svg" alt="">
-                            <div>Taxes and Fees</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="sidebar-option w-100 p-2">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/tables.svg" alt="">
-                            <div>Table and Sections</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="sidebar-option w-100 p-2">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/orders.svg" alt="">
-                            <div>Orders</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="sidebar-option w-100 p-2">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
-                        <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/icons/customer.svg" alt="">
-                            <div>Customers</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- category offcanvas -->
-
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="categoryoffcanvas" aria-labelledby="offcanvasExampleLabel">
-        <div class="offcanvas-header align-items-center">
 
 
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class=" category-menu pt-3 ">
-                <div class="d-flex justify-content-between align-items-center p-1">
-                    <h5 class="custom-blue">Category</h5>
-                    <div class="border border-primary custom-blue px-2 rounded" style="font-size: 20px;"
-                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">+
-                    </div>
-                </div>
-                <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75">
-                    <div
-                        class="category-option d-flex justify-content-start align-items-center gap-2 category-active-option">
+   
 
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Sandwitch</div>
-                    </div>
-                    <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Pasta</div>
-                    </div>
-
-
-                    <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Sides And Appetizers</div>
-                    </div>
-
-
-                    <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Salads</div>
-                    </div>
-
-
-                    <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Deeps And Sauces</div>
-                    </div>
-
-
-                    <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Pizza</div>
-                    </div>
-
-                    <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Desserts</div>
-                    </div>
-
-
-                    <div class="category-option d-flex justify-content-start align-items-center gap-2">
-                        <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="">
-                        <div>Burger</div>
-                    </div>
-                </div>
-
-
-
-            </div>
-        </div>
-    </div>
+   
 
     <!-- add category modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -522,10 +239,13 @@
                                     placeholder="Description" name="Description"></textarea>
                             </div>
                         </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                         </div>
                     </div>
 
-                    <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    
 
                 </form>
             </div>
@@ -533,7 +253,7 @@
     </div>
 
 
-      @* ----------------modal body------------------- *@
+      @* ---------------- Delete category modal body------------------- *@
 
     <div class="modal" tabindex="-1" id="deletecategorymodal">
         <div class="modal-dialog modal-dialog-centered">
@@ -582,11 +302,12 @@
                                     placeholder="Description" name="Description"></textarea>
                             </div>
                         </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="editmodalbtn">Edit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
                     </div>
-
-                    <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="editmodalbtn">Edit</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-
+                       
                 </form>
             </div>
         </div>
@@ -595,19 +316,25 @@
 
 
 <script>
-    @* var categoryoption=document.getElementsByClassName("category-option");
+ var categoryoption = document.querySelectorAll(".category-option");
 
-    foreach(opt in categoryoption){
-        opt.addeventlistner("click",(this)=>{
+    categoryoption.forEach(opt => {
+        opt.addEventListener("mouseover", function() {
+            var actionbtn = opt.querySelector("#categoryoption_actionbtn");
             
-            console.log("hello");
-        })
-    } *@
+            actionbtn.classList.remove("d-none");
+            actionbtn.classList.add("d-block");
+        });
+        opt.addEventListener("mouseleave", function() {
+            var actionbtn = opt.querySelector("#categoryoption_actionbtn");
+            actionbtn.classList.remove("d-block");
+            actionbtn.classList.add("d-none");
+        });
+    });
 
     function setEditData(element){
-        console.log("hello")
-        var obj = element.getAttribute("obj");
-        @* console.log(); *@
+    
+
         var userId = element.getAttribute("data-id");
         var name =  element.getAttribute("data-name")
         var description = element.getAttribute("data-description");
@@ -623,4 +350,63 @@
         var deleteBtn = document.getElementById("deleteCategoryBtn");
         deleteBtn.href = '@Url.Action("DeleteCategory", "Menu")' + '?id=' + Id;
     }
+
+    function loaditems(ele)
+    {
+        var name = ele.getAttribute("category-name");
+        window.location.href="/Menu/Menu?cat="+name;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const categories = document.querySelectorAll(".category-option");
+        const categoriesforsmall = document.querySelectorAll(".category-option-smallscreen");
+
+        if (categories.length > 0) {
+            // Select the first category by default
+            @* categories[0].classList.add("category-active-option");
+            categoriesforsmall[0].classList.add("category-active-option"); *@
+        }
+
+        categories.forEach(category => {
+            category.addEventListener("click", () => {
+                // Remove the active class from all categories
+                categories.forEach(cat => cat.classList.remove("category-active-option"));
+
+                // Add active class to the clicked category
+                category.classList.add("category-active-option");
+            });
+        });
+        categoriesforsmall.forEach(category => {
+            category.addEventListener("click", () => {
+                // Remove the active class from all categories
+                categoriesforsmall.forEach(cat => cat.classList.remove("category-active-option"));
+
+                // Add active class to the clicked category
+                category.classList.add("category-active-option");
+            });
+        });
+    });
+
+     function changePageSize() {
+        var pageSize = document.getElementById("pageSizeDropdown").value;
+        var currentPage = @Model.Itemsmodel.CurrentPage;
+        window.location.href = '@Url.Action("Menu", "Menu")' + '?pageNumber=' + currentPage + '&pageSize=' + pageSize + '&searchKeyword=' + '@Model.Itemsmodel.SearchKeyword';
+    }
+
+    function search() {
+        var search_keyword = document.getElementById("search-field").value;
+        var pageSize = document.getElementById("pageSizeDropdown").value;
+        window.location.href = '@Url.Action("Menu", "Menu")' + '?searchKeyword=' + search_keyword + '&pageSize=' + pageSize;
+    }
+
+    function setDeleteUserId(element) {
+        var userId = element.getAttribute("data-id");
+        var deleteBtn = document.getElementById("deleteUserBtn");
+        deleteBtn.href = '@Url.Action("DeleteUser", "Menu")' + '?id=' + userId;
+    }
+    document.getElementById("search-field").addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            search();
+        }
+    });
 </script>

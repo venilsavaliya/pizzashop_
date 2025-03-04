@@ -26,5 +26,7 @@ public interface IUserService
 
     public AuthResponse DeleteUserById(string id);
 
+    public Guid GetUserIdfromToken(string token);
+
     public string UploadFile(IFormFile file);
 }

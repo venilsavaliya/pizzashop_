@@ -6,9 +6,13 @@ public class GetDataController : Controller
 {
     private readonly IDataService _getDataService;
 
-    public GetDataController(IDataService getDataService)
+    private readonly IMenuServices _menuService;
+
+    public GetDataController(IDataService getDataService,IMenuServices menuServices)
     {
         _getDataService = getDataService;
+
+        _menuService = menuServices;
     }
 
     [HttpGet("GetCountries")]
@@ -30,5 +34,11 @@ public class GetDataController : Controller
     {
         var cities = _getDataService.GetCities(stateId);
         return Json(cities);
+    }
+
+    public IActionResult GetItems(string category)
+    {
+        var items = _menuService.GetItemsListByCategoryName(category);
+        return Json(items);
     }
 }

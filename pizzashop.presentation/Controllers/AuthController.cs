@@ -21,7 +21,7 @@ public class AuthController : Controller
 
     private readonly IJwtService _jwtService;
 
-    public AuthController(IUserService userService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, INotyfService notyfy, IJwtService jwtService)
+    public AuthController(IUserService userService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, INotyfService notyfy, IJwtService jwtService,IAdminService adminservice)
     {
         _userService = userService;
         _authservice = authService;
@@ -30,8 +30,6 @@ public class AuthController : Controller
         _notyfy = notyfy;
         _jwtService = jwtService;
     }
-
-
 
     // GET : Auth/Login
     public IActionResult Login()
@@ -44,7 +42,6 @@ public class AuthController : Controller
         return View();
     }
 
-
     // POST : Auth/Login
     [HttpPost]
     public IActionResult Login(LoginViewModel model)
@@ -54,6 +51,7 @@ public class AuthController : Controller
         {
             return View(model);
         }
+
         // Authenticate the user 
         var AuthResponse = _authservice.AuthenticateUser(model);
 
@@ -65,8 +63,6 @@ public class AuthController : Controller
             TempData["ErrorMessage"] = "Invalid email or password.";
             return View(model);
         }
-
-        // if user is authenticated than we store the token in cookies and redirect to home page
 
 
         // if remember me functionality is checked than we store token for 7 days
@@ -88,26 +84,7 @@ public class AuthController : Controller
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Strict
-            });
-
-            // get user name by email address
-            var user = _userService.GetUserDetailByemail(model.Email);
-
-            Response.Cookies.Append("UserName", user.UserName, new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddDays(7),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict
-            });
-
-            Response.Cookies.Append("email", model.Email, new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddDays(7),
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict
-            });
+            }); 
 
         }
 

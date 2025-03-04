@@ -110,20 +110,20 @@
                             <img src="~/images/Default_pfp.svg.png" alt="" class="my-auto"
                                 style="height: 50px !important;">
                         </div> *@
-                        <img class="me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" width="50"
-                            src="~/images/Default_pfp.svg.png" alt="">
+                        <img class="me-2 dropdown-toggle rounded-circle border" data-bs-toggle="dropdown" aria-expanded="false" width="50" height="50"
+                            src="@ViewBag.Profile" alt="">
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li
                                 class="d-flex justify-content-start gap-2 align-items-center border py-2 border-top-0 dropdown-item">
-                                <img src="@Context.Request.Cookies["UserName"]" alt="" class="my-auto"
-                                    style="height: 40px !important;">
-                                <div>@Context.Request.Cookies["UserName"]</div>
+                                <img src="@ViewBag.Profile" alt="" class="my-auto" height="40"
+                                   >
+                                <div>@ViewBag.Username</div>
                             </li>
 
                             <div class="">
                                 <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
-                                        src="~/images/Default_pfp.svg.png" alt="" class="my-auto"
+                                        src="~/images/icons/person.svg" alt="" class="my-auto"
                                         style="height: 20px !important;"><a class="dropdown-item text-black"
                                         asp-action="Profile" asp-controller="User">My
                                         Profile</a></li>
@@ -134,7 +134,7 @@
                                 <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"
                                     data-bs-toggle="modal" data-bs-target="#confirmationmodal"><img
                                         src="~/images/icons/box-arrow-right.svg" alt=""> <a
-                                        class="dropdown-item text-black">Log Out</a></li>
+                                        class="dropdown-item text-black" style="cursor: pointer;">Log Out</a></li>
                             </div>
 
                         </ul>
@@ -242,7 +242,7 @@
 
     <div class="modal" tabindex="-1" id="confirmationmodal">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-3" style="width: 330px !important;">
+            <div class="modal-content p-3 m-auto" style="width: 330px !important;">
 
                 <div class="modal-body">
                     <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
@@ -251,7 +251,7 @@
                 <div class="d-flex justify-content-center align-items-center gap-2">
                     <a asp-action="Logout" asp-controller="Auth"><button type="button"
                             class="btn btn-primary px-4">Yes</button></a>
-                    <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">No</button>
                 </div>
             </div>
         </div>

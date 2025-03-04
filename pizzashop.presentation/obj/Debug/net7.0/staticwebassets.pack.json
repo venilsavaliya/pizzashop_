@@ -109,6 +109,10 @@
       "PackagePath": "staticwebassets\\images\\icons\\person-fill.svg"
     },
     {
+      "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\person.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\person.svg"
+    },
+    {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\search.svg",
       "PackagePath": "staticwebassets\\images\\icons\\search.svg"
     },
@@ -457,6 +461,10 @@
       "PackagePath": "staticwebassets\\profile_images\\36c9a45a-671a-4e66-b91d-9c55d6ef83d0.jfif"
     },
     {
+      "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\profile_images\\3f3829c5-8259-48cd-89ae-2a2f8ff23c84.jfif",
+      "PackagePath": "staticwebassets\\profile_images\\3f3829c5-8259-48cd-89ae-2a2f8ff23c84.jfif"
+    },
+    {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\profile_images\\4b6fabd9-641e-405b-985d-e01999198d09.png",
       "PackagePath": "staticwebassets\\profile_images\\4b6fabd9-641e-405b-985d-e01999198d09.png"
     },
@@ -493,6 +501,10 @@
       "PackagePath": "staticwebassets\\profile_images\\a26477d2-2199-4127-88fe-8be9cc26469c.jfif"
     },
     {
+      "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\profile_images\\a41680e9-7cb6-49b7-b884-6cc97b3a6f97.jfif",
+      "PackagePath": "staticwebassets\\profile_images\\a41680e9-7cb6-49b7-b884-6cc97b3a6f97.jfif"
+    },
+    {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\profile_images\\a43e7279-6e4f-4553-b772-7fd5666bf4eb.png",
       "PackagePath": "staticwebassets\\profile_images\\a43e7279-6e4f-4553-b772-7fd5666bf4eb.png"
     },
@@ -507,6 +519,10 @@
     {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\profile_images\\c550f2bb-0495-46bb-87e1-94c72a49fd6b.png",
       "PackagePath": "staticwebassets\\profile_images\\c550f2bb-0495-46bb-87e1-94c72a49fd6b.png"
+    },
+    {
+      "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\profile_images\\c980a859-dd88-4985-84dc-383caa572868.jfif",
+      "PackagePath": "staticwebassets\\profile_images\\c980a859-dd88-4985-84dc-383caa572868.jfif"
     },
     {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\profile_images\\da74bf72-601d-47fe-92bd-19a22363ae64",

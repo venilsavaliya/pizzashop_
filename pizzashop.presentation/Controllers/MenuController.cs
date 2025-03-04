@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace pizzashop.presentation.Controllers;
 
-public class MenuController : Controller
+public class MenuController : BaseController
 {
 
     private readonly IMenuServices _menuservices;
 
     private readonly INotyfService _notyf;
 
-    public MenuController(IMenuServices menuServices, INotyfService notyf)
+    public MenuController(IMenuServices menuServices, INotyfService notyf,IJwtService jwtService,IUserService userService,IAdminService adminservice) : base(jwtService,userService,adminservice)
     {
         _menuservices = menuServices;
         _notyf = notyf;
@@ -21,11 +21,27 @@ public class MenuController : Controller
 
     // GET : Menu
 
-    public IActionResult Menu()
+    public IActionResult Menu(string? cat, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
+
     {
         var categories = _menuservices.GetCategoryList();
+        if(cat==null){
+            cat = categories.First().Name;
+        }
+        var itempaginationmodel = _menuservices.GetItemsListByCategoryName(cat,  pageNumber , pageSize , searchKeyword); 
+        ViewBag.active = "Menu";
 
-        return View(categories);
+        // var itempaginationmodel = new ItemPaginationViewModel{
+        //     Items = items,
+        //     TotalCount
+        // };
+
+        var model = new MenuViewModel{
+            Categories = categories,
+            Itemsmodel = itempaginationmodel,
+            SelectedCategory = cat
+        };
+        return View(model);
     }
 
     // POST : Menu
@@ -61,4 +77,10 @@ public class MenuController : Controller
         var AuthResponse = _menuservices.DeleteCategory(id);
         return RedirectToAction("Menu","Menu");
     }
+
+    #region Items
+
+
+
+    #endregion
 }

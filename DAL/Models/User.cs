@@ -13,6 +13,14 @@ public partial class User
 
     public bool? Rememberme { get; set; }
 
+    public virtual ICollection<Category> CategoryCreatedbyNavigations { get; } = new List<Category>();
+
+    public virtual ICollection<Category> CategoryModifyiedbyNavigations { get; } = new List<Category>();
+
+    public virtual ICollection<Item> ItemCreatedbyNavigations { get; } = new List<Item>();
+
+    public virtual ICollection<Item> ItemModifyiedbyNavigations { get; } = new List<Item>();
+
     public virtual ICollection<Role> RoleCreatedByNavigations { get; } = new List<Role>();
 
     public virtual ICollection<Role> RoleUpdatedByNavigations { get; } = new List<Role>();

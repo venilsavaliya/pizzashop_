@@ -7,7 +7,7 @@ public class UserListViewModel
     public int PageSize { get; set; }
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }
-    public int StartIndex { get; set; }
+    public int StartIndex { get; set; } 
     public int EndIndex { get; set; }
     public string? SortColumn { get; set; }
     public string? SortOrder { get; set; }

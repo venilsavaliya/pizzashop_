@@ -40,6 +40,9 @@ public class UserService : IUserService
         return user;
     }
 
+    
+
+
     public Userdetail GetUserDetailByemail(string email)
     {
         var user = _context.Users.FirstOrDefault(u => u.Email == email);
@@ -58,7 +61,7 @@ public class UserService : IUserService
                     join role in _context.Roles on u.RoleId equals role.Roleid
                     where u.Isdeleted == false
                     select new UserViewModel
-                    {
+                    { 
                         Id = u.Id,
                         Name = u.FirstName + " " + u.LastName,
                         Email = user.Email,
@@ -113,6 +116,16 @@ public class UserService : IUserService
         };
     }
 
+    public Guid GetUserIdfromToken(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+        var user = _context.Users.FirstOrDefault(u => u.Email == email);
+
+        return user.Id;
+    }
 
     public async Task<AuthResponse> AddUser(AddUserViewModel user)
     {

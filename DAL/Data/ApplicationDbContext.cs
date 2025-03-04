@@ -15,9 +15,13 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
+    public virtual DbSet<Category> Categories { get; set; }
+
     public virtual DbSet<City> Cities { get; set; }
 
     public virtual DbSet<Country> Countries { get; set; }
+
+    public virtual DbSet<Item> Items { get; set; }
 
     public virtual DbSet<Permission> Permissions { get; set; }
 
@@ -33,10 +37,49 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Password=Tatva@123;Username=postgres");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.HasKey(e => e.CategoryId).HasName("category_pkey");
+
+            entity.ToTable("category");
+
+            entity.HasIndex(e => e.Name, "category_name_key").IsUnique();
+
+            entity.Property(e => e.CategoryId).HasColumnName("category_id");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .HasColumnName("description");
+            entity.Property(e => e.Isdeleted)
+                .HasDefaultValueSql("false")
+                .HasColumnName("isdeleted");
+            entity.Property(e => e.Modifieddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.CategoryCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .HasConstraintName("fk_createdby");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.CategoryModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_modifyiedby");
+        });
+
         modelBuilder.Entity<City>(entity =>
         {
             entity.HasKey(e => e.CityId).HasName("city_pkey");
@@ -79,6 +122,61 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
+        });
+
+        modelBuilder.Entity<Item>(entity =>
+        {
+            entity.HasKey(e => e.ItemId).HasName("items_pkey");
+
+            entity.ToTable("items");
+
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.CategoryId).HasColumnName("category_id");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.DefaultTax).HasColumnName("default_tax");
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .HasColumnName("description");
+            entity.Property(e => e.Image).HasColumnName("image");
+            entity.Property(e => e.Isavailable).HasColumnName("isavailable");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.ItemName)
+                .HasMaxLength(50)
+                .HasColumnName("item_name");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.Rate).HasColumnName("rate");
+            entity.Property(e => e.ShortCode)
+                .HasMaxLength(20)
+                .HasColumnName("short_code");
+            entity.Property(e => e.TaxPercentage).HasColumnName("tax_percentage");
+            entity.Property(e => e.Type)
+                .HasMaxLength(20)
+                .HasColumnName("type");
+            entity.Property(e => e.Unit)
+                .HasColumnType("character varying")
+                .HasColumnName("unit");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Items)
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("items_category_id_fkey");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.ItemCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .HasConstraintName("fk_createdby");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.ItemModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_modifyiedby");
         });
 
         modelBuilder.Entity<Permission>(entity =>
@@ -240,9 +338,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(13)
                 .HasColumnName("phone");
-            entity.Property(e => e.Profile)
-                .HasMaxLength(100)
-                .HasColumnName("profile");
+            entity.Property(e => e.Profile).HasColumnName("profile");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.State)
                 .HasMaxLength(100)

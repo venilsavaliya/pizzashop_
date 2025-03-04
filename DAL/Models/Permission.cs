@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace DAL.Models;
- 
+
 public partial class Permission
 {
     public int PermissionId { get; set; }

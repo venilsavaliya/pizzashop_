@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace pizzashop.presentation.Controllers;
 
-public class UserController : Controller
+public class UserController : BaseController
 {
 
     private readonly IUserService _userService;
 
     private readonly INotyfService _notyf;
-    public UserController(IUserService userService, INotyfService notyfy)
+    public UserController (IJwtService jwtService,IAdminService adminservice,IUserService userService, INotyfService notyfy) : base(jwtService,userService,adminservice)
     {
         _userService = userService;
         _notyf = notyfy;
@@ -35,6 +35,7 @@ public class UserController : Controller
 
         if (user == null)
         {
+           
             return RedirectToAction("Login", "Auth");
         }
         else
@@ -68,7 +69,7 @@ public class UserController : Controller
 
     // GET : User/userlist
 
-    public async Task<IActionResult> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
+    public async Task<IActionResult> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 5, string searchKeyword = "") 
     {
         var userListViewModel = await _userService.GetUserList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword);
         return View(userListViewModel);

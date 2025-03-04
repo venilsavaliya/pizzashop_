@@ -4,7 +4,7 @@ using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 namespace pizzashop.presentation.Controllers;
 
-public class AdminController : Controller
+public class AdminController : BaseController
 {
     private readonly IAdminService _adminService;
 
@@ -16,7 +16,7 @@ public class AdminController : Controller
 
     private readonly INotyfService _notyf;
 
-    public AdminController(IAdminService adminService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService,INotyfService notyf)
+    public AdminController(IAdminService adminService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService,INotyfService notyf,IJwtService jwtService,IUserService userService,IAdminService adminservice):base(jwtService,userService,adminservice)
     {
         _adminService = adminService;
         _authservice = authService;

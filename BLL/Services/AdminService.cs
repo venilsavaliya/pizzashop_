@@ -65,11 +65,11 @@ public class AdminService : IAdminService
         };
     }
 
-    public async Task<AuthResponse> SavePermission(List<RolesAndPermissionViewModel> permissionsList)
-    {
-        foreach (var permission in permissionsList)
+    public async Task<AuthResponse> SavePermission(RolesPermissionListViewModel p)
+    {   
+        foreach (var permission in p.Permissionlist)
         {
-            var existingPermission = _context.Rolespermissions.FirstOrDefault(u => u.Id.ToString() == permission.Id.ToString());
+            var existingPermission = _context.Rolespermissions.FirstOrDefault(p => p.Id.ToString() == permission.Id.ToString());
 
             if (existingPermission != null)
             {

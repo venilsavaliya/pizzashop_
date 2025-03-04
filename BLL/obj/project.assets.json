@@ -6121,11 +6121,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\pizzashop_3tier\\BLL\\BLL.csproj",
+      "projectUniqueName": "D:\\pizzashop_3tier\\BLL\\BLL.csproj",
       "projectName": "BLL",
-      "projectPath": "d:\\pizzashop_3tier\\BLL\\BLL.csproj",
+      "projectPath": "D:\\pizzashop_3tier\\BLL\\BLL.csproj",
       "packagesPath": "C:\\Users\\pce175\\.nuget\\packages\\",
-      "outputPath": "d:\\pizzashop_3tier\\BLL\\obj\\",
+      "outputPath": "D:\\pizzashop_3tier\\BLL\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\pce175\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -6140,8 +6140,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "d:\\pizzashop_3tier\\DAL\\DAL.csproj": {
-              "projectPath": "d:\\pizzashop_3tier\\DAL\\DAL.csproj"
+            "D:\\pizzashop_3tier\\DAL\\DAL.csproj": {
+              "projectPath": "D:\\pizzashop_3tier\\DAL\\DAL.csproj"
             }
           }
         }

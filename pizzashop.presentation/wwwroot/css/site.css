@@ -146,6 +146,10 @@ body {
   color: #1f74ad;
 }
 
+.category-active-option>div:nth-child(1)>img{
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+}
+
 .category-active-option>img {
   filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
 }

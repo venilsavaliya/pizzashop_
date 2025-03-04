@@ -6,13 +6,13 @@ using pizzashop.presentation.Models;
 
 namespace pizzashop.presentation.Controllers;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
 
     private readonly IJwtService _jwtservice;
 
-    public HomeController(ILogger<HomeController> logger,IJwtService jwtService)
+    public HomeController(ILogger<HomeController> logger,IJwtService jwtService,IUserService userService,IAdminService adminservice) : base(jwtService,userService,adminservice)
     {
         _logger = logger;
         _jwtservice = jwtService;
