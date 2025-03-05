@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/pizzashop.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
 
     <style>
@@ -31,32 +32,36 @@
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option mt-4 w-100  p-3 @(ViewBag.active=="Dashboard"?"active-option":"")">
-                    <a asp-action="Index" asp-controller="Home" class="sidebar-link @(ViewBag.active=="Dashboard"?"active-option":"")">
+                <div class="sidebar-option mt-4 w-100  p-3 @(ViewBag.active == "Dashboard" ? "active-option" : "")">
+                    <a asp-action="Index" asp-controller="Home"
+                        class="sidebar-link @(ViewBag.active == "Dashboard" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
                             <img src="~/images/sidebar icons/dashboard.png" alt="">
                             <div>Dashbaord</div>
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3 @(ViewBag.active=="Users"?"active-option":"")">
-                    <a asp-action="GetUserList" asp-controller="User" class="sidebar-link @(ViewBag.active=="Users"?"active-option":"")">
+                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Users" ? "active-option" : "")">
+                    <a asp-action="GetUserList" asp-controller="User"
+                        class="sidebar-link @(ViewBag.active == "Users" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
                             <img src="~/images/icons/customer.svg" alt="">
                             <div>Users</div>
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3 @(ViewBag.active=="Roles"?"active-option":"")">
-                    <a asp-action="Roles" asp-controller="Admin" class="sidebar-link @(ViewBag.active=="Roles"?"active-option":"")">
+                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Roles" ? "active-option" : "")">
+                    <a asp-action="Roles" asp-controller="Admin"
+                        class="sidebar-link @(ViewBag.active == "Roles" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
                             <img src="~/images/sidebar icons/roles_permission.png" alt="">
                             <div>Roles and Permission</div>
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3 @(ViewBag.active=="Menu"?"active-option":"")">
-                    <a asp-action="Menu" asp-controller="Menu" class="sidebar-link @(ViewBag.active=="Menu"?"active-option":"")">
+                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Menu" ? "active-option" : "")">
+                    <a asp-action="Menu" asp-controller="Menu"
+                        class="sidebar-link @(ViewBag.active == "Menu" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
                             <img src="~/images/sidebar icons/menu.png" alt="">
                             <div>Menus</div>
@@ -110,14 +115,13 @@
                             <img src="~/images/Default_pfp.svg.png" alt="" class="my-auto"
                                 style="height: 50px !important;">
                         </div> *@
-                        <img class="me-2 dropdown-toggle rounded-circle border" data-bs-toggle="dropdown" aria-expanded="false" width="50" height="50"
-                            src="@ViewBag.Profile" alt="">
+                        <img class="me-2 dropdown-toggle rounded-circle border" data-bs-toggle="dropdown"
+                            aria-expanded="false" width="50" height="50" src="@ViewBag.Profile" alt="">
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li
                                 class="d-flex justify-content-start gap-2 align-items-center border py-2 border-top-0 dropdown-item">
-                                <img src="@ViewBag.Profile" alt="" class="my-auto" height="40"
-                                   >
+                                <img src="@ViewBag.Profile" alt="" class="my-auto" height="40">
                                 <div>@ViewBag.Username</div>
                             </li>
 
@@ -142,7 +146,7 @@
                 </div>
             </nav>
             <main role="main" class="pb-3">
-                
+                @* @await Html.PartialAsync("~/Views/Shared/_Notification.cshtml") *@
                 @RenderBody()
             </main>
 
@@ -258,19 +262,20 @@
     </div>
 
     @* -------------------------------------------------------------- *@
-
+   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await Component.InvokeAsync("Notyf")
+    @* @await Component.InvokeAsync("Notyf") *@
     @RenderSection("Scripts", required: false)
 
-    <script>
-
-    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @await Html.PartialAsync("_Toaster.cshtml")
 
 </body>
 

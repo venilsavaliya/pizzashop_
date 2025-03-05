@@ -1,0 +1,35 @@
+<script>
+    $(document).ready(function () {
+        var toastrType = '@TempData["ToastrType"]';
+        var toastrMessage = '@TempData["ToastrMessage"]';
+
+        if (toastrMessage) {
+            toastr.options = {
+                 "closeButton": true,
+                 "debug": false,
+                 "newestOnTop": true,
+                 "progressBar": true,
+                 "positionClass": "toast-top-right",
+                 "preventDuplicates": false,
+                 "showDuration": "300",
+                 "hideDuration": "1000",
+                 "timeOut": "5000",
+                 "extendedTimeOut": "1000",
+                 "showEasing": "swing",
+                 "hideEasing": "linear",
+                 "showMethod": "fadeIn",
+                 "hideMethod": "fadeOut"
+            };
+
+            if (toastrType === "success") {
+                toastr.success(toastrMessage);
+            } else if (toastrType === "error") {
+                toastr.error(toastrMessage);
+            } else if (toastrType === "info") {
+                toastr.info(toastrMessage);
+            } else if (toastrType === "warning") {
+                toastr.warning(toastrMessage);
+            }
+        }
+    });
+</script>

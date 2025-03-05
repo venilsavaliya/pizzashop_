@@ -18,6 +18,7 @@ public class GetDataController : Controller
     [HttpGet("GetCountries")]
     public IActionResult GetCountries()
     {
+        
         var countries = _getDataService.GetCountries();
         return Json(countries);
     }
@@ -38,7 +39,15 @@ public class GetDataController : Controller
 
     public IActionResult GetItems(string category)
     {
+        
         var items = _menuService.GetItemsListByCategoryName(category);
         return Json(items);
+    }
+    [HttpGet("GetModifierGroupList")]
+    public IActionResult GetModifierGroupList()
+    {
+       
+        var groups = _getDataService.GetModifiersGroupList();
+        return Json(groups);
     }
 }

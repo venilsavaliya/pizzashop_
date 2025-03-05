@@ -41,6 +41,8 @@ public class MenuController : BaseController
             Itemsmodel = itempaginationmodel,
             SelectedCategory = cat
         };
+
+       
         return View(model);
     }
 
@@ -67,6 +69,9 @@ public class MenuController : BaseController
                 _notyf.Success(AuthResponse.Message);
         }
 
+        TempData["ToastrType"] = "success";  // Options: success, error, warning, info
+        TempData["ToastrMessage"] = "category add Successfully!";
+
         return RedirectToAction("Menu", "Menu");
     }
 
@@ -78,9 +83,21 @@ public class MenuController : BaseController
         return RedirectToAction("Menu","Menu");
     }
 
-    #region Items
+    // POST : ADD New Item
 
+    public IActionResult AddNewItem(AddItemViewModel model){
 
+        var AuthResponse = _menuservices.AddNewItem(model).Result;
 
-    #endregion
+        if(!AuthResponse.Success)
+        {
+            _notyf.Error(AuthResponse.Message);
+            return RedirectToAction("Menu","Menu");
+        }
+
+        TempData["ToastrType"] = "success";  // Options: success, error, warning, info
+        TempData["ToastrMessage"] = "item add Successfully!";
+        return RedirectToAction("Menu","Menu");
+        
+    }
 }
