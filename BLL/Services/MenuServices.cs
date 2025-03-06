@@ -3,6 +3,7 @@ using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BLL.Services;
 
@@ -13,13 +14,16 @@ public class MenuServices : IMenuServices
 
     private readonly IHttpContextAccessor _httpContext;
 
+    private readonly IJwtService _jwtservices;
+
     private readonly IUserService _userservices;
 
-    public MenuServices(ApplicationDbContext dbcontext, IHttpContextAccessor httpContext, IUserService userService)
+    public MenuServices(ApplicationDbContext dbcontext, IHttpContextAccessor httpContext, IUserService userService, IJwtService jwtservices)
     {
         _context = dbcontext;
         _httpContext = httpContext;
         _userservices = userService;
+        _jwtservices = jwtservices;
     }
 
     public IEnumerable<CategoryNameViewModel> GetCategoryList()
@@ -113,22 +117,10 @@ public class MenuServices : IMenuServices
         }
     }
 
-    public ItemPaginationViewModel GetItemsListByCategoryName(string category,int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
-    {   searchKeyword = searchKeyword.ToLower();
+    public ItemPaginationViewModel GetItemsListByCategoryName(string category, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    {
+        searchKeyword = searchKeyword.ToLower();
         var categoryId = _context.Categories.FirstOrDefault(c => c.Name == category)?.CategoryId;
-        // var items = _context.Items.Where(i => i.Isdeleted != true && catagoryId == i.CategoryId).Select(i => new ItemViewModel
-        // {
-        //     ItemId = i.ItemId,
-        //     ItemName = i.ItemName,
-        //     Type = i.Type,
-        //     Rate = i.Rate,
-        //     Quantity = i.Quantity,
-        //     Unit = i.Unit,
-        //     Isavailable = i.Isavailable,
-        //     Image = i.Image
-        // }).ToList();
-
-
 
         var query = from i in _context.Items
                     where i.Isdeleted != true && i.CategoryId == categoryId
@@ -141,12 +133,16 @@ public class MenuServices : IMenuServices
                         Quantity = i.Quantity,
                         Unit = i.Unit,
                         Isavailable = i.Isavailable,
-                        Image = i.Image
+                        Image = i.Image,
+                        DefaultTax = i.DefaultTax,
+                        TaxPercentage = i.TaxPercentage,
+                        ShortCode = i.ShortCode,
+                        Description = i.Description
                     };
-        
+
         if (!string.IsNullOrEmpty(searchKeyword))
         {
-            query = query.Where(i=>i.ItemName.ToLower().Contains(searchKeyword));
+            query = query.Where(i => i.ItemName.ToLower().Contains(searchKeyword));
         }
 
         // Pagination
@@ -155,7 +151,7 @@ public class MenuServices : IMenuServices
                              .Take(pageSize)
                              .ToList();
 
-         return new ItemPaginationViewModel
+        return new ItemPaginationViewModel
         {
             Items = items,
             TotalCount = totalCount,
@@ -168,4 +164,126 @@ public class MenuServices : IMenuServices
         };
     }
 
+    #region Item
+
+    public async Task<AuthResponse> AddNewItem(AddItemViewModel model)
+    {
+        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+        var userid = _userservices.GetUserIdfromToken(token);
+
+        string img = "";
+        if (model.Image != null)
+        {
+            img = _userservices.UploadFile(model.Image);
+
+        }
+
+        var item = new Item
+        {
+            ItemName = model.ItemName,
+            Type = model.Type,
+            Rate = model.Rate,
+            Quantity = model.Quantity,
+            CategoryId = model.CategoryId,
+            Unit = model.Unit,
+            DefaultTax = model.DefaultTax,
+            TaxPercentage = model.TaxPercentage,
+            ShortCode = model.ShortCode,
+            Isavailable = model.Isavailable,
+            Description = model.Description,
+            Image = img,
+            Createdby = userid
+        };
+
+        _context.Items.Add(item);
+        await _context.SaveChangesAsync();
+
+        return new AuthResponse
+        {
+            Success = true,
+            Message = "Item Added Successfuuuly"
+        };
+    }
+
+    public async Task<AuthResponse> EditItem(AddItemViewModel model)
+    {
+        try
+        {
+
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
+
+            var existingitem = _context.Items.FirstOrDefault(i => i.ItemId == model.Id);
+
+            existingitem.ItemId = (int)model.Id;
+            existingitem.ItemName = model.ItemName;
+            existingitem.Type = model.Type;
+            existingitem.Rate = model.Rate;
+            existingitem.Quantity = model.Quantity;
+            existingitem.CategoryId = model.CategoryId;
+            existingitem.Unit = model.Unit;
+            existingitem.DefaultTax = model.DefaultTax;
+            existingitem.TaxPercentage = model.TaxPercentage;
+            existingitem.ShortCode = model.ShortCode;
+            existingitem.Isavailable = model.Isavailable;
+            existingitem.Description = model.Description;
+            existingitem.Image = "";
+            existingitem.Modifyiedby = userid;
+
+            _context.Items.Update(existingitem);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Item Edited Succesfully!"
+            };
+
+        }
+        catch (Exception)
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Error in Item Edit"
+            };
+        }
+    }
+
+    public async Task<AuthResponse> DeleteItems(List<string> ids)
+    {
+        try
+        {
+            foreach (var i in ids)
+            {
+                var item = _context.Items.FirstOrDefault(itemInDb => itemInDb.ItemId.ToString() == i);
+                item.Isdeleted = true;
+                _context.Items.Update(item);
+                await _context.SaveChangesAsync();
+            }
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Items Deleted Succesfully!"
+            };
+        }
+        catch (Exception)
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "error in Delete item!"
+            };
+            throw;
+        }
+
+    }
+
+    #endregion
+
+    public string GetCategoryNameFromId(int id)
+    {
+        return _context.Categories.FirstOrDefault(c => c.CategoryId == id).Name;
+    }
 }

@@ -23,6 +23,14 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Item> Items { get; set; }
 
+    public virtual DbSet<Itemsrmodifiersgroup> Itemsrmodifiersgroups { get; set; }
+
+    public virtual DbSet<Modifieritem> Modifieritems { get; set; }
+
+    public virtual DbSet<Modifieritemsmodifiersgroup> Modifieritemsmodifiersgroups { get; set; }
+
+    public virtual DbSet<Modifiersgroup> Modifiersgroups { get; set; }
+
     public virtual DbSet<Permission> Permissions { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -37,7 +45,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;password=Tatva@123");
+        => optionsBuilder.UseNpgsql("Host=localhost;Username=postgres;password=Tatva@123;Database=pizzashop_main");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -177,6 +185,119 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.Modifyiedby)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_modifyiedby");
+        });
+
+        modelBuilder.Entity<Itemsrmodifiersgroup>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("itemsrmodifiers_pkey");
+
+            entity.ToTable("itemsrmodifiersgroup");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("nextval('itemsrmodifiers_id_seq'::regclass)")
+                .HasColumnName("id");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.ModifiergroupId).HasColumnName("modifiergroup_id");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.Itemsrmodifiersgroups)
+                .HasForeignKey(d => d.ItemId)
+                .HasConstraintName("itemsrmodifiers_item_id_fkey");
+
+            entity.HasOne(d => d.Modifiergroup).WithMany(p => p.Itemsrmodifiersgroups)
+                .HasForeignKey(d => d.ModifiergroupId)
+                .HasConstraintName("itemsrmodifiers_modifier_id_fkey");
+        });
+
+        modelBuilder.Entity<Modifieritem>(entity =>
+        {
+            entity.HasKey(e => e.ModifierId).HasName("modifieritems_pkey");
+
+            entity.ToTable("modifieritems");
+
+            entity.Property(e => e.ModifierId).HasColumnName("modifier_id");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .HasColumnName("description");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.ModifierName)
+                .HasMaxLength(50)
+                .HasColumnName("modifier_name");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.Photo).HasColumnName("photo");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.Rate).HasColumnName("rate");
+            entity.Property(e => e.Unit)
+                .HasMaxLength(50)
+                .HasColumnName("unit");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.ModifieritemCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("modifieritems_createdby_fkey");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.ModifieritemModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .HasConstraintName("modifieritems_modifyiedby_fkey");
+        });
+
+        modelBuilder.Entity<Modifieritemsmodifiersgroup>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("modifieritemsmodifiersgroup_pkey");
+
+            entity.ToTable("modifieritemsmodifiersgroup");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ModifierId).HasColumnName("modifier_id");
+            entity.Property(e => e.ModifiergroupId).HasColumnName("modifiergroup_id");
+
+            entity.HasOne(d => d.Modifier).WithMany(p => p.Modifieritemsmodifiersgroups)
+                .HasForeignKey(d => d.ModifierId)
+                .HasConstraintName("modifieritemsmodifiersgroup_modifier_id_fkey");
+
+            entity.HasOne(d => d.Modifiergroup).WithMany(p => p.Modifieritemsmodifiersgroups)
+                .HasForeignKey(d => d.ModifiergroupId)
+                .HasConstraintName("modifieritemsmodifiersgroup_modifiergroup_id_fkey");
+        });
+
+        modelBuilder.Entity<Modifiersgroup>(entity =>
+        {
+            entity.HasKey(e => e.ModifiergroupId).HasName("modifiersgroup_pkey");
+
+            entity.ToTable("modifiersgroup");
+
+            entity.Property(e => e.ModifiergroupId).HasColumnName("modifiergroup_id");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .HasColumnName("description");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.ModifiersgroupCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("modifiersgroup_createdby_fkey");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.ModifiersgroupModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .HasConstraintName("modifiersgroup_modifyiedby_fkey");
         });
 
         modelBuilder.Entity<Permission>(entity =>

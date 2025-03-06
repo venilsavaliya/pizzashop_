@@ -8,4 +8,5 @@ public interface IDataService
     IEnumerable<Country> GetCountries();
     IEnumerable<State> GetStates(int countryId);
     IEnumerable<City> GetCities(int stateId);
+    IEnumerable<Modifiersgroup> GetModifiersGroupList();
 }

@@ -12,4 +12,10 @@ public interface IMenuServices
     public AuthResponse EditCategory(AddCategoryViewModel model);
     public AuthResponse DeleteCategory(string id);
     public ItemPaginationViewModel GetItemsListByCategoryName(string category,int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
+    public Task<AuthResponse> AddNewItem(AddItemViewModel model);
+    public Task<AuthResponse> EditItem(AddItemViewModel model);
+
+    public Task<AuthResponse> DeleteItems(List<string> ids);
+
+    public string GetCategoryNameFromId(int id);
 }

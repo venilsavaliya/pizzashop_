@@ -21,6 +21,14 @@ public partial class User
 
     public virtual ICollection<Item> ItemModifyiedbyNavigations { get; } = new List<Item>();
 
+    public virtual ICollection<Modifieritem> ModifieritemCreatedbyNavigations { get; } = new List<Modifieritem>();
+
+    public virtual ICollection<Modifieritem> ModifieritemModifyiedbyNavigations { get; } = new List<Modifieritem>();
+
+    public virtual ICollection<Modifiersgroup> ModifiersgroupCreatedbyNavigations { get; } = new List<Modifiersgroup>();
+
+    public virtual ICollection<Modifiersgroup> ModifiersgroupModifyiedbyNavigations { get; } = new List<Modifiersgroup>();
+
     public virtual ICollection<Role> RoleCreatedByNavigations { get; } = new List<Role>();
 
     public virtual ICollection<Role> RoleUpdatedByNavigations { get; } = new List<Role>();

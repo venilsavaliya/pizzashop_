@@ -5,8 +5,8 @@
     var email = Context.Request.Cookies["email"];
 }
 
-<div class="add-user-container p-3">
-    <div class="head-section d-flex justify-content-between align-items-center">
+    <div class="add-user-container p-3">
+        <div class="head-section d-flex justify-content-between align-items-center">
         <h2 class="custom-blue fw-bold">My Profile</h2>
         <div class="search-section d-flex gap-2">
 
@@ -111,7 +111,6 @@
                 <div class="form-floating col">
                     <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example">
                         <option selected>@(Model.City)</option>
-
                     </select>
                     <label for="floatingSelect">city</label>
                 </div>
@@ -132,7 +131,7 @@
 
             </div>
             <div class="d-flex gap-2 mt-3">
-                <button class="custom-btn-bg text-white p-2 border rounded">Update User</button>
+                <button type="submit" class="custom-btn-bg text-white p-2 border rounded">Update User</button>
                 <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a asp-action="index" asp-controller="Home"
                         class="custom-blue" style="text-decoration: none;">cancel</a></button>
             </div>

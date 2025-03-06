@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using System.Linq;
 using BLL.Interfaces;
 using DAL.Models;
 
@@ -30,6 +31,10 @@ public class DataService : IDataService
         return cities;
     }
 
-    
+    public IEnumerable<Modifiersgroup> GetModifiersGroupList()
+    {
+        var groups = _context.Modifiersgroups.ToList();
+        return groups;
+    }
 
 }

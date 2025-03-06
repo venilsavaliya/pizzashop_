@@ -40,7 +40,7 @@ public class UserService : IUserService
         return user;
     }
 
-    
+
 
 
     public Userdetail GetUserDetailByemail(string email)
@@ -61,7 +61,7 @@ public class UserService : IUserService
                     join role in _context.Roles on u.RoleId equals role.Roleid
                     where u.Isdeleted == false
                     select new UserViewModel
-                    { 
+                    {
                         Id = u.Id,
                         Name = u.FirstName + " " + u.LastName,
                         Email = user.Email,
@@ -92,8 +92,16 @@ public class UserService : IUserService
                 case "Role":
                     query = sortOrder == "asc" ? query.OrderBy(u => u.Role) : query.OrderByDescending(u => u.Role);
                     break;
+                default:
+                    query = query.OrderBy(u => u.Id); // **Ensure a default sorting**
+                    break;
             }
         }
+        else
+        {
+            query = query.OrderBy(u => u.Id); // **Apply a default ordering if no sort is provided**
+        }
+
 
         // Pagination
         int totalCount = query.Count();

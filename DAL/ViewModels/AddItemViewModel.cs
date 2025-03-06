@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Http;
+
 namespace DAL.ViewModels;
 
-public class ItemViewModel
+public class AddItemViewModel
 {
-    public int ItemId { get; set; }
+    public int? Id {get;set;}
+    public int? CategoryId { get; set; }
 
     public string ItemName { get; set; } = null!;
 
@@ -14,17 +17,20 @@ public class ItemViewModel
 
     public string Unit { get; set; } = null!;
 
-    public bool Isavailable { get; set; }
-
-    public string? Image { get; set; } 
-
     public bool DefaultTax { get; set; }
 
     public double TaxPercentage { get; set; }
 
     public string? ShortCode { get; set; }
 
+    public bool Isavailable { get; set; }
+
     public string? Description { get; set; }
 
+    public IFormFile? Image { get; set; }
+
+    public List<int>? Modifiers {get;set;}
+
+    // public DateTime Createddate { get; set; } = DateTime.Now;
 
 }

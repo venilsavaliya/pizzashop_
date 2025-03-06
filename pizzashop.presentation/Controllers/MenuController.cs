@@ -97,7 +97,55 @@ public class MenuController : BaseController
 
         TempData["ToastrType"] = "success";  // Options: success, error, warning, info
         TempData["ToastrMessage"] = "item add Successfully!";
-        return RedirectToAction("Menu","Menu");
+        // return RedirectToAction("Menu","Menu");
+        string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
+        return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
         
     }
+
+    // Post : Edit item
+    [HttpPost]
+    public IActionResult EditItem(AddItemViewModel model){
+
+        var AuthResponse = _menuservices.EditItem(model).Result;
+
+        if(!AuthResponse.Success)
+        {
+            _notyf.Error(AuthResponse.Message);
+            return RedirectToAction("Menu","Menu");
+        }
+
+        TempData["ToastrType"] = "success";  
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
+        return RedirectToAction("Menu","Menu",new {cat=categoryName});
+
+        // return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
+        
+    }
+
+    // Post : Delete Items
+    [HttpPost]
+
+     public IActionResult DeleteItems(string cat,List<string> ids){
+
+        var AuthResponse = _menuservices.DeleteItems(ids).Result;
+
+        // if(!AuthResponse.Success)
+        // {
+        //     _notyf.Error(AuthResponse.Message);
+        //     return RedirectToAction("Menu");
+        // }
+
+        TempData["ToastrType"] = "success";  
+        TempData["ToastrMessage"] = AuthResponse.Message;
+
+        // return RedirectToAction("Menu","Menu",new {cat});
+
+        return Json(new { redirectTo = Url.Action("Menu", "Menu") });
+        
+    }
+
+
+
 }

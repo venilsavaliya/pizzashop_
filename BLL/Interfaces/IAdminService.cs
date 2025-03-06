@@ -15,5 +15,4 @@ public interface IAdminService
     public  Task<AuthResponse> SavePermission(RolesPermissionListViewModel p);
 
     
-
 }

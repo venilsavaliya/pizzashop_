@@ -15,7 +15,7 @@ public class AuthService : IAuthService
 {
     private readonly ApplicationDbContext _context;
 
-     private readonly IUrlHelper _urlHelper;
+    private readonly IUrlHelper _urlHelper;
 
     private readonly IJwtService _jwtService;
 
@@ -24,7 +24,7 @@ public class AuthService : IAuthService
     private readonly IHttpContextAccessor _httpcontext;
     private readonly IWebHostEnvironment _env;
 
-    public AuthService(ApplicationDbContext context, IJwtService jwtService, IEmailService emailService, 
+    public AuthService(ApplicationDbContext context, IJwtService jwtService, IEmailService emailService,
                    IWebHostEnvironment env, IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor)
     {
         _context = context;
@@ -37,48 +37,60 @@ public class AuthService : IAuthService
 
     public AuthResponse AuthenticateUser(LoginViewModel model)
     {
-        // Check For User is existed in DB or Not
-        var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email);
-
-        // if user is present in db then process further
-        if (existingUser != null)
+        try
         {
-            if (PasswordService.VerifyPassword(model.Password, existingUser.Password))
-            {
-                // --- User Logged In Successfully ---
+            // Check if the user exists in the database
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email);
 
-                // Getting Role of the user from the database
-                var roleid = _context.Userdetails.FirstOrDefault(u => u.UserId == existingUser.Id);
-                string role = _context.Roles.FirstOrDefault(u => u.Roleid == roleid.RoleId)?.Name ?? "User";
-
-                // setting jwt token which have email and role of the user
-                var token = _jwtService.GenerateJwtToken(existingUser.Email, role);
-
-                // return the newly generated jwt token with message
-                return new AuthResponse
-                {
-                    Success = true,
-                    Token = token,
-                    Message = "User Logged In Succesfully"
-                };
-            }
-            else
+            if (existingUser == null)
             {
                 return new AuthResponse
                 {
                     Success = false,
                     Token = null,
-                    Message = "Invald Email or Password"
+                    Message = "Invalid Email or Password"
                 };
             }
+
+            // Verify the entered password with the stored hash
+            if (!PasswordService.VerifyPassword(model.Password, existingUser.Password))
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Token = null,
+                    Message = "Invalid Email or Password"
+                };
+            }
+
+            // --- User Logged In Successfully ---
+
+            // Fetching Role of the user
+            var role = _context.Userdetails
+                               .Where(u => u.UserId == existingUser.Id)
+                               .Select(u => _context.Roles.FirstOrDefault(r => r.Roleid == u.RoleId).Name)
+                               .FirstOrDefault() ?? "User";
+
+            // Generate JWT token containing email and role
+            var token = _jwtService.GenerateJwtToken(existingUser.Email, role);
+
+            return new AuthResponse
+            {
+                Success = true,
+                Token = token,
+                Message = "User Logged In Successfully"
+            };
         }
-        else
+        catch (Exception ex)
         {
+            // exception 
+            Console.WriteLine($"Error in AuthenticateUser: {ex.Message}");
+
             return new AuthResponse
             {
                 Success = false,
                 Token = null,
-                Message = "Invald Email or Password"
+                Message = "An unexpected error occurred. Please try again later."
             };
         }
     }
@@ -102,9 +114,9 @@ public class AuthService : IAuthService
         // -- if user found than we send email to the user --
 
         string htmltemplate = System.IO.File.ReadAllText(_env.WebRootPath + "/HtmlTemplate/ResetPassword.html");
-        var jwtToken = _jwtService.GenerateJwtToken(email,"",1);
-        var uri = _urlHelper.Action("ResetPassword", "Auth", new { token = jwtToken}, "http");
-        htmltemplate = htmltemplate.Replace("resetlink",uri);
+        var jwtToken = _jwtService.GenerateJwtToken(email, "", 1);
+        var uri = _urlHelper.Action("ResetPassword", "Auth", new { token = jwtToken }, "http");
+        htmltemplate = htmltemplate.Replace("resetlink", uri);
 
         await _emailservice.SendEmailAsync(email, "Reset Password", htmltemplate);
 
@@ -118,7 +130,7 @@ public class AuthService : IAuthService
 
     }
 
-//  ---------------------------------- Reset Password Functionality ----------------------------------
+    //  ---------------------------------- Reset Password Functionality ----------------------------------
 
     public AuthResponse ResetPassword(ResetPasswordviewModel model)
     {
@@ -127,7 +139,8 @@ public class AuthService : IAuthService
 
         if (User == null)
         {
-            return new AuthResponse{
+            return new AuthResponse
+            {
                 Success = false,
                 Token = null,
                 Message = "User Not Found"
@@ -135,9 +148,10 @@ public class AuthService : IAuthService
         }
 
         // here we check for password and confirm password are same or not
-        if(model.Password != model.ConfirmPassword)
+        if (model.Password != model.ConfirmPassword)
         {
-            return new AuthResponse{
+            return new AuthResponse
+            {
                 Success = false,
                 Token = null,
                 Message = "Password and Confirm Password does not match."
@@ -151,7 +165,8 @@ public class AuthService : IAuthService
         _context.Users.Update(User);
         _context.SaveChanges();
 
-        return new AuthResponse{
+        return new AuthResponse
+        {
             Success = true,
             Token = null,
             Message = "Password has been reset successfully."

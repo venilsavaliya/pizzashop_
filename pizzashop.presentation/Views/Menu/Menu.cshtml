@@ -98,9 +98,9 @@
                                 <input type="text" class="p-2 w-100" placeholder="Search" id="search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
-                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3">
+                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteitemmodal">
                                 <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
-                                    class="small-img">
+                                    class="small-img" >
                             </div>
                             <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmenuitem"><span
                                     class="fs-5 fw-semibold" >+</span> New
@@ -133,7 +133,7 @@
                                 <td>
                                     <div class="d-flex justify-content-start gap-2 align-items-center">
                                         <div class="form-check">
-                                            <input class="form-check-input inner_checkbox" type="checkbox" value=""
+                                            <input class="form-check-input inner_checkbox" type="checkbox" value="@i.ItemId"
                                                 id="flexCheckIndeterminate">
                                         </div>
                                         @* <img src="~/images/dining-menu.png" class="small-img"> *@
@@ -159,7 +159,7 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-start gap-5">
-                                        <img src="~/images/icons/pen.svg" alt="">
+                                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmenuitem" item-obj='@Html.Raw(Json.Serialize(i))' onclick="setedititemdata(this)">
                                         <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
                                             data-bs-target="#exampleModal" alt="">
                                     </div>
@@ -207,7 +207,7 @@
 
 @* -----------second tab------------ *@
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-                <div>
+                <div class="d-flex">
                     helllo
                 </div>
             </div>
@@ -331,148 +331,148 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Menu Item</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="addItemForm" enctype="multipart/form-data" asp-action="AddNewItem" asp-controller="Menu" method ="post">
+                <form id="addItemForm" enctype="multipart/form-data" >
                     <div class="modal-body">
                          <div class="add-menu-item row">
 
-        <div class="col-8">
+                                <div class="col-8">
 
-            <div class="row">
-                <div class="col-6">
                     <div class="row">
-                        <div class="form-floating col">
-                            <div class="form-floating col">
-                                <select  class="form-select" id="Category" name="CategoryId">
-                                    @* <option selected>Select Categories</option> *@
-                                    @foreach(var c in Model.Categories){
-                                        if(c.Name == Model.SelectedCategory){
-                                            <option value=@c.Id selected>@c.Name</option>
-                                        }else{
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="form-floating col">
+                                    <div class="form-floating col">
+                                        <select  class="form-select" id="Category" name="CategoryId">
+                                            @* <option selected>Select Categories</option> *@
+                                            @foreach(var c in Model.Categories){
+                                                if(c.Name == Model.SelectedCategory){
+                                                    <option value=@c.Id selected>@c.Name</option>
+                                                }else{
 
-                                        <option value=@c.Id>@c.Name</option>
-                                        }
-                                    }
-                                </select>
-                                <label for="floatingSelect">Categories</label>
+                                                <option value=@c.Id>@c.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                        <label for="floatingSelect">Categories</label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-        
-                    <div class="row mt-4">
-                        <div class="form-floating col-6">
-                            <div class="form-floating col">
-                                <select  class="form-select" name="Type">
-                                    <option selected>Select a Type</option>
-                                    <option value="Veg">Veg</option>
-                                    <option value="Non-Veg">Non-Veg</option>
-                                </select>
-                                <label for="floatingSelect">Item Type</label>
-                            </div>
-                        </div>
-        
-                        <div class="col-6">
-                            <div class="form-floating">
-                                <input type="number" class="form-control" id="floatingInput" value="0" name="Rate">
-                                <label for="floatingInput">Rate</label>
-                            </div>
-                        </div>
-        
-                    </div>
-        
-                    <div class="row mt-4">
-                        <div class="col-6">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Isavailable" value="true">
-                                <span class="ms-3">Available</span>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="DefaultTax" value="true">
-                                <span class="ms-3">Default Tax</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col">
-                            <input class="form-control form-control p-3" type="text" placeholder="Name" name="ItemName" >
-                        </div>
-                    </div>
-        
-                    <div class="row mt-4">
-                        <div class="col-6">
-                            <div class="form-floating">
-                                <input type="number" class="form-control" id="floatingInput" value="0" name="Quantity">
-                                <label for="floatingInput">Quantity</label>
-                            </div>
-                        </div>
-                        <div class="form-floating col-6">
-                            <div class="form-floating col">
-                                <select  class="form-select" name="Unit">
-                                    <option selected>Select a Unit</option>
-                                    <option value="Pcs">Piece</option>
-                                    <option value="Kg">Kilogram</option>
-                                    <option value="In">Inches</option>
-                                    <option value="Ltr">Liter</option>
-                                </select>
-                                <label for="floatingSelect">Unit</label>
-                            </div>
-                        </div>
-        
-                        
-        
-                    </div>
-        
-                    <div class="row mt-4">
-                        <div class="col-6">
-                            <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" name="TaxPercentage">
-                        </div>
-                        <div class="col-6">
-                            <input class="form-control form-control p-3" type="text" placeholder="Short Code" name="ShortCode">
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="row mt-4">
-                <div class="form-floating">
-                    <textarea class="form-control"  id="floatingTextarea" style="height: 100px" name="Description"></textarea>
-                    <label for="floatingTextarea">Description</label>
-                  </div>
-            </div>
-            
-            <div class="row mt-4">
-                <div>
-                    <input type="file" id="" class="bg-primary w-100 file-input position-absolute opacity-0" name="Image">
-                    <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
-                        <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
-                        <div>Browse Files</div>
-                    </div>
-                </div>
-            </div> 
-        </div>
-        
-        <div class="col-4" style="background-color: #fff5d7;">
-            <div class="form col-12">
-                <div class="row mt-2">
-                    <div class="form col multiselect">
-                    <div  class="form-select selectBox" id="modifierGroupSelect" onclick="showCheckboxes()">
-                        @* <option selected>Select Modifiers Group</option> *@
-                        Select Modifier Group
+                            <div class="row mt-4">
+                                <div class="form-floating col-6">
+                                    <div class="form-floating col">
+                                        <select  class="form-select" name="Type">
+                                            <option selected>Select a Type</option>
+                                            <option value="Veg">Veg</option>
+                                            <option value="Non-Veg">Non-Veg</option>
+                                        </select>
+                                        <label for="floatingSelect">Item Type</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="floatingInput" value="0" name="Rate">
+                                        <label for="floatingInput">Rate</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Isavailable" value="true">
+                                        <span class="ms-3">Available</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="DefaultTax" value="true">
+                                        <span class="ms-3">Default Tax</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Name" name="ItemName" >
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="floatingInput" value="0" name="Quantity">
+                                        <label for="floatingInput">Quantity</label>
+                                    </div>
+                                </div>
+                                <div class="form-floating col-6">
+                                    <div class="form-floating col">
+                                        <select  class="form-select" name="Unit">
+                                            <option selected>Select a Unit</option>
+                                            <option value="Pcs">Piece</option>
+                                            <option value="Kg">Kilogram</option>
+                                            <option value="In">Inches</option>
+                                            <option value="Ltr">Liter</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit</label>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" name="TaxPercentage">
+                                </div>
+                                <div class="col-6">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" name="ShortCode">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div id="checkboxes" class="d-flex flex-column bg-white rounded d-none p-2">
-                        
-                     </div>
-                    
-                </div>
-                </div>
-                
-            </div>
-        </div>
+                    <div class="row mt-4">
+                        <div class="form-floating">
+                            <textarea class="form-control"  id="floatingTextarea" style="height: 100px" name="Description"></textarea>
+                            <label for="floatingTextarea">Description</label>
+                          </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div>
+                            <input type="file" id="" class="bg-primary w-100 file-input position-absolute opacity-0" name="Image">
+                            <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
+                                <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
+                                <div>Browse Files</div>
+                            </div>
                         </div>
+                    </div> 
+                                </div>
+        
+                                 <div class="col-4" style="background-color: #fff5d7;">
+                                <div class="form col-12">
+                                    <div class="row mt-2">
+                                        <div class="form col multiselect">
+                                        <div  class="form-select selectBox" id="modifierGroupSelect" onclick="showCheckboxes()">
+                                            @* <option selected>Select Modifiers Group</option> *@
+                                            Select Modifier Group
+                                        </div>
+
+                                        <div id="checkboxes" class="d-flex flex-column bg-white rounded d-none p-2">
+
+                                         </div>
+
+                                    </div>
+                                    </div>
+
+                                </div>
+                                 </div>
+                         </div>
                          <div class="d-flex justify-content-end gap-2 p-2">
                         <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="editmodalbtn">Save</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -483,6 +483,192 @@
             </div>
         </div>
     </div>
+
+@* Edit Menu Item Modal *@
+    
+    <div class="modal fade " id="editmenuitem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Menu Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addItemForm" enctype="multipart/form-data" asp-action="EditItem" asp-controller="Menu" method="post" >
+                    <div class="modal-body">
+                         <div class="add-menu-item row">
+
+                            <input name="Id" id ="itemId"  hidden>
+
+                                <div class="col-8">
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="form-floating col">
+                                    <div class="form-floating col">
+                                        <select  class="form-select" id="Category" name="CategoryId">
+                                            @* <option selected>Select Categories</option> *@
+                                            @foreach(var c in Model.Categories){
+                                                if(c.Name == Model.SelectedCategory){
+                                                    <option value=@c.Id selected>@c.Name</option>
+                                                }else{
+
+                                                <option value=@c.Id>@c.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                        <label for="floatingSelect">Categories</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="form-floating col-6">
+                                    <div class="form-floating col"> 
+                                        <select  class="form-select" name="Type" id="type">
+                                            <option selected>Select a Type</option>
+                                            <option value="Veg">Veg</option>
+                                            <option value="Non-Veg">Non-Veg</option>
+                                        </select>
+                                        <label for="floatingSelect">Item Type</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="Rate" value="0" name="Rate">
+                                        <label for="floatingInput">Rate</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Isavailable" id="Isavailable" value="true">
+                                        <span class="ms-3">Available</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="DefaultTax" id="DefaultTax" value="true">
+                                        <span class="ms-3">Default Tax</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Name" name="ItemName" id="itemname">
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control"  value="0" name="Quantity" id="Quantity">
+                                        <label for="floatingInput">Quantity</label>
+                                    </div>
+                                </div>
+                                <div class="form-floating col-6">
+                                    <div class="form-floating col">
+                                        <select  class="form-select" name="Unit" id ="Unit">
+                                            <option selected>Select a Unit</option>
+                                            <option value="Pcs">Piece</option>
+                                            <option value="Kg">Kilogram</option>
+                                            <option value="In">Inches</option>
+                                            <option value="Ltr">Liter</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit</label>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" name="TaxPercentage" id="TaxPercentage">
+                                </div>
+                                <div class="col-6">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" name="ShortCode" id="ShortCode">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="form-floating">
+                            <textarea class="form-control"  style="height: 100px" name="Description" id="Description"></textarea>
+                            <label for="floatingTextarea">Description</label>
+                          </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div>
+                            <input type="file" id="" class="bg-primary w-100 file-input position-absolute opacity-0" name="Image">
+                            <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
+                                <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
+                                <div>Browse Files</div>
+                            </div>
+                        </div>
+                    </div> 
+                                </div>
+        
+                                 <div class="col-4" style="background-color: #fff5d7;">
+                                <div class="form col-12">
+                                    <div class="row mt-2">
+                                        <div class="form col multiselect">
+                                        <div  class="form-select selectBox" id="modifierGroupSelect" onclick="showCheckboxes()">
+                                            @* <option selected>Select Modifiers Group</option> *@
+                                            Select Modifier Group
+                                        </div>
+
+                                        <div id="checkboxes" class="d-flex flex-column bg-white rounded d-none p-2">
+
+                                         </div>
+
+                                    </div>
+                                    </div>
+
+                                </div>
+                                 </div>
+                         </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="editmodalbtn">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                       
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+      @* ---------------- Delete item modal body------------------- *@
+
+    <div class="modal" tabindex="-1" id="deleteitemmodal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3" style="width: 420px !important;">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
+                    <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete these Items?</div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center gap-2">
+                    <a id="deleteitemBtn">
+                        <button type="button" class="btn btn-primary px-4">Yes</button>
+                    </a>
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* -------------------------------------------------------------- *@
 </div>
 
 
@@ -617,7 +803,7 @@ function showCheckboxes() {
   }
 }
 
-@* $("#addItemForm").submit(function (e) {
+$("#addItemForm").submit(function (e) {
     e.preventDefault();
     $('#addmenuitem').modal('hide'); 
     console.log("inside form")
@@ -637,13 +823,96 @@ function showCheckboxes() {
         data: formData,
         contentType: false,
         processData: false,
-        success:function (){
-            TempData["ToastrType"] = "success";  // Options: success, error, warning, info
-            TempData["ToastrMessage"] = "item add Successfully!";
-            location.reload();
+        success:function (response){
+            @* TempData["ToastrType"] = "success";  
+            TempData["ToastrMessage"] = "item add Successfully!"; *@
+            if (response.redirectTo) {
+            window.location.href = response.redirectTo;  // Manually redirect
+        }
              
             
         }
     });
-}); *@
-</script>
+});
+
+function setedititemdata(ele)
+{
+    var c = JSON.parse(ele.getAttribute("item-obj"));
+    console.log(c);
+
+    var editmenuitem = document.getElementById("editmenuitem");
+    editmenuitem.querySelector("#Rate").value =c.rate;
+    editmenuitem.querySelector("#type").value =c.type;
+    editmenuitem.querySelector("#Isavailable").checked =c.isavailable?true:false;
+    editmenuitem.querySelector("#itemname").value =c.itemName;
+    editmenuitem.querySelector("#Quantity").value =c.quantity;
+    editmenuitem.querySelector("#Unit").value =c.unit;
+    editmenuitem.querySelector("#TaxPercentage").value =c.taxPercentage;
+    editmenuitem.querySelector("#ShortCode").value =c.shortCode;
+    editmenuitem.querySelector("#Description").value =c.description;
+    editmenuitem.querySelector("#DefaultTax").checked =c.defaultTax?true:false;
+    editmenuitem.querySelector("#itemId").value =c.itemId;
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Select main checkbox
+    const mainCheckbox = document.getElementById("menu-main-checkbox");
+    const checkboxes = document.querySelectorAll(".inner_checkbox");
+
+    // When main checkbox is clicked
+    mainCheckbox.addEventListener("change", function () {
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = mainCheckbox.checked; // Set inner checkboxes same as main
+        });
+    });
+
+    // If any inner checkbox is unchecked, uncheck the main checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            if (!this.checked) {
+                mainCheckbox.checked = false;
+            }
+            // If all checkboxes are checked, also check the main checkbox
+            else if (Array.from(checkboxes).every(chk => chk.checked)) {
+                mainCheckbox.checked = true;
+            }
+        });
+    });
+});
+
+    document.getElementById("deleteitemBtn").addEventListener("click",()=>{
+       
+    })
+
+  $("#deleteitemBtn").click(function (e) {
+    var idlist = [];
+    const checkboxes = document.querySelectorAll(".inner_checkbox");
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            idlist.push(checkbox.value);  // Fix: Use checkbox.value instead of this.value
+        }
+    });
+
+    console.log(idlist)
+    
+
+    $.ajax({
+        url: "/Menu/Deleteitems",
+        method: "POST",
+        data:{
+            ids: idlist
+         },  
+        success: function (response) {
+            console.log("Items deleted successfully");
+            window.location.href='/Menu/Menu?cat=@Model.SelectedCategory'; 
+        },
+        error: function (xhr, status, error) {
+            console.error("Error deleting items:", error);
+        }
+    });
+});
+
+</script> 

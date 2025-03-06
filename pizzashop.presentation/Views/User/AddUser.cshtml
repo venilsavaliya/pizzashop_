@@ -5,14 +5,14 @@
         <h3 class="custom-blue">Add New Users</h3>
         <div class="search-section d-flex gap-2">
             <!-- <a href="/Userlist.html"><button type="button" class=" custom-btn-bg text-white custom-blue p-2 border">Back</button></a> -->
-            <a href="/Userlist.html"><button type="button" class="btn custom-blue border border-primary">
+            <a asp-action="GetUserList" asp-controller="User"><button type="button" class="btn custom-blue border border-primary">
                     < Back</button></a>
         </div> 
     </div>
  
     <div class="form-section mt-3 p-4 border rounded shadow-box">
         <Form asp-action="AddUser" asp-controller="User" method="post">
-            <span asp-validation-summary="All"></span>
+            @* <span asp-validation-summary="All"></span> *@
        
             <div class="d-flex gap-4 flex-column flex-md-row">
                 <div class="form-floating mb-3 col">
@@ -105,7 +105,7 @@
             </div>
             <div class="d-flex gap-2 mt-3">
                 <button class="custom-btn-bg text-white p-2 border rounded">Add User</button>
-                <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a href="./Userlist.html"
+                <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a asp-action="GetUserList" asp-controller="User"
                         class="custom-blue" style="text-decoration: none;">cancel</a></button>
             </div>
         </Form>

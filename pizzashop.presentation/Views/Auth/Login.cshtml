@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
 </head>
 
@@ -84,18 +85,21 @@
 
                 @*This is shown when there is custom error*@
 
-                @if (ViewContext.ModelState.ContainsKey("InvalidCredentials"))
+                @* @if (ViewContext.ModelState.ContainsKey("InvalidCredentials"))
                 {
                     <div class="text-danger">
                         @ViewContext.ModelState["InvalidCredentials"]?.Errors[0].ErrorMessage
                     </div>
-                }
+                } *@
 
             </form>
         </div>
         <script src="~/js/site.js" asp-append-version="true"></script>
         @await Component.InvokeAsync("Notyf")
-        @* @RenderSection("Scripts", required: false) *@
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        @await Html.PartialAsync("~/Views/Shared/_Toaster.cshtml")
+     
 
 
     </div>

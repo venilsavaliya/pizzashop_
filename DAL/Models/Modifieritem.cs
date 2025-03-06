@@ -3,33 +3,19 @@ using System.Collections.Generic;
 
 namespace DAL.Models;
 
-public partial class Item
+public partial class Modifieritem
 {
-    public int ItemId { get; set; }
+    public int ModifierId { get; set; }
 
-    public int? CategoryId { get; set; }
+    public string ModifierName { get; set; } = null!;
 
-    public string ItemName { get; set; } = null!;
+    public int? Rate { get; set; }
 
-    public string Type { get; set; } = null!;
+    public string? Unit { get; set; }
 
-    public short Rate { get; set; }
-
-    public short Quantity { get; set; }
-
-    public string Unit { get; set; } = null!;
-
-    public bool DefaultTax { get; set; }
-
-    public double TaxPercentage { get; set; }
-
-    public string? ShortCode { get; set; }
- 
-    public bool Isavailable { get; set; }
+    public int? Quantity { get; set; }
 
     public string? Description { get; set; }
-
-    public string? Image { get; set; }
 
     public DateTime Createddate { get; set; }
 
@@ -41,11 +27,13 @@ public partial class Item
 
     public bool? Isdeleted { get; set; }
 
-    public virtual Category? Category { get; set; }
+    public string? Photo { get; set; }
 
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
     public virtual ICollection<Itemsrmodifiersgroup> Itemsrmodifiersgroups { get; } = new List<Itemsrmodifiersgroup>();
+
+    public virtual ICollection<Modifieritemsmodifiersgroup> Modifieritemsmodifiersgroups { get; } = new List<Modifieritemsmodifiersgroup>();
 
     public virtual User? ModifyiedbyNavigation { get; set; }
 }
