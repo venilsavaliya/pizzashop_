@@ -136,11 +136,14 @@ public class UserController : BaseController
 
         if (!AuthResponse.Success)
         {
-            _notyf.Error(AuthResponse.Message);
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
             return View(model);
         }
         else
-        {
+        {   
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = AuthResponse.Message;
             return RedirectToAction("GetUserList", "user");
         }
 
