@@ -5,6 +5,7 @@ using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace pizzashop.presentation.Controllers;
@@ -22,6 +23,7 @@ public class UserController : BaseController
     }
 
     #region Profile
+    [Authorize(Roles="Admin")]
     // GET : User/Profile
     public IActionResult Profile()
     {
@@ -45,6 +47,7 @@ public class UserController : BaseController
     }
 
     // POST : User/UpdateProfile
+    [Authorize(Roles="Admin")]
     [HttpPost]
     public async Task<IActionResult> UpdateProfile(UpdateUserViewModel model)
     {
@@ -71,7 +74,7 @@ public class UserController : BaseController
     }
 
     // GET : User/ChangePassword
-
+    [Authorize(Roles="Admin")]
     public IActionResult ChangePassword()
     {
         return View();
@@ -79,6 +82,7 @@ public class UserController : BaseController
 
     // POST : User/ChangePassword
     [HttpPost]
+    [Authorize(Roles="Admin")]
     public IActionResult ChangePassword(ChangePasswordViewModel model)
     {
         if (!ModelState.IsValid)
@@ -162,20 +166,23 @@ public class UserController : BaseController
     [HttpPost]
     public IActionResult EditUser(EditUserViewModel model)
     {
-        // if (!ModelState.IsValid)
-        // {
-        //     return View(model);
-        // }
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
 
         var AuthResponse = _userService.EditUser(model).Result;
 
         if (!AuthResponse.Success)
         {
-            _notyf.Error(AuthResponse.Message);
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
             return View(model);
         }
         else
         {
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = AuthResponse.Message;
             return RedirectToAction("GetUserList", "user");
         }
     }
@@ -192,12 +199,14 @@ public class UserController : BaseController
 
         if (!AuthResponse.Success)
         {
-            _notyf.Error("Could Not Delete User");
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
             return RedirectToAction("GetUserList", "User");
         }
         else
         {
-            _notyf.Success("User Deleted Successfully");
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = AuthResponse.Message;
             return RedirectToAction("GetUserList", "User");
         }
 

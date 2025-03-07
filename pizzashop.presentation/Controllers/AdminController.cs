@@ -1,9 +1,11 @@
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace pizzashop.presentation.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class AdminController : BaseController
 {
     private readonly IAdminService _adminService;
@@ -16,7 +18,7 @@ public class AdminController : BaseController
 
     private readonly INotyfService _notyf;
 
-    public AdminController(IAdminService adminService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService,INotyfService notyf,IJwtService jwtService,IUserService userService,IAdminService adminservice):base(jwtService,userService,adminservice)
+    public AdminController(IAdminService adminService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice) : base(jwtService, userService, adminservice)
     {
         _adminService = adminService;
         _authservice = authService;
@@ -50,13 +52,16 @@ public class AdminController : BaseController
     {
         var AuthResponse = _adminService.SavePermission(permissions).Result;
 
-        if(AuthResponse.Success){
-            TempData["SuccessMessage"]="Permission Change Successfully";
-            _notyf.Success("Permission Updated Successfully");
+        if (AuthResponse.Success)
+        {
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = AuthResponse.Message;
+            return RedirectToAction("Roles", "Admin");
         }
 
-        // Redirect to the same page or another page
-        return RedirectToAction("Index","Home");
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        return RedirectToAction("Roles", "Admin");
     }
 
 

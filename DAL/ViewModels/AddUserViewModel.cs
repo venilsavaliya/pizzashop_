@@ -1,5 +1,9 @@
 namespace DAL.ViewModels;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
+
+using DAL.Validators;
+
 public partial class AddUserViewModel 
 { 
      
@@ -10,7 +14,7 @@ public partial class AddUserViewModel
 
     public string UserName { get; set; } = null!;
 
-     [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone number must be exactly 10 digits.")]
+    [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone number must be exactly 10 digits.")]
     public string? Phone { get; set; }
 
     [EmailAddress(ErrorMessage = "Please Enter Valid Email Address.")]
@@ -24,18 +28,20 @@ public partial class AddUserViewModel
 
     public string? Country { get; set; }
 
+    [RequiredIfCountryPresent("Country")]
     public string? State { get; set; }
 
+    [RequiredIfCountryPresent("Country")]
     public string? City { get; set; }
 
     public string? Address { get; set; }
 
-     [RegularExpression(@"^\d{6}$", ErrorMessage = "zipcode must be exactly 6 digits.")]
+    [RegularExpression(@"^\d{6}$", ErrorMessage = "zipcode must be exactly 6 digits.")]
     public string? Zipcode { get; set; }
 
     public string? RoleName { get; set; }
 
-    public string? Profile { get; set; }
+    public IFormFile? Profile { get; set; }
 
    
 

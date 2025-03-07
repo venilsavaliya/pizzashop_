@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/pizzashop.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
 
     <style>
@@ -50,7 +54,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Roles" ? "active-option" : "")">
+                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Roles" ? "active-option" : "") @(ViewBag.Role!="Admin"?"d-none":"d-block")">
                     <a asp-action="Roles" asp-controller="Admin"
                         class="sidebar-link @(ViewBag.active == "Roles" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
@@ -171,32 +175,32 @@
             <div class="offcanvas-body">
                 <div class="sidebar-options-list  d-flex flex-column align-items-start  gap-3 fw-medium">
 
-                    <div class="sidebar-option mt-3 w-100  p-2 active-option">
-                        <a asp-action="Index" asp-controller="Home" class="sidebar-link active-option">
+                    <div class="sidebar-option mt-3 w-100  p-2 @(ViewBag.active == "Dashboard" ? "active-option" : "")">
+                        <a asp-action="Index" asp-controller="Home" class="sidebar-link @(ViewBag.active == "Dashboard" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/sidebar icons/dashboard.png" alt="">
                                 <div>Dashbaord</div>
                             </div>
                         </a>
                     </div>
-                    <div class="sidebar-option w-100 p-2">
-                        <a asp-action="GetUserList" asp-controller="User" class="sidebar-link">
+                    <div class="sidebar-option w-100 p-2 @(ViewBag.active == "Users" ? "active-option" : "")">
+                        <a asp-action="GetUserList" asp-controller="User" class="sidebar-link @(ViewBag.active == "User" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/sidebar icons/users.png" alt="">
                                 <div>Users</div>
                             </div>
                         </a>
                     </div>
-                    <div class="sidebar-option w-100 p-2 ">
-                        <a asp-action="Roles" asp-controller="Admin" class="sidebar-link">
+                    <div class="sidebar-option w-100 p-2 @(ViewBag.active == "Roles" ? "active-option" : "")">
+                        <a asp-action="Roles" asp-controller="Admin" class="sidebar-link @(ViewBag.active == "Roles" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/sidebar icons/roles_permission.png" alt="">
                                 <div>Roles and Permission</div>
                             </div>
                         </a>
                     </div>
-                    <div class="sidebar-option w-100 p-2">
-                        <a href="./Menu.html" class="sidebar-link">
+                    <div class="sidebar-option w-100 p-2 @(ViewBag.active == "Menu" ? "active-option" : "")">
+                        <a asp-action="Menu" asp-controller="Menu" class="sidebar-link @(ViewBag.active == "Menu" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/sidebar icons/menu.png" alt="">
                                 <div>Menus</div>

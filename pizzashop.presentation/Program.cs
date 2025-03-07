@@ -65,7 +65,23 @@ builder.Services.AddAuthentication(x =>
                     context.Request.Headers["Authorization"] = "Bearer " + token;
                 }
                 return Task.CompletedTask;
+            },
+            OnForbidden = context =>
+            {
+                context.Response.Redirect("/Auth/Login"); // Redirect to login if forbidden
+                return Task.CompletedTask;
+            },
+             OnChallenge = context =>
+            {
+                // Prevent the default 401 response
+                context.HandleResponse();
+
+                // Redirect the user to login page
+                context.Response.Redirect("/Auth/Login"); // Change to your actual login route
+                
+                return Task.CompletedTask;
             }
+            
         };
     }
 );
@@ -97,7 +113,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

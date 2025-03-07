@@ -189,6 +189,7 @@ public class AuthController : Controller
     public IActionResult Logout()
     {
         Response.Cookies.Delete("jwt");
+
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = "Logout Successfully!";
         return RedirectToAction("Login", "Auth");

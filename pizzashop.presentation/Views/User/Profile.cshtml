@@ -3,6 +3,7 @@
     ViewData["Title"] = "Profile";
 
     var email = Context.Request.Cookies["email"];
+     ViewBag.active = "Users";
 }
 
     <div class="add-user-container p-3">
@@ -48,7 +49,7 @@
                         
                         <div class="ms-3" style="top: 90px; left: 30px;">
                             <h1>@(Model.FirstName)</h1>
-                            <span>admin</span>                         
+                            <span>@ViewBag.Role</span>                         
                         </div>  
                     </div>
 

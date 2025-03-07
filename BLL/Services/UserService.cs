@@ -188,6 +188,12 @@ public class UserService : IUserService
         user.State = statename?.StateName;
         user.City = cityname?.CityName;
 
+        string url ="";
+
+        if(user.Profile!=null)
+        {
+            url = UploadFile(user.Profile);
+        }
 
         var usercredential = new User
         {
@@ -230,7 +236,7 @@ public class UserService : IUserService
             Address = user.Address,
             Zipcode = user.Zipcode,
             RoleId = roleid,
-            // Profile = user.Profile,
+            Profile = url,
             Createdby = loggedinadmin?.Id ?? Guid.Empty
         };
 

@@ -13,7 +13,7 @@ public class MenuController : BaseController
 
     private readonly INotyfService _notyf;
 
-    public MenuController(IMenuServices menuServices, INotyfService notyf,IJwtService jwtService,IUserService userService,IAdminService adminservice) : base(jwtService,userService,adminservice)
+    public MenuController(IMenuServices menuServices, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice) : base(jwtService, userService, adminservice)
     {
         _menuservices = menuServices;
         _notyf = notyf;
@@ -25,10 +25,11 @@ public class MenuController : BaseController
 
     {
         var categories = _menuservices.GetCategoryList();
-        if(cat==null){
+        if (cat == null)
+        {
             cat = categories.First().Name;
         }
-        var itempaginationmodel = _menuservices.GetItemsListByCategoryName(cat,  pageNumber , pageSize , searchKeyword); 
+        var itempaginationmodel = _menuservices.GetItemsListByCategoryName(cat, pageNumber, pageSize, searchKeyword);
         ViewBag.active = "Menu";
 
         // var itempaginationmodel = new ItemPaginationViewModel{
@@ -36,13 +37,16 @@ public class MenuController : BaseController
         //     TotalCount
         // };
 
-        var model = new MenuViewModel{
+        var model = new MenuViewModel
+        {
             Categories = categories,
             Itemsmodel = itempaginationmodel,
             SelectedCategory = cat
         };
 
-       
+      
+
+
         return View(model);
     }
 
@@ -80,54 +84,57 @@ public class MenuController : BaseController
     public IActionResult DeleteCategory(string id)
     {
         var AuthResponse = _menuservices.DeleteCategory(id);
-        return RedirectToAction("Menu","Menu");
+        return RedirectToAction("Menu", "Menu");
     }
 
     // POST : ADD New Item
 
-    public IActionResult AddNewItem(AddItemViewModel model){
+    public IActionResult AddNewItem(AddItemViewModel model)
+    {
 
         var AuthResponse = _menuservices.AddNewItem(model).Result;
 
-        if(!AuthResponse.Success)
+        if (!AuthResponse.Success)
         {
             _notyf.Error(AuthResponse.Message);
-            return RedirectToAction("Menu","Menu");
+            return RedirectToAction("Menu", "Menu");
         }
 
         TempData["ToastrType"] = "success";  // Options: success, error, warning, info
         TempData["ToastrMessage"] = "item add Successfully!";
         // return RedirectToAction("Menu","Menu");
         string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
-        return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
-        
+        return Json(new { redirectTo = Url.Action("Menu", "Menu", new { cat = categoryName }) });
+
     }
 
     // Post : Edit item
     [HttpPost]
-    public IActionResult EditItem(AddItemViewModel model){
+    public IActionResult EditItem(AddItemViewModel model)
+    {
 
         var AuthResponse = _menuservices.EditItem(model).Result;
 
-        if(!AuthResponse.Success)
+        if (!AuthResponse.Success)
         {
             _notyf.Error(AuthResponse.Message);
-            return RedirectToAction("Menu","Menu");
+            return RedirectToAction("Menu", "Menu");
         }
 
-        TempData["ToastrType"] = "success";  
+        TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = AuthResponse.Message;
         string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
-        return RedirectToAction("Menu","Menu",new {cat=categoryName});
+        return RedirectToAction("Menu", "Menu", new { cat = categoryName });
 
         // return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
-        
+
     }
 
     // Post : Delete Items
     [HttpPost]
 
-     public IActionResult DeleteItems(string cat,List<string> ids){
+    public IActionResult DeleteItems(List<string> ids)
+    {
 
         var AuthResponse = _menuservices.DeleteItems(ids).Result;
 
@@ -137,13 +144,13 @@ public class MenuController : BaseController
         //     return RedirectToAction("Menu");
         // }
 
-        TempData["ToastrType"] = "success";  
+        TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = AuthResponse.Message;
 
         // return RedirectToAction("Menu","Menu",new {cat});
 
         return Json(new { redirectTo = Url.Action("Menu", "Menu") });
-        
+
     }
 
 

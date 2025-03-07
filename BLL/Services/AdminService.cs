@@ -58,6 +58,7 @@ public class AdminService : IAdminService
                 Candelete = x.Candelete,
                 Isenable = x.Isenable ?? false
             })
+            .OrderBy(p=>p.PermissionName)
             .ToList();
 
         return new RolesPermissionListViewModel{

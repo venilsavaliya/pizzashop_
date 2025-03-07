@@ -1,24 +1,28 @@
 @model DAL.ViewModels.AddUserViewModel
+@{
+    ViewBag.active = "Users";
+}
 
 <div class="add-user-container p-3">
     <div class="head-section d-flex justify-content-between align-items-center">
         <h3 class="custom-blue">Add New Users</h3>
         <div class="search-section d-flex gap-2">
             <!-- <a href="/Userlist.html"><button type="button" class=" custom-btn-bg text-white custom-blue p-2 border">Back</button></a> -->
-            <a asp-action="GetUserList" asp-controller="User"><button type="button" class="btn custom-blue border border-primary">
+            <a asp-action="GetUserList" asp-controller="User"><button type="button"
+                    class="btn custom-blue border border-primary">
                     < Back</button></a>
-        </div> 
+        </div>
     </div>
- 
+
     <div class="form-section mt-3 p-4 border rounded shadow-box">
-        <Form asp-action="AddUser" asp-controller="User" method="post">
+        <Form asp-action="AddUser" asp-controller="User" method="post" enctype="multipart/form-data">
             @* <span asp-validation-summary="All"></span> *@
-       
+
             <div class="d-flex gap-4 flex-column flex-md-row">
                 <div class="form-floating mb-3 col">
                     <input asp-for="FirstName" type="text" class="form-control" id="floatingInput"
                         placeholder="name@example.com">
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                     <label for="floatingInput">First Name</label>
                 </div>
                 <div class="form-floating mb-3 col">
@@ -31,7 +35,7 @@
                 <div class="form-floating mb-3 col ">
                     <input asp-for="UserName" type="text" class="form-control" id="floatingInput"
                         placeholder="User name">
-                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
                     <label for="floatingInput">User Name</label>
                 </div>
                 <div class="form-floating col">
@@ -51,18 +55,25 @@
                     <span asp-validation-for="Email" class="text-danger"></span>
                     <label for="floatingInput">Email</label>
                 </div>
-                <div class="form-floating mb-3 col">
-                    <input asp-for="Password" type="password" class="form-control" id="floatingInput"
-                        placeholder="Password">
+                    <div class="form-group has-feedback position-relative  mb-3 col">
+                        <input type="password" asp-for="Password" class="form-control py-3" id="passwordinput"
+                            placeholder="Current password *" />
+                        <div>
+                            <img src="~/images/icons/eye-slash-fill.svg" alt="" id="seepassword" class="d-block"
+                                onclick="changevisibility(this)">
+                            <img src="~/images/icons/eye-fill.svg" alt="" class=" d-none" id="hidepassword"
+                                onclick="changevisibility(this)">
+                        </div>
+
                         <span asp-validation-for="Password" class="text-danger"></span>
-                    <label for="floatingInput">Password</label>
-                </div>
+                    </div>
+                @* </div> *@
             </div>
             <div>
-                <input type="file" name="" id="" class="bg-primary w-100 file-input position-absolute opacity-0">
+                <input type="file" asp-for="Profile" id="fileInput" class="bg-primary w-100 file-input position-absolute opacity-0">
                 <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
                     <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
-                    <div>Browse Files</div>
+                    <div id="fileName">Browse Files</div>
                 </div>
             </div>
             <div class="d-flex gap-4 mt-3 flex-column flex-md-row">
@@ -75,24 +86,29 @@
                     <label for="floatingSelect">Country</label>
                 </div>
                 <div class="form-floating col">
-                    <select asp-for="State" class="form-select" id="State" aria-label="Floating label select example" disabled>
-                        
+                    <select asp-for="State" class="form-select" id="State" aria-label="Floating label select example"
+                        disabled>
+
 
                     </select>
                     <label for="floatingSelect">State</label>
+                    <span asp-validation-for="State" class="text-danger"></span>
                 </div>
                 <div class="form-floating col">
-                    <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example" disabled>
+                    <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example"
+                        disabled>
                         @* <option selected>@(Model.City)</option> *@
 
                     </select>
                     <label for="floatingSelect">city</label>
+                    <span asp-validation-for="City" class="text-danger"></span>
                 </div>
             </div>
             <div class="d-flex gap-4 mt-3 flex-column flex-md-row">
                 <div class="form-floating mb-md-3 col">
                     <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" placeholder="Zipcode">
                     <label for="floatingInput">Zipcode</label>
+                    <span asp-validation-for="Zipcode" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-md-3 col">
                     <input asp-for="Address" type="text" class="form-control" id="floatingInput" placeholder="Address">
@@ -101,12 +117,13 @@
                 <div class="form-floating mb-md-3 col">
                     <input asp-for="Phone" type="text" class="form-control" id="floatingInput" placeholder="phone">
                     <label for="floatingInput">phone</label>
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
             </div>
             <div class="d-flex gap-2 mt-3">
                 <button class="custom-btn-bg text-white p-2 border rounded">Add User</button>
-                <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a asp-action="GetUserList" asp-controller="User"
-                        class="custom-blue" style="text-decoration: none;">cancel</a></button>
+                <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a asp-action="GetUserList"
+                        asp-controller="User" class="custom-blue" style="text-decoration: none;">cancel</a></button>
             </div>
         </Form>
     </div>
@@ -159,4 +176,30 @@
             }
         });
     });
+
+
+    function changevisibility(element) {
+        // Find the nearest input field inside the same parent div
+        var inputField = element.closest(".form-group").querySelector("input");
+
+        // Find the eye icons inside the same parent div
+        var seePasswordIcon = element.closest(".form-group").querySelector("#seepassword");
+        var hidePasswordIcon = element.closest(".form-group").querySelector("#hidepassword");
+
+        if (inputField.type === "password") {
+            inputField.type = "text";  // Show password
+            seePasswordIcon.classList.add("d-none");
+            hidePasswordIcon.classList.remove("d-none");
+        } else {
+            inputField.type = "password";  // Hide password
+            seePasswordIcon.classList.remove("d-none");
+            hidePasswordIcon.classList.add("d-none");
+        }
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+        const fileName = event.target.files.length > 0 ? event.target.files[0].name : "Browse Files";
+        document.getElementById('fileName').textContent = fileName;
+    });
+
 </script>

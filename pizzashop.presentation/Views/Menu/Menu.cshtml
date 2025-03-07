@@ -72,15 +72,16 @@
                                 </div>
                                
                                 <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
-                                    @* <a asp-action="Edit" asp-controller="Menu" asp-route-id="@c.Id"> *@
+                                  
                                         <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editcategory" onclick="setEditData(this)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description" obj="@c">
-                                        @* </a> *@
+                                    
                                     <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
                                         data-bs-target="#deletecategorymodal" onclick="setDeleteUserId(this)" data-id="@c.Id"
                                         alt="">
                                 </div>
                             </div>
                         }
+                        @* @Html.PartialAsync("~/Views/Shared/_SideList",Model) *@
 
                     </div>
 
@@ -110,7 +111,7 @@
                         </div>
                     </div>
                     <div class="table-section bg-white table-responsive mt-5 ms-2 me-2">
-                        <table class="table">
+                        <table class="table"> 
                             <tr>
                                 <th class="d-flex">
                                     <div class="form-check">
@@ -125,10 +126,10 @@
                                 <th>Action</th>
                             </tr>
 
-                            @* items list based on category *@
+                         
                             @foreach(var i in Model.Itemsmodel.Items)
                             {
-
+ 
                                  <tr>
                                 <td>
                                     <div class="d-flex justify-content-start gap-2 align-items-center">
@@ -136,7 +137,7 @@
                                             <input class="form-check-input inner_checkbox" type="checkbox" value="@i.ItemId"
                                                 id="flexCheckIndeterminate">
                                         </div>
-                                        @* <img src="~/images/dining-menu.png" class="small-img"> *@
+                                      
                                         <img src="@(i.Image!=null && !string.IsNullOrEmpty(i.Image)?i.Image:"/images/dining-menu.png")" class="small-img">
                                         <span>@i.ItemName</span>
                                     </div>
@@ -198,35 +199,29 @@
                 }
             </div>
                         </div>
-                    </div>
-
+                    </div> 
+                    @* <div id="paginationContent"> *@
+    @* @Html.Partial("~/Views/Shared/_ItemList.cshtml", Model.Itemsmodel) *@
+@* </div> *@
                 </div>
 
             </div>
 
-
-@* -----------second tab------------ *@
+        </div>
+        @* -----------second tab------------ *@
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
                 <div class="d-flex">
                     helllo
                 </div>
             </div>
-
-
-        </div>
-
     </div>
 
 
-   
-
-   
-
     <!-- add category modal -->
-    <div class="modal fade w-75" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content w-100">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Category</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -914,5 +909,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+@* $(document).ready(function () {
+    function loadPage(page) {
+        var searchKeyword = $("#search").val();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'GET',
+            data: { searchKeyword: searchKeyword, page: page },
+            success: function (data) {
+                $("#paginationContent").html(data);
+            }
+        });
+    }
+
+    $(document).on("click", ".page-link", function () {
+        var page = $(this).data("page");
+        loadPage(page);
+    });
+
+    $("#search").keyup(function () {
+        loadPage(1);
+    });
+}); *@
+
 
 </script> 
