@@ -1,8 +1,16 @@
 @* @model IEnumerable<DAL.ViewModels.CategoryNameViewModel> *@
 @model DAL.ViewModels.MenuViewModel;
+@using DAL.ViewModels
 
 @{
     ViewData["Category"] = Model.SelectedCategory;
+
+   @* var categorymodel = new CategoryListModel
+   {
+        Catagories = Model.Categories,
+        SelectedCategory = Model.SelectedCategory
+
+   }; *@
 }
 
 <div class="Menu-container p-3">
@@ -52,40 +60,24 @@
 
  
     <div class="tab-content bg-white mt-2 bg-white position-relative " id="nav-tabContent">
+
+        @* ----first tab------- *@
+
         <div class="tab-pane fade show active w-100" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
             tabindex="0">
             <div class="d-flex w-100">
-                <div class=" category-menu border-0 pt-3 d-none d-lg-block">
+                <div class=" category-menu border-0 pt-3 d-none d-lg-block" id="category-menu">
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Category</h5>
                         <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
                             data-bs-toggle="modal" data-bs-target="#staticBackdrop">+
                         </div>
                     </div>
-                    <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75">
+                    <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="category-list">
 
-                    @* category list  *@
+                        @* category list  *@
 
-                        @foreach (var c in Model.Categories)
-                        {
-                            <div
-                                class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedCategory == c.Name?"category-active-option":"")" id="category_option" category-name="@c.Name" >
-                                <div class="d-flex gap-2" style="cursor: pointer;" onclick="loaditems(this)" category-name="@c.Name">
-                                    <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img ">
-                                    <div>@c.Name</div>
-                                </div>
-                               
-                                <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
-                                  
-                                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editcategory" onclick="setEditData(this)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description" obj="@c">
-                                    
-                                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
-                                        data-bs-target="#deletecategorymodal" onclick="setDeleteUserId(this)" data-id="@c.Id"
-                                        alt="">
-                                </div>
-                            </div>
-                        }
-                        @* @Html.PartialAsync("~/Views/Shared/_SideList",Model) *@
+                        @* -------partial view here of category list-------- *@
 
                     </div>
 
@@ -131,11 +123,11 @@
                             data-bs-toggle="modal" data-bs-target="#staticBackdrop">+
                         </div>
                     </div>
-                    <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75">
+                    <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="modifier-list">
 
                     @* category list  *@
 
-                        @foreach (var m in Model.ModifierGroups)
+                        @* @foreach (var m in Model.ModifierGroups)
                         {
                             <div
                                 class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedModifierGroup == m.ModifiergroupId?"category-active-option":"")" id="category_option" ModifierGroup-name="@m.Name" >
@@ -153,7 +145,7 @@
                                         alt="">
                                 </div>
                             </div>
-                        }
+                        } *@
                         @* @Html.PartialAsync("~/Views/Shared/_SideList",Model) *@
 
                     </div>
@@ -181,7 +173,7 @@
                                 class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
                         </div>
                     </div>
-                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="menuTableContainer">
+                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainer">
                        
                     </div> 
                    
@@ -682,21 +674,53 @@
         deleteBtn.href = '@Url.Action("DeleteCategory", "Menu")' + '?id=' + Id;
     }
 
-    function loaditems(ele)
+    function loadmodifiers(ele)
+    {
+        var id = ele.getAttribute("modifiergroup-id");
+
+        $.ajax({
+            type:"GET",
+            url:"/Menu/GetModifiers",
+            data:{modifiergroup_id : id},
+            success:function(data)
+            {
+                $('#modifier-list').html(data);
+            }
+
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetModifierItemsList", "Menu")',
+            type: 'GET',
+            data: {modifiergroup_id:id},
+            success: function (data) {
+                $('#modifieritemstablecontainer').html(data);
+            }
+        });
+    }
+    function loadcategories(ele)
     {
         var name = ele.getAttribute("category-name");
-        window.location.href="/Menu/Index?cat="+name;
 
-        @* $.ajax({
+        $.ajax({
             type:"GET",
-            url:"/Menu/Menu",
+            url:"/Menu/GetCategories",
             data:{cat : name},
             success:function(data)
             {
-                $('#menuTableContainer').html(data);
+                $('#category-list').html(data);
             }
 
-        }) *@
+        });
+
+        $.ajax({
+            url: '@Url.Action("Menu", "Menu")',
+            type: 'GET',
+            data: {cat:name},
+            success: function (data) {
+                $('#menuTableContainer').html(data);
+            }
+        });
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -722,8 +746,7 @@
 
         const categories = document.querySelectorAll(".category-option");
         const categoriesforsmall = document.querySelectorAll(".category-option-smallscreen");
-
-        console.log("document ready 1")
+    
 
         if (categories.length > 0) {
             // Select the first category by default
@@ -754,12 +777,44 @@
     let currentPage = 1;
     $(document).ready(function () {
         currentPage =1;
-         $.ajax({
+         
+
+        $.ajax({
+            type:"GET",
+            url:"/Menu/GetCategories",
+            data:{cat : name},
+            success:function(data)
+            {
+                $('#category-list').html(data);
+            }
+
+        });
+
+        $.ajax({
             url: '@Url.Action("Menu", "Menu")',
             type: 'GET',
             data: {cat:"@Model.SelectedCategory"},
             success: function (data) {
                 $('#menuTableContainer').html(data);
+            }
+        });
+
+        $.ajax({
+            type:"GET",
+            url:"/Menu/GetModifiers",
+            success:function(data)
+            {
+                $('#modifier-list').html(data);
+            }
+
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetModifierItemsList", "Menu")',
+            type: 'GET',
+            data: {modifiergroup_id:@Model.SelectedModifierGroup},
+            success: function (data) {
+                $('#modifieritemstablecontainer').html(data);
             }
         });
          
@@ -904,6 +959,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 
     document.getElementById("deleteitemBtn").addEventListener("click",()=>{
        

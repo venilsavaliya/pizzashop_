@@ -183,6 +183,50 @@ public class MenuServices : IMenuServices
         };
     }
 
+    // Get ModifierItem List from ModifierGroup id
+
+    public ModifierPaginationViewModel GetModifierItemsListByModifierGroupId(int modifiergroup_id, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    {
+        searchKeyword = searchKeyword.ToLower();
+        var categoryId = _context.Modifieritems.FirstOrDefault(c => c.ModifierId == modifiergroup_id)?.ModifierId;
+
+        var query = from i in _context.Modifieritems
+                    where i.Isdeleted != true && i.ModifierId == modifiergroup_id
+                    select new ModifierItemsViewModel
+                    {
+                        ModifierId = i.ModifierId,
+                        Name = i.ModifierName,
+                        Rate = i.Rate,
+                        Quantity = i.Quantity,
+                        Unit = i.Unit,   
+                    };
+
+        if (!string.IsNullOrEmpty(searchKeyword))
+        {
+            query = query.Where(i => i.Name.ToLower().Contains(searchKeyword));
+        }
+
+        // Pagination
+        int totalCount = query.Count();
+        query = query.OrderBy(i => i.Name);
+        var items = query.Skip((pageNumber - 1) * pageSize)
+                             .Take(pageSize)
+                             .ToList();
+
+        return new ModifierPaginationViewModel
+        {   ModifierGroupId=modifiergroup_id,
+            Items = items,
+            TotalCount = totalCount,
+            PageSize = pageSize,
+            CurrentPage = pageNumber,
+            TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+            StartIndex = (pageNumber - 1) * pageSize + 1,
+            EndIndex = Math.Min(pageNumber * pageSize, totalCount),
+            SearchKeyword = searchKeyword
+        };
+    }
+
+
     #region Item
 
     public async Task<AuthResponse> AddNewItem(AddItemViewModel model)
