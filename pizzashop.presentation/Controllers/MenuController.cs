@@ -18,8 +18,38 @@ public class MenuController : BaseController
         _menuservices = menuServices;
         _notyf = notyf;
     }
+    // GET : Index
 
-    // GET : Menu
+    public IActionResult Index(string? cat,int? ModifierId)
+    {
+
+        var categories = _menuservices.GetCategoryList();
+        var ModifierGroups = _menuservices.GetModifiersGroupList();
+
+        if (cat == null)
+        {
+            cat = categories.First().Name;
+        }
+        if( ModifierId == null)
+        {
+            ModifierId = ModifierGroups.First().ModifiergroupId;
+        }
+        // var itempaginationmodel = _menuservices.GetItemsListByCategoryName(cat, pageNumber, pageSize, searchKeyword);
+        ViewBag.active = "Menu";
+
+        var model = new MenuViewModel
+        {
+            Categories = categories,
+            SelectedCategory = cat,
+            SelectedModifierGroup=ModifierId,
+            ModifierGroups= ModifierGroups,
+            // Itemsmodel = itempaginationmodel
+        };
+
+        return View(model);
+
+    }
+    // GET : Menu {Returns Partial View}
 
     public IActionResult Menu(string? cat, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
 
@@ -32,11 +62,6 @@ public class MenuController : BaseController
         var itempaginationmodel = _menuservices.GetItemsListByCategoryName(cat, pageNumber, pageSize, searchKeyword);
         ViewBag.active = "Menu";
 
-        // var itempaginationmodel = new ItemPaginationViewModel{
-        //     Items = items,
-        //     TotalCount
-        // };
-
         var model = new MenuViewModel
         {
             Categories = categories,
@@ -44,10 +69,7 @@ public class MenuController : BaseController
             SelectedCategory = cat
         };
 
-      
-
-
-        return View(model);
+        return PartialView("~/Views/Shared/_MenuItemsList.cshtml", itempaginationmodel);
     }
 
     // POST : Menu
@@ -62,7 +84,8 @@ public class MenuController : BaseController
 
             if (res.Success)
             {
-                _notyf.Success(res.Message);
+                TempData["ToastrType"] = "success";
+                TempData["ToastrMessage"] = res.Message;
             }
 
         }
@@ -70,13 +93,17 @@ public class MenuController : BaseController
         {
             var AuthResponse = _menuservices.AddCategory(model);
             if (AuthResponse.Success)
-                _notyf.Success(AuthResponse.Message);
+            {
+                TempData["ToastrType"] = "success";
+                TempData["ToastrMessage"] = AuthResponse.Message;
+            }
+
         }
 
-        TempData["ToastrType"] = "success";  // Options: success, error, warning, info
-        TempData["ToastrMessage"] = "category add Successfully!";
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = "error in add category";
 
-        return RedirectToAction("Menu", "Menu");
+        return RedirectToAction("Index", "Menu");
     }
 
     // POST : Delete category
@@ -84,7 +111,10 @@ public class MenuController : BaseController
     public IActionResult DeleteCategory(string id)
     {
         var AuthResponse = _menuservices.DeleteCategory(id);
-        return RedirectToAction("Menu", "Menu");
+
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        return RedirectToAction("Index", "Menu");
     }
 
     // POST : ADD New Item
@@ -104,7 +134,7 @@ public class MenuController : BaseController
         TempData["ToastrMessage"] = "item add Successfully!";
         // return RedirectToAction("Menu","Menu");
         string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
-        return Json(new { redirectTo = Url.Action("Menu", "Menu", new { cat = categoryName }) });
+        return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
 
     }
 
@@ -117,14 +147,15 @@ public class MenuController : BaseController
 
         if (!AuthResponse.Success)
         {
-            _notyf.Error(AuthResponse.Message);
-            return RedirectToAction("Menu", "Menu");
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
+            return RedirectToAction("Index", "Menu");
         }
 
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = AuthResponse.Message;
         string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
-        return RedirectToAction("Menu", "Menu", new { cat = categoryName });
+        return RedirectToAction("Index", "Menu", new { cat = categoryName });
 
         // return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
 

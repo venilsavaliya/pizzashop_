@@ -4,8 +4,12 @@ namespace DAL.ViewModels;
 
 public class MenuViewModel
 {
-
     public string? SelectedCategory {get;set;}
+
+    public int? SelectedModifierGroup {get;set;}
+
+    public IEnumerable<ModifierGroupNameViewModel> ModifierGroups {get;set;}
+
     public IEnumerable<CategoryNameViewModel> Categories {get;set;}
 
     // public IEnumerable<ItemViewModel> Items {get;set;}

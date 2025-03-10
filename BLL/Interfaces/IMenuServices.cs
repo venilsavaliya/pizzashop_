@@ -18,4 +18,6 @@ public interface IMenuServices
     public Task<AuthResponse> DeleteItems(List<string> ids);
 
     public string GetCategoryNameFromId(int id);
+
+    public IEnumerable<ModifierGroupNameViewModel> GetModifiersGroupList();
 }

@@ -1,6 +1,10 @@
 @* @model IEnumerable<DAL.ViewModels.CategoryNameViewModel> *@
 @model DAL.ViewModels.MenuViewModel;
 
+@{
+    ViewData["Category"] = Model.SelectedCategory;
+}
+
 <div class="Menu-container p-3">
 
     <h3 class="custom-blue">Menu</h3>
@@ -46,7 +50,7 @@
         </div>
     </div>
 
-
+ 
     <div class="tab-content bg-white mt-2 bg-white position-relative " id="nav-tabContent">
         <div class="tab-pane fade show active w-100" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
             tabindex="0">
@@ -65,7 +69,7 @@
                         @foreach (var c in Model.Categories)
                         {
                             <div
-                                class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedCategory == c.Name?"category-active-option":"")" id="category_option"  >
+                                class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedCategory == c.Name?"category-active-option":"")" id="category_option" category-name="@c.Name" >
                                 <div class="d-flex gap-2" style="cursor: pointer;" onclick="loaditems(this)" category-name="@c.Name">
                                     <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img ">
                                     <div>@c.Name</div>
@@ -89,8 +93,6 @@
                 <div class="d-flex flex-column flex-grow-1 pt-3 px-3 w-100 ">
                     <div class="d-flex justify-content-between">
                         <h5 class="custom-blue">Items</h5>
-
-
                     </div>
                     <div
                         class="search-delete-section d-flex justify-content-start justify-content-md-end align-items-center">
@@ -110,99 +112,10 @@
                                 class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
                         </div>
                     </div>
-                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2">
-                        <table class="table"> 
-                            <tr>
-                                <th class="d-flex">
-                                    <div class="form-check">
-                                        <input class="form-check-input outer_checkbox" id="menu-main-checkbox"
-                                            type="checkbox" value="" id="flexCheckIndeterminate">
-                                    </div> <span>Name</span>
-                                </th>
-                                <th>ItemType</th>
-                                <th>Rate</th>
-                                <th>Quantity</th>
-                                <th>Available</th>
-                                <th>Action</th>
-                            </tr>
-
-                         
-                            @foreach(var i in Model.Itemsmodel.Items)
-                            {
- 
-                                 <tr>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-2 align-items-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input inner_checkbox" type="checkbox" value="@i.ItemId"
-                                                id="flexCheckIndeterminate">
-                                        </div>
-                                      
-                                        <img src="@(i.Image!=null && !string.IsNullOrEmpty(i.Image)?i.Image:"/images/dining-menu.png")" class="small-img">
-                                        <span>@i.ItemName</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    @if(i.Type=="Veg"){
-                                        <img src="~/images/icons/veg-icon.svg" alt="" class="small-img ">
-                                    }else{
-
-                                    <img src="~/images/icons/non-veg-icon.svg" alt="" class="small-img ">
-                                    }
-                                </td>
-                                <td>@i.Rate</td>
-                                <td>@i.Quantity</td>
-                                <td>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                            id="flexSwitchCheckDefault" @(i.Isavailable?"checked":"")>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-start gap-5">
-                                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmenuitem" item-obj='@Html.Raw(Json.Serialize(i))' onclick="setedititemdata(this)">
-                                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal" alt="">
-                                    </div>
-
-                                </td>
-                            </tr>
-
-                            }
-                            
-
-                        </table>
-                        <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
-            <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
-                <div>Items per page: </div>
-                <select class="form-select" style="width:68px ;" aria-label="Default select example"
-                    id="pageSizeDropdown" onchange="changePageSize()">
-                    <option selected>@Model.Itemsmodel.PageSize</option>
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                </select>
-                <div>Showing @Model.Itemsmodel.StartIndex - @Model.Itemsmodel.EndIndex of @Model.Itemsmodel.TotalCount</div>
-                @if (Model.Itemsmodel.CurrentPage > 1)
-                {
-                    <a href="@Url.Action("Menu", new { pageNumber = Model.Itemsmodel.CurrentPage - 1, pageSize = Model.Itemsmodel.PageSize, SearchKeyword = Model.Itemsmodel.SearchKeyword,cat = Model.SelectedCategory })"
-                        class="text-black" style="text-decoration: none;">
-                        <div class="border p-2 px-3"> &lt; </div>
-                    </a>
-                }
-                @if (Model.Itemsmodel.CurrentPage < Model.Itemsmodel.TotalPages)
-                {
-                    <a href="@Url.Action("Menu", new { pageNumber = Model.Itemsmodel.CurrentPage + 1, pageSize = Model.Itemsmodel.PageSize, SearchKeyword = Model.Itemsmodel.SearchKeyword,cat = Model.SelectedCategory })"
-                        class="text-black" style="text-decoration: none;">
-                        <div class="border p-2 px-3">&gt;</div>
-                    </a>
-                }
-            </div>
-                        </div>
+                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="menuTableContainer">
+                       
                     </div> 
-                    @* <div id="paginationContent"> *@
-    @* @Html.Partial("~/Views/Shared/_ItemList.cshtml", Model.Itemsmodel) *@
-@* </div> *@
+                   
                 </div>
 
             </div>
@@ -210,9 +123,71 @@
         </div>
         @* -----------second tab------------ *@
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-                <div class="d-flex">
-                    helllo
+                <div class="d-flex w-100">
+                <div class=" category-menu border-0 pt-3 d-none d-lg-block">
+                    <div class="d-flex justify-content-between align-items-center p-1">
+                        <h5 class="custom-blue">Modifier Groups</h5>
+                        <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
+                            data-bs-toggle="modal" data-bs-target="#staticBackdrop">+
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75">
+
+                    @* category list  *@
+
+                        @foreach (var m in Model.ModifierGroups)
+                        {
+                            <div
+                                class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedModifierGroup == m.ModifiergroupId?"category-active-option":"")" id="category_option" ModifierGroup-name="@m.Name" >
+                                <div class="d-flex gap-2" style="cursor: pointer;" onclick="loaditems(this)" ModifierGroup-name="@m.Name">
+                                    <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img ">
+                                    <div>@m.Name</div>
+                                </div>
+                               
+                                <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
+                                  
+                                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editcategory" onclick="setEditData(this)" data-id="@m.ModifiergroupId" data-name="@m.Name" data-description="@m.Description" obj="@m">
+                                    
+                                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
+                                        data-bs-target="#deletecategorymodal" onclick="setDeleteUserId(this)" data-id="@m.ModifiergroupId"
+                                        alt="">
+                                </div>
+                            </div>
+                        }
+                        @* @Html.PartialAsync("~/Views/Shared/_SideList",Model) *@
+
+                    </div>
+
                 </div>
+                <div class="d-flex flex-column flex-grow-1 pt-3 px-3 w-100 ">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="custom-blue">Items</h5>
+                    </div>
+                    <div
+                        class="search-delete-section d-flex justify-content-start justify-content-md-end align-items-center">
+                        <div class="search-section d-flex gap-2 ">
+                            <div class="position-relative" style="width: 180px;">
+                                <input type="text" class="p-2 w-100" placeholder="Search" id="search-field">
+                                <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteitemmodal">
+                                <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
+                                    class="small-img" >
+                            </div>
+                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmenuitem"><span
+                                    class="fs-5 fw-semibold" >+</span> New
+                                Item</button>
+                            <button type="button"
+                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
+                        </div>
+                    </div>
+                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="menuTableContainer">
+                       
+                    </div> 
+                   
+                </div>
+
+            </div>
             </div>
     </div>
 
@@ -669,6 +644,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
+
+
  var categoryoption = document.querySelectorAll(".category-option");
 
     categoryoption.forEach(opt => {
@@ -707,12 +685,45 @@
     function loaditems(ele)
     {
         var name = ele.getAttribute("category-name");
-        window.location.href="/Menu/Menu?cat="+name;
+        window.location.href="/Menu/Index?cat="+name;
+
+        @* $.ajax({
+            type:"GET",
+            url:"/Menu/Menu",
+            data:{cat : name},
+            success:function(data)
+            {
+                $('#menuTableContainer').html(data);
+            }
+
+        }) *@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+
+    @* let activeTab = localStorage.getItem("activeTab");
+
+    if (activeTab) {
+        let tabElement = document.querySelector(`[data-tab="${activeTab}"]`);
+        if (tabElement) {
+            new bootstrap.Tab(tabElement).show();
+        }
+    }
+
+    // Listen for tab change and store active tab in localStorage
+    document.querySelectorAll("#myTabs .nav-link").forEach(tab => {
+        tab.addEventListener("shown.bs.tab", function (event) {
+            let selectedTab = event.target.getAttribute("data-tab");
+            localStorage.setItem("activeTab", selectedTab);
+        });
+    }); *@
+
+
+
         const categories = document.querySelectorAll(".category-option");
         const categoriesforsmall = document.querySelectorAll(".category-option-smallscreen");
+
+        console.log("document ready 1")
 
         if (categories.length > 0) {
             // Select the first category by default
@@ -740,27 +751,44 @@
         });
     });
 
-     function changePageSize() {
-        var pageSize = document.getElementById("pageSizeDropdown").value;
-        var currentPage = @Model.Itemsmodel.CurrentPage;
-        window.location.href = '@Url.Action("Menu", "Menu")' + '?pageNumber=' + currentPage + '&pageSize=' + pageSize + '&searchKeyword=' + '@Model.Itemsmodel.SearchKeyword';
-    }
+    let currentPage = 1;
+    $(document).ready(function () {
+        currentPage =1;
+         $.ajax({
+            url: '@Url.Action("Menu", "Menu")',
+            type: 'GET',
+            data: {cat:"@Model.SelectedCategory"},
+            success: function (data) {
+                $('#menuTableContainer').html(data);
+            }
+        });
+         
+    });
 
-    function search() {
-        var search_keyword = document.getElementById("search-field").value;
-        var pageSize = document.getElementById("pageSizeDropdown").value;
-        window.location.href = '@Url.Action("Menu", "Menu")' + '?searchKeyword=' + search_keyword + '&pageSize=' + pageSize;
-    }
+    @* function loadMenuTable(pageNumber, pageSize,cat) {
+        $.ajax({
+            url: '@Url.Action("Menu", "Menu")',
+            type: 'GET',
+            data: { pageNumber: pageNumber, pageSize: pageSize,cat:cat},
+            success: function (data) {
+                $('#menuTableContainer').html(data);
+            }
+        });
+    } *@
+
+     
+
 
     function setDeleteUserId(element) {
         var userId = element.getAttribute("data-id");
         var deleteBtn = document.getElementById("deleteUserBtn");
         deleteBtn.href = '@Url.Action("DeleteUser", "Menu")' + '?id=' + userId;
     }
-    document.getElementById("search-field").addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
+    document.getElementById("search-field").addEventListener("keyup", function (event) {
+        @* if (event.key === "Enter") {
             search();
-        }
+        } *@
+        search();
     });
 
     @* for getting modifier group option list *@
@@ -902,7 +930,7 @@ document.addEventListener("DOMContentLoaded", function () {
          },  
         success: function (response) {
             console.log("Items deleted successfully");
-            window.location.href='/Menu/Menu?cat=@Model.SelectedCategory'; 
+            window.location.href='/Menu/Index?cat=@Model.SelectedCategory'; 
         },
         error: function (xhr, status, error) {
             console.error("Error deleting items:", error);
@@ -911,7 +939,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-@* $(document).ready(function () {
+$(document).ready(function () {
     function loadPage(page) {
         var searchKeyword = $("#search").val();
         $.ajax({
@@ -932,7 +960,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#search").keyup(function () {
         loadPage(1);
     });
-}); *@
+});
 
 
 </script> 

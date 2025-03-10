@@ -209,8 +209,8 @@ public class UserService : IUserService
         // fetch html template from root folder
         string htmltemplate = System.IO.File.ReadAllText(_env.WebRootPath + "/HtmlTemplate/AccountCreated.html");
 
-        htmltemplate.Replace("_username_", user.UserName);
-        htmltemplate.Replace("_password_", user.Password);
+        htmltemplate=htmltemplate.Replace("_username_", user.UserName);
+        htmltemplate=htmltemplate.Replace("_password_", user.Password);
 
 
         // send email to the newly created user

@@ -1,8 +1,8 @@
 namespace DAL.ViewModels;
 
-public class ItemPaginationViewModel
-{   
-    public string? Category { get; set; }
+public class ModifierPaginationViewModel
+{
+    public string? ModifierGroupId { get; set; }
     public IEnumerable<ItemViewModel> Items { get; set; }  // List of users
     public int? TotalCount { get; set; }
     public int PageSize { get; set; } = 5;

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace pizzashop.presentation.Controllers;
 
 [Authorize]
+[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
 public class BaseController : Controller
 {
 

@@ -48,8 +48,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/pizzashop_3tier/pizzashop.presentation/Views/Menu/Menu.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxNZW51LmNzaHRtbA==
+[D:/pizzashop_3tier/pizzashop.presentation/Views/Menu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/pizzashop_3tier/pizzashop.presentation/Views/Shared/Error.cshtml]
@@ -58,6 +58,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/pizzashop_3tier/pizzashop.presentation/Views/Shared/_ItemList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9JdGVtTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_3tier/pizzashop.presentation/Views/Shared/_MenuItemsList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NZW51SXRlbXNMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_3tier/pizzashop.presentation/Views/Shared/_ModifiersList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Nb2RpZmllcnNMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/pizzashop_3tier/pizzashop.presentation/Views/Shared/_SideList.cshtml]

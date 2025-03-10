@@ -43,6 +43,24 @@ public class MenuServices : IMenuServices
         return categories;
     }
 
+    // For Getting ModifiersGroup List
+    public IEnumerable<ModifierGroupNameViewModel> GetModifiersGroupList()
+    {
+
+        var ModifierGroups = _context.Modifiersgroups
+                         .Where(c => !(bool)c.Isdeleted) // Exclude deleted Modifiergroup
+                         .Select(c => new ModifierGroupNameViewModel
+                         {
+                             ModifiergroupId = c.ModifiergroupId,
+                             Name = c.Name,
+                             Description = c.Description
+                         })
+                         .OrderBy(c => c.ModifiergroupId).ToList();
+
+        ModifierGroups = new List<ModifierGroupNameViewModel>(ModifierGroups);
+        return ModifierGroups;
+    }
+
     public AuthResponse AddCategory(AddCategoryViewModel model)
     {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
@@ -147,12 +165,13 @@ public class MenuServices : IMenuServices
 
         // Pagination
         int totalCount = query.Count();
+        query = query.OrderBy(i => i.ItemName);
         var items = query.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize)
                              .ToList();
 
         return new ItemPaginationViewModel
-        {
+        {   Category=category,
             Items = items,
             TotalCount = totalCount,
             PageSize = pageSize,

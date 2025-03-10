@@ -64,7 +64,7 @@
                     </a>
                 </div>
                 <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Menu" ? "active-option" : "")">
-                    <a asp-action="Menu" asp-controller="Menu"
+                    <a asp-action="Index" asp-controller="Menu"
                         class="sidebar-link @(ViewBag.active == "Menu" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
                             <img src="~/images/sidebar icons/menu.png" alt="">
@@ -200,7 +200,7 @@
                         </a>
                     </div>
                     <div class="sidebar-option w-100 p-2 @(ViewBag.active == "Menu" ? "active-option" : "")">
-                        <a asp-action="Menu" asp-controller="Menu" class="sidebar-link @(ViewBag.active == "Menu" ? "active-option" : "")">
+                        <a asp-action="Index" asp-controller="Menu" class="sidebar-link @(ViewBag.active == "Menu" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/sidebar icons/menu.png" alt="">
                                 <div>Menus</div>
