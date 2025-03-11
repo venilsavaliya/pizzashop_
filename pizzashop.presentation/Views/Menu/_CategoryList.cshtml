@@ -14,7 +14,7 @@
        
             <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
           
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editcategory" onclick="setEditData(this)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description" obj="@c">
+                <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editcategory" onclick="setEditCategoryData(this)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description" obj="@c" item-obj='@Html.Raw(Json.Serialize(c))'>
             
                 <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
                     data-bs-target="#deletecategorymodal" onclick="setDeleteUserId(this)" data-id="@c.Id"
@@ -22,6 +22,43 @@
             </div>
         </div>
 }
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    attachHoverEffect(); // Call the function when the page loads
+});
+
+// Function to handle hover effect
+function attachHoverEffect() {
+    document.querySelectorAll(".category-option").forEach(opt => {
+        opt.addEventListener("mouseover", function () {
+            console.log("Mouse Entered");
+            let actionbtn = opt.querySelector("#categoryoption_actionbtn");
+            if (actionbtn) {
+                actionbtn.classList.add("d-block");
+                actionbtn.classList.remove("d-none");
+            }
+        });
+
+        opt.addEventListener("mouseleave", function () {
+            let actionbtn = opt.querySelector("#categoryoption_actionbtn");
+            if (actionbtn) {
+                actionbtn.classList.remove("d-block");
+                actionbtn.classList.add("d-none");
+            }
+        });
+    });
+}
+
+// If the partial view is loaded dynamically, reattach events
+$(document).on("ajaxComplete", function () {
+    attachHoverEffect();
+});
+
+
+
+</script>
                   
 
        

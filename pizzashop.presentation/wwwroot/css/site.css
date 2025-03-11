@@ -360,3 +360,8 @@ input[type=password]::-ms-clear {
   height: 60px;
   padding: 10px;
 }
+
+.cursor-pointer
+{
+  cursor: pointer;
+}

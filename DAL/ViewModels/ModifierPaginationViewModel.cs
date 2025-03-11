@@ -1,6 +1,6 @@
 namespace DAL.ViewModels;
 
-public class ModifierPaginationViewModel
+public class ModifierPaginationViewModel 
 {
     public int? ModifierGroupId { get; set; }
     public IEnumerable<ModifierItemsViewModel> Items { get; set; }  // List of users

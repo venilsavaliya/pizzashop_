@@ -107,11 +107,11 @@ public class MenuController : BaseController
         var model = new ModifierListViewModel
         {
             ModifierGroups = modifiers,
-            SelectedModifierGroup = modifiergroup_id
+            SelectedModifierGroup = modifiergroup_id 
         };
 
         return PartialView("~/Views/Menu/_ModifierList.cshtml",model);
-    }
+    } 
     // GET : Modifier Item List {Partial View Return}
 
     public IActionResult GetModifierItemsList(int modifiergroup_id,int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
@@ -125,7 +125,15 @@ public class MenuController : BaseController
 
         var modifiersmodel = _menuservices.GetModifierItemsListByModifierGroupId(modifiergroup_id,pageNumber, pageSize, searchKeyword);
 
-        return PartialView("~/Views/Shared/_ModifiersList.cshtml",modifiersmodel);
+        return PartialView("~/Views/Menu/_ModifierItemsList.cshtml",modifiersmodel);
+    }
+    // GET : all Modifier Item List {Partial View Return}
+
+    public IActionResult GetAllModifierItemsList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    {
+        var modifiersmodel = _menuservices.GetAllModifierItemsList(pageNumber, pageSize, searchKeyword);
+
+        return PartialView("~/Views/Menu/_ModifierItemsListModal.cshtml",modifiersmodel);
     }
 
     // POST : Menu
@@ -162,8 +170,73 @@ public class MenuController : BaseController
         return RedirectToAction("Index", "Menu");
     }
 
-    // POST : Delete category
 
+    // POST : ADD ModifierGroup 
+    [HttpPost]
+    public IActionResult AddModifierGroup(AddModifierGroupViewModel model) 
+    {
+
+        var AuthResponse = _menuservices.AddNewModifierGroup(model).Result;
+        // if (model.Id != null)
+        // {
+
+        //     var res = _menuservices.EditCategory(model);
+
+        //     if (res.Success)
+        //     {
+        //         TempData["ToastrType"] = "success";
+        //         TempData["ToastrMessage"] = res.Message;
+        //     }
+
+        // }
+        // else
+        // {
+        //     var AuthResponse = _menuservices.AddCategory(model);
+        //     if (AuthResponse.Success)
+        //     {
+        //         TempData["ToastrType"] = "success";
+        //         TempData["ToastrMessage"] = AuthResponse.Message;
+        //     }
+
+        // }
+
+        // TempData["ToastrType"] = "error";
+        // TempData["ToastrMessage"] = "error in add category";
+
+        return RedirectToAction("Index", "Menu");
+    }
+
+    // GET : ModifierName List By Ids
+
+    public IActionResult GetModifierNameListFromIds(List<string> modifierIds)
+    {
+        List<string> names =  _menuservices.GetModifierNamesByIds(modifierIds);
+        
+        return Json(names);
+    }
+
+    #region Category
+
+    // POST : Edit Category
+    [HttpPost]
+    public IActionResult EditCategoryById(AddCategoryViewModel model)
+    {
+        var AuthResponse = _menuservices.EditCategory(model);
+
+        if(!AuthResponse.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        }
+
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        return RedirectToAction("Index", "Menu");
+    }
+
+
+    // POST : Delete category
+    
     public IActionResult DeleteCategory(string id)
     {
         var AuthResponse = _menuservices.DeleteCategory(id);
@@ -172,6 +245,8 @@ public class MenuController : BaseController
         TempData["ToastrMessage"] = AuthResponse.Message;
         return RedirectToAction("Index", "Menu");
     }
+
+    #endregion
 
     // POST : ADD New Item
 

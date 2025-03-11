@@ -145,6 +145,14 @@
       "PackagePath": "staticwebassets/images/icons/waiting-time.svg"
     },
     {
+      "Id": "/Users/venil/Code/pizzashop_home/pizzashop_3tier/pizzashop.presentation/wwwroot/images/icons/x-lg.svg",
+      "PackagePath": "staticwebassets/images/icons/x-lg.svg"
+    },
+    {
+      "Id": "/Users/venil/Code/pizzashop_home/pizzashop_3tier/pizzashop.presentation/wwwroot/images/icons/x.svg",
+      "PackagePath": "staticwebassets/images/icons/x.svg"
+    },
+    {
       "Id": "/Users/venil/Code/pizzashop_home/pizzashop_3tier/pizzashop.presentation/wwwroot/images/logos/icons8-facebook-48.png",
       "PackagePath": "staticwebassets/images/logos/icons8-facebook-48.png"
     },
