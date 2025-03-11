@@ -1,0 +1,76 @@
+@model DAL.ViewModels.ModifierItemsPagination;
+
+<table class="table">
+    <tr>
+        <th class="d-flex">
+            <div class="form-check">
+                <input class="form-check-input outer_checkbox" id="menu-main-checkbox" type="checkbox" value=""
+                    id="flexCheckIndeterminate">
+            </div> <span>Name</span>
+        </th>
+        <th>Unit</th>
+        <th>Rate</th>
+        <th>Quantity</th>
+        <th>Action</th>
+    </tr>
+
+ 
+    @foreach (var i in Model.Items)
+    {
+
+        <tr>
+            <td>
+                <div class="d-flex justify-content-start gap-2 align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input inner_checkbox" type="checkbox" value="@i.ModifierId"
+                            id="flexCheckIndeterminate">
+                    </div>
+                    
+                    <span>@i.Name</span>
+                </div>
+            </td>
+            <td>@i.Unit</td>
+            <td>@i.Rate</td>
+            <td>@i.Quantity</td>
+            <td>
+                <div class="d-flex justify-content-start gap-5">
+                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmenuitem"
+                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="setedititemdata(this)">
+                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#exampleModal" alt="">
+                </div>
+
+            </td>
+        </tr>
+
+    }
+
+
+</table>
+<div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+    <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
+        <div>Items per page: </div>
+        <select class="form-select" style="width:68px ;" aria-label="Default select example"
+            id="pageSizeDropdownformodal" onchange="ModifieritemsPaginationAjax(this.value,1)">
+
+            <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
+            <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
+            <option value=10 selected="@(Model.Page.PageSize == 10 ? true : false)">10</option>
+        </select>
+        <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
+        @* @if (Model.Page.CurrentPage > 1) *@
+
+        <div onclick="ModifieritemsPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1)"
+            class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
+            <div class="border p-2 px-3"> &lt; </div>
+        </div>
+
+        @* @if (Model.Page.CurrentPage < Model.Page.TotalPages) *@
+
+        <div onclick="ModifieritemsPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1)"
+            class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
+            style="text-decoration: none;">
+            <div class="border p-2 px-3">&gt;</div>
+        </div>
+
+    </div>
+</div>

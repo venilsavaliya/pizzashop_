@@ -14,7 +14,7 @@
         <th>Action</th>
     </tr>
 
-
+ 
     @foreach (var i in Model.Items)
     {
 
@@ -49,7 +49,7 @@
 <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
     <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
         <div>Items per page: </div>
-        <select class="form-select" style="width:68px ;" aria-label="Default select example" id="pageSizeDropdown"
+        <select class="form-select" style="width:68px ;" aria-label="Default select example" id="pageSizeDropdownformodal"
             onchange="changePageSize()">
             <option selected>@Model.PageSize</option>
             <option value="3">3</option>
@@ -73,3 +73,81 @@
         }
     </div>
 </div>
+
+<script>
+    function changePageSize() {
+        var pageSize = document.getElementById("pageSizeDropdownformodal").value;
+        var currentPage = @Model.CurrentPage;
+        var searchKeyword = document.getElementById("search-field").value;
+        console.log(pageSize)
+      
+        $.ajax({
+        type: "GET",
+        url: "/Menu/GetAllModifierItemsList",
+        data: {
+            pageNumber: currentPage,
+            pageSize: pageSize,
+            searchKeyword: searchKeyword,
+            modifiergroup_id: "@Model.ModifierGroupId"
+        },
+        success: function (data) {
+            $('#modifieritemstablecontainerofmodal').html(data);
+        },
+        error: function (xhr, status, error) {
+            console.log("Error loading data:", error);
+            console.log("Response:", xhr.responseText);
+        }
+    });
+    }
+
+    function handlePrevious()
+    {
+
+        @* console.log("cp",currentPage) *@
+        var pageSize = document.getElementById("pageSizeDropdown").value;
+        var currentPage = @Model.CurrentPage-1;
+        var searchKeyword = document.getElementById("search-field").value;
+
+        $.ajax({
+        type: "GET",
+        url: "/Menu/GetAllModifierItemsList",
+        data: {
+            pageNumber: currentPage,
+            pageSize: pageSize,
+            searchKeyword: searchKeyword,
+            modifiergroup_id: "@Model.ModifierGroupId"
+        },
+        success: function (data) {
+            $('#modifieritemstablecontainerofmodal').html(data);
+        },
+        error: function (xhr, status, error) {
+            console.log("Error loading data:", error);
+            console.log("Response:", xhr.responseText);
+        }
+    });
+    }
+    function handleNext()
+    {
+        var pageSize = document.getElementById("pageSizeDropdown").value;
+        var currentPage = @Model.CurrentPage+1;
+        var searchKeyword = document.getElementById("search-field").value;
+
+        $.ajax({
+        type: "GET",
+        url: "/Menu/GetAllModifierItemsList",
+        data: {
+            pageNumber: currentPage,
+            pageSize: pageSize,
+            searchKeyword: searchKeyword,
+            modifiergroup_id: "@Model.ModifierGroupId"
+        },
+        success: function (data) {
+            $('#modifieritemstablecontainerofmodal').html(data);
+        },
+        error: function (xhr, status, error) {
+            console.log("Error loading data:", error);
+            console.log("Response:", xhr.responseText);
+        }
+    });
+    }
+</script>

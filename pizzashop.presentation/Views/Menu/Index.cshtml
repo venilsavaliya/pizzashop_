@@ -120,7 +120,7 @@
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Modifier Groups</h5>
                         <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
-                            data-bs-toggle="modal" data-bs-target="#staticBackdrop">+
+                            data-bs-toggle="modal" data-bs-target="#addmodifiergroupmodal">+
                         </div>
                     </div>
                     <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="modifier-list">
@@ -159,7 +159,7 @@
                         class="search-delete-section d-flex justify-content-start justify-content-md-end align-items-center">
                         <div class="search-section d-flex gap-2 ">
                             <div class="position-relative" style="width: 180px;">
-                                <input type="text" class="p-2 w-100" placeholder="Search" id="search-field">
+                                <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritems-search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
                             <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteitemmodal">
@@ -213,11 +213,80 @@
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                          </div>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+     <!-- add modifierGroup modal -->
+    <div class="modal fade" id="addmodifiergroupmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add ModifierGroup</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="AddModifierGroup" asp-controller="Menu" method="post" id="modifierForm">
+                    <div class="modal-body">
+                        <div class="d-flex flex-column"> 
+
+                            <div class="mb-3">
+                                <input type="text" class="form-control p-3" name="Name"
+                                    placeholder="Name">
+                            </div>
+                            <div class="mb-3">
+
+                                <textarea class="form-control" rows="3"
+                                    placeholder="Description" name="Description"></textarea>
+                            </div>
+
+                            <div class="custom-blue mb-2 fs-sm cursor-pointer" id="addexistingmodifierbtn">
+                                Add Existing Modifiers +
+                            </div>
+
+                            <div class="d-flex gap-2 flex-wrap" id="selectedModifieritemcontainer">
+                            
+                            @* ---- selected modifier name here ---- *@
+                           
+                            </div>
+                           
+                        </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                         </div>
+                    </div>
 
                     
 
                 </form>
             </div>
+        </div>
+    </div>
+
+     <!-- show modifieritemslist modal -->
+    <div class="modal fade" id="modifieritemslist" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-secondary" id="staticBackdropLabel">Select Existing Modifier</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="position-relative m-2" style="width: 280px;">
+                    <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritemsmodal-search-field">
+                    <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
+                </div>
+                <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainerofmodal">
+                       
+                </div> 
+                <div class="d-flex justify-content-end gap-2 p-2">
+                    <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClick()">Add</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+                
         </div>
     </div>
 
@@ -673,6 +742,7 @@
         var deleteBtn = document.getElementById("deleteCategoryBtn");
         deleteBtn.href = '@Url.Action("DeleteCategory", "Menu")' + '?id=' + Id;
     }
+    @* ----Load ModifierGroup List------- *@
 
     function loadmodifiers(ele)
     {
@@ -686,7 +756,6 @@
             {
                 $('#modifier-list').html(data);
             }
-
         });
 
         $.ajax({
@@ -698,6 +767,7 @@
             }
         });
     }
+    @* -----Load Category List -----*@
     function loadcategories(ele)
     {
         var name = ele.getAttribute("category-name");
@@ -817,6 +887,14 @@
                 $('#modifieritemstablecontainer').html(data);
             }
         });
+        
+        @* $.ajax({
+            url: '@Url.Action("GetAllModifierItemsList", "Menu")',
+            type: 'GET',
+            success: function (data) {
+                $('#modifieritemstablecontainerofmodal').html(data);
+            }
+        }); *@
          
     });
 
@@ -995,7 +1073,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-$(document).ready(function () {
+@* $(document).ready(function () {
     function loadPage(page) {
         var searchKeyword = $("#search").val();
         $.ajax({
@@ -1016,7 +1094,219 @@ $(document).ready(function () {
     $("#search").keyup(function () {
         loadPage(1);
     });
+}); *@
+
+document.getElementById("addexistingmodifierbtn").addEventListener('click',()=>{
+    console.log("mod")
+    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
+    modifiermodal.hide();
+    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
+    itemlistmodal.show();
+
+    @* $.ajax({
+        url
+    }) *@
 });
+
+
+@* -----Pagination For Modifier Items List Modal------- *@
+function PaginationAjax(pageSize,pageNumber) {
+
+     // Get the dropdown element
+    let pageSizeDropdown = document.getElementById("pageSizeDropdownformodal");
+    let searchkeyword = $("#modifieritemsmodal-search-field").val();
+    console.log(searchkeyword)
+    
+    // Store the currently selected value
+    let selectedPageSize = pageSizeDropdown?.value;
+
+    console.log("inside pag ajax",pageSize)
+        @* if (pageNumber === 0) {
+            pageNumber = @((Model?.Page?.CurrentPage ?? 1));
+        } *@
+        $.ajax({
+            url: "/Menu/GetAllModifierItemsList",
+            data: { 'pageSize': pageSize, 'pageNumber': pageNumber,'searchKeyword':searchkeyword},
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#modifieritemstablecontainerofmodal").html(data);
+                onPartialViewLoaded(); // Ensure checkboxes update after reloading the partial
+            },
+            error: function () {
+                alert("No Projects Found");
+                
+                $("#modifieritemstablecontainerofmodal").html('An error has occurred');
+            }
+        });
+    }
+
+@* -----Pagination For Modifier Items List------- *@
+
+function ModifieritemsPaginationAjax(pageSize,pageNumber) {
+    console.log("inside pagination")
+     // Get the dropdown element
+    let pageSizeDropdown = document.getElementById("pageSizeDropdownformodal");
+    let searchkeyword = $("#modifieritems-search-field").val();
+    console.log(searchkeyword)
+    
+    // Store the currently selected value
+    @* let selectedPageSize = pageSizeDropdown?.value; *@
+
+    console.log("inside pag ajax",pageSize)
+       
+        $.ajax({
+            url: "/Menu/GetModifierItemsList",
+            data: { 'pageSize': pageSize, 'pageNumber': pageNumber,'searchKeyword':searchkeyword,'modifiergroup_id':@Model.SelectedModifierGroup},
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#modifieritemstablecontainer").html(data);
+                onPartialViewLoaded(); // Ensure checkboxes update after reloading the partial
+            },
+            error: function () {
+                @* $("#modifieritemstablecontainer").html('An error has occurred'); *@
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        PaginationAjax();
+        ModifieritemsPaginationAjax();
+        updateCheckboxStates();
+    });
+
+    let selectedModifiers = [];
+    let  selectedModifierIds = [];
+
+    // Function to check checkboxes based on selectedModifiers
+    function updateCheckboxStates() {
+        document.querySelectorAll(".modifieritemcheckboxofmodal").forEach((checkbox) => {
+            if (selectedModifiers.includes(checkbox.value)) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+            }
+        });
+    }
+
+     // Event Listener for checkboxes
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("modifieritemcheckboxofmodal")) {
+            let modifierId = event.target.value;
+            
+            if (event.target.checked) {
+                if (!selectedModifiers.some(modifier => modifier.id === modifierId)) {
+                    selectedModifiers.push({id:modifierId,name:event.target.getAttribute("m-name")});
+                    selectedModifierIds.push(modifierId);
+                }
+            } else {
+                selectedModifiers = selectedModifiers.filter(id => id !== modifierId);
+            }
+        }
+    });
+
+    // Function to handle checkbox selection
+    function handleCheckboxChange(event) {
+        let modifierId = event.target.value;
+
+        if (event.target.checked) {
+            if (!selectedModifiers.some(modifier => modifier.id === modifierId)) {
+                @* selectedModifiers.push(modifierId); *@
+                selectedModifiers.push({id:modifierId,name:event.target.getAttribute("m-name")});
+                selectedModifierIds.push(modifierId);
+            }
+        } else {
+            selectedModifiers = selectedModifiers.filter(id => id !== modifierId);
+        }
+    }
+
+    function handleAddButtonClick() {
+        console.log("Selected IDs:", selectedModifiers);
+        console.log("Selected Names:", selectedModifierIds);
+        // Perform further actions like submitting selectedModifiers to the server
+        var itemlistmodal =bootstrap.Modal.getInstance(document.getElementById("modifieritemslist"))
+        itemlistmodal.hide();
+
+        $.ajax({
+        url: '/Menu/GetModifierNameListFromIds',
+        type: 'GET',
+        contentType: 'application/json',
+        data: JSON.stringify({modifierIds:selectedModifiers}),
+        success: function(response) {
+
+            console.log("Modifier Names:", response);
+            // Handle the received names here
+        },
+        error: function(error) {
+            console.error("Error fetching modifier names:", error);
+        }
+    });
+
+        var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
+        modifiermodal.show();
+
+        selectedModifiers.forEach((item)=>{
+            @* document.getElementById("selectedModifieritemcontainer").html().append(@await Html.PartialAsync("./_ModifieritemName.cshtml")) *@
+            document.getElementById("selectedModifieritemcontainer").innerHTML += `<span class="border rounded-pill px-3 py-1" style="width: fit-content;">
+                ${item.name}
+                    <span> <img src="/images/icons/x-lg.svg" alt=""> </span>
+                </span>`;
+        })
+        
+    }
+
+    function attachCheckboxListeners() {
+        document.querySelectorAll(".modifieritemcheckboxofmodal").forEach((checkbox) => {
+            checkbox.addEventListener("change", handleCheckboxChange);
+        });
+
+        updateCheckboxStates(); // Re-check checkboxes after reloading the partial view
+    }
+
+    function onPartialViewLoaded() {
+        attachCheckboxListeners();  // Rebind event listeners
+    }
+@* 
+    $("#modifieritems-search-field").on('input',()=>{
+        console.log("inside.........")
+        PaginationAjax();
+    }) *@
+
+    document.getElementById("modifieritemsmodal-search-field").addEventListener('keyup',()=>{
+        PaginationAjax();
+    })
+
+
+    $("#modifierForm").submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        let formData = new FormData(this); 
+        @* let form = $("#modifierForm"); *@
+        // Append each selected modifier's id
+        selectedModifiers.forEach(modifier => {
+            formData.append("ModifieritemsId[]", modifier.id); 
+        });
+
+
+
+        $.ajax({
+            url: $(this).attr("action"), // Get form action URL
+            type: $(this).attr("method"), // Get form method (POST)
+            data: formData,
+            processData: false, // Prevent jQuery from processing the data
+            contentType: false, // Prevent jQuery from setting content type
+            success: function (response) {
+                console.log("Success:", response);
+                alert("Modifier group added successfully!");
+            },
+            error: function (error) {
+                console.error("Error:", error);
+                alert("Something went wrong!");
+            }
+        });
+    });
+
 
 
 </script> 

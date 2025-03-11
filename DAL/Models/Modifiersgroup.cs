@@ -5,13 +5,13 @@ namespace DAL.Models;
 
 public partial class Modifiersgroup
 {
-    public int ModifiergroupId { get; set; }
+    public int ModifiergroupId { get; set; } 
 
     public string Name { get; set; } = null!;
 
     public string? Description { get; set; }
 
-    public DateTime Createddate { get; set; }
+    public DateTime Createddate { get; set; } 
 
     public Guid Createdby { get; set; }
 

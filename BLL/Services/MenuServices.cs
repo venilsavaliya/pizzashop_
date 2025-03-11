@@ -1,3 +1,4 @@
+using BLL.Helper;
 using BLL.Interfaces;
 using BLL.Models;
 using DAL.Models;
@@ -48,7 +49,7 @@ public class MenuServices : IMenuServices
     {
 
         var ModifierGroups = _context.Modifiersgroups
-                         .Where(c => !(bool)c.Isdeleted) // Exclude deleted Modifiergroup
+                         .Where(c => c.Isdeleted!=true) // Exclude deleted Modifiergroup
                          .Select(c => new ModifierGroupNameViewModel
                          {
                              ModifiergroupId = c.ModifiergroupId,
@@ -171,7 +172,8 @@ public class MenuServices : IMenuServices
                              .ToList();
 
         return new ItemPaginationViewModel
-        {   Category=category,
+        {
+            Category = category,
             Items = items,
             TotalCount = totalCount,
             PageSize = pageSize,
@@ -185,20 +187,22 @@ public class MenuServices : IMenuServices
 
     // Get ModifierItem List from ModifierGroup id
 
-    public ModifierPaginationViewModel GetModifierItemsListByModifierGroupId(int modifiergroup_id, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
-    {
+    public ModifierItemsPagination GetModifierItemsListByModifierGroupId(int modifiergroup_id, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    {   ModifierItemsPagination model = new() { Page = new() };
         searchKeyword = searchKeyword.ToLower();
-        var categoryId = _context.Modifieritems.FirstOrDefault(c => c.ModifierId == modifiergroup_id)?.ModifierId;
+        // var categoryId = _context.Modifieritems.FirstOrDefault(c => c.ModifierId == modifiergroup_id)?.ModifierId;
 
         var query = from i in _context.Modifieritems
-                    where i.Isdeleted != true && i.ModifierId == modifiergroup_id
+                    join m in _context.Modifieritemsmodifiersgroups
+                    on i.ModifierId equals m.ModifierId
+                    where i.Isdeleted != true && m.ModifiergroupId == modifiergroup_id
                     select new ModifierItemsViewModel
                     {
                         ModifierId = i.ModifierId,
                         Name = i.ModifierName,
                         Rate = i.Rate,
                         Quantity = i.Quantity,
-                        Unit = i.Unit,   
+                        Unit = i.Unit,
                     };
 
         if (!string.IsNullOrEmpty(searchKeyword))
@@ -213,17 +217,72 @@ public class MenuServices : IMenuServices
                              .Take(pageSize)
                              .ToList();
 
-        return new ModifierPaginationViewModel
-        {   ModifierGroupId=modifiergroup_id,
-            Items = items,
-            TotalCount = totalCount,
-            PageSize = pageSize,
-            CurrentPage = pageNumber,
-            TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-            StartIndex = (pageNumber - 1) * pageSize + 1,
-            EndIndex = Math.Min(pageNumber * pageSize, totalCount),
-            SearchKeyword = searchKeyword
-        };
+        model.Items = items;
+        model.Page.SetPagination(totalCount, pageSize, pageNumber);
+
+        // return new ModifierItemsPagination 
+        // {
+        //     ModifierGroupId = modifiergroup_id,
+        //     Items = items,
+        //     TotalCount = totalCount,
+        //     PageSize = pageSize,
+        //     CurrentPage = pageNumber,
+        //     TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+        //     StartIndex = (pageNumber - 1) * pageSize + 1,
+        //     EndIndex = Math.Min(pageNumber * pageSize, totalCount),
+        //     SearchKeyword = searchKeyword
+        // };
+        return model;
+    }
+
+
+    // Get all Modifier Items list
+
+    public ModifierItemModalPagination GetAllModifierItemsList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    {
+        ModifierItemModalPagination model = new() { Page = new() };
+        searchKeyword = searchKeyword.ToLower();
+        // var categoryId = _context.Modifieritems.FirstOrDefault(c => c.ModifierId == modifiergroup_id)?.ModifierId;
+
+        var query = from i in _context.Modifieritems
+                    where i.Isdeleted != true
+                    select new ModifierItemsViewModel
+                    {
+                        ModifierId = i.ModifierId,
+                        Name = i.ModifierName,
+                        Rate = i.Rate,
+                        Quantity = i.Quantity,
+                        Unit = i.Unit,
+                    };
+
+        if (!string.IsNullOrEmpty(searchKeyword))
+        {
+            query = query.Where(i => i.Name.ToLower().Contains(searchKeyword));
+        }
+
+        // Pagination
+        int totalCount = query.Count();
+        query = query.OrderBy(i => i.Name);
+        var items = query.Skip((pageNumber - 1) * pageSize)
+                             .Take(pageSize)
+                             .ToList();
+
+        model.Items = items;
+        model.Page.SetPagination(totalCount, pageSize, pageNumber);
+
+        // return new ModifierPaginationViewModel
+        // {
+        //     Items = items,
+        //     TotalCount = totalCount,
+        //     PageSize = pageSize,
+        //     CurrentPage = pageNumber,
+        //     TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+        //     StartIndex = (pageNumber - 1) * pageSize + 1,
+        //     EndIndex = Math.Min(pageNumber * pageSize, totalCount),
+        //     SearchKeyword = searchKeyword
+        // };
+
+        return model;
     }
 
 
@@ -345,8 +404,50 @@ public class MenuServices : IMenuServices
 
     #endregion
 
+
+    public async Task<AuthResponse> AddNewModifierGroup(AddModifierGroupViewModel model)
+    {
+        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+        var userid = _userservices.GetUserIdfromToken(token);
+
+        var ModifierGroup = new Modifiersgroup
+        {
+            Name = model.Name,
+            Description = model.Description,
+            Createdby = userid
+        };
+
+        _context.Modifiersgroups.Add(ModifierGroup);
+        await _context.SaveChangesAsync();
+
+        int newModifierGroupId = ModifierGroup.ModifiergroupId;
+
+        var modifierItemsandgroup = model.ModifieritemsId.Select(itemId => new Modifieritemsmodifiersgroup
+        {
+            ModifiergroupId = newModifierGroupId,
+            ModifierId = itemId
+        }).ToList();
+
+        _context.Modifieritemsmodifiersgroups.AddRange(modifierItemsandgroup);
+        await _context.SaveChangesAsync();
+
+        return new AuthResponse
+        {
+            Success = true,
+            Message = "ModifierGroup Added Successfuuuly"
+        };
+    }
     public string GetCategoryNameFromId(int id)
     {
         return _context.Categories.FirstOrDefault(c => c.CategoryId == id).Name;
     }
+
+    public List<string> GetModifierNamesByIds(List<string> modifierIds)
+    {
+        return _context.Modifieritems
+                       .Where(m => modifierIds.Contains(m.ModifierId.ToString()))
+                       .Select(m => m.ModifierName)
+                       .ToList();
+    }
+
 }
