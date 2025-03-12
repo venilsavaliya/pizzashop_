@@ -34,7 +34,7 @@ public class MenuServices : IMenuServices
                          .Where(c => !(bool)c.Isdeleted) // Exclude deleted categories
                          .Select(c => new CategoryNameViewModel
                          {
-                             Id = c.CategoryId.ToString(),
+                             Id = c.CategoryId,
                              Name = c.Name,
                              Description = c.Description
                          })
@@ -49,7 +49,7 @@ public class MenuServices : IMenuServices
     {
 
         var ModifierGroups = _context.Modifiersgroups
-                         .Where(c => c.Isdeleted!=true) // Exclude deleted Modifiergroup
+                         .Where(c => c.Isdeleted != true) // Exclude deleted Modifiergroup
                          .Select(c => new ModifierGroupNameViewModel
                          {
                              ModifiergroupId = c.ModifiergroupId,
@@ -110,14 +110,24 @@ public class MenuServices : IMenuServices
     }
 
 
-    public AuthResponse DeleteCategory(string id)
+    public async Task<AuthResponse> DeleteCategory(string id)
     {
         var category = _context.Categories.FirstOrDefault(c => c.CategoryId.ToString() == id);
 
         if (category != null)
         {
+            // Fetch all items that belong to this category
+            var items = _context.Items.Where(i => i.CategoryId.ToString() == id).ToList();
+
+            // Mark all items as deleted
+            foreach (var item in items)
+            {
+                item.Isdeleted = true;
+            }
+
             category.Isdeleted = true;
-            _context.SaveChangesAsync();
+
+            await _context.SaveChangesAsync();
 
             return new AuthResponse
             {
@@ -136,13 +146,14 @@ public class MenuServices : IMenuServices
         }
     }
 
-    public ItemPaginationViewModel GetItemsListByCategoryName(string category, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    public MenuItemsPaginationViewModel GetItemsListByCategoryId(int categoryid, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
     {
+        MenuItemsPaginationViewModel model = new() { Page = new() };
         searchKeyword = searchKeyword.ToLower();
-        var categoryId = _context.Categories.FirstOrDefault(c => c.Name == category)?.CategoryId;
+        // var categoryId = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryid)?.CategoryId;
 
         var query = from i in _context.Items
-                    where i.Isdeleted != true && i.CategoryId == categoryId
+                    where i.Isdeleted != true && i.CategoryId == categoryid
                     select new ItemViewModel
                     {
                         ItemId = i.ItemId,
@@ -171,27 +182,33 @@ public class MenuServices : IMenuServices
                              .Take(pageSize)
                              .ToList();
 
-        return new ItemPaginationViewModel
-        {
-            Category = category,
-            Items = items,
-            TotalCount = totalCount,
-            PageSize = pageSize,
-            CurrentPage = pageNumber,
-            TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-            StartIndex = (pageNumber - 1) * pageSize + 1,
-            EndIndex = Math.Min(pageNumber * pageSize, totalCount),
-            SearchKeyword = searchKeyword
-        };
+        model.Items = items;
+        model.CategoryId = categoryid;
+        model.Page.SetPagination(totalCount, pageSize, pageNumber);
+
+        // return new ItemPaginationViewModel
+        // {
+        //     Category = category,
+        //     Items = items,
+        //     TotalCount = totalCount,
+        //     PageSize = pageSize,
+        //     CurrentPage = pageNumber,
+        //     TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+        //     StartIndex = (pageNumber - 1) * pageSize + 1,
+        //     EndIndex = Math.Min(pageNumber * pageSize, totalCount),
+        //     SearchKeyword = searchKeyword
+        // };
+        return model;
     }
 
     // Get ModifierItem List from ModifierGroup id
 
     public ModifierItemsPagination GetModifierItemsListByModifierGroupId(int modifiergroup_id, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
-    {   ModifierItemsPagination model = new() { Page = new() };
+    {
+        ModifierItemsPagination model = new() { Page = new() };
         searchKeyword = searchKeyword.ToLower();
         // var categoryId = _context.Modifieritems.FirstOrDefault(c => c.ModifierId == modifiergroup_id)?.ModifierId;
- 
+
         var query = from i in _context.Modifieritems
                     join m in _context.Modifieritemsmodifiersgroups
                     on i.ModifierId equals m.ModifierId
@@ -218,7 +235,7 @@ public class MenuServices : IMenuServices
                              .ToList();
 
         model.Items = items;
-        model.ModifierGroupId=modifiergroup_id;
+        model.ModifierGroupId = modifiergroup_id;
         model.Page.SetPagination(totalCount, pageSize, pageNumber);
 
         // return new ModifierItemsPagination 
@@ -403,6 +420,32 @@ public class MenuServices : IMenuServices
 
     }
 
+    public async Task<AuthResponse> DeleteSingleItem(int id)
+    {
+        var item = _context.Items.FirstOrDefault(c => c.ItemId == id);
+
+        if (item != null)
+        {
+            item.Isdeleted = true;
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "item Deleted Successfully"
+            };
+        }
+        else
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "can't delete category"
+
+            };
+        }
+    }
     #endregion
 
 
@@ -449,6 +492,18 @@ public class MenuServices : IMenuServices
                        .Where(m => modifierIds.Contains(m.ModifierId.ToString()))
                        .Select(m => m.ModifierName)
                        .ToList();
+    }
+
+    public List<EditModifierGroupItemsViewModel> GetModifierItemListNamesByModifierGroupId(int modifiergroup_id)
+    {
+        return  (from mig in _context.Modifieritemsmodifiersgroups
+                join mi in _context.Modifieritems on mig.ModifierId equals mi.ModifierId
+                where mig.ModifiergroupId == modifiergroup_id
+                select new EditModifierGroupItemsViewModel
+                {
+                    ModifierId = mi.ModifierId,
+                    ModifierName = mi.ModifierName
+                }).ToList();
     }
 
 }

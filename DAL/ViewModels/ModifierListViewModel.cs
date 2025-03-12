@@ -6,3 +6,4 @@ public class ModifierListViewModel
 
     public IEnumerable<ModifierGroupNameViewModel> ModifierGroups {get;set;}
 }
+ 

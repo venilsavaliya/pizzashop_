@@ -37,10 +37,10 @@ public class GetDataController : Controller
         return Json(cities);
     }
 
-    public IActionResult GetItems(string category)
+    public IActionResult GetItems(int category)
     {
         
-        var items = _menuService.GetItemsListByCategoryName(category);
+        var items = _menuService.GetItemsListByCategoryId(category);
         return Json(items);
     }
     [HttpGet("GetModifierGroupList")]

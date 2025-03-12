@@ -90,7 +90,7 @@
                         class="search-delete-section d-flex justify-content-start justify-content-md-end align-items-center">
                         <div class="search-section d-flex gap-2 ">
                             <div class="position-relative" style="width: 180px;">
-                                <input type="text" class="p-2 w-100" placeholder="Search" id="search-field">
+                                <input type="text" class="p-2 w-100" placeholder="Search" id="menuitem-search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
                             <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteitemmodal">
@@ -264,6 +264,53 @@
             </div>
         </div>
     </div>
+     <!-- Edit modifierGroup modal -->
+    <div class="modal fade" id="editmodifiergroupmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit ModifierGroup</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="AddModifierGroup" asp-controller="Menu" method="post" id="editmodifierForm">
+                    <div class="modal-body">
+                        <div class="d-flex flex-column"> 
+                                 <input type="text" class="form-control p-3" name="Id"
+                                    placeholder="Name" id="editmodifiergroupid" hidden>
+                            <div class="mb-3">
+                                <input type="text" class="form-control p-3" name="Name"
+                                    placeholder="Name" id="editmodifiergroupname">
+                            </div>
+                            <div class="mb-3">
+
+                                <textarea class="form-control" rows="3"
+                                    placeholder="Description" name="Description" id="editmodifiergroupdescription"></textarea>
+                            </div>
+
+                            <div class="custom-blue mb-2 fs-sm cursor-pointer" id="addexistingmodifierbtnforedit">
+                                Add Existing Modifiers +
+                            </div>
+
+                            <div class="d-flex gap-2 flex-wrap" id="selectedModifieritemcontainerforedit">
+                            
+                            @* ---- selected and existing modifier name here ---- *@
+                           
+                            </div>
+                           
+                        </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="ClearSection()">Cancel</button>
+                         </div>
+                    </div>
+
+                    
+
+                </form>
+            </div>
+        </div>
+    </div>
 
      <!-- show modifieritemslist modal -->
     <div class="modal fade" id="modifieritemslist" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -289,7 +336,6 @@
                 
         </div>
     </div>
-
 
       @* ---------------- Delete category modal body------------------- *@
 
@@ -376,7 +422,7 @@
                                         <select  class="form-select" id="Category" name="CategoryId">
                                             @* <option selected>Select Categories</option> *@
                                             @foreach(var c in Model.Categories){
-                                                if(c.Name == Model.SelectedCategory){
+                                                if(c.Id == Model.SelectedCategory){
                                                     <option value=@c.Id selected>@c.Name</option>
                                                 }else{
 
@@ -443,6 +489,7 @@
                                     <div class="form-floating col">
                                         <select  class="form-select" name="Unit">
                                             <option selected>Select a Unit</option>
+
                                             <option value="Pcs">Piece</option>
                                             <option value="Kg">Kilogram</option>
                                             <option value="In">Inches</option>
@@ -489,10 +536,15 @@
                                 <div class="form col-12">
                                     <div class="row mt-2">
                                         <div class="form col multiselect">
-                                        <div  class="form-select selectBox" id="modifierGroupSelect" onclick="showCheckboxes()">
-                                            @* <option selected>Select Modifiers Group</option> *@
-                                            Select Modifier Group
-                                        </div>
+                                        <select  class="form-select selectBox" id="modifierGroupSelect">
+                                                <option selected>Select Modifier Group</option>
+
+                                                @* showing options for all modifiergroup name *@
+                                                @foreach(var m in @Model.ModifierGroups)
+                                                {
+                                                    <option value=@m.ModifiergroupId>@m.Name</option>
+                                                }
+                                        </select>
 
                                         <div id="checkboxes" class="d-flex flex-column bg-white rounded d-none p-2">
 
@@ -541,7 +593,7 @@
                                         <select  class="form-select" id="Category" name="CategoryId">
                                             @* <option selected>Select Categories</option> *@
                                             @foreach(var c in Model.Categories){
-                                                if(c.Name == Model.SelectedCategory){
+                                                if(c.Id == Model.SelectedCategory){
                                                     <option value=@c.Id selected>@c.Name</option>
                                                 }else{
 
@@ -688,7 +740,7 @@
             <div class="modal-content p-3" style="width: 420px !important;">
                 <div class="modal-body">
                     <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
-                    <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete these Items?</div>
+                    <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete This Item?</div>
                 </div>
                 <div class="d-flex justify-content-center align-items-center gap-2">
                     <a id="deleteitemBtn">
@@ -756,12 +808,13 @@
     @* -----Load Category List -----*@
     function loadcategories(ele)
     {
-        var name = ele.getAttribute("category-name");
-
+    
+    var id = ele.getAttribute("category-id");
+    console.log(id)
         $.ajax({
             type:"GET",
             url:"/Menu/GetCategories",
-            data:{cat : name},
+            data:{cat : id},
             success:function(data)
             {
                 $('#category-list').html(data);
@@ -772,7 +825,7 @@
         $.ajax({
             url: '@Url.Action("Menu", "Menu")',
             type: 'GET',
-            data: {cat:name},
+            data: {cat:id},
             success: function (data) {
                 $('#menuTableContainer').html(data);
             }
@@ -855,7 +908,7 @@
         $.ajax({
             type:"GET",
             url:"/Menu/GetCategories",
-            data:{cat : name},
+            data:{cat : @Model.SelectedCategory},
             success:function(data)
             {
                 $('#category-list').html(data);
@@ -890,6 +943,14 @@
                 $('#modifieritemstablecontainer').html(data);
             }
         });
+        $.ajax({
+            url: '@Url.Action("Menu", "Menu")',
+            type: 'GET',
+            data: {cat:@Model.SelectedCategory},
+            success: function (data) {
+                $('#menuTableContainer').html(data);
+            }
+        });
         
         @* $.ajax({
             url: '@Url.Action("GetAllModifierItemsList", "Menu")',
@@ -920,12 +981,9 @@
         var deleteBtn = document.getElementById("deleteUserBtn");
         deleteBtn.href = '@Url.Action("DeleteUser", "Menu")' + '?id=' + userId;
     }
-    document.getElementById("search-field").addEventListener("keyup", function (event) {
-        @* if (event.key === "Enter") {
-            search();
-        } *@
+    @* document.getElementById("search-field").addEventListener("keyup", function (event) {
         search();
-    });
+    }); *@
 
     @* for getting modifier group option list *@
     $.ajax({
@@ -990,7 +1048,7 @@ $("#addItemForm").submit(function (e) {
         }
              
             
-        }
+        } 
     });
 });
 
@@ -1014,14 +1072,22 @@ function setedititemdata(ele)
 }
 
 
+@* ---------- Menu Items Functionality------------ *@
+
+@* select All inner checkbox based on main checkbox *@
 
 document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("Dom loaded")
     // Select main checkbox
+
+    document.addEventListener("change",function (){
     const mainCheckbox = document.getElementById("menu-main-checkbox");
     const checkboxes = document.querySelectorAll(".inner_checkbox");
 
     // When main checkbox is clicked
     mainCheckbox.addEventListener("change", function () {
+        console.log("main checkbox change")
         checkboxes.forEach(checkbox => {
             checkbox.checked = mainCheckbox.checked; // Set inner checkboxes same as main
         });
@@ -1039,12 +1105,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+    });
+    
 });
 
-
-    document.getElementById("deleteitemBtn").addEventListener("click",()=>{
-       
-    })
+@* Mass Delete Of Menu Item *@
 
   $("#deleteitemBtn").click(function (e) {
     var idlist = [];
@@ -1075,41 +1140,68 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+@* Delete single Menu item *@
 
-@* $(document).ready(function () {
-    function loadPage(page) {
-        var searchKeyword = $("#search").val();
-        $.ajax({
-            url: window.location.pathname,
-            type: 'GET',
-            data: { searchKeyword: searchKeyword, page: page },
-            success: function (data) {
-                $("#paginationContent").html(data);
-            }
-        });
-    }
+function setDeleteItemId(element) {
 
-    $(document).on("click", ".page-link", function () {
-        var page = $(this).data("page");
-        loadPage(page);
-    });
+    var Id = element.getAttribute("item-id");
+    let cat_id= $("#category-list .category-active-option").attr("category-id");
+    var deleteBtn = document.getElementById("deleteitemBtn");
+    deleteBtn.href = '@Url.Action("DeleteSingleItem", "Menu")' + '?id=' + Id+'&catid='+cat_id;
 
-    $("#search").keyup(function () {
-        loadPage(1);
-    });
-}); *@
+}
+
+
+@* showing and hiding modal manually *@
 
 document.getElementById("addexistingmodifierbtn").addEventListener('click',()=>{
-    console.log("mod")
+    
     var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
     modifiermodal.hide();
     var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
     itemlistmodal.show();
 
-    @* $.ajax({
-        url
-    }) *@
 });
+
+document.getElementById("addexistingmodifierbtnforedit").addEventListener('click',()=>{
+    
+    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("editmodifiergroupmodal"))
+    modifiermodal.hide();
+    ClearSection();
+    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
+    itemlistmodal.show();
+
+});
+
+@* -----Pagination For Menu Items List------- *@
+
+function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
+     // Get the dropdown element
+
+    let cat_id= $("#category-list .category-active-option").attr("category-id");
+    let pageSizeDropdown = document.getElementById("pageSizeDropdownforMenuitems");
+    console.log(pageSizeDropdown.value);
+    let searchkeyword = $("#menuitem-search-field").val();
+
+    console.log("inside item",searchkeyword) 
+    console.log("param id",category_id)
+    console.log("get id",cat_id)
+       
+        $.ajax({
+            url: "/Menu/Menu",
+            data: { 'pageSize': pageSize, 'pageNumber': pageNumber,'searchKeyword':searchkeyword,'cat':cat_id},
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#menuTableContainer").html(data);
+                @* onPartialViewLoaded();  *@
+            },
+            error: function () {
+                @* $("#modifieritemstablecontainer").html('An error has occurred'); *@
+            }
+        });
+    }
+
 
 
 @* -----Pagination For Modifier Items List Modal------- *@
@@ -1147,16 +1239,11 @@ function PaginationAjax(pageSize,pageNumber) {
 @* -----Pagination For Modifier Items List------- *@
 
 function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
-    console.log("inside pagination")
      // Get the dropdown element
-
+   
     modifiergroup_id = $("#modifier-list .category-active-option").attr("modifiergroup-id");
     let pageSizeDropdown = document.getElementById("pageSizeDropdownformodal");
     let searchkeyword = $("#modifieritems-search-field").val();
-    console.log(searchkeyword)
-    
-    // Store the currently selected value
-    @* let selectedPageSize = pageSizeDropdown?.value; *@
 
     console.log("inside pag ajax",pageSize) 
        
@@ -1188,6 +1275,15 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         document.getElementById("editcategoryformname").value = c.name;
         document.getElementById("editcategoryformdescription").value = c.description;
 
+    }
+
+    @* Delete Category *@
+
+    function setDeleteCategoryId(ele)
+    {
+        let id = ele.getAttribute('category-id');
+        let deleteBtn = document.getElementById("deleteCategoryBtn");
+        deleteBtn.href = '@Url.Action("DeleteCategory", "Menu")' + '?id=' + id;
     }
 
     @* edit category form submit *@
@@ -1226,14 +1322,63 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
 
     @* ---------------------------------- *@
 
+    @* ---- Modifier Functionality------ *@
+
+    @* function for getting modifier item name which is related to perticular modifier group *@
+
+    function GetModifierItemListByGroupid(ele)
+    {   
+        let obj = JSON.parse(ele.getAttribute('data-obj'));
+        let modifiergroupid = obj.modifiergroupId;
+        let name = obj.name;
+        let description = obj.description;
+       
+        $.ajax({
+        url: `/Menu/GetModifierItemsNameByModifierGroupid`,
+        type: "GET",
+        data: { modifiergroup_id: modifiergroupid },
+        success: function (data) {
+            console.log("Modifier Items:", data);
+
+            document.getElementById("editmodifiergroupid").value = modifiergroupid;
+            document.getElementById("editmodifiergroupname").value = name;
+            document.getElementById("editmodifiergroupdescription").value = description;
+
+            data.forEach((item)=>{
+           
+            document.getElementById("selectedModifieritemcontainerforedit").innerHTML += `<span class="border rounded-pill px-3 py-1" style="width: fit-content;">
+                ${item.modifierName}
+                    <span> <img src="/images/icons/x-lg.svg" alt=""> </span>
+                </span>`;
+        })
+        },
+        error: function (error) {
+            console.error("Error fetching modifiers:", error);
+        }
+    });
+    }
+
+    @* clear the existing modifier section when closing modal *@
+
+    function ClearSection()
+    {
+        document.getElementById("selectedModifieritemcontainerforedit").innerHTML="";
+    }
+
+
+    @* function need to be called after document get load *@ 
+
     $(document).ready(function () {
         PaginationAjax();
         ModifieritemsPaginationAjax();
+        MenuitemsPaginationAjax();
         updateCheckboxStates();
     });
 
     let selectedModifiers = [];
     let  selectedModifierIds = [];
+    let selectedModifiersforedit = [];
+    let  selectedModifierIdsforedit = [];
 
     // Function to check checkboxes based on selectedModifiers
     function updateCheckboxStates() {
@@ -1334,6 +1479,10 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     })
     document.getElementById("modifieritems-search-field").addEventListener('keyup',()=>{
         ModifieritemsPaginationAjax();
+    })
+    document.getElementById("menuitem-search-field").addEventListener('keyup',()=>{
+        console.log("hello")
+        MenuitemsPaginationAjax();
     })
 
 

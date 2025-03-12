@@ -4,7 +4,7 @@ namespace DAL.ViewModels;
 
 public class MenuViewModel
 {
-    public string? SelectedCategory {get;set;}
+    public int? SelectedCategory {get;set;}
 
     public int? SelectedModifierGroup {get;set;}
 
