@@ -4,6 +4,7 @@ using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BLL.Services;
@@ -338,6 +339,24 @@ public class MenuServices : IMenuServices
         _context.Items.Add(item);
         await _context.SaveChangesAsync();
 
+        // Get the new Item ID after saving
+        int newItemId = item.ItemId;
+
+        if (model.ModifierGroups != null && model.ModifierGroups.Any())
+        {
+            var mappings = model.ModifierGroups.Select(mg => new Itemsmodifiergroupminmaxmapping
+            {
+                ItemId = newItemId,
+                ModifiergroupId = mg.ModifierGroupId,
+                MinValue = mg.Min,
+                MaxValue = mg.Max
+            }).ToList();
+
+            _context.Itemsmodifiergroupminmaxmappings.AddRange(mappings);
+            await _context.SaveChangesAsync();
+        }
+
+
         return new AuthResponse
         {
             Success = true,
@@ -496,7 +515,7 @@ public class MenuServices : IMenuServices
 
     public List<EditModifierGroupItemsViewModel> GetModifierItemListNamesByModifierGroupId(int modifiergroup_id)
     {
-        return  (from mig in _context.Modifieritemsmodifiersgroups
+        return (from mig in _context.Modifieritemsmodifiersgroups
                 join mi in _context.Modifieritems on mig.ModifierId equals mi.ModifierId
                 where mig.ModifiergroupId == modifiergroup_id
                 select new EditModifierGroupItemsViewModel
@@ -504,6 +523,68 @@ public class MenuServices : IMenuServices
                     ModifierId = mi.ModifierId,
                     ModifierName = mi.ModifierName
                 }).ToList();
+    }
+
+    public ModifierGroupanditemsViewModel GetModifierItemsByGroupId(int modifiergroup_id)
+    {
+        var modifierGroup = _context.Modifiersgroups
+        .Where(g => g.ModifiergroupId == modifiergroup_id)
+        .Select(g => new ModifierGroupanditemsViewModel
+        {
+            Name = g.Name,
+            ModifierGroupId = g.ModifiergroupId,
+            items = g.Modifieritemsmodifiersgroups
+                .Where(mg => mg.ModifiergroupId == modifiergroup_id)
+                .Select(mg => new ModifierItemsAndRate
+                {
+                    Name = mg.Modifier!.ModifierName, // ModifierName from ModifierItem
+                    Rate = mg.Modifier!.Rate ?? 0  // Default to 0 if null
+                }).ToList()
+        })
+        .FirstOrDefault();
+
+        return modifierGroup ?? new ModifierGroupanditemsViewModel(); // Return empty if no data found
+    }
+
+    // public async Task<List<Itemsmodifiergroupminmaxmapping>> GetItemModifierGroupminMaxMappingByItemId(int itemid)
+    // {   
+
+    //     var result = await _context.Itemsmodifiergroupminmaxmappings
+    //     .Where(m => m.ItemId == itemid)
+    //     .Select(m => new ModifierGroupanditemsViewModel
+    //     {
+    //         Name = m.Name,
+    //         ModifierGroupId = m.ModifiergroupId,
+    //         m.MinValue,
+    //         m.MaxValue
+    //     })
+    //     .ToListAsync();
+
+    //     return await _context.Itemsmodifiergroupminmaxmappings
+    //        .Where(m => m.ItemId == itemid)
+    //        .ToListAsync();
+    // }
+
+    public async Task<ModifierGroupanditemsViewModel> GetItemModifierGroupminMaxMappingAsync(int itemId, int modifierGroupId)
+    {
+        var mapping = await _context.Itemsmodifiergroupminmaxmappings
+            .Where(m => m.ItemId == itemId && m.ModifiergroupId == modifierGroupId)
+            .Select(m => new ModifierGroupanditemsViewModel
+            {
+                ModifierGroupId = m.ModifiergroupId,
+                Name = m.Modifiergroup.Name,
+                Minvalue = m.MinValue,
+                Maxvalue = m.MaxValue,
+                items = m.Modifiergroup.Modifieritemsmodifiersgroups
+                    .Select(i => new ModifierItemsAndRate
+                    {
+                        Name = i.Modifier!.ModifierName, // ModifierName from ModifierItem
+                        Rate = i.Modifier!.Rate ?? 0
+                    }).ToList()
+            })
+            .FirstOrDefaultAsync();
+
+        return mapping;
     }
 
 }

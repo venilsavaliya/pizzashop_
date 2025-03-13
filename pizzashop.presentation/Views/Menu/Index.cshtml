@@ -546,12 +546,12 @@
                                                 }
                                         </select>
 
-                                        <div id="checkboxes" class="d-flex flex-column bg-white rounded d-none p-2">
+                                        <div id="modifieritemspartialview" class="d-flex flex-column rounded d-none p-3 overflow-auto" style="height: 400px;">
 
                                          </div>
-
+ 
                                     </div>
-                                    </div>
+                                    </div> 
 
                                 </div>
                                  </div>
@@ -706,15 +706,19 @@
                                 <div class="form col-12">
                                     <div class="row mt-2">
                                         <div class="form col multiselect">
-                                        <div  class="form-select selectBox" id="modifierGroupSelect" onclick="showCheckboxes()">
-                                            @* <option selected>Select Modifiers Group</option> *@
-                                            Select Modifier Group
-                                        </div>
+                                        <select  class="form-select selectBox" id="modifierGroupSelect">
+                                                <option selected>Select Modifier Group</option>
 
-                                        <div id="checkboxes" class="d-flex flex-column bg-white rounded d-none p-2">
+                                                @* showing options for all modifiergroup name *@
+                                                @foreach(var m in @Model.ModifierGroups)
+                                                {
+                                                    <option value=@m.ModifiergroupId>@m.Name</option>
+                                                }
+                                        </select>
+
+                                        <div id="modifieritemspartialviewforedit" class="d-flex flex-column rounded d-none p-3 overflow-auto" style="height: 400px;">
 
                                          </div>
-
                                     </div>
                                     </div>
 
@@ -1020,7 +1024,7 @@ function showCheckboxes() {
   }
 }
 
-$("#addItemForm").submit(function (e) {
+@* $("#addItemForm").submit(function (e) {
     e.preventDefault();
     $('#addmenuitem').modal('hide'); 
     console.log("inside form")
@@ -1041,8 +1045,7 @@ $("#addItemForm").submit(function (e) {
         contentType: false,
         processData: false,
         success:function (response){
-            @* TempData["ToastrType"] = "success";  
-            TempData["ToastrMessage"] = "item add Successfully!"; *@
+           
             if (response.redirectTo) {
             window.location.href = response.redirectTo;  // Manually redirect
         }
@@ -1050,9 +1053,9 @@ $("#addItemForm").submit(function (e) {
             
         } 
     });
-});
+}); *@
 
-function setedititemdata(ele)
+function setedititemdata(ele) 
 {
     var c = JSON.parse(ele.getAttribute("item-obj"));
     console.log(c);
@@ -1172,6 +1175,130 @@ document.getElementById("addexistingmodifierbtnforedit").addEventListener('click
     itemlistmodal.show();
 
 });
+
+@* showing modifier item partial view when modifier group is selected for add modal*@
+
+$(document).ready(function () {
+    let selectedModifierGroups = []; // Store selected values as objects
+
+    // modifierGroupSelect partial view render
+
+    $("#modifierGroupSelect").change(function () {
+        let selectedValue = $(this).val(); // Get selected option value
+        let selectedText = $("#modifierGroupSelect option:selected").text();
+
+        // Check if "Select Modifier Group" is chosen or if the value already exists
+        if (selectedValue === "Select Modifier Group" || selectedModifierGroups.some(obj => obj.modifierGroupId == selectedValue)) {
+            return;
+        }
+
+        // Create object for the selected modifier group
+        let newModifierGroup = {
+            modifierGroupId: selectedValue,
+            min: '0', // Default min value
+            max: '10'
+        };
+
+        // Push new object to list
+        selectedModifierGroups.push(newModifierGroup);
+
+        // AJAX call to fetch the partial view
+        $.ajax({
+            url: "/Menu/GetModifierItems", // Replace with actual controller/action
+            type: "GET",
+            data: { modifierGroupId: selectedValue },
+            success: function (response) {
+                let $partialView = $(response);
+
+                // Modify select dropdowns to track changes
+                $partialView.find("select.min-select").attr("data-group-id", selectedValue);
+                $partialView.find("select.max-select").attr("data-group-id", selectedValue);
+
+                // Attach event listeners to dropdowns inside the newly added partial view
+                $partialView.find("select.min-select").change(updateMinValue);
+                $partialView.find("select.max-select").change(updateMaxValue);
+
+                // Trigger updateMaxValue once after rendering the partial view
+                let maxSelect = $partialView.find("select.max-select");
+                updateMaxValue.call(maxSelect); 
+
+                // Attach delete event listener for the trash icon
+                $partialView.find(".delete-modifier-group").on("click", function () {
+                    let groupId = $(this).attr("modifiergroup-id");
+
+                    // Remove the partial view
+                    $partialView.remove();
+
+                    // Remove the object from selectedModifierGroups
+                    selectedModifierGroups = selectedModifierGroups.filter(obj => obj.modifierGroupId != groupId);
+
+                    console.log("Updated list after deletion:", selectedModifierGroups);
+                });
+
+                // Append Partial View and show container
+                $("#modifieritemspartialview").append($partialView).removeClass("d-none");
+            },
+            error: function () {
+                alert("Error loading modifier items!");
+            }
+        });
+    });
+
+    
+    // Function to update min value in the list
+    function updateMinValue() {
+        let groupId = $(this).attr("data-group-id");
+        let newValue = $(this).val();
+
+        // Find and update the object in the list
+        let modifierGroup = selectedModifierGroups.find(obj => obj.modifierGroupId == groupId);
+        if (modifierGroup) {
+            modifierGroup.min = newValue;
+        }
+
+        console.log(selectedModifierGroups)
+    }
+
+    // Function to update max value in the list
+    function updateMaxValue() {
+        let groupId = $(this).attr("data-group-id");
+        let newValue = $(this).val();
+
+        // Find and update the object in the list
+        let modifierGroup = selectedModifierGroups.find(obj => obj.modifierGroupId == groupId);
+        if (modifierGroup) {
+            modifierGroup.max = newValue;
+        }
+
+        console.log(selectedModifierGroups)
+    }
+    @* submiting add item form *@
+    $("#addItemForm").submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+
+    console.log("venil",selectedModifierGroups);
+
+    formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups)); 
+
+    $.ajax({
+        url: "/Menu/AddNewItem",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(response) {
+            window.location.href = response.redirectTo;
+        },
+        error: function(err) {
+            console.error("Error adding item:", err);
+        }
+    });
+});
+
+});
+
 
 @* -----Pagination For Menu Items List------- *@
 

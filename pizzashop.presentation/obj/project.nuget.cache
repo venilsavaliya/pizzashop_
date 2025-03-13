@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "tUrCCvP59lnpeRIAixbItRVL6DwImeB4ALJaz+FAR9F5PMSxnj9kehrxJSrD4R6pbugUJZfDCCFgkqfqspiB7w==",
+  "dgSpecHash": "43ZaXD/CHjM0SYeH4L8Wvh8qSrQ5IjwQ59LjcYBCV6w8xKSRdrTcR3Xo1Id5XMYDe8D2d3RiGsQeJEL2aCxOgg==",
   "success": true,
   "projectFilePath": "D:\\pizzashop_3tier\\pizzashop.presentation\\pizzashop.presentation.csproj",
   "expectedPackageFiles": [
@@ -36,7 +36,7 @@
     "C:\\Users\\pce175\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\pce175\\.nuget\\packages\\mimekit\\4.10.0\\mimekit.4.10.0.nupkg.sha512",
     "C:\\Users\\pce175\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
-    "C:\\Users\\pce175\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\pce175\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\pce175\\.nuget\\packages\\npgsql\\7.0.4\\npgsql.7.0.4.nupkg.sha512",
     "C:\\Users\\pce175\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\7.0.4\\npgsql.entityframeworkcore.postgresql.7.0.4.nupkg.sha512",
     "C:\\Users\\pce175\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql.design\\1.1.0\\npgsql.entityframeworkcore.postgresql.design.1.1.0.nupkg.sha512",

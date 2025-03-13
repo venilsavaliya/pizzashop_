@@ -1,0 +1,38 @@
+@model DAL.ViewModels.ModifierGroupanditemsViewModel
+<div style="background-color: transparent;">
+    <div class="d-flex justify-content-between" style="background-color: transparent;">
+        <h5>@Model.Name</h5>
+        <div><img src="~/images/icons/trash.svg" class="delete-modifier-group" modifiergroup-id="@Model.ModifierGroupId" alt="Delete">
+</div>
+    </div>
+
+    <div class="d-flex gap-4 justify-content-between" style="background-color: transparent;">
+        <select class="form-select mb-3 border rounded-pill min-select" aria-label="Min select">
+            <option value="@(Model.Minvalue ?? 0)" selected>Min</option>
+            @for(int i=1;i<=Model.items.Count;i++)
+            {
+                <option value=@i>@i</option>
+            }
+        </select>
+        <select class="form-select mb-3 border rounded-pill max-select" aria-label="Max select">
+
+            <option selected value="@(Model.Maxvalue ?? Model.items.Count)">Max</option>
+            @for(int i=1;i<=Model.items.Count;i++)
+            {
+                <option value=@i>@i</option>
+            }
+        </select>
+    </div>
+
+    <ul>
+        @foreach (var i in Model.items)
+        {
+            <li>
+                <div class="d-flex justify-content-between">
+                    <div>@i.Name</div>
+                    <div>@i.Rate</div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

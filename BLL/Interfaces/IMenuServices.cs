@@ -1,6 +1,6 @@
 using BLL.Models;
 using DAL.ViewModels;
-
+using DAL.Models;
 namespace BLL.Interfaces;
 
 public interface IMenuServices
@@ -28,4 +28,8 @@ public interface IMenuServices
     public List<string> GetModifierNamesByIds(List<string> modifierIds);
 
     public List<EditModifierGroupItemsViewModel> GetModifierItemListNamesByModifierGroupId(int modifiergroup_id);
+
+    public ModifierGroupanditemsViewModel GetModifierItemsByGroupId(int modifiergroup_id);
+
+    public Task<ModifierGroupanditemsViewModel> GetItemModifierGroupminMaxMappingAsync(int itemId, int modifierGroupId);
 }

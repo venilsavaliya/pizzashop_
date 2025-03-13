@@ -24,7 +24,7 @@ public partial class Item
     public double TaxPercentage { get; set; }
 
     public string? ShortCode { get; set; }
- 
+
     public bool Isavailable { get; set; }
 
     public string? Description { get; set; }
@@ -44,6 +44,12 @@ public partial class Item
     public virtual Category? Category { get; set; }
 
     public virtual User CreatedbyNavigation { get; set; } = null!;
+
+    public virtual ICollection<ItemModifiergroupMapping> ItemModifiergroupMappings { get; } = new List<ItemModifiergroupMapping>();
+
+    public virtual ICollection<Itemsminmaxmapping> Itemsminmaxmappings { get; } = new List<Itemsminmaxmapping>();
+
+    public virtual ICollection<Itemsmodifiergroupminmaxmapping> Itemsmodifiergroupminmaxmappings { get; } = new List<Itemsmodifiergroupminmaxmapping>();
 
     public virtual ICollection<Itemsrmodifiersgroup> Itemsrmodifiersgroups { get; } = new List<Itemsrmodifiersgroup>();
 

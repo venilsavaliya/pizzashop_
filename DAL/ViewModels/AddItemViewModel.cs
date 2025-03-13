@@ -31,6 +31,16 @@ public class AddItemViewModel
 
     public List<int>? Modifiers {get;set;}
 
+    public List<ModifierGroup>? ModifierGroups { get; set; } 
+
     // public DateTime Createddate { get; set; } = DateTime.Now;
 
+}
+
+
+public class ModifierGroup
+{
+    public int ModifierGroupId { get; set; }
+    public int Min { get; set; }
+    public int Max { get; set; }
 }

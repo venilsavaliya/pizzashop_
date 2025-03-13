@@ -5,7 +5,7 @@ namespace DAL.Models;
 
 public partial class Modifieritem
 {
-    public int ModifierId { get; set; } 
+    public int ModifierId { get; set; }
 
     public string ModifierName { get; set; } = null!;
 

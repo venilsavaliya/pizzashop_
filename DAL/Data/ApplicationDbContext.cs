@@ -23,6 +23,12 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Item> Items { get; set; }
 
+    public virtual DbSet<ItemModifiergroupMapping> ItemModifiergroupMappings { get; set; }
+
+    public virtual DbSet<Itemsminmaxmapping> Itemsminmaxmappings { get; set; }
+
+    public virtual DbSet<Itemsmodifiergroupminmaxmapping> Itemsmodifiergroupminmaxmappings { get; set; }
+
     public virtual DbSet<Itemsrmodifiersgroup> Itemsrmodifiersgroups { get; set; }
 
     public virtual DbSet<Modifieritem> Modifieritems { get; set; }
@@ -45,7 +51,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Username=postgres;password=Tatva@123;Database=pizzashop_main");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -185,6 +191,70 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.Modifyiedby)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_modifyiedby");
+        });
+
+        modelBuilder.Entity<ItemModifiergroupMapping>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("item_modifiergroup_mapping_pkey");
+
+            entity.ToTable("item_modifiergroup_mapping");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Isdeleted)
+                .HasDefaultValueSql("false")
+                .HasColumnName("isdeleted");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.ModifierGroupId).HasColumnName("modifier_group_id");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.ItemModifiergroupMappings)
+                .HasForeignKey(d => d.ItemId)
+                .HasConstraintName("item_modifiergroup_mapping_item_id_fkey");
+
+            entity.HasOne(d => d.ModifierGroup).WithMany(p => p.ItemModifiergroupMappings)
+                .HasForeignKey(d => d.ModifierGroupId)
+                .HasConstraintName("item_modifiergroup_mapping_modifier_group_id_fkey");
+        });
+
+        modelBuilder.Entity<Itemsminmaxmapping>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("itemsminmaxmapping_pkey");
+
+            entity.ToTable("itemsminmaxmapping");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Isdeleted)
+                .HasDefaultValueSql("false")
+                .HasColumnName("isdeleted");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.MaxValue).HasColumnName("max_value");
+            entity.Property(e => e.MinValue).HasColumnName("min_value");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.Itemsminmaxmappings)
+                .HasForeignKey(d => d.ItemId)
+                .HasConstraintName("itemsminmaxmapping_item_id_fkey");
+        });
+
+        modelBuilder.Entity<Itemsmodifiergroupminmaxmapping>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("itemsmodifiergroupminmaxmapping_pkey");
+
+            entity.ToTable("itemsmodifiergroupminmaxmapping");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.MaxValue).HasColumnName("max_value");
+            entity.Property(e => e.MinValue).HasColumnName("min_value");
+            entity.Property(e => e.ModifiergroupId).HasColumnName("modifiergroup_id");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.Itemsmodifiergroupminmaxmappings)
+                .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("itemsmodifiergroupminmaxmapping_item_id_fkey");
+
+            entity.HasOne(d => d.Modifiergroup).WithMany(p => p.Itemsmodifiergroupminmaxmappings)
+                .HasForeignKey(d => d.ModifiergroupId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("itemsmodifiergroupminmaxmapping_modifiergroup_id_fkey");
         });
 
         modelBuilder.Entity<Itemsrmodifiersgroup>(entity =>
