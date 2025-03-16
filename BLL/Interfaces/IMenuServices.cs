@@ -31,5 +31,11 @@ public interface IMenuServices
 
     public ModifierGroupanditemsViewModel GetModifierItemsByGroupId(int modifiergroup_id);
 
+    public ModifierGroupanditemsViewModel GetModifierItemswithMinMaxByGroupIdandItemid(int modifiergroup_id,int itemid);
+
     public Task<ModifierGroupanditemsViewModel> GetItemModifierGroupminMaxMappingAsync(int itemId, int modifierGroupId);
+
+    public List<int> GetModifierGroupIdsByItemId(int itemId);
+
+    public ModifierGroupNameViewModel GetModifierGroupNamePVByModifierGroupid(int modifiergroup_id);
 }

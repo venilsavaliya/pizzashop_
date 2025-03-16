@@ -299,6 +299,13 @@ public class MenuController : BaseController
     [HttpPost]
     public IActionResult EditItem(AddItemViewModel model)
     {
+        string modifiersJson = Request.Form["ModifierGroups"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersJson))
+        {
+            model.ModifierGroups = JsonConvert.DeserializeObject<List<ModifierGroup>>(modifiersJson);
+        }
 
         var AuthResponse = _menuservices.EditItem(model).Result;
 
@@ -312,7 +319,7 @@ public class MenuController : BaseController
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = AuthResponse.Message;
         string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
-        return RedirectToAction("Index", "Menu", new { cat = categoryName });
+        return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
 
         // return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
 
@@ -383,6 +390,20 @@ public class MenuController : BaseController
         }
     }
 
+    // Return partial view of modifier group name by modifier group id
+    public IActionResult GetModifierGroupNamePVByModifierGroupid(int modifiergroup_id)
+    {
+        try
+        {
+            var model = _menuservices.GetModifierGroupNamePVByModifierGroupid(modifiergroup_id);
+           return PartialView("~/View/Menu/_ModifierName.cshtml",model);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error fetching modifiers", error = ex.Message });
+        }
+    }
+
     // Return Partial View for modifier items in add and update menu items modal
     public IActionResult GetModifierItems(int modifierGroupId)
     {
@@ -390,9 +411,9 @@ public class MenuController : BaseController
 
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", modifierItems);
     }
-    public IActionResult GetModifierItemsForEdit(int modifierGroupId)
+    public IActionResult GetModifierItemsForEdit(int modifierGroupId,int itemid)
     {
-        var modifierItems = _menuservices.GetModifierItemsByGroupId(modifierGroupId); // Fetch Data
+        var modifierItems = _menuservices.GetModifierItemswithMinMaxByGroupIdandItemid(modifierGroupId,itemid); // Fetch Data
 
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", modifierItems);
     }
@@ -403,6 +424,11 @@ public class MenuController : BaseController
         var model = _menuservices.GetItemModifierGroupminMaxMappingAsync(itemid,modifiergroupid);
 
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", model);
+    }
+
+    public List<int> GetModifierGroupIdsByItemId(int itemid)
+    {
+        return _menuservices.GetModifierGroupIdsByItemId(itemid);
     }
 
     #endregion

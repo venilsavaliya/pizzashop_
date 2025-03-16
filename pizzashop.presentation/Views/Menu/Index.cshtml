@@ -111,7 +111,7 @@
                 </div>
 
             </div>
-
+ 
         </div>
         @* -----------second tab------------ *@
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
@@ -568,7 +568,7 @@
     </div>
 
 @* Edit Menu Item Modal *@
-    
+       
     <div class="modal fade " id="editmenuitem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
@@ -577,7 +577,7 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Menu Item</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="addItemForm" enctype="multipart/form-data" asp-action="EditItem" asp-controller="Menu" method="post" >
+                <form id="editItemForm" enctype="multipart/form-data" asp-action="EditItem" asp-controller="Menu" method="post" >
                     <div class="modal-body">
                          <div class="add-menu-item row">
 
@@ -706,7 +706,7 @@
                                 <div class="form col-12">
                                     <div class="row mt-2">
                                         <div class="form col multiselect">
-                                        <select  class="form-select selectBox" id="modifierGroupSelect">
+                                        <select  class="form-select selectBox" id="modifierGroupSelectforedit">
                                                 <option selected>Select Modifier Group</option>
 
                                                 @* showing options for all modifiergroup name *@
@@ -715,9 +715,10 @@
                                                     <option value=@m.ModifiergroupId>@m.Name</option>
                                                 }
                                         </select>
-
+                                        @*  *@
+                                        
                                         <div id="modifieritemspartialviewforedit" class="d-flex flex-column rounded d-none p-3 overflow-auto" style="height: 400px;">
-
+                                           
                                          </div>
                                     </div>
                                     </div>
@@ -762,9 +763,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-
-
- 
 
     function setEditData(element){
     
@@ -947,6 +945,7 @@
                 $('#modifieritemstablecontainer').html(data);
             }
         });
+
         $.ajax({
             url: '@Url.Action("Menu", "Menu")',
             type: 'GET',
@@ -1008,6 +1007,7 @@
             }   
          }
     });
+    
     var expanded = false;
 
 function showCheckboxes() {
@@ -1055,24 +1055,7 @@ function showCheckboxes() {
     });
 }); *@
 
-function setedititemdata(ele) 
-{
-    var c = JSON.parse(ele.getAttribute("item-obj"));
-    console.log(c);
 
-    var editmenuitem = document.getElementById("editmenuitem");
-    editmenuitem.querySelector("#Rate").value =c.rate;
-    editmenuitem.querySelector("#type").value =c.type;
-    editmenuitem.querySelector("#Isavailable").checked =c.isavailable?true:false;
-    editmenuitem.querySelector("#itemname").value =c.itemName;
-    editmenuitem.querySelector("#Quantity").value =c.quantity;
-    editmenuitem.querySelector("#Unit").value =c.unit;
-    editmenuitem.querySelector("#TaxPercentage").value =c.taxPercentage;
-    editmenuitem.querySelector("#ShortCode").value =c.shortCode;
-    editmenuitem.querySelector("#Description").value =c.description;
-    editmenuitem.querySelector("#DefaultTax").checked =c.defaultTax?true:false;
-    editmenuitem.querySelector("#itemId").value =c.itemId;
-}
 
 
 @* ---------- Menu Items Functionality------------ *@
@@ -1176,7 +1159,10 @@ document.getElementById("addexistingmodifierbtnforedit").addEventListener('click
 
 });
 
-@* showing modifier item partial view when modifier group is selected for add modal*@
+
+    
+
+@* showing modifier item partial view when modifier group is selected for add menu item modal*@
 
 $(document).ready(function () {
     let selectedModifierGroups = []; // Store selected values as objects
@@ -1272,6 +1258,7 @@ $(document).ready(function () {
 
         console.log(selectedModifierGroups)
     }
+    
     @* submiting add item form *@
     $("#addItemForm").submit(function(e) {
     e.preventDefault();
@@ -1298,6 +1285,218 @@ $(document).ready(function () {
 });
 
 });
+
+@* showing modifier item partial view when modifier group is selected for edit menu item modal*@
+
+@* pwd *@
+
+    
+
+    let selectedModifierGroupsforedit = []; 
+    function setedititemdata(ele) {
+
+    let modifiergroupids = [];
+    selectedModifierGroupsforedit=[];
+    var c = JSON.parse(ele.getAttribute("item-obj"));
+    console.log(c);
+
+    var editmenuitem = document.getElementById("editmenuitem");
+    editmenuitem.querySelector("#Rate").value = c.rate;
+    editmenuitem.querySelector("#type").value = c.type;
+    editmenuitem.querySelector("#Isavailable").checked = c.isavailable ? true : false;
+    editmenuitem.querySelector("#itemname").value = c.itemName;
+    editmenuitem.querySelector("#Quantity").value = c.quantity;
+    editmenuitem.querySelector("#Unit").value = c.unit;
+    editmenuitem.querySelector("#TaxPercentage").value = c.taxPercentage;
+    editmenuitem.querySelector("#ShortCode").value = c.shortCode;
+    editmenuitem.querySelector("#Description").value = c.description;
+    editmenuitem.querySelector("#DefaultTax").checked = c.defaultTax ? true : false;
+    editmenuitem.querySelector("#itemId").value = c.itemId;
+
+    console.log("id",c.itemId)
+
+    $("#modifieritemspartialviewforedit").html("");
+
+    $.ajax({
+        url: "/Menu/GetModifierGroupIdsByItemId",
+        type: "GET",
+        data: { itemid: c.itemId },
+        success: function (response) {
+
+            console.log("edit item modifier groups",response)
+            modifiergroupids = response;
+
+            // Move the forEach inside the AJAX success function
+            modifiergroupids.forEach(function (groupId) {
+                $.ajax({
+                    url: "/Menu/GetModifierItemsForEdit",
+                    type: "GET",
+                    data: { modifierGroupId: groupId ,itemid: c.itemId},
+                    success: function (response) {
+                        let $partialView = $(response);
+
+                        let minValue = $partialView.find("select.min-select").val() || "0";
+                        let maxValue = $partialView.find("select.max-select").val() || "10";
+
+                        // Store modifier group data
+                        let newModifierGroup = {
+                            modifierGroupId: groupId,
+                            min: minValue,
+                            max: maxValue
+                        };
+
+                        selectedModifierGroupsforedit.push(newModifierGroup);
+
+                        console.log("response",response)
+
+                        // Modify select dropdowns to track changes
+                        $partialView.find("select.min-select").attr("data-group-id", groupId);
+                        $partialView.find("select.max-select").attr("data-group-id", groupId);
+
+                        // Attach event listeners to dropdowns inside the newly added partial view
+                        $partialView.find("select.min-select").change(updateMinValue);
+                        $partialView.find("select.max-select").change(updateMaxValue);
+
+                        // Trigger updateMaxValue once after rendering the partial view
+                        let maxSelect = $partialView.find("select.max-select");
+                        updateMaxValue.call(maxSelect);
+
+                        // Attach delete event listener for the trash icon
+                        $partialView.find(".delete-modifier-group").on("click", function () {
+                            let groupId = $(this).attr("modifiergroup-id");
+
+                            // Remove the partial view
+                            $partialView.remove();
+
+                            // Remove the object from selectedModifierGroupsforedit
+                            selectedModifierGroupsforedit = selectedModifierGroupsforedit.filter(obj => obj.modifierGroupId != groupId);
+
+                            console.log("Updated list after deletion:", selectedModifierGroupsforedit);
+                        });
+
+                        // Append Partial View and show container
+                        $("#modifieritemspartialviewforedit").append($partialView).removeClass("d-none");
+                    },
+                    error: function () {
+                        alert("Error loading modifier items!");
+                    }
+                });
+            });
+        },
+        error: function () {
+            alert("Error loading modifier group IDs!");
+        }
+    });
+
+}
+
+    function updateMinValue() {
+        let groupId = $(this).attr("data-group-id");
+        let newValue = $(this).val();
+
+        // Find and update the object in the list
+        let modifierGroup = selectedModifierGroupsforedit.find(obj => obj.modifierGroupId == groupId);
+        if (modifierGroup) {
+            modifierGroup.min = newValue;
+        }
+
+        console.log(selectedModifierGroupsforedit)
+    }
+
+    // Function to update max value in the list
+    function updateMaxValue() {
+        let groupId = $(this).attr("data-group-id");
+        let newValue = $(this).val();
+
+        // Find and update the object in the list
+        let modifierGroup = selectedModifierGroupsforedit.find(obj => obj.modifierGroupId == groupId);
+        if (modifierGroup) {
+            modifierGroup.max = newValue;
+        }
+
+        console.log(selectedModifierGroupsforedit)
+    }
+  
+
+    $("#editItemForm").submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+
+    console.log("venil",selectedModifierGroupsforedit);
+
+    formData.append("ModifierGroups", JSON.stringify(selectedModifierGroupsforedit)); 
+    formData.append("CategoryId", @Model.SelectedCategory); 
+
+    $.ajax({
+        url: "/Menu/EditItem",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(response) {
+            //window.location.href = response.redirectTo;
+            selectedModifierGroupsforedit=[];
+            @* $("#editPartialView").html(""); *@
+            location.reload();
+        },
+        error: function(err) {
+            console.error("Error adding item:", err);
+        }
+    });
+});
+
+
+@* render new partial view for edit item modal *@
+$("#modifierGroupSelectforedit").change(function () {
+    let selectedValue = $(this).val();
+    let selectedText = $("#modifierGroupSelect option:selected").text();
+
+    if (selectedValue === "Select Modifier Group" || selectedModifierGroupsforedit.some(obj => obj.modifierGroupId == selectedValue)) {
+        return;
+    }
+
+    let newModifierGroup = {
+        modifierGroupId: selectedValue,
+        min: '0',
+        max: '10'
+    };
+    selectedModifierGroupsforedit.push(newModifierGroup);
+
+    $.ajax({
+        url: "/Menu/GetModifierItems",
+        type: "GET",
+        data: { modifierGroupId: selectedValue },
+        success: function (response) {
+            let $partialView = $(response);
+
+            $partialView.find("select.min-select").attr("data-group-id", selectedValue);
+            $partialView.find("select.max-select").attr("data-group-id", selectedValue);
+
+            $partialView.find("select.min-select").change(updateMinValue);
+            $partialView.find("select.max-select").change(updateMaxValue);
+
+            let maxSelect = $partialView.find("select.max-select");
+            updateMaxValue.call(maxSelect);
+
+            $partialView.find(".delete-modifier-group").on("click", function () {
+                let groupId = $(this).attr("modifiergroup-id");
+                $partialView.remove();
+                selectedModifierGroupsforedit = selectedModifierGroupsforedit.filter(obj => obj.modifierGroupId != groupId);
+                console.log("Updated list after deletion:", selectedModifierGroupsforedit);
+            });
+
+            $("#modifieritemspartialviewforedit").append($partialView).removeClass("d-none");
+        },
+        error: function () {
+            alert("Error loading modifier items!");
+        }
+    });
+});
+
+
+   
+    
 
 
 @* -----Pagination For Menu Items List------- *@
@@ -1328,7 +1527,6 @@ function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
             }
         });
     }
-
 
 
 @* -----Pagination For Modifier Items List Modal------- *@
@@ -1472,18 +1670,24 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
             document.getElementById("editmodifiergroupdescription").value = description;
 
             data.forEach((item)=>{
+
+                var model = new ModifierGroupNameViewModel
+                {
+                    ModifiergroupId = item.ModifierId,
+                    Name = item.ModifierName
+                }
            
             document.getElementById("selectedModifieritemcontainerforedit").innerHTML += `<span class="border rounded-pill px-3 py-1" style="width: fit-content;">
                 ${item.modifierName}
                     <span> <img src="/images/icons/x-lg.svg" alt=""> </span>
-                </span>`;
-        })
+                </span>`
+            });
         },
         error: function (error) {
             console.error("Error fetching modifiers:", error);
         }
-    });
-    }
+        });
+    };
 
     @* clear the existing modifier section when closing modal *@
 
@@ -1514,6 +1718,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
                 checkbox.checked = true;
             } else {
                 checkbox.checked = false;
+                
             }
         });
     }
@@ -1623,8 +1828,6 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
             formData.append("ModifieritemsId[]", modifier.id); 
         });
 
-
-
         $.ajax({
             url: $(this).attr("action"), // Get form action URL
             type: $(this).attr("method"), // Get form method (POST)
@@ -1640,6 +1843,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
                 alert("Something went wrong!");
             }
         });
+    
     });
 
 

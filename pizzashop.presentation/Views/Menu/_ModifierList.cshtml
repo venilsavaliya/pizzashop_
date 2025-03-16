@@ -13,7 +13,7 @@
        
             <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
           
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifiergroupmodal" onclick="GetModifierItemListByGroupid(this)" data-id="@c.ModifiergroupId" data-name="@c.Name" data-description="@c.Description" data-obj='@Html.Raw(Json.Serialize(c))'>
+                <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifiergroupmodal" onclick="GetModifierItemListByGroupid(this)" data-id="@c.ModifiergroupId" data-name="@c.Name" data-description="@c.Description" data-obj='@Html.Raw(Json.Serialize(c))'>
             
                 <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
                     data-bs-target="#deletecategorymodal" onclick="setDeleteUserId(this)" data-id="@c.ModifiergroupId"
@@ -27,7 +27,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     attachHoverEffect(); // Call the function when the page loads
-});
+    });
 
 // Function to handle hover effect
 function attachHoverEffect() {

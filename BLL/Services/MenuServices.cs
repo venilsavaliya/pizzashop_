@@ -374,31 +374,73 @@ public class MenuServices : IMenuServices
 
             var existingitem = _context.Items.FirstOrDefault(i => i.ItemId == model.Id);
 
-            existingitem.ItemId = (int)model.Id;
+            // var modifierGroupIds = model.ModifierGroups
+            // .Where(mg => mg.ModifierGroupId != null) // Ensure no null values
+            // .Select(mg => mg.ModifierGroupId)
+            // .ToList();
+
+            // var existingMappingsList = _context.Itemsmodifiergroupminmaxmappings
+            //     .Where(m => m.ItemId == existingitem.ItemId)
+            //     .ToList(); // Fetch list before using
+
+            // var toRemove = existingMappingsList
+            //     .Where(m => !modifierGroupIds.Contains(m.ModifiergroupId))
+            //     .ToList();
+
+            // _context.Itemsmodifiergroupminmaxmappings.RemoveRange(toRemove);
+
+            // await _context.SaveChangesAsync();
+
+
             existingitem.ItemName = model.ItemName;
             existingitem.Type = model.Type;
             existingitem.Rate = model.Rate;
             existingitem.Quantity = model.Quantity;
-            existingitem.CategoryId = model.CategoryId;
             existingitem.Unit = model.Unit;
             existingitem.DefaultTax = model.DefaultTax;
             existingitem.TaxPercentage = model.TaxPercentage;
             existingitem.ShortCode = model.ShortCode;
             existingitem.Isavailable = model.Isavailable;
             existingitem.Description = model.Description;
-            existingitem.Image = "";
+            existingitem.Image = model.Image != null ? "sfd" : null;
             existingitem.Modifyiedby = userid;
 
             _context.Items.Update(existingitem);
             await _context.SaveChangesAsync();
 
-            return new AuthResponse
+            if (model.ModifierGroups != null && model.ModifierGroups.Any())
             {
-                Success = true,
-                Message = "Item Edited Succesfully!"
-            };
+                // Remove existing mappings for the item
+                var existingMappings = _context.Itemsmodifiergroupminmaxmappings
+                    .Where(m => m.ItemId == model.Id)
+                    .ToList();
 
-        }
+                _context.Itemsmodifiergroupminmaxmappings.RemoveRange(existingMappings);
+
+                // Add new mappings
+                var newMappings = model.ModifierGroups.Select(mg => new Itemsmodifiergroupminmaxmapping
+                {
+                    ItemId = (int)model.Id,  // Ensure model.Id is not null
+                    ModifiergroupId = mg.ModifierGroupId,
+                    MinValue = mg.Min,
+                    MaxValue = mg.Max
+                }).ToList();
+
+                _context.Itemsmodifiergroupminmaxmappings.AddRange(newMappings);
+
+                 await _context.SaveChangesAsync();
+            }
+                
+
+
+
+                return new AuthResponse
+                {
+                    Success = true,
+                    Message = "Item Edited Succesfully!"
+                };
+
+            }
         catch (Exception)
         {
             return new AuthResponse
@@ -525,6 +567,20 @@ public class MenuServices : IMenuServices
                 }).ToList();
     }
 
+    public ModifierGroupNameViewModel GetModifierGroupNamePVByModifierGroupid(int modifiergroup_id)
+    {
+
+        var Modifiergroup = _context.Modifiersgroups.FirstOrDefault(mg => mg.ModifiergroupId==modifiergroup_id);
+
+        var model = new ModifierGroupNameViewModel
+        {
+            ModifiergroupId = Modifiergroup.ModifiergroupId,
+            Name = Modifiergroup.Name
+        };
+        
+        return model;
+    }
+
     public ModifierGroupanditemsViewModel GetModifierItemsByGroupId(int modifiergroup_id)
     {
         var modifierGroup = _context.Modifiersgroups
@@ -544,6 +600,51 @@ public class MenuServices : IMenuServices
         .FirstOrDefault();
 
         return modifierGroup ?? new ModifierGroupanditemsViewModel(); // Return empty if no data found
+    }
+
+
+    public ModifierGroupanditemsViewModel GetModifierItemswithMinMaxByGroupIdandItemid(int modifiergroup_id, int itemid)
+    {
+        var modifierGroup = _context.Modifiersgroups
+            .Where(g => g.ModifiergroupId == modifiergroup_id)
+            .Select(g => new ModifierGroupanditemsViewModel
+            {
+                Name = g.Name,
+                ModifierGroupId = g.ModifiergroupId,
+
+                // Fetch MinValue and MaxValue from the related mapping table
+                Minvalue = g.Itemsmodifiergroupminmaxmappings
+                    .Where(m => m.ModifiergroupId == modifiergroup_id && m.ItemId == itemid)
+                    .Select(m => (int?)m.MinValue) // Cast to nullable to prevent errors if no records found
+                    .FirstOrDefault(),
+
+                Maxvalue = g.Itemsmodifiergroupminmaxmappings
+                    .Where(m => m.ModifiergroupId == modifiergroup_id && m.ItemId == itemid)
+                    .Select(m => (int?)m.MaxValue)
+                    .FirstOrDefault(),
+
+                // Fetch Modifier Items
+                items = g.Modifieritemsmodifiersgroups
+                    .Where(mg => mg.ModifiergroupId == modifiergroup_id)
+                    .Select(mg => new ModifierItemsAndRate
+                    {
+                        Name = mg.Modifier!.ModifierName, // ModifierName from ModifierItem
+                        Rate = mg.Modifier!.Rate ?? 0  // Default to 0 if null
+                    }).ToList()
+            })
+            .FirstOrDefault();
+
+        return modifierGroup ?? new ModifierGroupanditemsViewModel(); // Return empty if no data found
+    }
+
+
+    public List<int> GetModifierGroupIdsByItemId(int itemId)
+    {
+        return _context.Itemsmodifiergroupminmaxmappings
+            .Where(m => m.ItemId == itemId) // Filter by ItemId
+            .Select(m => m.ModifiergroupId) // Select only ModifiergroupId
+            .Distinct() // Ensure unique ModifierGroupIds
+            .ToList(); // Convert to List
     }
 
     // public async Task<List<Itemsmodifiergroupminmaxmapping>> GetItemModifierGroupminMaxMappingByItemId(int itemid)
