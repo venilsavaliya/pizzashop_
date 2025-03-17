@@ -23,7 +23,7 @@ public interface IMenuServices
     public IEnumerable<ModifierGroupNameViewModel> GetModifiersGroupList();
     public ModifierItemsPagination GetModifierItemsListByModifierGroupId(int modifiergroup_id, int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
     public ModifierItemModalPagination GetAllModifierItemsList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
-    public Task<AuthResponse> AddNewModifierGroup(AddModifierGroupViewModel model);
+    public Task<AuthResponse> AddModifierGroup(AddModifierGroupViewModel model);
 
     public List<string> GetModifierNamesByIds(List<string> modifierIds);
 

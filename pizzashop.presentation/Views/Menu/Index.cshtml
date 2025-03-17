@@ -227,7 +227,7 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add ModifierGroup</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form asp-action="AddModifierGroup" asp-controller="Menu" method="post" id="modifierForm">
+                <form asp-action="AddModifierGroup" asp-controller="Menu" method="post" id="addModifierGroupForm">
                     <div class="modal-body">
                         <div class="d-flex flex-column"> 
 
@@ -312,7 +312,7 @@
         </div>
     </div>
 
-    <!-- show modifieritemslist modal -->
+    <!-- show modifieritemslist modal for edit modifier group modal-->
     <div class="modal fade" id="modifieritemslist" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -330,6 +330,29 @@
                 </div> 
                 <div class="d-flex justify-content-end gap-2 p-2">
                     <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClick()">Add</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>  
+        </div>
+    </div>
+    <!-- show modifieritemslist modal for add modifier group modal-->
+    <div class="modal fade" id="modifieritemslistforaddgroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-secondary" id="staticBackdropLabel">Select Existing Modifier</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="position-relative m-2" style="width: 280px;">
+                    <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritemsforaddmodal-search-field">
+                    <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
+                </div>
+                <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainerofaddmodal">
+                       
+                </div> 
+                <div class="d-flex justify-content-end gap-2 p-2">
+                    <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClickForAdd()">Add</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>  
@@ -1170,7 +1193,7 @@ document.getElementById("addexistingmodifierbtn").addEventListener('click',()=>{
     
     var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
     modifiermodal.hide();
-    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
+    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslistforaddgroup"))
     itemlistmodal.show();
 
 });
@@ -1530,8 +1553,8 @@ function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
      // Get the dropdown element
 
     let cat_id= $("#category-list .category-active-option").attr("category-id");
-    let pageSizeDropdown = document.getElementById("pageSizeDropdownforMenuitems");
-    console.log(pageSizeDropdown.value);
+    @* let pageSizeDropdown = document.getElementById("pageSizeDropdownforMenuitems");
+    console.log(pageSizeDropdown.value); *@
     let searchkeyword = $("#menuitem-search-field").val();
 
     console.log("inside item",searchkeyword) 
@@ -1582,6 +1605,37 @@ function PaginationAjax(pageSize,pageNumber) {
                 alert("No Projects Found");
                 
                 $("#modifieritemstablecontainerofmodal").html('An error has occurred');
+            }
+        });
+    }
+
+@* -----Pagination For Modifier Items List add modifier group Modal------- *@
+function ModifieritemListForAddPaginationAjax(pageSize,pageNumber) {
+
+     // Get the dropdown element
+    let pageSizeDropdown = document.getElementById("pageSizeDropdownformodal");
+    let searchkeyword = $("#modifieritemsforaddmodal-search-field").val();
+    console.log(searchkeyword)
+    
+    // Store the currently selected value
+    let selectedPageSize = pageSizeDropdown?.value;
+
+    console.log("inside pag ajax",pageSize)
+       
+        $.ajax({
+            url: "/Menu/GetAllModifierItemsListForAdd",
+            data: { 'pageSize': pageSize, 'pageNumber': pageNumber,'searchKeyword':searchkeyword},
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#modifieritemstablecontainerofaddmodal").html(data);
+                @* onPartialViewLoaded();  *@
+                attachCheckboxListenersforAddModal();
+            },
+            error: function () {
+                alert("No Projects Found");
+                
+                $("#modifieritemstablecontainerofaddmodal").html('An error has occurred');
             }
         });
     }
@@ -1776,14 +1830,15 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
 
         PaginationAjax();
         ModifieritemsPaginationAjax();
+        ModifieritemListForAddPaginationAjax();
         MenuitemsPaginationAjax();
         updateCheckboxStates();
     });
 
-    let selectedModifiers = [];
+    let selectedModifiers = []; 
     let  selectedModifierIds = [];
     let selectedModifiersforedit = [];
-   
+    
 
     // Function to check checkboxes based on selectedModifiers
     function updateCheckboxStates() {
@@ -1800,22 +1855,6 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
             }
         });
     }
-
-     // Event Listener for checkboxes
-    @* document.addEventListener("change", function (event) {
-        if (event.target.classList.contains("modifieritemcheckboxofmodal")) {
-            let modifierId = event.target.value;
-            
-            if (event.target.checked) {
-                if (!selectedModifiers.some(modifier => modifier.id === modifierId)) {
-                    selectedModifiers.push({id:modifierId,name:event.target.getAttribute("m-name")});
-                    selectedModifierIds.push(modifierId);
-                }
-            } else {
-                selectedModifiers = selectedModifiers.filter(id => id !== modifierId);
-            }
-        }
-    }); *@
 
     // Function to handle checkbox selection
     function handleCheckboxChange(event) {
@@ -1890,6 +1929,9 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     document.getElementById("modifieritemsmodal-search-field").addEventListener('keyup',()=>{
         PaginationAjax();
     })
+    document.getElementById("modifieritemsforaddmodal-search-field").addEventListener('keyup',()=>{
+        ModifieritemListForAddPaginationAjax();
+    })
     document.getElementById("modifieritems-search-field").addEventListener('keyup',()=>{
         ModifieritemsPaginationAjax();
     })
@@ -1955,7 +1997,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
 
 let  selectedModifierIdsforAdd= [];
 
-     function ClearSection() 
+     function ClearSectionforAdd() 
     { 
         document.getElementById("selectedModifieritemcontainer").innerHTML="";
     }
@@ -1967,21 +2009,21 @@ let  selectedModifierIdsforAdd= [];
     
 @* showing and hiding modal manually *@
 
-document.getElementById("addexistingmodifierbtnforadd").addEventListener('click',()=>{
+@* document.getElementById("addexistingmodifierbtnforadd").addEventListener('click',()=>{
     
     var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
     modifiermodal.hide();
     var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
     itemlistmodal.show();
 
-});
+}); *@
 
      // Function to check checkboxes based on selectedModifiers
     function updateCheckboxStatesForAdd() {
 
-        console.log("inside upch")
+        console.log("inside add upch")
         console.log(selectedModifierIdsforAdd)
-        document.querySelectorAll(".modifieritemcheckbox").forEach((checkbox) => {
+        document.querySelectorAll(".modifieritemcheckboxofaddmodal").forEach((checkbox) => {
           
             if (selectedModifierIdsforAdd.includes(parseInt(checkbox.value))) {
                 checkbox.checked = true;
@@ -1991,6 +2033,17 @@ document.getElementById("addexistingmodifierbtnforadd").addEventListener('click'
             }
         });
     }
+
+    function attachCheckboxListenersforAddModal() {
+        document.querySelectorAll(".modifieritemcheckboxofaddmodal").forEach((checkbox) => {
+            checkbox.addEventListener("change", handleCheckboxChangeforAdd);
+        });
+
+        updateCheckboxStatesForAdd(); // Re-check checkboxes after reloading the partial view
+    }
+
+    
+       
 
     // Function to handle checkbox selection
     function handleCheckboxChangeforAdd(event) {
@@ -2012,7 +2065,10 @@ document.getElementById("addexistingmodifierbtnforadd").addEventListener('click'
         console.log("Selected IDs:", selectedModifierIdsforAdd);
        
         // Perform further actions like submitting selectedModifiers to the server
-        var itemlistmodal =bootstrap.Modal.getInstance(document.getElementById("modifieritemslistforaddmodal"))
+       
+        
+
+         var itemlistmodal =bootstrap.Modal.getInstance(document.getElementById("modifieritemslistforaddgroup"))
         itemlistmodal.hide();
  
 
@@ -2032,7 +2088,8 @@ document.getElementById("addexistingmodifierbtnforadd").addEventListener('click'
                     selectedModifierIdsforAdd = selectedModifierIdsforAdd.filter(i => i != itemId);
                     console.log("Updated list after deletion:", selectedModifierIdsforAdd);
                     });
-
+                    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
+                    modifiermodal.show();
                     
                     $("#selectedModifieritemcontainer").append($partialView);
                 },
@@ -2042,21 +2099,20 @@ document.getElementById("addexistingmodifierbtnforadd").addEventListener('click'
             });
         });   
 
-        var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
-                    modifiermodal.show();
+        
         
     }
 
-    $("#addmodifierForm").submit(function(e) {
+    $("#addModifierGroupForm").submit(function(e) {
     e.preventDefault();
 
     var formData = new FormData(this);
 
 
-    formData.append("ModifierItems", JSON.stringify(selectedModifierIdsforedit)); 
+    formData.append("ModifierItems", JSON.stringify(selectedModifierIdsforAdd)); 
 
     $.ajax({
-        url: "/Menu/EditModifierGroup",
+        url: "/Menu/AddModifierGroup",
         type: "POST",
         processData: false,
         contentType: false,

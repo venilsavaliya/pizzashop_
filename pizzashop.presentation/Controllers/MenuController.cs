@@ -143,6 +143,14 @@ public class MenuController : BaseController
 
         return PartialView("~/Views/Menu/_ModifierItemsListModal.cshtml", modifiersmodel);
     }
+    // GET : all Modifier Item List {Partial View Return}
+
+    public IActionResult GetAllModifierItemsListForAdd(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    {
+        var modifiersmodel = _menuservices.GetAllModifierItemsList(pageNumber, pageSize, searchKeyword);
+
+        return PartialView("~/Views/Menu/_ModifieritemListForAdd.cshtml", modifiersmodel);
+    }
 
     // POST : Menu
 
@@ -186,40 +194,7 @@ public class MenuController : BaseController
     }
 
 
-    // POST : ADD ModifierGroup 
-    [HttpPost]
-    public IActionResult AddModifierGroup(AddModifierGroupViewModel model)
-    {
-
-        var AuthResponse = _menuservices.AddNewModifierGroup(model).Result;
-        // if (model.Id != null)
-        // {
-
-        //     var res = _menuservices.EditCategory(model);
-
-        //     if (res.Success)
-        //     {
-        //         TempData["ToastrType"] = "success";
-        //         TempData["ToastrMessage"] = res.Message;
-        //     }
-
-        // }
-        // else
-        // {
-        //     var AuthResponse = _menuservices.AddCategory(model);
-        //     if (AuthResponse.Success)
-        //     {
-        //         TempData["ToastrType"] = "success";
-        //         TempData["ToastrMessage"] = AuthResponse.Message;
-        //     }
-
-        // }
-
-        // TempData["ToastrType"] = "error";
-        // TempData["ToastrMessage"] = "error in add category";
-
-        return RedirectToAction("Index", "Menu");
-    }
+   
 
     // GET : ModifierName List By Ids
 
@@ -486,6 +461,30 @@ public class MenuController : BaseController
             model.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
         }
         var response = _menuservices.EditModifierGroup(model).Result;
+
+        if(!response.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = response.Message;
+        }
+    
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = response.Message;
+
+        return Json(new { redirectTo = Url.Action("Index", "Menu") });
+       
+    }
+    [HttpPost]
+    public IActionResult AddModifierGroup(AddModifierGroupViewModel model)
+    {   
+        string modifiersitemsJson = Request.Form["ModifierItems"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersitemsJson))
+        {
+            model.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+        }
+        var response = _menuservices.AddModifierGroup(model).Result;
 
         if(!response.Success)
         {

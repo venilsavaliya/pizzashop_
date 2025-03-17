@@ -510,38 +510,38 @@ public class MenuServices : IMenuServices
     #endregion
 
 
-    public async Task<AuthResponse> AddNewModifierGroup(AddModifierGroupViewModel model)
-    {
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-        var userid = _userservices.GetUserIdfromToken(token);
+    // public async Task<AuthResponse> AddNewModifierGroup(AddModifierGroupViewModel model)
+    // {
+    //     var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+    //     var userid = _userservices.GetUserIdfromToken(token);
 
-        var ModifierGroup = new Modifiersgroup
-        {
-            Name = model.Name,
-            Description = model.Description,
-            Createdby = userid
-        };
+    //     var ModifierGroup = new Modifiersgroup
+    //     {
+    //         Name = model.Name,
+    //         Description = model.Description,
+    //         Createdby = userid
+    //     };
 
-        _context.Modifiersgroups.Add(ModifierGroup);
-        await _context.SaveChangesAsync();
+    //     _context.Modifiersgroups.Add(ModifierGroup);
+    //     await _context.SaveChangesAsync();
 
-        int newModifierGroupId = ModifierGroup.ModifiergroupId;
+    //     int newModifierGroupId = ModifierGroup.ModifiergroupId;
 
-        var modifierItemsandgroup = model.ModifieritemsId.Select(itemId => new Modifieritemsmodifiersgroup
-        {
-            ModifiergroupId = newModifierGroupId,
-            ModifierId = itemId
-        }).ToList();
+    //     var modifierItemsandgroup = model.ModifieritemsId.Select(itemId => new Modifieritemsmodifiersgroup
+    //     {
+    //         ModifiergroupId = newModifierGroupId,
+    //         ModifierId = itemId
+    //     }).ToList();
 
-        _context.Modifieritemsmodifiersgroups.AddRange(modifierItemsandgroup);
-        await _context.SaveChangesAsync();
+    //     _context.Modifieritemsmodifiersgroups.AddRange(modifierItemsandgroup);
+    //     await _context.SaveChangesAsync();
 
-        return new AuthResponse
-        {
-            Success = true,
-            Message = "ModifierGroup Added Successfuuuly"
-        };
-    }
+    //     return new AuthResponse
+    //     {
+    //         Success = true,
+    //         Message = "ModifierGroup Added Successfuuuly"
+    //     };
+    // }
 
     // service for edit modifier group 
     public async Task<AuthResponse> EditModifierGroup(EditModifierGroupViewModel model)
@@ -549,7 +549,7 @@ public class MenuServices : IMenuServices
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
-         var modifierGroup = await _context.Modifiersgroups
+        var modifierGroup = await _context.Modifiersgroups
             .Include(mg => mg.Modifieritemsmodifiersgroups)
             .FirstOrDefaultAsync(mg => mg.ModifiergroupId == model.ModifierId);
 
@@ -595,6 +595,41 @@ public class MenuServices : IMenuServices
         return new AuthResponse { Success = true, Message = "Modifier group updated successfully." };
     
     }
+
+    public async Task<AuthResponse> AddModifierGroup(AddModifierGroupViewModel model)
+{   
+    var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+    var userId = _userservices.GetUserIdfromToken(token);
+
+    // Create a new modifier group
+    var newModifierGroup = new Modifiersgroup
+    {
+        Name = model.Name,
+        Description = model.Description,
+        Createdby = userId,  // Assuming you have a CreatedBy field
+    };
+
+    // Add the new modifier group to the context
+    _context.Modifiersgroups.Add(newModifierGroup);
+    await _context.SaveChangesAsync(); // Save first to get the generated ID
+
+    // Add associated modifier items
+    if (model.ModifierItems != null && model.ModifierItems.Any())
+    {
+        var modifierItemMappings = model.ModifierItems.Select(modifierId => new Modifieritemsmodifiersgroup
+        {
+            ModifiergroupId = newModifierGroup.ModifiergroupId,
+            ModifierId = modifierId
+        }).ToList();
+
+        _context.Modifieritemsmodifiersgroups.AddRange(modifierItemMappings);
+        await _context.SaveChangesAsync();
+    }
+
+    return new AuthResponse { Success = true, Message = "Modifier group added successfully." };
+}
+
+
     public string GetCategoryNameFromId(int id)
     {
         return _context.Categories.FirstOrDefault(c => c.CategoryId == id).Name;
