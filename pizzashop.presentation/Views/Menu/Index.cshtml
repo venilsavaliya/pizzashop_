@@ -273,13 +273,13 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit ModifierGroup</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form asp-action="AddModifierGroup" asp-controller="Menu" method="post" id="editmodifierForm">
+                <form asp-action="EditModifierGroup" asp-controller="Menu" method="post" id="editmodifierForm">
                     <div class="modal-body">
                         <div class="d-flex flex-column"> 
-                                 <input type="text" class="form-control p-3" name="Id"
-                                    placeholder="Name" id="editmodifiergroupid" hidden>
+                                 <input type="text" class="form-control p-3" name="ModifierId"
+                                    id="editmodifiergroupid" hidden>
                             <div class="mb-3">
-                                <input type="text" class="form-control p-3" name="Name"
+                                <input type="text" class="form-control p-3" name="ModifierName"
                                     placeholder="Name" id="editmodifiergroupname">
                             </div>
                             <div class="mb-3">
@@ -312,7 +312,7 @@
         </div>
     </div>
 
-     <!-- show modifieritemslist modal -->
+    <!-- show modifieritemslist modal -->
     <div class="modal fade" id="modifieritemslist" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -330,6 +330,30 @@
                 </div> 
                 <div class="d-flex justify-content-end gap-2 p-2">
                     <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClick()">Add</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>  
+        </div>
+    </div>
+
+    <!-- show modifieritemslist modal for add modifier -->
+    <div class="modal fade" id="modifieritemslistforadd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-secondary" id="staticBackdropLabel">Select Existing Modifier</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="position-relative m-2" style="width: 280px;">
+                    <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritemsmodal-search-field">
+                    <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
+                </div>
+                <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainerofmodal">
+                       
+                </div> 
+                <div class="d-flex justify-content-end gap-2 p-2">
+                    <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClickForAdd()">Add</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -1091,6 +1115,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    
     });
     
 });
@@ -1154,7 +1180,8 @@ document.getElementById("addexistingmodifierbtnforedit").addEventListener('click
     var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("editmodifiergroupmodal"))
     modifiermodal.hide();
     ClearSection();
-    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
+    updateCheckboxStates();
+    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"));
     itemlistmodal.show();
 
 });
@@ -1268,7 +1295,7 @@ $(document).ready(function () {
     console.log("venil",selectedModifierGroups);
 
     formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups)); 
-
+ 
     $.ajax({
         url: "/Menu/AddNewItem",
         type: "POST",
@@ -1288,9 +1315,7 @@ $(document).ready(function () {
 
 @* showing modifier item partial view when modifier group is selected for edit menu item modal*@
 
-@* pwd *@
 
-    
 
     let selectedModifierGroupsforedit = []; 
     function setedititemdata(ele) {
@@ -1649,44 +1674,93 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
 
     @* ---- Modifier Functionality------ *@
 
-    @* function for getting modifier item name which is related to perticular modifier group *@
+    @* function for setting capsule at end of add or edit modifier group  modal *@
 
+    @* async function setcapsule(arr) {
+    let updatedArr = [...arr]; // Clone the array to prevent modification issues
+
+    for (let modifierId of arr) {
+        try {
+            let response = await $.ajax({
+                url: `/Menu/GetModifierItemsNamePVByModifieritemId`,
+                type: "GET",
+                data: { modifier_id: modifierId },
+            });
+
+            let $partialView = $(response);
+
+            $partialView.find(".delete-modifier-item").on("click", function () {
+                let itemId = $(this).attr("item-id");
+                console.log("Item ID:", itemId);
+
+                $partialView.remove();
+                updatedArr = updatedArr.filter(i => i != itemId);
+                console.log("Updated list after deletion:", updatedArr);
+            });
+
+            $("#selectedModifieritemcontainerforedit").append($partialView);
+
+        } catch (error) {
+            console.error(`Error fetching details for Modifier ID ${modifierId}:`, error);
+        }
+    }
+
+    return updatedArr; // Return updated array after all AJAX calls complete
+}
+ *@
+
+    @* function for getting modifier item name which is related to perticular modifier group *@
+@* pwd *@
+     let  selectedModifierIdsforedit = [];
     function GetModifierItemListByGroupid(ele)
-    {   
+    {   $("#selectedModifieritemcontainerforedit").html("");
         let obj = JSON.parse(ele.getAttribute('data-obj'));
         let modifiergroupid = obj.modifiergroupId;
         let name = obj.name;
         let description = obj.description;
-       
+
+        document.getElementById("editmodifiergroupid").value = modifiergroupid;
+        document.getElementById("editmodifiergroupname").value = name;
+        document.getElementById("editmodifiergroupdescription").value = description;
+
         $.ajax({
-        url: `/Menu/GetModifierItemsNameByModifierGroupid`,
+        url: `/Menu/GetModifierItemsidByModifierGroupid`,
         type: "GET",
         data: { modifiergroup_id: modifiergroupid },
         success: function (data) {
             console.log("Modifier Items:", data);
+            selectedModifierIdsforedit= data;
+            console.log("f",selectedModifierIdsforedit);
 
-            document.getElementById("editmodifiergroupid").value = modifiergroupid;
-            document.getElementById("editmodifiergroupname").value = name;
-            document.getElementById("editmodifiergroupdescription").value = description;
+            selectedModifierIdsforedit.forEach(function (modifierId) {
+            $.ajax({
+                url: `/Menu/GetModifierItemsNamePVByModifieritemId`, // Update with your actual endpoint
+                type: "GET",
+                data: { modifier_id: modifierId },
+                success: function (modifierData) {
+                    let $partialView = $(modifierData);
 
-            data.forEach((item)=>{
-
-                var model = new ModifierGroupNameViewModel
-                {
-                    ModifiergroupId = item.ModifierId,
-                    Name = item.ModifierName
+                    $partialView.find(".delete-modifier-item").on("click", function () {
+                    let itemId = $(this).attr("item-id");
+                    console.log("itemid",itemId);
+                    $partialView.remove();
+                    selectedModifierIdsforedit = selectedModifierIdsforedit.filter(i => i != itemId);
+                    console.log("Updated list after deletion:", selectedModifierIdsforedit);
+                    });
+                     $("#selectedModifieritemcontainerforedit").append($partialView);
+                },
+                error: function (error) {
+                    console.error(`Error fetching details for Modifier ID ${modifierId}:`, error);
                 }
-           
-            document.getElementById("selectedModifieritemcontainerforedit").innerHTML += `<span class="border rounded-pill px-3 py-1" style="width: fit-content;">
-                ${item.modifierName}
-                    <span> <img src="/images/icons/x-lg.svg" alt=""> </span>
-                </span>`
             });
+        });
+            
         },
         error: function (error) {
             console.error("Error fetching modifiers:", error);
         }
         });
+       
     };
 
     @* clear the existing modifier section when closing modal *@
@@ -1696,10 +1770,10 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         document.getElementById("selectedModifieritemcontainerforedit").innerHTML="";
     }
 
-
     @* function need to be called after document get load *@ 
 
     $(document).ready(function () {
+
         PaginationAjax();
         ModifieritemsPaginationAjax();
         MenuitemsPaginationAjax();
@@ -1709,12 +1783,16 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     let selectedModifiers = [];
     let  selectedModifierIds = [];
     let selectedModifiersforedit = [];
-    let  selectedModifierIdsforedit = [];
+   
 
     // Function to check checkboxes based on selectedModifiers
     function updateCheckboxStates() {
+
+        console.log("inside upch")
+        console.log(selectedModifierIdsforedit)
         document.querySelectorAll(".modifieritemcheckboxofmodal").forEach((checkbox) => {
-            if (selectedModifiers.includes(checkbox.value)) {
+            console.log(typeof checkbox.value)
+            if (selectedModifierIdsforedit.includes(parseInt(checkbox.value))) {
                 checkbox.checked = true;
             } else {
                 checkbox.checked = false;
@@ -1724,7 +1802,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     }
 
      // Event Listener for checkboxes
-    document.addEventListener("change", function (event) {
+    @* document.addEventListener("change", function (event) {
         if (event.target.classList.contains("modifieritemcheckboxofmodal")) {
             let modifierId = event.target.value;
             
@@ -1737,55 +1815,58 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
                 selectedModifiers = selectedModifiers.filter(id => id !== modifierId);
             }
         }
-    });
+    }); *@
 
     // Function to handle checkbox selection
     function handleCheckboxChange(event) {
         let modifierId = event.target.value;
 
         if (event.target.checked) {
-            if (!selectedModifiers.some(modifier => modifier.id === modifierId)) {
+            if (!selectedModifierIdsforedit.some(modifier => modifier === parseInt(modifierId))) {
                 @* selectedModifiers.push(modifierId); *@
-                selectedModifiers.push({id:modifierId,name:event.target.getAttribute("m-name")});
-                selectedModifierIds.push(modifierId);
+                @* selectedModifiers.push({id:modifierId,name:event.target.getAttribute("m-name")}); *@
+                selectedModifierIdsforedit.push(parseInt(modifierId));
+
+                console.log("chbxchange",selectedModifierIdsforedit)
             }
         } else {
-            selectedModifiers = selectedModifiers.filter(id => id !== modifierId);
+            selectedModifierIdsforedit = selectedModifierIdsforedit.filter(id => id !== modifierId);
         }
     }
-
+    @* pwd *@
     function handleAddButtonClick() {
         console.log("Selected IDs:", selectedModifiers);
-        console.log("Selected Names:", selectedModifierIds);
+        console.log("Selected Names:", selectedModifierIdsforedit);
         // Perform further actions like submitting selectedModifiers to the server
         var itemlistmodal =bootstrap.Modal.getInstance(document.getElementById("modifieritemslist"))
         itemlistmodal.hide();
 
-        $.ajax({
-        url: '/Menu/GetModifierNameListFromIds',
-        type: 'GET',
-        contentType: 'application/json',
-        data: JSON.stringify({modifierIds:selectedModifiers}),
-        success: function(response) {
 
-            console.log("Modifier Names:", response);
-            // Handle the received names here
-        },
-        error: function(error) {
-            console.error("Error fetching modifier names:", error);
-        }
-    });
+        selectedModifierIdsforedit.forEach(function (modifierId) {
+            $.ajax({
+                url: `/Menu/GetModifierItemsNamePVByModifieritemId`, // Update with your actual endpoint
+                type: "GET",
+                data: { modifier_id: modifierId },
+                success: function (modifierData) {
+                    let $partialView = $(modifierData);
 
-        var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
-        modifiermodal.show();
+                    $partialView.find(".delete-modifier-item").on("click", function () {
+                    let itemId = $(this).attr("item-id");
+                    console.log("itemid",itemId);
+                    $partialView.remove();
+                    selectedModifierIdsforedit = selectedModifierIdsforedit.filter(i => i != itemId);
+                    console.log("Updated list after deletion:", selectedModifierIdsforedit);
+                    });
 
-        selectedModifiers.forEach((item)=>{
-            @* document.getElementById("selectedModifieritemcontainer").html().append(@await Html.PartialAsync("./_ModifieritemName.cshtml")) *@
-            document.getElementById("selectedModifieritemcontainer").innerHTML += `<span class="border rounded-pill px-3 py-1" style="width: fit-content;">
-                ${item.name}
-                    <span> <img src="/images/icons/x-lg.svg" alt=""> </span>
-                </span>`;
-        })
+                    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("editmodifiergroupmodal"))
+                    modifiermodal.show();
+                    $("#selectedModifieritemcontainerforedit").append($partialView);
+                },
+                error: function (error) {
+                    console.error(`Error fetching details for Modifier ID ${modifierId}:`, error);
+                }
+            });
+        });   
         
     }
 
@@ -1846,6 +1927,148 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     
     });
 
+
+    $("#editmodifierForm").submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+
+
+    formData.append("ModifierItems", JSON.stringify(selectedModifierIdsforedit)); 
+
+    $.ajax({
+        url: "/Menu/EditModifierGroup",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(response) {
+            @* window.location.href = response.redirectTo; *@
+            location.reload();
+        },
+        error: function(err) {
+            console.error("Error adding item:", err);
+        }
+    }); 
+});
+
+
+let  selectedModifierIdsforAdd= [];
+
+     function ClearSection() 
+    { 
+        document.getElementById("selectedModifieritemcontainer").innerHTML="";
+    }
+ $(document).ready(function () {
+
+        updateCheckboxStatesForAdd();
+    });
+
+    
+@* showing and hiding modal manually *@
+
+document.getElementById("addexistingmodifierbtnforadd").addEventListener('click',()=>{
+    
+    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
+    modifiermodal.hide();
+    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
+    itemlistmodal.show();
+
+});
+
+     // Function to check checkboxes based on selectedModifiers
+    function updateCheckboxStatesForAdd() {
+
+        console.log("inside upch")
+        console.log(selectedModifierIdsforAdd)
+        document.querySelectorAll(".modifieritemcheckbox").forEach((checkbox) => {
+          
+            if (selectedModifierIdsforAdd.includes(parseInt(checkbox.value))) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+                
+            }
+        });
+    }
+
+    // Function to handle checkbox selection
+    function handleCheckboxChangeforAdd(event) {
+        let modifierId = event.target.value;
+
+        if (event.target.checked) {
+            if (!selectedModifierIdsforAdd.some(modifier => modifier === parseInt(modifierId))) {
+              
+                selectedModifierIdsforAdd.push(parseInt(modifierId));
+
+                console.log("chbxchange",selectedModifierIdsforAdd)
+            }
+        } else {
+            selectedModifierIdsforAdd = selectedModifierIdsforAdd.filter(id => id !== modifierId);
+        }
+    }
+   
+    function handleAddButtonClickForAdd() {
+        console.log("Selected IDs:", selectedModifierIdsforAdd);
+       
+        // Perform further actions like submitting selectedModifiers to the server
+        var itemlistmodal =bootstrap.Modal.getInstance(document.getElementById("modifieritemslistforaddmodal"))
+        itemlistmodal.hide();
+ 
+
+
+        selectedModifierIdsforAdd.forEach(function (modifierId) {
+            $.ajax({
+                url: `/Menu/GetModifierItemsNamePVByModifieritemId`, // Update with your actual endpoint
+                type: "GET",
+                data: { modifier_id: modifierId },
+                success: function (modifierData) {
+                    let $partialView = $(modifierData);
+
+                    $partialView.find(".delete-modifier-item").on("click", function () {
+                    let itemId = $(this).attr("item-id");
+                    console.log("itemid",itemId);
+                    $partialView.remove();
+                    selectedModifierIdsforAdd = selectedModifierIdsforAdd.filter(i => i != itemId);
+                    console.log("Updated list after deletion:", selectedModifierIdsforAdd);
+                    });
+
+                    
+                    $("#selectedModifieritemcontainer").append($partialView);
+                },
+                error: function (error) {
+                    console.error(`Error fetching details for Modifier ID ${modifierId}:`, error);
+                }
+            });
+        });   
+
+        var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
+                    modifiermodal.show();
+        
+    }
+
+    $("#addmodifierForm").submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+
+
+    formData.append("ModifierItems", JSON.stringify(selectedModifierIdsforedit)); 
+
+    $.ajax({
+        url: "/Menu/EditModifierGroup",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(response) { 
+            window.location.href = response.redirectTo;
+        },
+        error: function(err) {
+            console.error("Error adding item:", err);
+        }
+    });
+});
 
 
 </script> 

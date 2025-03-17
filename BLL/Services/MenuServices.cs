@@ -428,19 +428,19 @@ public class MenuServices : IMenuServices
 
                 _context.Itemsmodifiergroupminmaxmappings.AddRange(newMappings);
 
-                 await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
-                
 
 
 
-                return new AuthResponse
-                {
-                    Success = true,
-                    Message = "Item Edited Succesfully!"
-                };
 
-            }
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Item Edited Succesfully!"
+            };
+
+        }
         catch (Exception)
         {
             return new AuthResponse
@@ -542,6 +542,59 @@ public class MenuServices : IMenuServices
             Message = "ModifierGroup Added Successfuuuly"
         };
     }
+
+    // service for edit modifier group 
+    public async Task<AuthResponse> EditModifierGroup(EditModifierGroupViewModel model)
+    {   
+        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+        var userid = _userservices.GetUserIdfromToken(token);
+
+         var modifierGroup = await _context.Modifiersgroups
+            .Include(mg => mg.Modifieritemsmodifiersgroups)
+            .FirstOrDefaultAsync(mg => mg.ModifiergroupId == model.ModifierId);
+
+        if (modifierGroup == null)
+        {
+            return new AuthResponse { Success = false, Message = "Modifier group not found." };
+        }
+
+        // Update basic details
+        modifierGroup.Name = model.ModifierName;
+        modifierGroup.Description = model.Description;
+        // modifierGroup.Modifieddate = DateTime.UtcNow;
+        modifierGroup.Modifyiedby = userid;
+
+        // Update Modifier Items Mapping
+        var existingMappings = modifierGroup.Modifieritemsmodifiersgroups.ToList();
+        
+        // Remove old modifier items that are not in the new list
+        foreach (var mapping in existingMappings)
+        {
+            if (!model.ModifierItems.Contains(mapping.ModifierId ?? 0))
+            {
+                _context.Modifieritemsmodifiersgroups.Remove(mapping);
+            }
+        }
+
+        // Add new modifier items
+        foreach (var modifierId in model.ModifierItems)
+        {
+            if (!existingMappings.Any(m => m.ModifierId == modifierId))
+            {
+                _context.Modifieritemsmodifiersgroups.Add(new Modifieritemsmodifiersgroup
+                {
+                    ModifiergroupId = model.ModifierId,
+                    ModifierId = modifierId
+                });
+            }
+        } 
+
+        // Save changes to database
+        await _context.SaveChangesAsync();
+
+        return new AuthResponse { Success = true, Message = "Modifier group updated successfully." };
+    
+    }
     public string GetCategoryNameFromId(int id)
     {
         return _context.Categories.FirstOrDefault(c => c.CategoryId == id).Name;
@@ -555,29 +608,50 @@ public class MenuServices : IMenuServices
                        .ToList();
     }
 
-    public List<EditModifierGroupItemsViewModel> GetModifierItemListNamesByModifierGroupId(int modifiergroup_id)
+    public List<ModifierGroupNameViewModel> GetModifierItemListNamesByModifierGroupId(int modifiergroup_id)
     {
         return (from mig in _context.Modifieritemsmodifiersgroups
                 join mi in _context.Modifieritems on mig.ModifierId equals mi.ModifierId
                 where mig.ModifiergroupId == modifiergroup_id
-                select new EditModifierGroupItemsViewModel
+                select new ModifierGroupNameViewModel
                 {
-                    ModifierId = mi.ModifierId,
-                    ModifierName = mi.ModifierName
+                    ModifiergroupId = mi.ModifierId,
+                    Name = mi.ModifierName
                 }).ToList();
+    }
+
+    public ModifierItemNameViewModel GetModifierItemNamesByModifierItemId(int modifieritem_id)
+    {
+        //  return (from mig in _context.Modifieritemsmodifiersgroups
+        //     join mi in _context.Modifieritems on mig.ModifierId equals mi.ModifierId
+        //     where mig.ModifiergroupId == modifieritem_id
+        //     select new ModifierGroupNameViewModel
+        //     {
+        //         Itemid = mi.ModifierId,
+        //         Name = mi.ModifierName 
+        //     }).FirstOrDefault();
+
+        return _context.Modifieritems
+        .Where(i => i.ModifierId == modifieritem_id)
+        .Select(i => new ModifierItemNameViewModel
+        {
+            Itemid = i.ModifierId,  // Assuming ModifierId corresponds to Itemid
+            Name = i.ModifierName
+        })
+        .FirstOrDefault();
     }
 
     public ModifierGroupNameViewModel GetModifierGroupNamePVByModifierGroupid(int modifiergroup_id)
     {
 
-        var Modifiergroup = _context.Modifiersgroups.FirstOrDefault(mg => mg.ModifiergroupId==modifiergroup_id);
+        var Modifiergroup = _context.Modifiersgroups.FirstOrDefault(mg => mg.ModifiergroupId == modifiergroup_id);
 
         var model = new ModifierGroupNameViewModel
         {
             ModifiergroupId = Modifiergroup.ModifiergroupId,
             Name = Modifiergroup.Name
         };
-        
+
         return model;
     }
 

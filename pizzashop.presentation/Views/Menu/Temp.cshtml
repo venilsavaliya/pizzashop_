@@ -1,0 +1,117 @@
+<script>
+
+     let  selectedModifierIdsforAdd= [];
+
+     function ClearSection() 
+    { 
+        document.getElementById("selectedModifieritemcontainer").innerHTML="";
+    }
+ $(document).ready(function () {
+
+        updateCheckboxStatesForAdd();
+    });
+
+    
+@* showing and hiding modal manually *@
+
+document.getElementById("addexistingmodifierbtnforadd").addEventListener('click',()=>{
+    
+    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
+    modifiermodal.hide();
+    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
+    itemlistmodal.show();
+
+});
+
+     // Function to check checkboxes based on selectedModifiers
+    function updateCheckboxStatesForAdd() {
+
+        console.log("inside upch")
+        console.log(selectedModifierIdsforAdd)
+        document.querySelectorAll(".modifieritemcheckbox").forEach((checkbox) => {
+          
+            if (selectedModifierIdsforAdd.includes(parseInt(checkbox.value))) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+                
+            }
+        });
+    }
+
+    // Function to handle checkbox selection
+    function handleCheckboxChangeforAdd(event) {
+        let modifierId = event.target.value;
+
+        if (event.target.checked) {
+            if (!selectedModifierIdsforAdd.some(modifier => modifier === parseInt(modifierId))) {
+              
+                selectedModifierIdsforAdd.push(parseInt(modifierId));
+
+                console.log("chbxchange",selectedModifierIdsforAdd)
+            }
+        } else {
+            selectedModifierIdsforAdd = selectedModifierIdsforAdd.filter(id => id !== modifierId);
+        }
+    }
+   
+    function handleAddButtonClickForAdd() {
+        console.log("Selected IDs:", selectedModifierIdsforAdd);
+       
+        // Perform further actions like submitting selectedModifiers to the server
+        var itemlistmodal =bootstrap.Modal.getInstance(document.getElementById("modifieritemslistforaddmodal"))
+        itemlistmodal.hide();
+ 
+
+
+        selectedModifierIdsforAdd.forEach(function (modifierId) {
+            $.ajax({
+                url: `/Menu/GetModifierItemsNamePVByModifieritemId`, // Update with your actual endpoint
+                type: "GET",
+                data: { modifier_id: modifierId },
+                success: function (modifierData) {
+                    let $partialView = $(modifierData);
+
+                    $partialView.find(".delete-modifier-item").on("click", function () {
+                    let itemId = $(this).attr("item-id");
+                    console.log("itemid",itemId);
+                    $partialView.remove();
+                    selectedModifierIdsforAdd = selectedModifierIdsforAdd.filter(i => i != itemId);
+                    console.log("Updated list after deletion:", selectedModifierIdsforAdd);
+                    });
+
+                    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
+                    modifiermodal.show();
+                    $("#selectedModifieritemcontainer").append($partialView);
+                },
+                error: function (error) {
+                    console.error(`Error fetching details for Modifier ID ${modifierId}:`, error);
+                }
+            });
+        });   
+        
+    }
+
+    $("#addmodifierForm").submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+
+
+    formData.append("ModifierItems", JSON.stringify(selectedModifierIdsforedit)); 
+
+    $.ajax({
+        url: "/Menu/EditModifierGroup",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(response) { 
+            window.location.href = response.redirectTo;
+        },
+        error: function(err) {
+            console.error("Error adding item:", err);
+        }
+    });
+});
+</script>

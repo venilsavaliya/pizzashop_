@@ -3,6 +3,9 @@ using BLL.Interfaces;
 using BLL.Services;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 
 namespace pizzashop.presentation.Controllers;
@@ -12,12 +15,14 @@ public class MenuController : BaseController
 
     private readonly IMenuServices _menuservices;
 
+
     private readonly INotyfService _notyf;
 
     public MenuController(IMenuServices menuServices, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice) : base(jwtService, userService, adminservice)
     {
         _menuservices = menuServices;
         _notyf = notyf;
+        
     }
     // GET : Index
 
@@ -264,7 +269,7 @@ public class MenuController : BaseController
 
     #endregion
 
-    #region Menu items
+    #region Menu items 
 
     // POST : ADD New Item
     [HttpPost]
@@ -375,14 +380,53 @@ public class MenuController : BaseController
     #endregion
 
     #region Modifier 
+    // pwd
 
-    // Return List Of Modifier Item list based on modifier group id
-    public IActionResult GetModifierItemsNameByModifierGroupid(int modifiergroup_id)
+    //  Return Partial view Of Modifier Item list based on modifier group id
+    // public async Task<IActionResult> GetModifierItemsNamePVByModifierGroupid(int modifiergroup_id)
+    // {
+    //     try
+    //     {
+    //         // Get list of modifiers
+    //         var modifiers = _menuservices.GetModifierItemListNamesByModifierGroupId(modifiergroup_id);
+
+    //         // Extract modifier IDs
+    //         var modifierIds = modifiers.Select(m => m.ModifiergroupId).ToList();
+
+    //         return PartialView("~/Views/Menu/_ModifierName.cshtml",modifiers);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return StatusCode(500, new { message = "Error fetching modifiers", error = ex.Message });
+    //     }
+    // }
+
+    public async Task<IActionResult> GetModifierItemsNamePVByModifieritemId(int modifier_id)
     {
         try
         {
+            // Get list of modifiers
+            var modifiers = _menuservices.GetModifierItemNamesByModifierItemId(modifier_id);
+
+            return PartialView("~/Views/Menu/_ModifieritemName.cshtml",modifiers);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Error fetching modifiers", error = ex.Message });
+        }
+    }
+    // Return List Of Modifier Item id list based on modifier group id
+    public IActionResult GetModifierItemsidByModifierGroupid(int modifiergroup_id)
+    {
+        try
+        {
+            // Get list of modifiers
             var modifiers = _menuservices.GetModifierItemListNamesByModifierGroupId(modifiergroup_id);
-            return Ok(modifiers);
+
+            // Extract modifier IDs
+            var modifierIds = modifiers.Select(m => m.ModifiergroupId).ToList();
+
+            return Json(modifierIds);
         }
         catch (Exception ex)
         {
@@ -396,7 +440,7 @@ public class MenuController : BaseController
         try
         {
             var model = _menuservices.GetModifierGroupNamePVByModifierGroupid(modifiergroup_id);
-           return PartialView("~/View/Menu/_ModifierName.cshtml",model);
+            return PartialView("~/Views/Menu/_ModifierName.cshtml", model);
         }
         catch (Exception ex)
         {
@@ -411,17 +455,17 @@ public class MenuController : BaseController
 
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", modifierItems);
     }
-    public IActionResult GetModifierItemsForEdit(int modifierGroupId,int itemid)
+    public IActionResult GetModifierItemsForEdit(int modifierGroupId, int itemid)
     {
-        var modifierItems = _menuservices.GetModifierItemswithMinMaxByGroupIdandItemid(modifierGroupId,itemid); // Fetch Data
+        var modifierItems = _menuservices.GetModifierItemswithMinMaxByGroupIdandItemid(modifierGroupId, itemid); // Fetch Data
 
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", modifierItems);
     }
 
 
-    public IActionResult GetItemModifierGroupminMaxMapping(int itemid , int modifiergroupid)
+    public IActionResult GetItemModifierGroupminMaxMapping(int itemid, int modifiergroupid)
     {
-        var model = _menuservices.GetItemModifierGroupminMaxMappingAsync(itemid,modifiergroupid);
+        var model = _menuservices.GetItemModifierGroupminMaxMappingAsync(itemid, modifiergroupid);
 
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", model);
     }
@@ -429,6 +473,31 @@ public class MenuController : BaseController
     public List<int> GetModifierGroupIdsByItemId(int itemid)
     {
         return _menuservices.GetModifierGroupIdsByItemId(itemid);
+    }
+
+    [HttpPost]
+    public IActionResult EditModifierGroup(EditModifierGroupViewModel model)
+    {   
+        string modifiersitemsJson = Request.Form["ModifierItems"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersitemsJson))
+        {
+            model.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+        }
+        var response = _menuservices.EditModifierGroup(model).Result;
+
+        if(!response.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = response.Message;
+        }
+    
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = response.Message;
+
+        return Json(new { redirectTo = Url.Action("Index", "Menu") });
+       
     }
 
     #endregion

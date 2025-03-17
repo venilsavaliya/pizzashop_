@@ -1,4 +1,6 @@
+@model DAL.ViewModels.ModifierItemNameViewModel
+
 <span class="border rounded-pill px-3 py-1" style="width: fit-content;">
-    Hello
-    <span><img src="~/images/icons/x-lg.svg" alt=""></span>
+    @Model.Name
+    <span item-id = "@Model.Itemid" class="delete-modifier-item"><img src="~/images/icons/x-lg.svg" alt=""></span>
 </span>

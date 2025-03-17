@@ -27,7 +27,7 @@ public interface IMenuServices
 
     public List<string> GetModifierNamesByIds(List<string> modifierIds);
 
-    public List<EditModifierGroupItemsViewModel> GetModifierItemListNamesByModifierGroupId(int modifiergroup_id);
+    public List<ModifierGroupNameViewModel> GetModifierItemListNamesByModifierGroupId(int modifiergroup_id);
 
     public ModifierGroupanditemsViewModel GetModifierItemsByGroupId(int modifiergroup_id);
 
@@ -38,4 +38,8 @@ public interface IMenuServices
     public List<int> GetModifierGroupIdsByItemId(int itemId);
 
     public ModifierGroupNameViewModel GetModifierGroupNamePVByModifierGroupid(int modifiergroup_id);
+
+   public ModifierItemNameViewModel GetModifierItemNamesByModifierItemId(int modifieritem_id);
+
+   public Task<AuthResponse> EditModifierGroup(EditModifierGroupViewModel model);
 }

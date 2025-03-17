@@ -1,6 +1,7 @@
 @model DAL.ViewModels.ModifierGroupNameViewModel;
 
-<span class="border rounded-pill px-3 py-1" style="width: fit-content;">
+    <span class="border rounded-pill px-3 py-1" style="width: fit-content;">
     @Model.Name
-    <span> <img src="/images/icons/x-lg.svg" alt=""> </span>
+    <span class="delete-modifier-item" item-id="@Model.ModifiergroupId"> <img src="/images/icons/x-lg.svg" alt=""> </span>
 </span>
+
