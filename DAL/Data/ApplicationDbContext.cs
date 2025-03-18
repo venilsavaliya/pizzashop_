@@ -21,6 +21,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Country> Countries { get; set; }
 
+    public virtual DbSet<Diningtable> Diningtables { get; set; }
+
     public virtual DbSet<Item> Items { get; set; }
 
     public virtual DbSet<ItemModifiergroupMapping> ItemModifiergroupMappings { get; set; }
@@ -43,6 +45,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Rolespermission> Rolespermissions { get; set; }
 
+    public virtual DbSet<Section> Sections { get; set; }
+
     public virtual DbSet<State> States { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -51,7 +55,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main1;Username=postgres;Password=Sendrock@1");
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -136,6 +140,47 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
+        });
+
+        modelBuilder.Entity<Diningtable>(entity =>
+        {
+            entity.HasKey(e => e.TableId).HasName("diningtables_pkey");
+
+            entity.ToTable("diningtables");
+
+            entity.Property(e => e.TableId).HasColumnName("table_id");
+            entity.Property(e => e.Capacity).HasColumnName("capacity");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
+            entity.Property(e => e.SectionId).HasColumnName("section_id");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'available'::character varying")
+                .HasColumnType("character varying")
+                .HasColumnName("status");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.DiningtableCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_diningtables_createdby");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.DiningtableModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .HasConstraintName("fk_diningtables_modifyiedby");
+
+            entity.HasOne(d => d.Section).WithMany(p => p.Diningtables)
+                .HasForeignKey(d => d.SectionId)
+                .HasConstraintName("fk_diningtables_section");
         });
 
         modelBuilder.Entity<Item>(entity =>
@@ -444,6 +489,40 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Role).WithMany(p => p.Rolespermissions)
                 .HasForeignKey(d => d.Roleid)
                 .HasConstraintName("fk_role");
+        });
+
+        modelBuilder.Entity<Section>(entity =>
+        {
+            entity.HasKey(e => e.SectionId).HasName("section_pkey");
+
+            entity.ToTable("section");
+
+            entity.Property(e => e.SectionId).HasColumnName("section_id");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .HasColumnName("description");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.SectionName)
+                .HasMaxLength(100)
+                .HasColumnName("section_name");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.SectionCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_section_createdby");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.SectionModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .HasConstraintName("fk_section_modifyiedby");
         });
 
         modelBuilder.Entity<State>(entity =>

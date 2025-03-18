@@ -17,6 +17,10 @@ public partial class User
 
     public virtual ICollection<Category> CategoryModifyiedbyNavigations { get; } = new List<Category>();
 
+    public virtual ICollection<Diningtable> DiningtableCreatedbyNavigations { get; } = new List<Diningtable>();
+
+    public virtual ICollection<Diningtable> DiningtableModifyiedbyNavigations { get; } = new List<Diningtable>();
+
     public virtual ICollection<Item> ItemCreatedbyNavigations { get; } = new List<Item>();
 
     public virtual ICollection<Item> ItemModifyiedbyNavigations { get; } = new List<Item>();
@@ -32,6 +36,10 @@ public partial class User
     public virtual ICollection<Role> RoleCreatedByNavigations { get; } = new List<Role>();
 
     public virtual ICollection<Role> RoleUpdatedByNavigations { get; } = new List<Role>();
+
+    public virtual ICollection<Section> SectionCreatedbyNavigations { get; } = new List<Section>();
+
+    public virtual ICollection<Section> SectionModifyiedbyNavigations { get; } = new List<Section>();
 
     public virtual ICollection<Userdetail> UserdetailCreatedbyNavigations { get; } = new List<Userdetail>();
 
