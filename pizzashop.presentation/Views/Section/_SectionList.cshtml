@@ -1,37 +1,37 @@
-@model DAL.ViewModels.ModifierListViewModel
+@model DAL.ViewModels.SectionNameListViewModel
 
 
- @* Modifier list  *@ 
-@foreach (var c in Model.ModifierGroups) 
+
+ @* category list  *@
+@foreach (var c in Model.Sections)
 {
         <div
-            class="modifier-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedModifierGroup == c.ModifiergroupId ? "category-active-option" : "")" id="category_option" modifiergroup-id="@c.ModifiergroupId" >
-            <div class="d-flex gap-2" style="cursor: pointer;" onclick="loadmodifiers(this)" modifiergroup-id="@c.ModifiergroupId">
+            class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedSection == c.SectionId ? "category-active-option" : "")" id="category_option" section-id="@c.SectionId" >
+            <div class="d-flex gap-2" style="cursor: pointer;" onclick="loadsection(this)"  section-id="@c.SectionId"> 
                 <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img ">
-                <div>@c.Name</div>
+                <div>@c.SectionName</div>
             </div>
        
             <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
           
-                <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifiergroupmodal" onclick="GetModifierItemListByGroupid(this)" data-id="@c.ModifiergroupId" data-name="@c.Name" data-description="@c.Description" data-obj='@Html.Raw(Json.Serialize(c))'>
+                <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#Editsectionmodal" onclick="setEditSectionData(this)" item-obj='@Html.Raw(Json.Serialize(c))'>
             
                 <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
-                    data-bs-target="#deleteModifierGroupmodal" onclick="setDeleteModifierGroupId(this)" data-id="@c.ModifiergroupId"
+                    data-bs-target="#deletecategorymodal" onclick="setDeleteCategoryId(this)"  section-id="@c.SectionId"
                     alt="">
             </div>
         </div>
 }
 
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     attachHoverEffect(); // Call the function when the page loads
-    });
+});
 
 // Function to handle hover effect
 function attachHoverEffect() {
-    document.querySelectorAll(".modifier-option").forEach(opt => {
+    document.querySelectorAll(".category-option").forEach(opt => {
         opt.addEventListener("mouseover", function () {
             console.log("Mouse Entered");
             let actionbtn = opt.querySelector("#categoryoption_actionbtn");
@@ -55,6 +55,8 @@ function attachHoverEffect() {
 $(document).on("ajaxComplete", function () {
     attachHoverEffect();
 });
+
+
 
 </script>
                   

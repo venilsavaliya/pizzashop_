@@ -499,6 +499,104 @@ public class MenuController : BaseController
        
     }
 
+    //  Delete Modifier Group by Id
+    public IActionResult DeleteModifierGroupById(string id)
+    {   
+        
+        var response = _menuservices.DeleteModifierGroupById(id).Result;
+
+        if(!response.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = response.Message;
+        }
+    
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = response.Message;
+
+        return RedirectToAction("Index","Menu");
+       
+    }
+
+    [HttpPost]
+    public IActionResult AddModifierItem(AddModifierItemViewModel model)
+    {   
+        
+        var response = _menuservices.AddModifierItem(model).Result;
+
+        if(!response.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = response.Message;
+        }
+    
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = response.Message;
+
+        return RedirectToAction("Index","Menu");
+       
+    }
+    [HttpPost]
+    public IActionResult EditModifierItem(AddModifierItemViewModel model)
+    {   
+        
+        var response = _menuservices.EditModifierItem(model).Result;
+
+        if(!response.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = response.Message;
+        }
+    
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = response.Message;
+
+        return RedirectToAction("Index","Menu");
+       
+    }
+
+    // Delete Modifier Item
+     public IActionResult DeleteModifierItemById(int modifierid,int modifiergroupid)
+    {   
+        
+        var response = _menuservices.DeleteModifierItemById(modifierid,modifiergroupid).Result;
+
+        if(!response.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = response.Message;
+        }
+    
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = response.Message;
+
+        return RedirectToAction("Index","Menu");
+       
+    }
+
+    // Delete Multiple Modifier Items
+    [HttpPost]
+
+    public IActionResult DeleteModifierItems(int ModifierGroupid,List<string> ids)
+    {
+
+        var AuthResponse = _menuservices.DeleteModifierItems(ModifierGroupid,ids).Result;
+
+        // if(!AuthResponse.Success)
+        // {
+        //     _notyf.Error(AuthResponse.Message);
+        //     return RedirectToAction("Menu");
+        // }
+
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+
+        // return RedirectToAction("Menu","Menu",new {cat});
+
+        return Json(new { redirectTo = Url.Action("Index", "Menu") });
+
+    }
+
     #endregion
 
 }

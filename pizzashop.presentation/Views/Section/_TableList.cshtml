@@ -1,42 +1,43 @@
-@model DAL.ViewModels.ModifierItemsPagination;
+@* @model DAL.ViewModels.MenuViewModel; *@
+@model DAL.ViewModels.TableListPaginationViewModel
 
 <table class="table">
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                <input class="form-check-input outer_checkbox_modifieritemmodal" id="menu-main-checkbox" type="checkbox" value=""
+                <input class="form-check-input outer_checkbox" id="menu-main-checkbox" type="checkbox" value=""
                     id="flexCheckIndeterminate">
             </div> <span>Name</span>
         </th>
-        <th>Unit</th>
-        <th>Rate</th>
-        <th>Quantity</th>
+       
+        <th>Capacity</th>
+        <th>Status</th>
         <th>Action</th>
     </tr>
 
 
-    @foreach (var i in Model.Items) 
+    @foreach (var i in Model.Items)
     {
-
         <tr>
             <td>
                 <div class="d-flex justify-content-start gap-2 align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input inner_checkbox_modifieritemmodal modifieritemcheckbox" type="checkbox" value="@i.ModifierId"
-                            id="flexCheckIndeterminate" modifiergroup-id="@Model.ModifierGroupId">
+                        <input class="form-check-input inner_checkbox" type="checkbox" value="@i.TableId"
+                            id="flexCheckIndeterminate">
                     </div>
 
+                    
                     <span>@i.Name</span>
                 </div>
             </td>
-            <td>@i.Unit</td>
-            <td>@i.Rate</td>
-            <td>@i.Quantity</td>
+           
+            <td>@i.Capacity</td>
+            <td>@i.Status</td>
             <td>
                 <div class="d-flex justify-content-start gap-5">
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifieritemmodal"
-                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="seteditmodifieritemdata(this)" modifiergroup-id= "@Model.ModifierGroupId">
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteModifieritemmodal" alt="" onclick="setDeleteModifierid(this)" modifiergroup-id= "@Model.ModifierGroupId" modifier-id="@i.ModifierId">
+                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmenuitem"
+                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="setedititemdata(this)">
+                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteitemmodal" alt="" onclick="setDeleteItemId(this)" item-id="@i.TableId" >
                 </div>
 
             </td>
@@ -50,7 +51,7 @@
     <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
         <div>Items per page: </div>
         <select class="form-select" style="width:68px ;" aria-label="Default select example"
-            id="pageSizeDropdownformodal" onchange="ModifieritemsPaginationAjax(this.value,1,@Model.ModifierGroupId)">
+            id="pageSizeDropdownforMenuitems" onchange="TableListPaginationAjax(this.value,1,@Model.Sectionid)">
 
             <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
             <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
@@ -59,14 +60,14 @@
         <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
         @* @if (Model.Page.CurrentPage > 1) *@
 
-        <div onclick="ModifieritemsPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1,@Model.ModifierGroupId)"
+        <div onclick="TableListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1,@Model.Sectionid)"
             class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
             <div class="border p-2 px-3"> &lt; </div>
         </div>
 
         @* @if (Model.Page.CurrentPage < Model.Page.TotalPages) *@
 
-        <div onclick="ModifieritemsPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1,@Model.ModifierGroupId)"
+        <div onclick="TableListPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1,@Model.Sectionid)"
             class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
             style="text-decoration: none;">
             <div class="border p-2 px-3">&gt;</div>
@@ -74,3 +75,6 @@
 
     </div>
 </div>
+
+
+

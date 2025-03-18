@@ -35,7 +35,7 @@
 
 
     </div>
-
+ 
     @* category list for samll screen *@
 
     <div class="CategoryForSmallScreen d-lg-none bg-white mt-2 p-2 ">
@@ -98,8 +98,7 @@
                                     class="small-img" >
                             </div>
                             <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmenuitem"><span
-                                    class="fs-5 fw-semibold" >+</span> New
-                                Item</button>
+                                    class="fs-5 fw-semibold" >+</span> New Item</button>
                             <button type="button"
                                 class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
                         </div>
@@ -162,11 +161,11 @@
                                 <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritems-search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
-                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteitemmodal">
+                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deletemassitemmodal">
                                 <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
                                     class="small-img" >
                             </div>
-                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmenuitem"><span
+                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmodifieritemmodal"><span
                                     class="fs-5 fw-semibold" >+</span> New
                                 Item</button>
                             <button type="button"
@@ -396,6 +395,46 @@
                 </div>
                 <div class="d-flex justify-content-center align-items-center gap-2">
                     <a id="deleteCategoryBtn">
+                        <button type="button" class="btn btn-primary px-4">Yes</button>
+                    </a>
+                    <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      @* ---------------- Delete Modifier Group modal body------------------- *@
+
+    <div class="modal" tabindex="-1" id="deleteModifierGroupmodal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3" style="width: 420px !important;">
+
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
+                    <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete this?</div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center gap-2">
+                    <a id="deleteModifierGroupBtn">
+                        <button type="button" class="btn btn-primary px-4">Yes</button>
+                    </a>
+                    <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      @* ---------------- Delete Modifier Item modal body------------------- *@
+
+    <div class="modal" tabindex="-1" id="deleteModifieritemmodal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3" style="width: 420px !important;">
+
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
+                    <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete this?</div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center gap-2">
+                    <a id="deleteModifierItemBtn">
                         <button type="button" class="btn btn-primary px-4">Yes</button>
                     </a>
                     <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">No</button>
@@ -803,8 +842,185 @@
             </div>
         </div>
     </div>
+      @* ---------------- Delete item modal body fro mass delete------------------- *@
+
+    <div class="modal" tabindex="-1" id="deletemassitemmodal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3" style="width: 420px !important;">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
+                    <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete This Item?</div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center gap-2">
+                    <a id="deletemassitemBtn">
+                        <button type="button" class="btn btn-primary px-4">Yes</button>
+                    </a>
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @* -------------------------------------------------------------- *@
-</div>
+</div> 
+
+@* Add Modifier Item Modal *@
+
+<div class="modal fade " id="addmodifieritemmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Modifier Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="AddModifierItemForm" enctype="multipart/form-data" asp-action="AddModifierItem" asp-controller="Menu" >
+                    <div class="modal-body">
+                        
+                        <div class="row">
+                            <div class="col">
+                                 <select  class="form-select selectBox p-3" id="modifierGroupSelect" name="ModifierGroupid">
+                                                <option selected>Select Modifier Group</option>
+
+                                                @* showing options for all modifiergroup name *@
+                                                @foreach(var m in @Model.ModifierGroups)
+                                                {
+                                                    <option value=@m.ModifiergroupId>@m.Name</option>
+                                                }
+                                        </select>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInput" name="ModifierName">
+                                    <label for="floatingInput">Name*</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col"> 
+                                <div class="form-floating">
+                                        <input type="number" class="form-control" id="floatingInput" value="0" name="Rate">
+                                        <label for="floatingInput">Rate</label>
+                                    </div>
+                                </div>
+                            <div class="col">
+                                <div class="form-floating">
+                                        <input type="number" class="form-control" id="floatingInput" value="0" name="Quantity">
+                                        <label for="floatingInput">Quantity</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating col">
+                                        <select  class="form-select" name="Unit">
+                                            <option selected>Select a Unit</option>
+
+                                            <option value="Pcs">Piece</option>
+                                            <option value="Kg">Kilogram</option>
+                                            <option value="In">Inches</option>
+                                            <option value="Ltr">Liter</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit</label>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mt-3">
+
+                                <textarea class="form-control" id="editcategoryformdescription" rows="3"
+                                    placeholder="Description" name="Description"></textarea>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 p-2">
+                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="addmodifieritemmodalbtn">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                       
+                </form>
+            </div>
+        </div>
+    </div>
+@* Edit Modifier Item Modal *@
+
+<div class="modal fade " id="editmodifieritemmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Modifier Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="EditModifierItemForm" enctype="multipart/form-data" asp-action="EditModifierItem" asp-controller="Menu" >
+                    <div class="modal-body">
+                        <input type="text" class="form-control" id="ModifierId" name="ModifierId" hidden>
+                        <div class="row">
+                            <div class="col">
+                                 <select  class="form-select selectBox p-3" name="ModifierGroupid" id="ModifierGroupid">
+                                                <option selected>Select Modifier Group</option>
+
+                                                @* showing options for all modifiergroup name *@
+                                                @foreach(var m in @Model.ModifierGroups)
+                                                {
+                                                    <option value=@m.ModifiergroupId>@m.Name</option>
+                                                }
+                                        </select>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="ModifierName" name="ModifierName">
+                                    <label for="ModifierName">Name*</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col"> 
+                                <div class="form-floating">
+                                        <input type="number" class="form-control" id="Rate"  name="Rate">
+                                        <label for="floatingInput">Rate</label>
+                                    </div>
+                                </div>
+                            <div class="col">
+                                <div class="form-floating">
+                                        <input type="number" class="form-control" id="Quantity" name="Quantity">
+                                        <label for="floatingInput">Quantity</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating col">
+                                        <select  class="form-select" name="Unit" id="Unit">
+                                            <option selected>Select a Unit</option>
+
+                                            <option value="Pcs">Piece</option>
+                                            <option value="Kg">Kilogram</option>
+                                            <option value="In">Inches</option>
+                                            <option value="Ltr">Liter</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit</label>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mt-3">
+
+                                <textarea class="form-control" id="Description" rows="3"
+                                    placeholder="Description" name="Description"></textarea>
+                            </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 p-2">
+                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="addmodifieritemmodalbtn">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                       
+                </form>
+            </div>
+        </div>
+    </div>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -845,7 +1061,7 @@
             }
         });
 
-        $.ajax({
+        $.ajax({ 
             url: '@Url.Action("GetModifierItemsList", "Menu")',
             type: 'GET',
             data: {modifiergroup_id:id},
@@ -1110,8 +1326,6 @@ function showCheckboxes() {
 @* select All inner checkbox based on main checkbox *@
 
 document.addEventListener("DOMContentLoaded", function () {
-
-    console.log("Dom loaded")
     // Select main checkbox
 
     document.addEventListener("change",function (){
@@ -1430,7 +1644,7 @@ $(document).ready(function () {
                     }
                 });
             });
-        },
+        }, 
         error: function () {
             alert("Error loading modifier group IDs!");
         }
@@ -1571,7 +1785,7 @@ function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
                 @* onPartialViewLoaded();  *@
             },
             error: function () {
-                @* $("#modifieritemstablecontainer").html('An error has occurred'); *@
+                $("#modifieritemstablecontainer").html('An error has occurred');
             }
         });
     }
@@ -2126,5 +2340,108 @@ let  selectedModifierIdsforAdd= [];
     });
 });
 
+
+@* Delete Modifier Group *@
+
+function setDeleteModifierGroupId(element) {
+
+    var Id = element.getAttribute("data-id");
+    var deleteBtn = document.getElementById("deleteModifierGroupBtn");
+    deleteBtn.href = '@Url.Action("DeleteModifierGroupById", "Menu")' + '?id=' + Id;
+}
+
+ function setDeleteModifierid(element) {
+        var modifiergroupid = element.getAttribute("modifiergroup-id");
+        var modifierid = element.getAttribute("modifier-id");
+        var deleteBtn = document.getElementById("deleteModifierItemBtn");
+        deleteBtn.href = '@Url.Action("DeleteModifierItemById", "Menu")' + '?modifiergroupid=' + modifiergroupid+'&modifierid='+modifierid;
+    }
+
+function seteditmodifieritemdata(ele) {
+    console.log("clicked")
+    var c = JSON.parse(ele.getAttribute("item-obj"));
+    var modifiergroup_id = ele.getAttribute("modifiergroup-id");
+    console.log(c);
+
+    var editmenuitem = document.getElementById("editmodifieritemmodal");
+    editmenuitem.querySelector("#Rate").value = c.rate;
+    editmenuitem.querySelector("#ModifierName").value = c.name;
+    editmenuitem.querySelector("#Quantity").value = c.quantity;
+    editmenuitem.querySelector("#Unit").value = c.unit;
+    editmenuitem.querySelector("#ModifierGroupid").value = modifiergroup_id;
+    editmenuitem.querySelector("#Description").value = c.description;
+    editmenuitem.querySelector("#ModifierId").value = c.modifierId;
+
+}
+
+@* pwd *@
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // Select main checkbox
+
+    document.addEventListener("change",function (){
+    const mainCheckbox = document.getElementById("outer_checkbox_modifieritemmodal");
+    const checkboxes = document.querySelectorAll(".inner_checkbox_modifieritemmodal");
+
+    // When main checkbox is clicked
+    mainCheckbox.addEventListener("change", function () {
+        console.log("main checkbox change")
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = mainCheckbox.checked; // Set inner checkboxes same as main
+        });
+    });
+
+    // If any inner checkbox is unchecked, uncheck the main checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            if (!this.checked) {
+                mainCheckbox.checked = false;
+            }
+            // If all checkboxes are checked, also check the main checkbox
+            else if (Array.from(checkboxes).every(chk => chk.checked)) {
+                mainCheckbox.checked = true;
+            }
+        });
+    });   
+    });
+    
+});
+
+@* Mass Delete Of Menu Item *@
+
+  $("#deletemassitemBtn").click(function (e) {
+    var idlist = [];
+    const checkboxes = document.querySelectorAll(".inner_checkbox_modifieritemmodal");
+    var modgroupid = 0;
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            modgroupid = checkbox.getAttribute("modifiergroup-id");
+            idlist.push(
+                checkbox.value
+            );  // Fix: Use checkbox.value instead of this.value
+        }
+    });
+
+    console.log(idlist)
+    
+
+    $.ajax({
+        url: "/Menu/DeleteModifierItems",
+        method: "POST",
+        data:{
+            ids: idlist,
+            ModifierGroupid:modgroupid
+        },  
+        success: function (response) {
+            console.log("Items deleted successfully");
+            window.location.href='/Menu/Index?cat=@Model.SelectedCategory'; 
+        },
+        error: function (xhr, status, error) {
+            console.error("Error deleting items:", error);
+        }
+    });
+});
+
+ 
 
 </script> 

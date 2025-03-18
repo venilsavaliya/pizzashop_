@@ -72,19 +72,19 @@
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
+                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Section" ? "active-option" : "")">
+                    <a asp-action="Index" asp-controller="Section" class="sidebar-link @(ViewBag.active == "Section" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/taxes.svg" alt="">
-                            <div>Taxes and Fees</div>
+                            <img src="~/images/sidebar icons/tables.svg" alt="">  
+                            <div>Table and Sections</div>
                         </div>
                     </a>
                 </div>
                 <div class="sidebar-option w-100 p-3">
                     <a href="./superadmindashboard.html" class="sidebar-link">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
-                            <img src="~/images/sidebar icons/tables.svg" alt="">
-                            <div>Table and Sections</div>
+                            <img src="~/images/sidebar icons/taxes.svg" alt="">
+                            <div>Taxes and Fees</div>
                         </div>
                     </a>
                 </div>
@@ -207,6 +207,14 @@
                             </div>
                         </a>
                     </div>
+                    <div class="sidebar-option w-100 p-2 @(ViewBag.active == "Section" ? "active-option" : "")">
+                        <a asp-action="Index" asp-controller="Section" class="sidebar-link @(ViewBag.active == "Section" ? "active-option" : "")">
+                            <div class=" d-flex justify-content-start align-items-center gap-3">
+                                <img src="~/images/sidebar icons/tables.svg" alt="">
+                                <div>Table and Sections</div>
+                            </div>
+                        </a>
+                    </div>
                     <div class="sidebar-option w-100 p-2">
                         <a href="./superadmindashboard.html" class="sidebar-link">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
@@ -215,14 +223,7 @@
                             </div>
                         </a>
                     </div>
-                    <div class="sidebar-option w-100 p-2">
-                        <a href="./superadmindashboard.html" class="sidebar-link">
-                            <div class=" d-flex justify-content-start align-items-center gap-3">
-                                <img src="~/images/sidebar icons/tables.svg" alt="">
-                                <div>Table and Sections</div>
-                            </div>
-                        </a>
-                    </div>
+                    
                     <div class="sidebar-option w-100 p-2">
                         <a href="./superadmindashboard.html" class="sidebar-link">
                             <div class=" d-flex justify-content-start align-items-center gap-3">

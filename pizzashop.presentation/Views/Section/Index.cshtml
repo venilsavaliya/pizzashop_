@@ -1,0 +1,319 @@
+@model DAL.ViewModels.SectionAndTableViewModel
+<div class="Menu-container p-3">
+
+    <h3 class="custom-blue">Sections/Tables</h3>
+
+    @* category list for samll screen *@
+
+    <div class="CategoryForSmallScreen d-lg-none bg-white mt-2 p-2 ">
+
+       
+        <div class="d-flex justify-content-between align-items-center p-1">
+            <h5 class="custom-blue">Section</h5>
+            <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;" data-bs-toggle="modal"
+                data-bs-target="#Addsectionmodal">+
+            </div>
+        </div>
+        <div class="d-flex flex-column p-2 gap-4 fw-medium overflow-auto h-100">
+             @foreach(var c in Model.Sections){
+
+            <div class="category-option-smallscreen d-flex justify-content-start align-items-center gap-2 ">
+                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img">
+                <div>@c.SectionName</div>
+            </div>
+        }
+            
+        </div>
+    </div>
+
+ 
+    <div class="tab-content bg-white mt-2 bg-white position-relative " id="nav-tabContent">
+
+        @* ----first tab------- *@
+
+        <div class="tab-pane fade show active w-100" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
+            tabindex="0">
+            <div class="d-flex w-100">
+                <div class=" category-menu border-0 pt-3 d-none d-lg-block" id="category-menu">
+                    <div class="d-flex justify-content-between align-items-center p-1">
+                        <h5 class="custom-blue">Section</h5>
+                        <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
+                            data-bs-toggle="modal" data-bs-target="#Addsectionmodal">+
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="section-list">
+
+                        @* category list  *@
+
+                        @* -------partial view here of section list-------- *@
+
+                        @foreach(var c in Model.Sections){ 
+
+                            <div class="category-option-smallscreen d-flex justify-content-start align-items-center gap-2 ">
+                                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img">
+                                <div>@c.SectionName</div>
+                            </div>
+                        }
+ 
+                    </div>
+
+                </div>
+                <div class="d-flex flex-column flex-grow-1 pt-3 px-3 w-100 ">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="custom-blue">Tables</h5>
+                    </div>
+                    <div
+                        class="search-delete-section d-flex justify-content-start justify-content-md-end align-items-center">
+                        <div class="search-section d-flex gap-2 ">
+                            <div class="position-relative" style="width: 180px;">
+                                <input type="text" class="p-2 w-100" placeholder="Search" id="menuitem-search-field">
+                                <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deleteitemmodal">
+                                <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
+                                    class="small-img" >
+                            </div>
+                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#AddTablemodal"><span
+                                    class="fs-5 fw-semibold" >+</span> New Item</button>
+                            <button type="button"
+                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
+                        </div>
+                    </div>
+                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="diningtablelistcontainer">
+                       
+                    </div> 
+                   
+                </div>
+
+            </div>
+ 
+        </div>
+     
+</div>
+
+
+
+@*============= Modals ========== *@
+
+<!-- add Section modal -->
+    <div class="modal fade" id="Addsectionmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Section</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="AddSection" asp-controller="Section" method="post">
+                    <div class="modal-body">
+
+                        <div class="d-flex flex-column">
+                             
+                            <div class="mb-3">
+
+                                <input type="text" class="form-control p-3" id="exampleFormControlInput1" name="SectionName"
+                                    placeholder="Name">
+                            </div>
+                            <div class="mb-3">
+
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                    placeholder="Description" name="Description"></textarea>
+                            </div>
+                        </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                         </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<!-- edit Section modal -->
+    <div class="modal fade" id="Editsectionmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Section</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="EditSection" asp-controller="Section" method="post">
+                    <div class="modal-body">
+                        <div class="d-flex flex-column">
+                            <input type="text"  id="Sectionid" name="Sectionid"
+                                   hidden>
+                            <div class="mb-3">
+
+                                <input type="text" class="form-control p-3" id="SectionName" name="SectionName"
+                                    placeholder="Name">
+                            </div>
+                            <div class="mb-3">
+
+                                <textarea class="form-control" id="Description" rows="3"
+                                    placeholder="Description" name="Description"></textarea>
+                            </div>
+                        </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                         </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<!-- add Table modal -->
+    <div class="modal fade" id="AddTablemodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Table</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form asp-action="AddTable" asp-controller="Section" method="post">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="NameofTable" name="Name">
+                                <label for="NameofTable">Name</label>
+                            </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="statusoftable"  name="SectionId">
+                                    @foreach(var c in Model.Sections){ 
+                                     if(c.SectionId==Model.SelectedSection)
+                                     {
+
+                                    <option value="@c.SectionId" selected>@c.SectionName</option>
+                                     }
+                                     else
+                                     {
+                                    <option value="@c.SectionId">@c.SectionName</option>
+                                     }
+                                    }
+                                    </select>
+                                    <label for="statusoftable">Section</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="floatingInput" name="Capacity" >
+                                <label for="floatingInput">Capacity</label>
+                            </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating">
+                                    <select class="form-select" id="statusoftable"  name="Status">
+                                    <option value="Available" selected>Available</option>
+                                    <option value="Occupied">Occupied</option>
+                                    </select>
+                                    <label for="statusoftable">Status</label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="d-flex justify-content-end gap-2 p-2">
+                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                         </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+@* ============================== *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    $(document).ready(function()
+    {
+        loadsection();
+        TableListPaginationAjax();
+    })
+
+    @* Pagination section *@
+
+    @* -----Pagination For Menu Items List------- *@
+
+function TableListPaginationAjax(pageSize,pageNumber,category_id) {
+     // Get the dropdown element
+
+    let id= $("#section-list .category-active-option").attr("section-id");
+    @* let pageSizeDropdown = document.getElementById("pageSizeDropdownforMenuitems");
+    console.log(pageSizeDropdown.value); *@
+    let searchkeyword = $("#menuitem-search-field").val();
+
+    console.log("inside item",searchkeyword) 
+    console.log("get id",id)
+       
+        $.ajax({
+            url: "/Section/GetDiningTableList",
+            data: { 'pageSize': pageSize, 'pageNumber': pageNumber,'searchKeyword':searchkeyword,'id':id},
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#diningtablelistcontainer").html(data);
+                @* onPartialViewLoaded();  *@
+            },
+            error: function () {
+                $("#diningtablelistcontainer").html('An error has occurred');
+            }
+        });
+    }
+
+    @* Load Sections List *@
+
+    function loadsection(ele)
+    {
+    
+    var id = ele?.getAttribute("section-id");
+
+    if(id==null)
+    {
+        id=@Model.SelectedSection;
+    }
+    console.log(id)
+        $.ajax({
+            type:"GET",
+            url:"/Section/GetSections",
+            data:{id : id},
+            success:function(data)
+            {
+                $('#section-list').html(data);
+            }
+
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetDiningTableList", "Section")',
+            type: 'GET',
+            data: {id:id},
+            success: function (data) {
+                $('#diningtablelistcontainer').html(data);
+            }
+        });
+    }
+
+    @* set edit data for section *@
+
+    function setEditSectionData(ele)
+    {
+
+    var c = JSON.parse(ele.getAttribute("item-obj"));
+    console.log(c);
+
+    var editsectionitem= document.getElementById("Editsectionmodal");
+    editsectionitem.querySelector("#Sectionid").value = c.sectionId;
+    editsectionitem.querySelector("#SectionName").value = c.sectionName;
+    editsectionitem.querySelector("#Description").value = c.description;
+    }
+</script>
