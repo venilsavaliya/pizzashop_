@@ -225,7 +225,7 @@ public class MenuController : BaseController
     }
 
 
-    // POST : Delete category
+    // POST : Delete category 
 
     public IActionResult DeleteCategory(string id)
     {

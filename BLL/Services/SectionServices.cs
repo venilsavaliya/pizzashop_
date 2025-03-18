@@ -161,6 +161,44 @@ public class SectionServices:ISectionServices
         }
     }
 
+    // Delete section 
+    public async Task<AuthResponse> DeleteSection(int id)
+    {
+        var section = _context.Sections.FirstOrDefault(c => c.SectionId == id);
+
+        if (section != null)
+        {
+            // Fetch all tables that belong to this category
+            var items = _context.Diningtables.Where(i => i.SectionId == id).ToList();
+
+            // Mark all items as deleted
+            foreach (var item in items)
+            {
+                item.Isdeleted = true;
+            }
+
+            section.Isdeleted = true;
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "section Deleted Successfully"
+            };
+        }
+        else
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "cant delete section"
+
+            };
+        }
+    }
+
+
     // Add New Table
 
     public async Task<AuthResponse> AddTable(AddTableViewmodel model)
@@ -195,6 +233,44 @@ public class SectionServices:ISectionServices
             {
                 Success = false,
                 Message = "Error in Adding Table!"
+            };
+        }
+    }
+
+    //  Edit Table 
+    public async Task<AuthResponse> EditTable(AddTableViewmodel model)
+    {   
+        try{
+        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+        var userid = _userservices.GetUserIdfromToken(token);
+
+        var table = _context.Diningtables.FirstOrDefault(t=> t.TableId == model.TableId);
+
+        
+            table.SectionId = model.SectionId;
+            table.Name= model.Name;
+            table.Capacity=model.Capacity;
+            table.Status=model.Status;
+            table.Modifyiedby = userid;
+        
+
+        _context.Diningtables.Update(table);
+        await _context.SaveChangesAsync();
+
+        return new AuthResponse
+            {
+                Success = true,
+                Message = "Table Updated Succesfully!"
+            };
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error in UpdateTable: {e.Message}");
+
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Error in Updating Table!"
             };
         }
     }

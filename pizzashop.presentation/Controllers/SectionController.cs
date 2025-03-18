@@ -103,11 +103,45 @@ public class SectionController : BaseController
       return RedirectToAction("Index","Section");
     }
 
+    // Delete Section
+
+
+    public IActionResult DeleteSection(int id)
+    {
+        var AuthResponse = _sectionservice.DeleteSection(id).Result;
+
+        if (!AuthResponse.Success)
+        {
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
+        }
+
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        return RedirectToAction("Index", "Section");
+    }
+
     // POST : Add New Table
    [HttpPost]
     public IActionResult AddTable(AddTableViewmodel model)
     {
       var response = _sectionservice.AddTable(model).Result;
+
+       if(!response.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = response.Message;
+        }
+    
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = response.Message;
+
+      return RedirectToAction("Index","Section");
+    }
+   [HttpPost]
+    public IActionResult EditTable(AddTableViewmodel model)
+    {
+      var response = _sectionservice.EditTable(model).Result;
 
        if(!response.Success)
         {
