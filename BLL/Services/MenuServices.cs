@@ -545,7 +545,7 @@ public class MenuServices : IMenuServices
     // }
 
     // service for edit modifier group 
-    public async Task<AuthResponse> EditModifierGroup(EditModifierGroupViewModel model)
+    public async Task<AuthResponse> EditModifierGroup(AddModifierGroupViewModel model)
     {   
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
@@ -560,7 +560,7 @@ public class MenuServices : IMenuServices
         }
 
         // Update basic details
-        modifierGroup.Name = model.ModifierName;
+        modifierGroup.Name = model.Name;
         modifierGroup.Description = model.Description;
         // modifierGroup.Modifieddate = DateTime.UtcNow;
         modifierGroup.Modifyiedby = userid;

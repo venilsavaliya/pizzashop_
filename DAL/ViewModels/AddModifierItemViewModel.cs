@@ -1,17 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace DAL.ViewModels;
 
 public class AddModifierItemViewModel
 {   
     public int? ModifierId { get; set; } 
-    public int ModifierGroupid {get;set;}
+    
+    [Required(ErrorMessage = "Please Select Any Modifier Group")]
+    public int ModifierGroupid {get;set;} 
 
     public string ModifierName { get; set; } = null!;
 
-    public int? Rate { get; set; }
+    public int Rate { get; set; }
 
-    public string? Unit { get; set; }
+    public string Unit { get; set; }
 
-    public int? Quantity { get; set; }
+    public int Quantity { get; set; }
 
     public string? Description { get; set; }
 }

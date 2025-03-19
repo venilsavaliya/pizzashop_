@@ -41,7 +41,7 @@ public interface IMenuServices
 
    public ModifierItemNameViewModel GetModifierItemNamesByModifierItemId(int modifieritem_id);
 
-   public Task<AuthResponse> EditModifierGroup(EditModifierGroupViewModel model);
+   public Task<AuthResponse> EditModifierGroup(AddModifierGroupViewModel model);
 
    public Task<AuthResponse> DeleteModifierGroupById(string id);
    public Task<AuthResponse> AddModifierItem (AddModifierItemViewModel model);

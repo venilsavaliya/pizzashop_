@@ -275,5 +275,65 @@ public class SectionServices:ISectionServices
         }
     }
 
+    // Delete single Table
+    public async Task<AuthResponse> DeleteTable(int id)
+    {
+        var item = _context.Diningtables.FirstOrDefault(c => c.TableId == id);
+
+        if (item != null)
+        {
+            item.Isdeleted = true;
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Table Deleted Successfully"
+            };
+        }
+        else
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "can't delete table"
+
+            };
+        }
+    }
+
+    // Delete Multiple Tables
+
+    public async Task<AuthResponse> DeleteTables(List<int> ids)
+    {
+        try
+        {   
+            foreach (var i in ids)
+            {
+                var item = _context.Diningtables.FirstOrDefault(itemInDb => itemInDb.TableId == i);
+                item.Isdeleted = true;
+                _context.Diningtables.Update(item);
+            }
+                await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Tables Deleted Succesfully!"
+            };
+        }
+        catch (Exception)
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "error in Delete Tables!"
+            };
+            throw;
+        }
+
+    }
+
  
 }

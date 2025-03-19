@@ -18,4 +18,8 @@ public interface ISectionServices
     public Task<AuthResponse> EditSection(AddSectionViewModel model);
 
     public  Task<AuthResponse> DeleteSection(int id);
+
+    public Task<AuthResponse> DeleteTable(int id);
+
+    public Task<AuthResponse> DeleteTables(List<int> ids);
 }

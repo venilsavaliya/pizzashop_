@@ -16,13 +16,13 @@
     </tr>
 
 
-    @foreach (var i in Model.Items)
+    @foreach (var i in Model.Items) 
     {
         <tr>
             <td>
                 <div class="d-flex justify-content-start gap-2 align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input inner_checkbox" type="checkbox" value="@i.TableId"
+                        <input class="form-check-input tablelist_inner_checkbox" type="checkbox" value="@i.TableId"
                             id="flexCheckIndeterminate">
                     </div>
 
@@ -36,8 +36,8 @@
             <td>
                 <div class="d-flex justify-content-start gap-5">
                     <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTablemodal"
-                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditSectionData(this)">
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteitemmodal" alt="" onclick="setDeleteItemId(this)" item-id="@i.TableId" >
+                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditTabledata(this)">
+                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetablemodal" alt="" onclick="setDeleteTableData(this)" table-id="@i.TableId" >
                 </div>
 
             </td>

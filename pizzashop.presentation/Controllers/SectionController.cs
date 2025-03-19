@@ -30,7 +30,8 @@ public class SectionController : BaseController
        var model = new SectionAndTableViewModel
         {
            SelectedSection = id,
-           Sections = sections
+           Sections = sections,
+           Table = new AddTableViewmodel()
         };
        return View(model);
     }
@@ -66,13 +67,11 @@ public class SectionController : BaseController
         return PartialView("~/Views/Section/_SectionList.cshtml", model);
     }
 
-
-
    // POST : Add New Section
    [HttpPost]
-    public IActionResult AddSection(AddSectionViewModel model)
+    public IActionResult AddSection(SectionAndTableViewModel model)
     {
-      var response = _sectionservice.AddSection(model).Result;
+      var response = _sectionservice.AddSection(model.Section).Result;
 
        if(!response.Success)
         {
@@ -87,9 +86,9 @@ public class SectionController : BaseController
     }
    // POST : Edit New Section
    [HttpPost]
-    public IActionResult EditSection(AddSectionViewModel model)
+    public IActionResult EditSection(SectionAndTableViewModel model)
     {
-      var response = _sectionservice.EditSection(model).Result;
+      var response = _sectionservice.EditSection(model.Section).Result;
 
        if(!response.Success)
         {
@@ -123,9 +122,16 @@ public class SectionController : BaseController
 
     // POST : Add New Table
    [HttpPost]
-    public IActionResult AddTable(AddTableViewmodel model)
+    public IActionResult AddTable(SectionAndTableViewModel model)
     {
-      var response = _sectionservice.AddTable(model).Result;
+      if (!ModelState.IsValid)
+      {   
+          var sections = _sectionservice.GetSectionList().ToList();
+          model.Sections = sections;
+          return View("Index", model); // Re-render the view with validation errors
+      }
+
+      var response = _sectionservice.AddTable(model.Table).Result;
 
        if(!response.Success)
         {
@@ -139,9 +145,9 @@ public class SectionController : BaseController
       return RedirectToAction("Index","Section");
     }
    [HttpPost]
-    public IActionResult EditTable(AddTableViewmodel model)
+    public IActionResult EditTable(SectionAndTableViewModel model)
     {
-      var response = _sectionservice.EditTable(model).Result;
+      var response = _sectionservice.EditTable(model.Table).Result;
 
        if(!response.Success)
         {
@@ -153,5 +159,43 @@ public class SectionController : BaseController
         TempData["ToastrMessage"] = response.Message;
 
       return RedirectToAction("Index","Section");
+    }
+
+    // Delete Table
+    public IActionResult DeleteTable(int id)
+    {
+        var AuthResponse = _sectionservice.DeleteTable(id).Result;
+
+        if (!AuthResponse.Success)
+        {
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
+        }
+
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        return RedirectToAction("Index", "Section");
+    }
+
+    // POST : Delete Multiple Tables
+    [HttpPost]
+
+    public IActionResult DeleteTables(List<int> ids)
+    {
+
+      var AuthResponse = _sectionservice.DeleteTables(ids).Result;
+
+       if (!AuthResponse.Success)
+        {
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
+        }
+
+        TempData["ToastrType"] = "success";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        // return RedirectToAction("Index", "Section");
+
+        return Json(new { redirectTo = Url.Action("Index", "Section") });
+
     }
 }

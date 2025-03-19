@@ -49,6 +49,10 @@ public class MenuController : BaseController
             SelectedCategory = cat,
             SelectedModifierGroup = ModifierId,
             ModifierGroups = ModifierGroups,
+            Category = new AddCategoryViewModel(),
+            Menuitem = new AddItemViewModel(),
+            ModifierGroup = new AddModifierGroupViewModel(),
+            ModifierItem = new AddModifierItemViewModel()
             // Itemsmodel = itempaginationmodel
         };
 
@@ -155,12 +159,12 @@ public class MenuController : BaseController
     // POST : Menu
 
     [HttpPost]
-    public IActionResult Menu(AddCategoryViewModel model)
+    public IActionResult Category(MenuViewModel model)
     {
-        if (model.Id != null)
+        if (model.Category.Id != null)
         {
 
-            var res = _menuservices.EditCategory(model);
+            var res = _menuservices.EditCategory(model.Category);
 
             if (res.Success)
             {
@@ -176,7 +180,7 @@ public class MenuController : BaseController
         }
         else
         {
-            var AuthResponse = _menuservices.AddCategory(model);
+            var AuthResponse = _menuservices.AddCategory(model.Category);
             if (AuthResponse.Success)
             {
                 TempData["ToastrType"] = "success";
@@ -209,9 +213,9 @@ public class MenuController : BaseController
 
     // POST : Edit Category
     [HttpPost]
-    public IActionResult EditCategoryById(AddCategoryViewModel model)
+    public IActionResult EditCategoryById(MenuViewModel model)
     {
-        var AuthResponse = _menuservices.EditCategory(model);
+        var AuthResponse = _menuservices.EditCategory(model.Category);
 
         if (!AuthResponse.Success)
         {
@@ -248,16 +252,16 @@ public class MenuController : BaseController
 
     // POST : ADD New Item
     [HttpPost]
-    public IActionResult AddNewItem(AddItemViewModel model)
+    public IActionResult AddNewItem(MenuViewModel model)
     {
         string modifiersJson = Request.Form["ModifierGroups"];
 
         // deserialize the modifiersjson 
         if (!string.IsNullOrEmpty(modifiersJson))
         {
-            model.ModifierGroups = JsonConvert.DeserializeObject<List<ModifierGroup>>(modifiersJson);
+            model.Menuitem.ModifierGroups = JsonConvert.DeserializeObject<List<ModifierGroup>>(modifiersJson);
         }
-        var AuthResponse = _menuservices.AddNewItem(model).Result;
+        var AuthResponse = _menuservices.AddNewItem(model.Menuitem).Result;
 
 
 
@@ -270,24 +274,24 @@ public class MenuController : BaseController
         TempData["ToastrType"] = "success";  // Options: success, error, warning, info
         TempData["ToastrMessage"] = "item add Successfully!";
         // return RedirectToAction("Menu","Menu");
-        string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
+        string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
         return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
 
     }
 
     // Post : Edit item
     [HttpPost]
-    public IActionResult EditItem(AddItemViewModel model)
+    public IActionResult EditItem(MenuViewModel model)
     {
         string modifiersJson = Request.Form["ModifierGroups"];
 
         // deserialize the modifiersjson 
         if (!string.IsNullOrEmpty(modifiersJson))
         {
-            model.ModifierGroups = JsonConvert.DeserializeObject<List<ModifierGroup>>(modifiersJson);
+            model.Menuitem.ModifierGroups = JsonConvert.DeserializeObject<List<ModifierGroup>>(modifiersJson);
         }
 
-        var AuthResponse = _menuservices.EditItem(model).Result;
+        var AuthResponse = _menuservices.EditItem(model.Menuitem).Result;
 
         if (!AuthResponse.Success)
         {
@@ -298,7 +302,7 @@ public class MenuController : BaseController
 
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = AuthResponse.Message;
-        string categoryName = _menuservices.GetCategoryNameFromId((int)model.CategoryId);
+        string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
         return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
 
         // return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
@@ -451,16 +455,16 @@ public class MenuController : BaseController
     }
 
     [HttpPost]
-    public IActionResult EditModifierGroup(EditModifierGroupViewModel model)
+    public IActionResult EditModifierGroup(MenuViewModel model)
     {   
         string modifiersitemsJson = Request.Form["ModifierItems"];
 
         // deserialize the modifiersjson 
         if (!string.IsNullOrEmpty(modifiersitemsJson))
         {
-            model.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+            model.ModifierGroup.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
         }
-        var response = _menuservices.EditModifierGroup(model).Result;
+        var response = _menuservices.EditModifierGroup(model.ModifierGroup).Result;
 
         if(!response.Success)
         {
@@ -475,16 +479,16 @@ public class MenuController : BaseController
        
     }
     [HttpPost]
-    public IActionResult AddModifierGroup(AddModifierGroupViewModel model)
+    public IActionResult AddModifierGroup(MenuViewModel model)
     {   
         string modifiersitemsJson = Request.Form["ModifierItems"];
 
         // deserialize the modifiersjson 
         if (!string.IsNullOrEmpty(modifiersitemsJson))
         {
-            model.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+            model.ModifierGroup.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
         }
-        var response = _menuservices.AddModifierGroup(model).Result;
+        var response = _menuservices.AddModifierGroup(model.ModifierGroup).Result;
 
         if(!response.Success)
         {
@@ -519,10 +523,10 @@ public class MenuController : BaseController
     }
 
     [HttpPost]
-    public IActionResult AddModifierItem(AddModifierItemViewModel model)
+    public IActionResult AddModifierItem(MenuViewModel model)
     {   
         
-        var response = _menuservices.AddModifierItem(model).Result;
+        var response = _menuservices.AddModifierItem(model.ModifierItem).Result;
 
         if(!response.Success)
         {
@@ -537,10 +541,10 @@ public class MenuController : BaseController
        
     }
     [HttpPost]
-    public IActionResult EditModifierItem(AddModifierItemViewModel model)
+    public IActionResult EditModifierItem(MenuViewModel model)
     {   
         
-        var response = _menuservices.EditModifierItem(model).Result;
+        var response = _menuservices.EditModifierItem(model.ModifierItem).Result;
 
         if(!response.Success)
         {
