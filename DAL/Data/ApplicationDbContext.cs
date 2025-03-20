@@ -49,13 +49,15 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<State> States { get; set; }
 
+    public virtual DbSet<Taxis> Taxes { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Userdetail> Userdetails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -544,6 +546,48 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Country).WithMany(p => p.States)
                 .HasForeignKey(d => d.CountryId)
                 .HasConstraintName("state_country_id_fkey");
+        });
+
+        modelBuilder.Entity<Taxis>(entity =>
+        {
+            entity.HasKey(e => e.TaxId).HasName("taxes_pkey");
+
+            entity.ToTable("taxes");
+
+            entity.Property(e => e.TaxId).HasColumnName("tax_id");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Isdefault).HasColumnName("isdefault");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Isenable)
+                .IsRequired()
+                .HasDefaultValueSql("true")
+                .HasColumnName("isenable");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.TaxAmount)
+                .HasPrecision(7, 2)
+                .HasColumnName("tax_amount");
+            entity.Property(e => e.TaxName)
+                .HasMaxLength(20)
+                .HasColumnName("tax_name");
+            entity.Property(e => e.Type)
+                .HasMaxLength(20)
+                .HasColumnName("type");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.TaxisCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_createdby");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.TaxisModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .HasConstraintName("fk_modifyiedby");
         });
 
         modelBuilder.Entity<User>(entity =>

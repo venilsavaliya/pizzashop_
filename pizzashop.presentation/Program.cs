@@ -95,6 +95,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ISectionServices, SectionServices>();
 builder.Services.AddScoped<IMenuServices,MenuServices>();
+builder.Services.AddScoped<ITaxService,TaxService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();

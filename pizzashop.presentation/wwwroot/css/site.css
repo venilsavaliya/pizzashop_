@@ -202,8 +202,8 @@ body {
 
 } */
 .toggle-btn {
-  height: 20px;
-  width: 40px !important;
+  height: 25px;
+  width: 45px !important;
 }
 
 .category-menu {
@@ -345,6 +345,10 @@ input[type=password]::-ms-clear {
 .disabled-button {
   pointer-events: none;
   opacity: 0.7;
+  cursor: not-allowed;
+}
+.disabled-toggle {
+  pointer-events: none;
   cursor: not-allowed;
 }
 

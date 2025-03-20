@@ -80,8 +80,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
+                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Tax" ? "active-option" : "")">
+                    <a asp-action="Index" asp-controller="Tax" class="sidebar-link @(ViewBag.active == "Tax" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
                             <img src="~/images/sidebar icons/taxes.svg" alt="">
                             <div>Taxes and Fees</div>
@@ -215,8 +215,8 @@
                             </div>
                         </a>
                     </div>
-                    <div class="sidebar-option w-100 p-2">
-                        <a href="./superadmindashboard.html" class="sidebar-link">
+                    <div class="sidebar-option w-100 p-2 @(ViewBag.active == "Tax" ? "active-option" : "")">
+                        <a asp-action="Index" asp-controller="Tax" class="sidebar-link @(ViewBag.active == "Tax" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/sidebar icons/taxes.svg" alt="">
                                 <div>Taxes and Fees</div>

@@ -41,6 +41,10 @@ public partial class User
 
     public virtual ICollection<Section> SectionModifyiedbyNavigations { get; } = new List<Section>();
 
+    public virtual ICollection<Taxis> TaxisCreatedbyNavigations { get; } = new List<Taxis>();
+
+    public virtual ICollection<Taxis> TaxisModifyiedbyNavigations { get; } = new List<Taxis>();
+
     public virtual ICollection<Userdetail> UserdetailCreatedbyNavigations { get; } = new List<Userdetail>();
 
     public virtual ICollection<Userdetail> UserdetailModifiedbyNavigations { get; } = new List<Userdetail>();

@@ -14,15 +14,10 @@
                 data-bs-target="#Addsectionmodal">+
             </div>
         </div>
-        <div class="d-flex flex-column p-2 gap-4 fw-medium overflow-auto h-100">
-             @* @foreach(var c in Model.Sections){
+        <div class="d-flex flex-column p-2 gap-4 fw-medium overflow-auto h-100" id="section-list-for-smallscreen">
+           
+             @* -------partial view here of section list-------- *@
 
-            <div class="category-option-smallscreen d-flex justify-content-start align-items-center gap-2 ">
-                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img">
-                <div>@c.SectionName</div>
-            </div>
-        }  *@
-            
         </div>
     </div>
 
@@ -430,6 +425,8 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
             success:function(data)
             {
                 $('#section-list').html(data);
+                $('#section-list-for-smallscreen').html(data);
+
                 const activeSection = document.querySelector("#section-list .category-active-option");
                 const sectionid = activeSection.getAttribute("section-id");
                 console.log(sectionid,"hi")

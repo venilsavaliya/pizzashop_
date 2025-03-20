@@ -3,17 +3,19 @@ using System.Collections.Generic;
 
 namespace DAL.Models;
 
-public partial class Diningtable
+public partial class Taxis
 {
-    public int TableId { get; set; }
+    public int TaxId { get; set; }
 
-    public int? SectionId { get; set; }
+    public string TaxName { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
+    public string Type { get; set; } = null!;
 
-    public int Capacity { get; set; }
+    public decimal TaxAmount { get; set; }
 
-    public string Status { get; set; } = null!;
+    public bool? Isenable { get; set; }
+
+    public bool Isdefault { get; set; }
 
     public DateTime Createddate { get; set; }
 
@@ -28,6 +30,4 @@ public partial class Diningtable
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
     public virtual User? ModifyiedbyNavigation { get; set; }
-
-    public virtual Section? Section { get; set; }
 }
