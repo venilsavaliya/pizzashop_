@@ -66,7 +66,7 @@ public class MenuController : BaseController
         var categories = _menuservices.GetCategoryList();
 
         // var defaultcat = categories.First().Id;
-        if (cat == null)
+        if (cat == 0)
         {
             cat = categories.First().Id;
         }
@@ -91,7 +91,7 @@ public class MenuController : BaseController
     {
         var categories = _menuservices.GetCategoryList().ToList();
 
-        if (cat == null)
+        if (cat == 0)
         {
             cat = categories.First().Id;
         }
@@ -111,7 +111,7 @@ public class MenuController : BaseController
     {
         var modifiers = _menuservices.GetModifiersGroupList().ToList();
 
-        if (modifiergroup_id == null)
+        if (modifiergroup_id == 0 || modifiergroup_id == null)
         {
             modifiergroup_id = modifiers.First().ModifiergroupId;
         }
@@ -122,6 +122,8 @@ public class MenuController : BaseController
             SelectedModifierGroup = modifiergroup_id
         };
 
+
+
         return PartialView("~/Views/Menu/_ModifierList.cshtml", model);
     }
     // GET : Modifier Item List {Partial View Return}
@@ -129,11 +131,11 @@ public class MenuController : BaseController
     public IActionResult GetModifierItemsList(int modifiergroup_id, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
 
-        // var modifierlist = _menuservices.GetModifiersGroupList();
-        // if (modifiergroup_id == null)
-        // {
-        //     modifiergroup_id = modifierlist.First().ModifiergroupId;
-        // }
+        var modifierlist = _menuservices.GetModifiersGroupList();
+        if (modifiergroup_id == 0)
+        {
+            modifiergroup_id = modifierlist.First().ModifiergroupId;
+        }
 
         var modifiersmodel = _menuservices.GetModifierItemsListByModifierGroupId(modifiergroup_id, pageNumber, pageSize, searchKeyword);
 

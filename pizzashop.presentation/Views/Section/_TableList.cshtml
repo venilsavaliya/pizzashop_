@@ -5,7 +5,7 @@
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                <input class="form-check-input outer_checkbox" id="menu-main-checkbox" type="checkbox" value=""
+                <input class="form-check-input outer_checkbox" id="main_table_checkbox" type="checkbox" value=""
                     id="flexCheckIndeterminate">
             </div> <span>Name</span>
         </th>
@@ -22,8 +22,7 @@
             <td>
                 <div class="d-flex justify-content-start gap-2 align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input tablelist_inner_checkbox" type="checkbox" value="@i.TableId"
-                            id="flexCheckIndeterminate">
+                        <input class="form-check-input tablelist_inner_checkbox" type="checkbox" value="@i.TableId">
                     </div>
 
                     
@@ -32,7 +31,9 @@
             </td>
            
             <td>@i.Capacity</td>
-            <td>@i.Status</td>
+            <td>
+                <span class="bg-secondary p-1 px-2 border rounded-pill text-white">@i.Status</span>
+            </td>
             <td>
                 <div class="d-flex justify-content-start gap-5">
                     <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTablemodal"

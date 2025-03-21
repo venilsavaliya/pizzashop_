@@ -40,7 +40,13 @@ public class SectionController : BaseController
 
   public IActionResult GetDiningTableList(int id, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
-      
+        var sections = _sectionservice.GetSectionList().ToList();
+
+        if (id == 0)
+        {
+          id = sections.First().SectionId;
+        }
+  
         var model = _sectionservice.GetDiningTablesListBySectionId(id, pageNumber, pageSize, searchKeyword);
         ViewBag.active = "Menu";
 

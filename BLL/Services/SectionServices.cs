@@ -45,7 +45,8 @@ public class SectionServices:ISectionServices
     // Return list Of Pagination Table List
 
     public TableListPaginationViewModel GetDiningTablesListBySectionId(int sectionid, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
-    {
+    {   
+        
         TableListPaginationViewModel model = new() { Page = new() };
         searchKeyword = searchKeyword.ToLower();
         // var categoryId = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryid)?.CategoryId;
