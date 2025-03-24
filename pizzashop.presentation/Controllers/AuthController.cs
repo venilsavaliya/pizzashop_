@@ -31,6 +31,12 @@ public class AuthController : Controller
         _jwtService = jwtService;
     }
 
+    // Access Denied Page
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
+
     #region Login
     // GET : Auth/Login
     public IActionResult Login()
@@ -152,6 +158,7 @@ public class AuthController : Controller
         var model = new ResetPasswordviewModel
         {
             Email = email,
+            Token = token
         };
         return View(model);
     }
@@ -166,8 +173,9 @@ public class AuthController : Controller
         }
 
         var AuthResponse = _authservice.ResetPassword(model);
+        var response = _jwtService.AddTokenToDb(model.Token).Result;
 
-        if (AuthResponse.Success)
+        if (AuthResponse.Success && response.Success)
         {
             Console.WriteLine("Password Reset Successfully");
             TempData["ToastrType"] = "success";

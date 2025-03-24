@@ -1,6 +1,8 @@
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using BLL.Services;
+using DAL.Constants;
+using BLL.Attributes;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,7 +20,7 @@ public class MenuController : BaseController
 
     private readonly INotyfService _notyf;
 
-    public MenuController(IMenuServices menuServices, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice) : base(jwtService, userService, adminservice)
+    public MenuController(IMenuServices menuServices, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice,IAuthorizationService authservice) : base(jwtService, userService, adminservice,authservice)
     {
         _menuservices = menuServices;
         _notyf = notyf;
@@ -26,6 +28,7 @@ public class MenuController : BaseController
     }
     // GET : Index
 
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult Index(int? cat, int? ModifierId)
     {
 
@@ -60,7 +63,7 @@ public class MenuController : BaseController
 
     }
     // GET : Menu {Returns Partial View}
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult Menu(int cat, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
         var categories = _menuservices.GetCategoryList();
@@ -86,7 +89,7 @@ public class MenuController : BaseController
 
 
     // GET : Category List {Partial View Return}
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetCategories(int? cat)
     {
         var categories = _menuservices.GetCategoryList().ToList();
@@ -106,7 +109,7 @@ public class MenuController : BaseController
     }
 
     // GET : Modifier List {Partial View Return}
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetModifiers(int? modifiergroup_id)
     {
         var modifiers = _menuservices.GetModifiersGroupList().ToList();
@@ -126,8 +129,9 @@ public class MenuController : BaseController
 
         return PartialView("~/Views/Menu/_ModifierList.cshtml", model);
     }
-    // GET : Modifier Item List {Partial View Return}
 
+    // GET : Modifier Item List {Partial View Return}
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetModifierItemsList(int modifiergroup_id, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
 
@@ -142,7 +146,7 @@ public class MenuController : BaseController
         return PartialView("~/Views/Menu/_ModifierItemsList.cshtml", modifiersmodel);
     }
     // GET : all Modifier Item List {Partial View Return}
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetAllModifierItemsList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
     {
         var modifiersmodel = _menuservices.GetAllModifierItemsList(pageNumber, pageSize, searchKeyword);
@@ -150,7 +154,7 @@ public class MenuController : BaseController
         return PartialView("~/Views/Menu/_ModifierItemsListModal.cshtml", modifiersmodel);
     }
     // GET : all Modifier Item List {Partial View Return}
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetAllModifierItemsListForAdd(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
     {
         var modifiersmodel = _menuservices.GetAllModifierItemsList(pageNumber, pageSize, searchKeyword);
@@ -159,7 +163,7 @@ public class MenuController : BaseController
     }
 
     // POST : Menu
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     [HttpPost]
     public IActionResult Category(MenuViewModel model)
     {
@@ -203,7 +207,7 @@ public class MenuController : BaseController
    
 
     // GET : ModifierName List By Ids
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetModifierNameListFromIds(List<string> modifierIds)
     {
         List<string> names = _menuservices.GetModifierNamesByIds(modifierIds);
@@ -215,6 +219,7 @@ public class MenuController : BaseController
 
     // POST : Edit Category
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult EditCategoryById(MenuViewModel model)
     {
         var AuthResponse = _menuservices.EditCategory(model.Category);
@@ -232,7 +237,7 @@ public class MenuController : BaseController
 
 
     // POST : Delete category 
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
     public IActionResult DeleteCategory(string id)
     {
         var AuthResponse = _menuservices.DeleteCategory(id).Result;
@@ -254,6 +259,7 @@ public class MenuController : BaseController
 
     // POST : ADD New Item
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult AddNewItem(MenuViewModel model)
     {
         string modifiersJson = Request.Form["ModifierGroups"];
@@ -283,6 +289,7 @@ public class MenuController : BaseController
 
     // Post : Edit item
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult EditItem(MenuViewModel model)
     {
         string modifiersJson = Request.Form["ModifierGroups"];
@@ -313,6 +320,7 @@ public class MenuController : BaseController
 
     // Post : Delete Items
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
 
     public IActionResult DeleteItems(List<string> ids)
     {
@@ -336,6 +344,7 @@ public class MenuController : BaseController
 
     // Post : Delete Items
     // [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
     public IActionResult DeleteSingleItem(int id, int catid)
     {
 
@@ -381,7 +390,7 @@ public class MenuController : BaseController
     //         return StatusCode(500, new { message = "Error fetching modifiers", error = ex.Message });
     //     }
     // }
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public async Task<IActionResult> GetModifierItemsNamePVByModifieritemId(int modifier_id)
     {
         try
@@ -397,6 +406,7 @@ public class MenuController : BaseController
         }
     }
     // Return List Of Modifier Item id list based on modifier group id
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetModifierItemsidByModifierGroupid(int modifiergroup_id)
     {
         try
@@ -416,6 +426,7 @@ public class MenuController : BaseController
     }
 
     // Return partial view of modifier group name by modifier group id
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetModifierGroupNamePVByModifierGroupid(int modifiergroup_id)
     {
         try
@@ -430,12 +441,14 @@ public class MenuController : BaseController
     }
 
     // Return Partial View for modifier items in add and update menu items modal
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetModifierItems(int modifierGroupId)
     {
         var modifierItems = _menuservices.GetModifierItemsByGroupId(modifierGroupId); // Fetch Data
 
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", modifierItems);
     }
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetModifierItemsForEdit(int modifierGroupId, int itemid)
     {
         var modifierItems = _menuservices.GetModifierItemswithMinMaxByGroupIdandItemid(modifierGroupId, itemid); // Fetch Data
@@ -443,7 +456,7 @@ public class MenuController : BaseController
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", modifierItems);
     }
 
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult GetItemModifierGroupminMaxMapping(int itemid, int modifiergroupid)
     {
         var model = _menuservices.GetItemModifierGroupminMaxMappingAsync(itemid, modifiergroupid);
@@ -451,12 +464,14 @@ public class MenuController : BaseController
         return PartialView("~/Views/Menu/_ModifierGroupanditems.cshtml", model);
     }
 
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public List<int> GetModifierGroupIdsByItemId(int itemid)
     {
         return _menuservices.GetModifierGroupIdsByItemId(itemid);
     }
 
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult EditModifierGroup(MenuViewModel model)
     {   
         string modifiersitemsJson = Request.Form["ModifierItems"];
@@ -481,6 +496,7 @@ public class MenuController : BaseController
        
     }
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult AddModifierGroup(MenuViewModel model)
     {   
         string modifiersitemsJson = Request.Form["ModifierItems"];
@@ -506,6 +522,8 @@ public class MenuController : BaseController
     }
 
     //  Delete Modifier Group by Id
+
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
     public IActionResult DeleteModifierGroupById(string id)
     {   
         
@@ -525,6 +543,7 @@ public class MenuController : BaseController
     }
 
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult AddModifierItem(MenuViewModel model)
     {   
         
@@ -543,6 +562,7 @@ public class MenuController : BaseController
        
     }
     [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
     public IActionResult EditModifierItem(MenuViewModel model)
     {   
         
@@ -562,6 +582,7 @@ public class MenuController : BaseController
     }
 
     // Delete Modifier Item
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
      public IActionResult DeleteModifierItemById(int modifierid,int modifiergroupid)
     {   
         
@@ -582,20 +603,23 @@ public class MenuController : BaseController
 
     // Delete Multiple Modifier Items
     [HttpPost]
-
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
     public IActionResult DeleteModifierItems(int ModifierGroupid,List<string> ids)
     {
 
         var AuthResponse = _menuservices.DeleteModifierItems(ModifierGroupid,ids).Result;
 
-        // if(!AuthResponse.Success)
-        // {
-        //     _notyf.Error(AuthResponse.Message);
-        //     return RedirectToAction("Menu");
-        // }
-
+        if(!AuthResponse.Success)
+        {
+        TempData["ToastrType"] = "error";
+        TempData["ToastrMessage"] = AuthResponse.Message;
+        }
+        else{
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = AuthResponse.Message;
+        }
+
+        
 
         // return RedirectToAction("Menu","Menu",new {cat});
 

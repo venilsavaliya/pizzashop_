@@ -23,6 +23,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Diningtable> Diningtables { get; set; }
 
+    public virtual DbSet<Expiredtoken> Expiredtokens { get; set; }
+
     public virtual DbSet<Item> Items { get; set; }
 
     public virtual DbSet<ItemModifiergroupMapping> ItemModifiergroupMappings { get; set; }
@@ -183,6 +185,18 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Section).WithMany(p => p.Diningtables)
                 .HasForeignKey(d => d.SectionId)
                 .HasConstraintName("fk_diningtables_section");
+        });
+
+        modelBuilder.Entity<Expiredtoken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("expiredtokens_pkey");
+
+            entity.ToTable("expiredtokens");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Token)
+                .HasColumnType("character varying")
+                .HasColumnName("token");
         });
 
         modelBuilder.Entity<Item>(entity =>

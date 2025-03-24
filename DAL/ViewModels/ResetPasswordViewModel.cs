@@ -13,4 +13,6 @@ public partial class ResetPasswordviewModel
 
     [Compare("Password", ErrorMessage = "Password and Confirm Password must match")]
     public string ConfirmPassword { get; set; } = null!;
+
+    public string Token {get;set;}
 }

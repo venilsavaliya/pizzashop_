@@ -1,0 +1,83 @@
+@* @model DAL.ViewModels.MenuViewModel; *@
+@model DAL.ViewModels.UserListPaginationViewModel
+
+<table class="table">
+    <tr>
+        <th class="text-start ps-5 d-flex">
+            <span>Name</span>
+            <div sortOrder = @(Model.SortColumn == "Name" && Model.SortOrder == "asc" ? "desc" : "asc") sortColumn = "Name" onclick='UserListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage,"Name", "@(Model.SortColumn == "Name" && Model.SortOrder == "asc" ? "desc" : "asc")" )' >
+                <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt="">
+            </div>
+        </th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th class="d-flex"><span>Role</span>
+            <div sortOrder = @(Model.SortColumn == "Role" && Model.SortOrder == "asc" ? "desc" : "asc") sortColumn = "Role" onclick='UserListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage,"Role", "@(Model.SortColumn == "Role" && Model.SortOrder == "asc" ? "desc" : "asc")" )'>
+                <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt="">
+            </div>
+        </th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+
+    @foreach (var u in Model.Items)
+            {
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content-start gap-4">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <img src="@u.Profile" alt="" style="width: 25px;">
+                            </div>
+                            <span>@u.Name</span>
+                        </div>
+                    </td>
+                    <td>@u.Email</td>
+                    <td>@u.Phone</td>
+                    <td>@u.Role</td>
+                    <td><span
+                            class="badge @(u.Status.ToLower() == "active" ? "custom-bg-green" : "bg-danger")">@u.Status</span>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-center gap-5">
+                            <a asp-action="edituser" asp-controller="User" asp-route-id="@u.Id"><img
+                                    src="~/images/icons/pen.svg" alt=""></a>
+                            <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteusermodal"
+                                onclick="setDeleteUserId(this)" data-id="@u.Id" alt="">
+                        </div>
+                    </td>
+                </tr>
+            }
+
+
+</table>
+<div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+    <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
+        <div>Items per page: </div>
+        <select class="form-select" style="width:68px ;" aria-label="Default select example"
+            id="pageSizeDropdownfor" onchange="UserListPaginationAjax(this.value,1)">
+
+            <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
+            <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
+            <option value=10 selected="@(Model.Page.PageSize == 10 ? true : false)">10</option>
+        </select>
+        <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
+    
+
+        <div onclick="UserListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1)"
+            class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
+            <div class="border p-2 px-3"> &lt; </div>
+        </div>
+
+
+        <div onclick="UserListPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1)"
+            class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
+            style="text-decoration: none;">
+            <div class="border p-2 px-3">&gt;</div>
+        </div>
+
+    </div>
+</div>
+
+
+

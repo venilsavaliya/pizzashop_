@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using BLL.Helper;
 
 public class UserService : IUserService
 {
@@ -52,13 +53,14 @@ public class UserService : IUserService
         return userdetail;
     }
 
-    public async Task<UserListViewModel> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
+    public async Task<UserListPaginationViewModel> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
     {
         searchKeyword = searchKeyword.ToLower();
+        UserListPaginationViewModel model = new() { Page = new() };
 
         var query = from u in _context.Userdetails
                     join user in _context.Users on u.UserId equals user.Id
-                    join role in _context.Roles on u.RoleId equals role.Roleid
+                    join role in _context.Roles on u.RoleId equals role.Roleid 
                     where u.Isdeleted == false
                     select new UserViewModel
                     {
@@ -109,19 +111,25 @@ public class UserService : IUserService
                              .Take(pageSize)
                              .ToList();
 
-        return new UserListViewModel
-        {
-            Users = usersList,
-            TotalCount = totalCount,
-            PageSize = pageSize,
-            CurrentPage = pageNumber,
-            TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-            StartIndex = (pageNumber - 1) * pageSize + 1,
-            EndIndex = Math.Min(pageNumber * pageSize, totalCount),
-            SortColumn = sortColumn,
-            SortOrder = sortOrder,
-            SearchKeyword = searchKeyword
-        };
+        // return new UserListViewModel
+        // {
+        //     Users = usersList,
+        //     TotalCount = totalCount,
+        //     PageSize = pageSize,
+        //     CurrentPage = pageNumber,
+        //     TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+        //     StartIndex = (pageNumber - 1) * pageSize + 1,
+        //     EndIndex = Math.Min(pageNumber * pageSize, totalCount),
+        //     SortColumn = sortColumn,
+        //     SortOrder = sortOrder,
+        //     SearchKeyword = searchKeyword
+        // };
+
+        model.Items = usersList;
+        model.SortColumn=sortColumn;
+        model.SortOrder = sortOrder;
+        model.Page.SetPagination(totalCount, pageSize, pageNumber);
+        return model;
     }
 
     public Guid GetUserIdfromToken(string token)

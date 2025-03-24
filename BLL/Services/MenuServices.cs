@@ -290,18 +290,6 @@ public class MenuServices : IMenuServices
         model.Items = items;
         model.Page.SetPagination(totalCount, pageSize, pageNumber);
 
-        // return new ModifierPaginationViewModel
-        // {
-        //     Items = items,
-        //     TotalCount = totalCount,
-        //     PageSize = pageSize,
-        //     CurrentPage = pageNumber,
-        //     TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-        //     StartIndex = (pageNumber - 1) * pageSize + 1,
-        //     EndIndex = Math.Min(pageNumber * pageSize, totalCount),
-        //     SearchKeyword = searchKeyword
-        // };
-
         return model;
     }
 
@@ -927,7 +915,11 @@ public async Task<AuthResponse> DeleteModifierItems(int ModifierGroupid,List<str
                 // var item = _context.Items.FirstOrDefault(itemInDb => itemInDb.ItemId.ToString() == i);
                 var item = _context.Modifieritemsmodifiersgroups.FirstOrDefault(itemInDb => itemInDb.ModifierId.ToString() == i && itemInDb.ModifiergroupId ==  ModifierGroupid);
                
+               if(item!=null)
+               {
+
                 _context.Modifieritemsmodifiersgroups.Remove(item);
+               }
                 await _context.SaveChangesAsync();
             }
 

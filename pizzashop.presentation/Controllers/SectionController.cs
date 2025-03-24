@@ -2,6 +2,8 @@ namespace pizzashop.presentation.Controllers;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using BLL.Services;
+using BLL.Attributes;
+using DAL.Constants;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,11 +14,11 @@ using Newtonsoft.Json;
 public class SectionController : BaseController
 {
    private readonly ISectionServices _sectionservice;
-   public SectionController(IJwtService jwtService,IUserService userService,IAdminService adminservice,ISectionServices sectionservice) : base(jwtService,userService,adminservice)
+   public SectionController(IJwtService jwtService,IUserService userService,IAdminService adminservice,ISectionServices sectionservice,IAuthorizationService authservice) : base(jwtService,userService,adminservice,authservice)
     {
        _sectionservice = sectionservice;
     }
-
+    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
     public IActionResult Index(int? id)
     { 
       var sections = _sectionservice.GetSectionList();
@@ -37,7 +39,7 @@ public class SectionController : BaseController
     }
 
   // Get : Return partial View Of Pagination Table List
-
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
   public IActionResult GetDiningTableList(int id, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
         var sections = _sectionservice.GetSectionList().ToList();
@@ -54,7 +56,7 @@ public class SectionController : BaseController
     }
 
     // GET : Section List {Partial View Return}
-
+    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
     public IActionResult GetSections(int? id)
     {
         var sections = _sectionservice.GetSectionList().ToList();
@@ -74,6 +76,7 @@ public class SectionController : BaseController
     }
 
    // POST : Add New Section
+   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
    [HttpPost]
     public IActionResult AddSection(SectionAndTableViewModel model)
     {
@@ -92,6 +95,7 @@ public class SectionController : BaseController
     }
    // POST : Edit New Section
    [HttpPost]
+   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
     public IActionResult EditSection(SectionAndTableViewModel model)
     {
       var response = _sectionservice.EditSection(model.Section).Result;
@@ -110,7 +114,7 @@ public class SectionController : BaseController
 
     // Delete Section
 
-
+    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
     public IActionResult DeleteSection(int id)
     {
         var AuthResponse = _sectionservice.DeleteSection(id).Result;
@@ -128,15 +132,10 @@ public class SectionController : BaseController
 
     // POST : Add New Table
    [HttpPost]
+   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
     public IActionResult AddTable(SectionAndTableViewModel model)
     {
-      if (!ModelState.IsValid)
-      {   
-          var sections = _sectionservice.GetSectionList().ToList();
-          model.Sections = sections;
-          return View("Index", model); // Re-render the view with validation errors
-      }
-
+      
       var response = _sectionservice.AddTable(model.Table).Result;
 
        if(!response.Success)
@@ -144,13 +143,19 @@ public class SectionController : BaseController
         TempData["ToastrType"] = "error";
         TempData["ToastrMessage"] = response.Message;
         }
-    
+        else
+        {
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = response.Message;
+        }
 
       return RedirectToAction("Index","Section");
+
     }
+
+    
    [HttpPost]
+   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
     public IActionResult EditTable(SectionAndTableViewModel model)
     {
       var response = _sectionservice.EditTable(model.Table).Result;
@@ -168,6 +173,7 @@ public class SectionController : BaseController
     }
 
     // Delete Table
+    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
     public IActionResult DeleteTable(int id)
     {
         var AuthResponse = _sectionservice.DeleteTable(id).Result;
@@ -185,7 +191,7 @@ public class SectionController : BaseController
 
     // POST : Delete Multiple Tables
     [HttpPost]
-
+    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
     public IActionResult DeleteTables(List<int> ids)
     {
 

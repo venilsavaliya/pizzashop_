@@ -12,7 +12,8 @@ public interface IUserService
 
     Userdetail GetUserDetailById(string id);
 
-    public Task<UserListViewModel> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
+    // public Task<UserListViewModel> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
+    public Task<UserListPaginationViewModel> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
 
     public Task<AuthResponse> AddUser(AddUserViewModel model);
 

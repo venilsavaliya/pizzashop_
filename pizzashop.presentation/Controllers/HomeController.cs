@@ -3,6 +3,8 @@ using BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using pizzashop.presentation.Models;
+using BLL.Attributes;
+using DAL.Constants;
 
 namespace pizzashop.presentation.Controllers;
 
@@ -12,7 +14,7 @@ public class HomeController : BaseController
 
     private readonly IJwtService _jwtservice;
 
-    public HomeController(ILogger<HomeController> logger,IJwtService jwtService,IUserService userService,IAdminService adminservice) : base(jwtService,userService,adminservice)
+    public HomeController(ILogger<HomeController> logger,IJwtService jwtService,IUserService userService,IAdminService adminservice,BLL.Interfaces.IAuthorizationService authservice) : base(jwtService,userService,adminservice,authservice)
     {
         _logger = logger;
         _jwtservice = jwtService;

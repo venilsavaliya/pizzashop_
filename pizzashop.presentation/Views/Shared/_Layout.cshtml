@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using BLL.Interfaces
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -17,7 +18,7 @@
 
     <style>
         html {
-            overflow-x: hidden;
+            overflow-x: hidden; 
         }
     </style>
 </head>
@@ -27,6 +28,7 @@
 
 
         <div class="sidebar vh-100 d-none d-xl-block position-fixed">
+            
             <div class="sidebar-options-list  d-flex flex-column align-items-start  gap-1 fw-medium">
                 <div class="sidebar-option px-2 py-1">
                     <a href="./superadmindashboard.html" class="sidebar-link">
@@ -45,7 +47,8 @@
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Users" ? "active-option" : "")">
+                @if(ViewBag.CanUserView){
+                    <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Users" ? "active-option" : "")">
                     <a asp-action="GetUserList" asp-controller="User"
                         class="sidebar-link @(ViewBag.active == "Users" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
@@ -54,6 +57,8 @@
                         </div>
                     </a>
                 </div>
+                }
+                
                 <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Roles" ? "active-option" : "") @(ViewBag.Role!="Admin"?"d-none":"d-block")">
                     <a asp-action="Roles" asp-controller="Admin"
                         class="sidebar-link @(ViewBag.active == "Roles" ? "active-option" : "")">
@@ -63,7 +68,9 @@
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Menu" ? "active-option" : "")">
+                @if(ViewBag.CanMenuView)
+                {
+                    <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Menu" ? "active-option" : "")">
                     <a asp-action="Index" asp-controller="Menu"
                         class="sidebar-link @(ViewBag.active == "Menu" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
@@ -72,6 +79,9 @@
                         </div>
                     </a>
                 </div>
+                }
+                @if(  ViewBag.CanTableAndSectionView)
+                {
                 <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Section" ? "active-option" : "")">
                     <a asp-action="Index" asp-controller="Section" class="sidebar-link @(ViewBag.active == "Section" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
@@ -80,7 +90,10 @@
                         </div>
                     </a>
                 </div>
-                <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Tax" ? "active-option" : "")">
+                }
+                @if( ViewBag.CanTaxAndFeesView )
+                {
+                    <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Tax" ? "active-option" : "")">
                     <a asp-action="Index" asp-controller="Tax" class="sidebar-link @(ViewBag.active == "Tax" ? "active-option" : "")">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
                             <img src="~/images/sidebar icons/taxes.svg" alt="">
@@ -88,6 +101,10 @@
                         </div>
                     </a>
                 </div>
+                }
+                
+                @if( ViewBag.CanOrdersView )
+                {
                 <div class="sidebar-option w-100 p-3">
                     <a href="./superadmindashboard.html" class="sidebar-link">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
@@ -96,6 +113,10 @@
                         </div>
                     </a>
                 </div>
+                }
+
+                @if(ViewBag.CanCustomersView)
+                {
                 <div class="sidebar-option w-100 p-3">
                     <a href="./superadmindashboard.html" class="sidebar-link">
                         <div class=" d-flex justify-content-start align-items-center gap-3">
@@ -104,6 +125,9 @@
                         </div>
                     </a>
                 </div>
+                }
+                
+                
             </div>
         </div>
         <div class="main-content vh-100 custom-bg-grey">

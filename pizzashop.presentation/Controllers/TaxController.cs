@@ -1,6 +1,8 @@
 using BLL.Interfaces;
 using BLL.Services;
 using DAL.ViewModels;
+using DAL.Constants;
+using BLL.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace pizzashop.presentation.Controllers;
@@ -10,11 +12,11 @@ public class TaxController:BaseController
 
     private readonly ITaxService _taxservice;
 
-    public TaxController(IJwtService jwtService,IUserService userService,IAdminService adminservice,ITaxService taxservice):base(jwtService,userService,adminservice)
+    public TaxController(IJwtService jwtService,IUserService userService,IAdminService adminservice,ITaxService taxservice,IAuthorizationService authservice):base(jwtService,userService,adminservice,authservice)
     {
         _taxservice = taxservice;
     }
-
+    [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanView)]
     public IActionResult Index()
     {  
         ViewBag.active = "Tax";
@@ -22,7 +24,7 @@ public class TaxController:BaseController
     }
 
     // Get Partial View OF TaxTableList
-
+     [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanView)]
     public IActionResult GetTaxList(int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
       
@@ -33,6 +35,7 @@ public class TaxController:BaseController
 
     // POST : Add Tax
    [HttpPost]
+    [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanAddEdit)]
     public IActionResult AddTax(MainTaxViewModel model)
     {
       var response = _taxservice.AddTax(model.Taxes).Result;
@@ -50,6 +53,7 @@ public class TaxController:BaseController
     }
     // POST : Edit Tax
    [HttpPost]
+    [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanAddEdit)]
     public IActionResult EditTax(MainTaxViewModel model)
     {
       var response = _taxservice.EditTax(model.Taxes).Result;
@@ -66,7 +70,7 @@ public class TaxController:BaseController
       return RedirectToAction("Index","Tax");
     }
     // Delete Tax
-
+     [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanDelete)]
     public IActionResult DeleteTax(int id)
     {
       var response = _taxservice.DeleteTax(id).Result;

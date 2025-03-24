@@ -4,8 +4,8 @@
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                <input class="form-check-input outer_checkbox_modifieritemmodal" id="menu-main-checkbox" type="checkbox" value=""
-                    id="flexCheckIndeterminate">
+                <input class="form-check-input outer_checkbox_modifieritemmodal" id="modifieritem_main_checkbox" type="checkbox" value=""
+                    id="flexCheckIndeterminate" modifiergroup-id="@Model.ModifierGroupId">
             </div> <span>Name</span>
         </th>
         <th>Unit</th>
@@ -22,8 +22,8 @@
             <td>
                 <div class="d-flex justify-content-start gap-2 align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input inner_checkbox modifieritemcheckbox" type="checkbox" value="@i.ModifierId"
-                            id="flexCheckIndeterminate" modifiergroup-id="@Model.ModifierGroupId">
+                        <input class="form-check-input inner_checkbox_modifieritem" type="checkbox" value="@i.ModifierId"
+                            id="flexCheckIndeterminate" >
                     </div>
 
                     <span>@i.Name</span>

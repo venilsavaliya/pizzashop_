@@ -3,6 +3,8 @@ using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using DAL.Constants;
+using DAL.ViewModels;
 
 namespace pizzashop.presentation.Controllers;
 
@@ -25,20 +27,24 @@ public class BaseController : Controller
 
     private readonly IAdminService _adminservice;
 
-    public BaseController(IJwtService jwtService,IUserService userService,IAdminService adminservice)
+    private readonly BLL.Interfaces.IAuthorizationService _authservice;
+
+    public BaseController(IJwtService jwtService,IUserService userService,IAdminService adminservice,BLL.Interfaces.IAuthorizationService authservice)
     {
         _jwtservice = jwtService;
 
         _userService = userService;
 
         _adminservice = adminservice;
+
+        _authservice = authservice;
     }
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {   
         base.OnActionExecuting(context);
         var token = Request.Cookies["jwt"];
-        email =  _jwtservice.GetEmailDetailsFromToken(token);
+        email =  _jwtservice.GetEmailDetailsFromToken(token); 
 
         Userdetail user =  _userService.GetUserDetailByemail(email);
         username = user.UserName;
@@ -49,6 +55,14 @@ public class BaseController : Controller
         ViewBag.email = email;
         ViewBag.Profile = userprofile;
         ViewBag.Role = role;
+
+        ViewBag.CanUserView = _authservice.HasPermission(PermissionName.Users,ActionPermission.CanView);
+        ViewBag.CanMenuView = _authservice.HasPermission(PermissionName.Menu,ActionPermission.CanView);
+        ViewBag.CanTaxAndFeesView = _authservice.HasPermission(PermissionName.TaxAndFees,ActionPermission.CanView);
+        ViewBag.CanOrdersView = _authservice.HasPermission(PermissionName.Orders,ActionPermission.CanView);
+        ViewBag.CanCustomersView = _authservice.HasPermission(PermissionName.Customers,ActionPermission.CanView);
+        ViewBag.CanTableAndSectionView = _authservice.HasPermission(PermissionName.TableAndSection,ActionPermission.CanView);
+        ViewBag.CanRolesAndPermissionView = _authservice.HasPermission(PermissionName.RolesAndPermission,ActionPermission.CanView);
     }
 
     public string GetuserName()

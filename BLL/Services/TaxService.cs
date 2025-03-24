@@ -22,7 +22,7 @@ public class TaxService:ITaxService
         _context = dbcontext;
         _httpContext = httpContext;
         _userservices = userService;
-        _jwtservices = jwtservices;
+        _jwtservices = jwtservices; 
     }
 
     public TaxListPaginationViewModel GetTaxList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")

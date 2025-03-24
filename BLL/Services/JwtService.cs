@@ -7,16 +7,21 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using BLL.Interfaces;
+using BLL.Models;
+using DAL.Models;
 
 public class JwtService : IJwtService
 {
 
     private readonly IConfiguration _config;
 
+    private readonly ApplicationDbContext _context;
 
-    public JwtService(IConfiguration config)
+
+    public JwtService(IConfiguration config,ApplicationDbContext context)
     {
         _config = config;
+        _context = context;
     }
 
     public string GenerateJwtToken(string Email, string Role, int day = 7)
@@ -55,6 +60,13 @@ public class JwtService : IJwtService
         if (jwtToken == null)
             return true;
 
+        var isAlreadyExpired = _context.Expiredtokens.FirstOrDefault(t => t.Token == token);
+
+        if(isAlreadyExpired!=null)
+        {
+            return true;
+        }
+
         return jwtToken.ValidTo < DateTime.UtcNow; // Compare with current time
     }
 
@@ -69,6 +81,40 @@ public class JwtService : IJwtService
 
         var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
         return email;
+    }
+
+    public async Task<AuthResponse> AddTokenToDb(string token)
+    {   
+        try
+        {
+            var exp_token = new Expiredtoken
+            {
+                Token = token
+            };
+
+            _context.Expiredtokens.Add(exp_token);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success= true,
+                Message = "Token Added Successfully!"
+            };
+        }
+        catch (Exception e)
+        {
+
+            Console.WriteLine("Error in Adding Token", e.Message);
+
+            return new AuthResponse
+            {
+                Success= false,
+                Message = "Error in Adding Token!"
+            };
+            
+            throw;
+        }
+        
     }
 
 }

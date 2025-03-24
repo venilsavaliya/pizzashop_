@@ -2,7 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using BLL.Attributes;
 using BLL.Interfaces;
+using DAL.Constants;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +18,7 @@ public class UserController : BaseController
     private readonly IUserService _userService;
 
     private readonly INotyfService _notyf;
-    public UserController(IJwtService jwtService, IAdminService adminservice, IUserService userService, INotyfService notyfy) : base(jwtService, userService, adminservice)
+    public UserController(IJwtService jwtService, IAdminService adminservice, IUserService userService, INotyfService notyfy,BLL.Interfaces.IAuthorizationService authservice) : base(jwtService, userService, adminservice,authservice)
     {
         _userService = userService;
         _notyf = notyfy;
@@ -111,13 +113,21 @@ public class UserController : BaseController
     #region  UserList
 
     // GET : User/userlist
-    public async Task<IActionResult> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
+    [AuthorizePermission(PermissionName.Users, ActionPermission.CanView)]
+    public async Task<IActionResult> GetUserList(string sortColumn="", string sortOrder="", int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
         var userListViewModel = await _userService.GetUserList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword);
         return View(userListViewModel);
     }
+    public async Task<IActionResult> UserListPV(string sortColumn="", string sortOrder="", int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
+    {
+        var userListViewModel = await _userService.GetUserList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword);
+
+        return PartialView("~/Views/User/_UserList.cshtml",userListViewModel);
+    }
 
     // GET : User/AddUser
+    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
     public IActionResult AddUser()
     {
         return View();
@@ -125,7 +135,7 @@ public class UserController : BaseController
 
 
     // POST : User/AddUser
-
+    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
     [HttpPost]
 
     public IActionResult AddUser(AddUserViewModel model)
@@ -155,7 +165,7 @@ public class UserController : BaseController
 
 
     // GET : User/EditUser
-
+    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
     public IActionResult EditUser(string id)
     {
         var edituser = _userService.GetEditUserById(id);
@@ -163,6 +173,7 @@ public class UserController : BaseController
     }
 
     // POST : User/EditUser
+    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
     [HttpPost]
     public IActionResult EditUser(EditUserViewModel model)
     {
@@ -192,7 +203,7 @@ public class UserController : BaseController
 
 
     // Get : User/DeleteUser
-
+    [AuthorizePermission(PermissionName.Users, ActionPermission.CanDelete)]
     public IActionResult DeleteUser(string id)
     {
         var AuthResponse = _userService.DeleteUserById(id);

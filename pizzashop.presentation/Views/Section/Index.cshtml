@@ -377,14 +377,9 @@
 
 function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
      // Get the dropdown element
-    console.log("table pagination")
-    let id= $("#section-list .category-active-option").attr("section-id");
-    @* let pageSizeDropdown = document.getElementById("pageSizeDropdownforMenuitems");
-    console.log(pageSizeDropdown.value); *@
-    let searchkeyword = $("#tableitem-search-field").val();
 
-    console.log("inside item",searchkeyword) 
-    console.log("get id",id)
+    let id= $("#section-list .category-active-option").attr("section-id");
+    let searchkeyword = $("#tableitem-search-field").val();
        
         $.ajax({
             url: "/Section/GetDiningTableList",
@@ -392,28 +387,8 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
             type: "GET",
             dataType: "html",
             success: function (data) {
-                let $partialView = $(data);
-    
-                let maincb = $partialView.find("#main_table_checkbox");
-                let checkboxes = $partialView.find(".tablelist_inner_checkbox");
-                console.log(maincb)
-                 // When main checkbox is clicked
-                maincb.on("change", function () {
-                    console.log("Main checkbox changed:", this.checked);
-                    checkboxes.prop("checked", this.checked); // Set all inner checkboxes same as main
-                });
-                  
-                // If any inner checkbox is unchecked, uncheck the main checkbox
-                checkboxes.on("change", function () {
-                    if (!this.checked) {
-                        maincb.prop("checked", false);
-                    } else if (checkboxes.length === checkboxes.filter(":checked").length) {
-                        maincb.prop("checked", true);
-                    }
-                });
-
-                $('#diningtablelistcontainer').html($partialView);
-                @* onPartialViewLoaded();  *@
+                $('#diningtablelistcontainer').html(data);
+                attachMassDeleteForTable();
             },
             error: function () {
                 $("#diningtablelistcontainer").html('An error has occurred');
@@ -473,27 +448,8 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
             type: 'GET',
             data: {id:id},
             success: function (data) {
-                let $partialView = $(data);
-    
-                let maincb = $partialView.find("#main_table_checkbox");
-                let checkboxes = $partialView.find(".modifieritemcheckbox");
-                console.log(maincb)
-                 // When main checkbox is clicked
-                maincb.on("change", function () {
-                    console.log("Main checkbox changed:", this.checked);
-                    checkboxes.prop("checked", this.checked); // Set all inner checkboxes same as main
-                });
-                  
-                // If any inner checkbox is unchecked, uncheck the main checkbox
-                checkboxes.on("change", function () {
-                    if (!this.checked) {
-                        maincb.prop("checked", false);
-                    } else if (checkboxes.length === checkboxes.filter(":checked").length) {
-                        maincb.prop("checked", true);
-                    }
-                });
-
-                $('#diningtablelistcontainer').html($partialView);
+                $('#diningtablelistcontainer').html(data);
+                attachMassDeleteForTable();
             }
         });
     }
@@ -580,5 +536,56 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
         }
     });
 });
+
+@* Mass Delete For Table  *@
+
+let SelectedTableList = [];
+
+function attachMassDeleteForTable() {
+    // Event listener for main checkbox
+    $(document).on("change", "#main_table_checkbox", function () {
+        let isChecked = this.checked;
+        $(".tablelist_inner_checkbox").prop("checked", isChecked);
+        
+        if (isChecked) {
+            $(".tablelist_inner_checkbox").each(function () {
+                let id = $(this).val();
+                if (!SelectedTableList.includes(id)) {
+                    SelectedTableList.push(id);
+                }
+            });
+        } else {
+            SelectedTableList = [];
+        }
+    });
+
+    // Event listener for inner checkboxes
+    $(document).on("change", ".tablelist_inner_checkbox", function () {
+        let id = $(this).val();
+        if (this.checked) {
+            if (!SelectedTableList.includes(id)) {
+                SelectedTableList.push(id);
+            }
+        } else {
+            SelectedTableList = SelectedTableList.filter(item => item !== id);
+        }
+
+        // Update main checkbox state
+        const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length;
+        $("#main_table_checkbox").prop("checked", allChecked);
+    });
+
+    // Restore previously selected checkboxes
+    $(".tablelist_inner_checkbox").each(function () {
+        if (SelectedTableList.includes($(this).val())) {
+            $(this).prop("checked", true);
+        }
+    });
+
+    // Update main checkbox state initially
+    const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length;
+    $("#main_table_checkbox").prop("checked", allChecked);
+}
+
 
 </script>
