@@ -1,0 +1,438 @@
+@model DAL.ViewModels.MainTaxViewModel
+
+<div class="d-flex flex-column flex-grow-1 pt-3 px-3 w-100 ">
+
+    <div class="d-flex justify-content-between flex-wrap">
+        <div class="">
+            <h2 class="custom-blue">Orders</h2>
+        </div>
+        <div class="col-12 col-lg-8">
+            <div class="search-section row d-flex justify-content-end">
+                <div class="position-relative col-6 col-md-3 mb-2">
+                    <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search"
+                        id="orderitem-search-field">
+                    <img src="~/images/icons/search.svg" alt="" class="position-absolute " style="right: 18px;top:18px">
+                </div>
+                <div class="col-6 col-md-3 mb-2">
+                    <select class="form-select py-3 border-0" id="OrderStatus">
+                        <option value="">All Status</option>
+                        <option value="1">Pending</option>
+                        <option value="2">Completed</option>
+                        <option value="3">Cancelled</option>
+                        <option value="4">In Progress</option>
+                        <option value="5">Served</option>
+                        <option value="6">On Hold</option>
+                        <option value="7">Failed</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 mb-2">
+                    <select class="form-select py-3 border-0" aria-label="Default select example" id="timeframe">
+                        <option selected value="">All Time</option>
+                        <option value="1">Last 7 Days</option>
+                        <option value="2">Last 30 Days</option>
+                        <option value="3">Current Month</option>
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-2 mb-2 d-flex justify-content-center">
+                    <button type="button"
+                        class=" custom-btn-bg text-white px-3 border rounded d-flex align-items-center "
+                        data-bs-toggle="modal" data-bs-target="#AddTaxmodal"><span class="fs-5 fw-semibold m-2"
+                            style="margin-top: 0px !important;"><img src="~/images/icons/export.png" alt="" srcset=""
+                                height="25" width="25" style="filter: invert(1); "></span> <span>Export</span> </button>
+                </div>
+            </div>
+        </div>
+        @* <div class="d-flex">
+            <div class="search-section">
+                <div class="position-relative col-6 col-md-3 mb-2" >
+                    <input type="text" class="p-2 w-100 border-0 rounded" placeholder="Search" id="orderitem-search-field">
+                    <img src="~/images/icons/search.svg" alt="" class="position-absolute " style="right: 18px;top:11px" >
+                </div>
+                <div class="mb-2">
+                    <select class="form-select py-2 border-0" aria-label="Default select example">
+                        <option selected>All Status</option>
+                        <option value="1">Pending</option>
+                        <option value="2">Completed</option>
+                        <option value="3">Cancelled</option>
+                        <option value="4">In Progress</option>
+                        <option value="5">Served</option>
+                        <option value="6">On Hold</option>
+                        <option value="7">Failed</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <select class="form-select py-2 border-0" aria-label="Default select example">
+                        <option selected>All Time</option>
+                        <option value="1">Last 7 Days</option>
+                        <option value="2">Last 30 Days</option>
+                        <option value="3">Current Month</option>
+                    </select>
+                </div>
+                
+                <div class="mb-2 d-flex">
+                    <button type="button" class=" custom-btn-bg text-white px-3 border rounded d-flex align-items-center w-100"
+                    data-bs-toggle="modal" data-bs-target="#AddTaxmodal"><span class="fs-5 fw-semibold m-2" style="margin-top: 0px !important;"><img src="~/images/icons/export.png" alt="" srcset="" height="25" width="25" style="filter: invert(1); "></span> <span>Export</span> </button>
+                </div> 
+            </div>
+        </div> *@
+    </div>
+    <div class="row justify-content-end">
+
+        <div class="col-12 col-lg-7">
+            <div class="search-section row ">
+
+                <div class="form-floating col-6 col-md-4  mb-2">
+                    <input type="date" id="fromDate" class="form-control py-2 ">
+                    <label for="fromDate">From Date</label>
+                </div>
+                <div class="form-floating col-6 col-md-4  mb-2">
+                    <input type="date" id="toDate" class="form-control py-2 ">
+                    <label for="toDate">To Date</label>
+                </div>
+
+                <div class="col-3 col-sm-2 col-md-2  mb-2 d-flex align-items-center ">
+                    <button type="button" class=" custom-btn-bg text-white px-4 py-2 border rounded "
+                        onclick="HandleSearch()"> <span>Search</span> </button>
+                    @* <button type="button" class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none"><img src="~/images/icons/export.png" alt="" srcset="" height="25" width="25" style="filter: invert(1);"></button> *@
+                </div>
+                <div class="col-3 col-sm-2 col-md-2 col-lg-2 mb-2 d-flex align-items-center">
+                    <button type="button" class=" custom-blue-border px-4 py-2 rounded  " onclick="ClearFilters()">
+                        <span class="custom-blue">Clear</span>
+                    </button>
+                    @* <button type="button" class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none"><img src="~/images/icons/export.png" alt="" srcset="" height="25" width="25" style="filter: invert(1);"></button> *@
+                </div>
+
+            </div>
+        </div>
+
+        @* <div class="col-12 col-lg-7">
+            <div class="search-section row d-flex justify-content-end flex-wrap">
+                <div class="col-auto mb-2">
+                    <input type="date" class="form-control py-2">
+                </div>
+                <div class="col-auto mb-2">
+                    <input type="date" class="form-control py-2">
+                </div>
+                <div class="col-auto mb-2">
+                    <button type="button"
+                        class="custom-btn-bg text-white px-3 py-2 border rounded d-flex align-items-center"
+                        data-bs-toggle="modal" data-bs-target="#AddTaxmodal">
+                        <span>Search</span>
+                    </button>
+                </div>
+                <div class="col-auto mb-2">
+                    <button type="button" class="custom-blue-border px-3 py-2 rounded d-flex align-items-center"
+                        data-bs-toggle="modal" data-bs-target="#AddTaxmodal">
+                        <span class="custom-blue">Clear</span>
+                    </button>
+                </div>
+            </div>
+        </div> *@
+
+    </div>
+    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2 shadow p-3" id="orderlistcontainer">
+        @* Tax Table List Partial View *@
+    </div>
+</div>
+
+
+
+@* ======== Modals =========== *@
+
+<!-- add Tax modal -->
+<div class="modal fade" id="AddTaxmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content w-100">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Tax</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="AddTax" asp-controller="Tax" method="post">
+                <div class="modal-body">
+
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInput" asp-for="Taxes.TaxName">
+                                    <label for="floatingInput">Name*</label>
+                                    <span class="text-danger" asp-validation-for="Taxes.TaxName"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="statusoftable" asp-for="Taxes.Type">
+
+                                        <option value="Percentage">Percentage</option>
+                                        <option value="Flat Amount">Flat Amount</option>
+
+                                    </select>
+                                    <label for="statusoftable">Type</label>
+                                    <span class="text-danger" asp-validation-for="Taxes.Type"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInput"
+                                        asp-for="Taxes.TaxAmount">
+                                    <label for="floatingInput">Tax Amount*</label>
+                                    <span class="text-danger" asp-validation-for="Taxes.TaxAmount"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start gap-2">
+
+                        <div class="form-check form-switch d-flex align-items-center gap-3">
+                            <input class="form-check-input toggle-btn" type="checkbox" role="switch"
+                                id="flexSwitchCheckDefault" asp-for="Taxes.Isenable">
+                            <label class="form-check-label mt-1" for="flexSwitchCheckDefault">IsEnable</label>
+                        </div>
+
+                        <div class="form-check form-switch  d-flex align-items-center gap-3">
+                            <input class="form-check-input toggle-btn" type="checkbox" role="switch"
+                                id="flexSwitchCheckDefault" asp-for="Taxes.Isdefault">
+                            <label class="form-check-label mt-1" for="flexSwitchCheckDefault">Default</label>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 p-2">
+                        <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Edit Tax modal -->
+<div class="modal fade" id="EditTaxmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content w-100">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Tax</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="EditTax" asp-controller="Tax" method="post">
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="taxIdForEdit" asp-for="Taxes.TaxId" hidden>
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="taxNameForEdit" asp-for="Taxes.TaxName">
+                                    <label for="taxNameForEdit">Name*</label>
+                                    <span class="text-danger" asp-validation-for="Taxes.TaxName"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <select class="form-select" id="typeOfTaxForEdit" asp-for="Taxes.Type">
+
+                                        <option value="Percentage">Percentage</option>
+                                        <option value="Flat Amount">Flat Amount</option>
+
+                                    </select>
+                                    <label for="statusoftable">Type</label>
+                                    <span class="text-danger" asp-validation-for="Taxes.Type"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="taxAmountForEdit"
+                                        asp-for="Taxes.TaxAmount">
+                                    <label for="floatingInput">Tax Amount*</label>
+                                    <span class="text-danger" asp-validation-for="Taxes.TaxAmount"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start gap-2">
+
+                        <div class="form-check form-switch d-flex align-items-center gap-3">
+                            <input class="form-check-input toggle-btn" type="checkbox" role="switch"
+                                id="isEnabledForEdit" asp-for="Taxes.Isenable">
+                            <label class="form-check-label mt-1" for="isEnabledForEdit">IsEnable</label>
+                        </div>
+
+                        <div class="form-check form-switch  d-flex align-items-center gap-3">
+                            <input class="form-check-input toggle-btn" type="checkbox" role="switch"
+                                id="isDefaultForEdit" asp-for="Taxes.Isdefault">
+                            <label class="form-check-label mt-1" for="isDefaultForEdit">Default</label>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 p-2">
+                        <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@* Delete Table Modal *@
+
+<div class="modal" tabindex="-1" id="deletetaxmodal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3" style="width: 420px !important;">
+
+            <div class="modal-body">
+                <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
+                <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete this Tax?</div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <a id="deleteTaxBtn">
+                    <button type="button" class="btn btn-primary px-4">Yes</button>
+                </a>
+                <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+<script>
+
+
+
+    $(document).ready(function () {
+
+        // set min and max for the calender 
+        let today = new Date().toISOString().slice(0, 10);
+        $("#fromDate").attr("max", today);
+
+        $("#fromDate").on("change", function () {
+            let fromdate = $("#fromDate").val();
+            $("#toDate").attr("min", fromdate);
+        });
+
+
+        OrderListPaginationAjax();
+    })
+
+    function OrderListPaginationAjax(pageSize, pageNumber, sortColumn, sortOrder) {
+
+        let id = $("#section-list .category-active-option").attr("section-id");
+
+        let searchkeyword = $("#orderitem-search-field").val();
+        var selectedText = $("#OrderStatus option:selected").text();
+
+        var startDate = $("#fromDate").val();
+
+        var endDate = $("#toDate").val();
+        console.log("njdbwej")
+        var timeframevalue = $("#timeframe").val();
+
+
+
+
+        if (!startDate && !endDate && timeframevalue) {
+
+            endDate = new Date().toISOString().slice(0, 10);
+
+            startDate = new Date();
+
+            if (timeframevalue == "1") {
+                startDate.setDate(startDate.getDate() - 7);
+                startDate = startDate.toISOString().slice(0, 10);
+            }
+            else if (timeframevalue == "2") {
+                startDate.setDate(startDate.getDate() - 30);
+                startDate = startDate.toISOString().slice(0, 10);
+            }
+            else if (timeframevalue == "3") {
+                let today = new Date();
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                console.log("hii1", startDate)
+                startDate = startDate.getFullYear() + "-" +
+                    String(startDate.getMonth() + 1).padStart(2, '0') + "-" +
+                    String(startDate.getDate()).padStart(2, '0');
+                console.log("hii", startDate)
+            }
+        }
+
+        if (selectedText == "All Status") {
+            selectedText = "";
+        }
+
+        $.ajax({
+            url: "/Order/GetOrderList",
+            data: { 'pageSize': pageSize, 'pageNumber': pageNumber, 'searchKeyword': searchkeyword, 'sortColumn': sortColumn, 'sortOrder': sortOrder, 'status': selectedText, 'startDate': startDate, 'endDate': endDate },
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#orderlistcontainer").html(data);
+            },
+            error: function () {
+                $("#orderlistcontainer").html('An error has occurred');
+            }
+        });
+    }
+
+    @* Handle Search  *@
+
+        function HandleSearch() {
+            let searchkeyword = $("#orderitem-search-field").val();
+            let status = $("#OrderStatus").val();
+            console.log(typeof $("#fromDate").val());
+
+            OrderListPaginationAjax();
+        }
+
+    @* Clear Field Of All Filters *@
+
+        function ClearFilters() {
+            $('#fromDate').val('');
+            $('#toDate').val('');
+            $('#orderitem-search-field').val('');
+            $('#OrderStatus').val('');
+            $('#timeframe').val('');
+
+            OrderListPaginationAjax();
+        }
+
+
+    @* 
+    document.getElementById("taxitem-search-field").addEventListener('keyup', () => {
+        OrderListPaginationAjax();
+    }) *@
+
+        @* set data for edit tax *@
+
+        function setEditTaxData(ele) {
+
+            var c = JSON.parse(ele.getAttribute("item-obj"));
+            console.log(c);
+
+            var editsectionitem = document.getElementById("EditTaxmodal");
+            editsectionitem.querySelector("#taxIdForEdit").value = c.taxId;
+            editsectionitem.querySelector("#taxNameForEdit").value = c.taxName;
+            editsectionitem.querySelector("#typeOfTaxForEdit").value = c.type;
+            editsectionitem.querySelector("#taxAmountForEdit").value = c.taxAmount;
+            editsectionitem.querySelector("#isEnabledForEdit").checked = c.isenable;
+            editsectionitem.querySelector("#isDefaultForEdit").checked = c.isdefault;
+            editsectionitem.querySelector("#Description").value = c.description;
+        }
+
+    @* Delete Tax *@
+
+        function setDeleteTaxData(element) {
+
+            var Id = element.getAttribute("tax-id");
+            var deleteBtn = document.getElementById("deleteTaxBtn");
+            deleteBtn.href = '@Url.Action("DeleteTax", "Tax")' + '?id=' + Id;
+
+        }
+</script>

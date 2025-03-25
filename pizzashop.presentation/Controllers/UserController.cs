@@ -114,7 +114,7 @@ public class UserController : BaseController
 
     // GET : User/userlist
     [AuthorizePermission(PermissionName.Users, ActionPermission.CanView)]
-    public async Task<IActionResult> GetUserList(string sortColumn="", string sortOrder="", int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
+    public async Task<IActionResult> GetUserList(string sortColumn="", string sortOrder="", int pageNumber = 1, int pageSize = 5, string searchKeyword = ""  )
     {
         var userListViewModel = await _userService.GetUserList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword);
         return View(userListViewModel);

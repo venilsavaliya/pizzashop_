@@ -17,6 +17,8 @@ public partial class User
 
     public virtual ICollection<Category> CategoryModifyiedbyNavigations { get; } = new List<Category>();
 
+    public virtual ICollection<Customer> Customers { get; } = new List<Customer>();
+
     public virtual ICollection<Diningtable> DiningtableCreatedbyNavigations { get; } = new List<Diningtable>();
 
     public virtual ICollection<Diningtable> DiningtableModifyiedbyNavigations { get; } = new List<Diningtable>();
@@ -32,6 +34,10 @@ public partial class User
     public virtual ICollection<Modifiersgroup> ModifiersgroupCreatedbyNavigations { get; } = new List<Modifiersgroup>();
 
     public virtual ICollection<Modifiersgroup> ModifiersgroupModifyiedbyNavigations { get; } = new List<Modifiersgroup>();
+
+    public virtual ICollection<Order> OrderCreatedbyNavigations { get; } = new List<Order>();
+
+    public virtual ICollection<Order> OrderModifyiedbyNavigations { get; } = new List<Order>();
 
     public virtual ICollection<Role> RoleCreatedByNavigations { get; } = new List<Role>();
 

@@ -96,6 +96,7 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ISectionServices, SectionServices>();
 builder.Services.AddScoped<IMenuServices,MenuServices>();
 builder.Services.AddScoped<ITaxService,TaxService>();
+builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

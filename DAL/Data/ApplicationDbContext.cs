@@ -21,6 +21,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Country> Countries { get; set; }
 
+    public virtual DbSet<Customer> Customers { get; set; }
+
     public virtual DbSet<Diningtable> Diningtables { get; set; }
 
     public virtual DbSet<Expiredtoken> Expiredtokens { get; set; }
@@ -40,6 +42,12 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Modifieritemsmodifiersgroup> Modifieritemsmodifiersgroups { get; set; }
 
     public virtual DbSet<Modifiersgroup> Modifiersgroups { get; set; }
+
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<Orderstatus> Orderstatuses { get; set; }
+
+    public virtual DbSet<PaymentMode> PaymentModes { get; set; }
 
     public virtual DbSet<Permission> Permissions { get; set; }
 
@@ -144,6 +152,39 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("created_at");
+        });
+
+        modelBuilder.Entity<Customer>(entity =>
+        {
+            entity.HasKey(e => e.CustomerId).HasName("customers_pkey");
+
+            entity.ToTable("customers");
+
+            entity.HasIndex(e => e.Mobile, "customers_mobile_key").IsUnique();
+
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Email)
+                .HasMaxLength(50)
+                .HasColumnName("email");
+            entity.Property(e => e.Mobile)
+                .HasMaxLength(13)
+                .HasColumnName("mobile");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.TotalVisit)
+                .HasDefaultValueSql("1")
+                .HasColumnName("total_visit");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.Customers)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("customers_createdby_fkey");
         });
 
         modelBuilder.Entity<Diningtable>(entity =>
@@ -429,6 +470,85 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.ModifiersgroupModifyiedbyNavigations)
                 .HasForeignKey(d => d.Modifyiedby)
                 .HasConstraintName("modifiersgroup_modifyiedby_fkey");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.OrderId).HasName("orders_pkey");
+
+            entity.ToTable("orders");
+
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.CompletedTime)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("completed_time");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.Instruction)
+                .HasMaxLength(500)
+                .HasColumnName("instruction");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifyiedby).HasColumnName("modifyiedby");
+            entity.Property(e => e.OrderDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("order_date");
+            entity.Property(e => e.OrderStatus)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'Pending'::character varying")
+                .HasColumnName("order_status");
+            entity.Property(e => e.PaymentMode)
+                .HasMaxLength(20)
+                .HasColumnName("payment_mode");
+            entity.Property(e => e.Rating).HasColumnName("rating");
+            entity.Property(e => e.TotalAmount)
+                .HasPrecision(10, 2)
+                .HasColumnName("total_amount");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.OrderCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_createdby");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("fk_customer");
+
+            entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.OrderModifyiedbyNavigations)
+                .HasForeignKey(d => d.Modifyiedby)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_modifyiedby");
+        });
+
+        modelBuilder.Entity<Orderstatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("orderstatus_pkey");
+
+            entity.ToTable("orderstatus");
+
+            entity.HasIndex(e => e.Name, "orderstatus_name_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<PaymentMode>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("payment_mode_pkey");
+
+            entity.ToTable("payment_mode");
+
+            entity.HasIndex(e => e.Name, "payment_mode_name_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<Permission>(entity =>

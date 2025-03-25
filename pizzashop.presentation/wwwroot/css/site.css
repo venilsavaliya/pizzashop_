@@ -187,12 +187,11 @@ body {
   height: 96px;
 }
 
-/* .form-floating>.form-control-plaintext~label, .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
+.form-floating>.form-control-plaintext~label, .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
   color: rgba(var(--bs-body-color-rgb), .65);
-  transform: scale(.85) translateY(-1.8rem) translateX(.25rem);
-  background-color: white;
-  opacity: 1;
-} */
+  opacity: .65;
+  transform: scale(.85) translateY(-0.9rem) translateX(.5rem);
+}
 
 /* label {
   background-color: white;
@@ -368,4 +367,9 @@ input[type=password]::-ms-clear {
 .cursor-pointer
 {
   cursor: pointer;
+}
+
+.table-row
+{
+  padding: 15px 0px !important;
 }

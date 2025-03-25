@@ -24,7 +24,7 @@ public class TaxController:BaseController
     }
 
     // Get Partial View OF TaxTableList
-     [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanView)]
+    [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanView)]
     public IActionResult GetTaxList(int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
       

@@ -73,6 +73,10 @@
       "PackagePath": "staticwebassets\\images\\icons\\dinner-table.svg"
     },
     {
+      "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\export.png",
+      "PackagePath": "staticwebassets\\images\\icons\\export.png"
+    },
+    {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\eye-fill.svg",
       "PackagePath": "staticwebassets\\images\\icons\\eye-fill.svg"
     },
