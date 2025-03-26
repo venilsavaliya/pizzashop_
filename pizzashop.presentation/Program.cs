@@ -101,6 +101,7 @@ builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+builder.Services.AddSingleton<ExcelExportService>();
 
 
 var app = builder.Build();

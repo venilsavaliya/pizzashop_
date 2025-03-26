@@ -39,10 +39,14 @@
         <th class="text-center">Status</th>
         <th class="text-center">Payment Mode</th>
         <th class="text-center">Rating</th>
-        <th class="d-flex justify-content-center"><span>Total Amount</span>
-            <div sortOrder=@(Model.SortColumn == "Role" && Model.SortOrder == "asc" ? "desc" : "asc") sortColumn="Role"
-                onclick='OrderListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage,"TotalAmount", "@(Model.SortColumn == "TotalAmount" && Model.SortOrder == "asc" ? "desc" : "asc")" )'>
-                <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt="">
+        <th class="">
+            <div class="d-flex justify-content-center">
+                <span>Total Amount</span>
+                <div sortOrder=@(Model.SortColumn == "Role" && Model.SortOrder == "asc" ? "desc" : "asc")
+                    sortColumn="Role"
+                    onclick='OrderListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage,"TotalAmount", "@(Model.SortColumn == "TotalAmount" && Model.SortOrder == "asc" ? "desc" : "asc")" )'>
+                    <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt="">
+                </div>
             </div>
         </th>
 
@@ -52,7 +56,7 @@
 
     @foreach (var u in Model.Items)
     {
-        <tr >
+        <tr>
             <td class="table-row text-center">#@u.OrderId</td>
             <td class="table-row text-center">@u.OrderDate</td>
             <td class="table-row text-center">@u.CustomerName</td>

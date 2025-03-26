@@ -100,6 +100,53 @@ public class OrderService : IOrderService
         return model;
     }
 
+    // Get Order List For Export
+    public async Task<IEnumerable<OrderViewModel>> GetOrderListForExport(string searchKeyword = "", string status = "", DateTime? startDate = null, DateTime? endDate = null)
+    {
+        searchKeyword = searchKeyword.ToLower();
+        OrderListPaginationViewModel model = new() { Page = new() };
+
+        var query = from u in _context.Orders
+                    join user in _context.Customers on u.CustomerId equals user.CustomerId
+                    select new OrderViewModel
+                    {
+                        OrderId = u.OrderId,
+                        OrderDate = u.OrderDate,
+                        CustomerName = user.Name,
+                        OrderStatus = u.OrderStatus,
+                        PaymentMode = u.PaymentMode,
+                        Rating = u.Rating,
+                        TotalAmount = u.TotalAmount
+                    };
+
+        if (!string.IsNullOrEmpty(status) && status!="All Status")
+        {
+            query = query.Where(u => u.OrderStatus.ToLower().Equals(status.ToLower()));
+        }
+
+        if (!string.IsNullOrEmpty(searchKeyword))
+        {
+            query = query.Where(u =>
+                                 u.OrderId.ToString().Contains(searchKeyword) ||
+                                 u.CustomerName.ToLower().Contains(searchKeyword));
+        }
+
+        if (startDate.HasValue && endDate.HasValue)
+        {
+            query = query.Where(u => u.OrderDate >= startDate.Value.Date && u.OrderDate.Date <= endDate.Value.Date);
+        }
+
+        // Sorting logic
+        
+        query = query.OrderBy(u => u.OrderId); // **Apply a default ordering if no sort is provided**
+
+
+        // Get List Of Orders
+        var orderList = query.ToList();
+
+        return orderList;
+    }
+
 
 
 

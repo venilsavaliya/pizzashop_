@@ -26,8 +26,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\pizzashop_3tier\\DAL\\DAL.csproj": {
-                "projectPath": "D:\\pizzashop_3tier\\DAL\\DAL.csproj"
+              "d:\\pizzashop_3tier\\DAL\\DAL.csproj": {
+                "projectPath": "d:\\pizzashop_3tier\\DAL\\DAL.csproj"
               }
             }
           }
@@ -45,6 +45,14 @@
             "BCrypt.Net": {
               "target": "Package",
               "version": "[0.1.0, )"
+            },
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.104.2, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.7.0, )"
             },
             "MailKit": {
               "target": "Package",
@@ -79,14 +87,14 @@
         }
       }
     },
-    "D:\\pizzashop_3tier\\DAL\\DAL.csproj": {
+    "d:\\pizzashop_3tier\\DAL\\DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop_3tier\\DAL\\DAL.csproj",
+        "projectUniqueName": "d:\\pizzashop_3tier\\DAL\\DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "D:\\pizzashop_3tier\\DAL\\DAL.csproj",
+        "projectPath": "d:\\pizzashop_3tier\\DAL\\DAL.csproj",
         "packagesPath": "C:\\Users\\pce175\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop_3tier\\DAL\\obj\\",
+        "outputPath": "d:\\pizzashop_3tier\\DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\pce175\\AppData\\Roaming\\NuGet\\NuGet.Config"

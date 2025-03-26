@@ -37,9 +37,9 @@
                 <div class="col-6 col-md-2 mb-2 d-flex justify-content-center">
                     <button type="button"
                         class=" custom-btn-bg text-white px-3 border rounded d-flex align-items-center "
-                        data-bs-toggle="modal" data-bs-target="#AddTaxmodal"><span class="fs-5 fw-semibold m-2"
-                            style="margin-top: 0px !important;"><img src="~/images/icons/export.png" alt="" srcset=""
-                                height="25" width="25" style="filter: invert(1); "></span> <span>Export</span> </button>
+                        id="exportbtn"><span class="fs-5 fw-semibold m-2" style="margin-top: 0px !important;"><img
+                                src="~/images/icons/export.png" alt="" srcset="" height="25" width="25"
+                                style="filter: invert(1); "></span> <span>Export</span> </button>
                 </div>
             </div>
         </div>
@@ -403,13 +403,73 @@
             OrderListPaginationAjax();
         }
 
+    // Handle Export Of Dat in Excel sheet
 
-    @* 
-    document.getElementById("taxitem-search-field").addEventListener('keyup', () => {
-        OrderListPaginationAjax();
-    }) *@
+    $("#exportbtn").on("click", () => {
+        let searchkeyword = $("#orderitem-search-field").val();
+        var selectedText = $("#OrderStatus option:selected").text();
 
-        @* set data for edit tax *@
+        var startDate = $("#fromDate").val();
+
+        var endDate = $("#toDate").val();
+        console.log("njdbwej")
+        var timeframevalue = $("#timeframe").val();
+        var timeframetext = $("#timeframe option:selected").text();
+
+
+
+
+        if (!startDate && !endDate && timeframevalue) {
+
+            endDate = new Date().toISOString().slice(0, 10);
+
+            startDate = new Date();
+
+            if (timeframevalue == "1") {
+                startDate.setDate(startDate.getDate() - 7);
+                startDate = startDate.toISOString().slice(0, 10);
+            }
+            else if (timeframevalue == "2") {
+                startDate.setDate(startDate.getDate() - 30);
+                startDate = startDate.toISOString().slice(0, 10);
+            }
+            else if (timeframevalue == "3") {
+                let today = new Date();
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                console.log("hii1", startDate)
+                startDate = startDate.getFullYear() + "-" +
+                    String(startDate.getMonth() + 1).padStart(2, '0') + "-" +
+                    String(startDate.getDate()).padStart(2, '0');
+                console.log("hii", startDate)
+            }
+        }
+
+       
+
+        $.ajax({
+            url: "/order/ExportOrders",
+            type: "GET",
+            data: {'searchKeyword': searchkeyword, 'status': selectedText, 'startDate': startDate, 'endDate': endDate,'timeframe':timeframetext },
+            xhrFields: {
+                responseType: "blob" // Expect a binary file (blob) as the response
+            },
+            success: function (data) {
+                var blob = new Blob([data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                var link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Orders.xlsx";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            error: function () {
+                alert("Error exporting the file.");
+            }
+        });
+
+    })
+
+    @* set data for edit tax *@
 
         function setEditTaxData(ele) {
 
