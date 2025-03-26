@@ -8,67 +8,6 @@ using OfficeOpenXml;
 
 public class ExcelExportService
 {
-    // public byte[] ExportOrdersToExcel(IEnumerable<OrderViewModel> orderlist)
-    // {
-    //     List<OrderViewModel> orders = orderlist.ToList();
-
-    //     using (var workbook = new XLWorkbook())
-    //     {
-    //         var worksheet = workbook.Worksheets.Add("Orders");
-
-
-    //         // Set Fixed Width for Each Column
-    //         worksheet.Column(1).Width = 15; // Order ID
-    //         worksheet.Column(2).Width = 15; // Customer Name
-    //         worksheet.Column(3).Width = 15; // Order Date
-    //         worksheet.Column(4).Width = 15; // Total Amount
-    //         worksheet.Column(5).Width = 15; // Payment Status
-    //         worksheet.Column(5).Width = 15; // Payment Status
-    //         worksheet.Column(5).Width = 15; // Payment Status
-
-    //         int row = 9;
-
-    //         // 🟢 **Set Header**
-    //         worksheet.Cell(row, 1).Value = "ID";
-    //         worksheet.Cell(row, 2).Value = "Date";
-    //         worksheet.Cell(row, 3).Value = "Customer";
-    //         worksheet.Cell(row, 4).Value = "Status";
-    //         worksheet.Cell(row, 5).Value = "Payment Mode";
-    //         worksheet.Cell(row, 6).Value = "Rating";
-    //         worksheet.Cell(row, 7).Value = "Total Amount";
-
-    //         // 🔹 **Style Header**
-    //         var headerRange = worksheet.Range("A9:G9");
-    //         headerRange.Style.Font.Bold = true;
-    //         headerRange.Style.Fill.BackgroundColor = XLColor.DarkBlue;
-    //         headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-    //         headerRange.Style.Font.FontColor = XLColor.White;
-
-    //         // 🟢 **Insert Data**
-    //         row++;
-    //         foreach (var order in orders)
-    //         {
-    //             worksheet.Cell(row, 1).Value = order.OrderId;
-    //             worksheet.Cell(row, 2).Value = order.OrderDate.ToString("yyyy-MM-dd");
-    //             worksheet.Cell(row, 3).Value = order.CustomerName;
-    //             worksheet.Cell(row, 4).Value = order.OrderStatus;
-    //             worksheet.Cell(row, 5).Value = order.PaymentMode;
-    //             worksheet.Cell(row, 6).Value = order.Rating != null ? order.Rating : "No Rating";
-    //             worksheet.Cell(row, 7).Value = order.TotalAmount;
-    //             row++;
-    //         }
-
-    //         // 🔹 **AutoFit Columns**
-    //         worksheet.Columns().AdjustToContents();
-
-    //         // 🔹 **Save File to MemoryStream**
-    //         using (var stream = new MemoryStream())
-    //         {
-    //             workbook.SaveAs(stream);
-    //             return stream.ToArray(); // Return as byte array
-    //         }
-    //     }
-    // }
     public byte[] ExportOrdersToExcel(IEnumerable<OrderViewModel> orderlist,string searchkeyword="",string status="",string timeframe="")
     {
         List<OrderViewModel> orders = orderlist.ToList();
@@ -84,7 +23,7 @@ public class ExcelExportService
 
             int row = 9; // Start Header at Row 9
 
-            // 🟢 **Set Header Row**
+            //  **Set Header Row**
             worksheet.Cell(row, 1).Value = "ID";
             worksheet.Cell(row, 2).Value = "Date";
             worksheet.Cell(row, 5).Value = "Customer";
@@ -100,7 +39,7 @@ public class ExcelExportService
             var RatingRange = worksheet.Range(row, 12, row, 13).Merge();
             var amountRange = worksheet.Range(row, 14, row, 15).Merge();
 
-            // 🔹 **Merge Cells for a Status Header (Optional)**
+            //  **Merge Cells for a Status Header (Optional)**
             var StatusHeaderRange = worksheet.Range("A2:B3").Merge();
             StatusHeaderRange.Value = "Status :";
             StatusHeaderRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -118,7 +57,7 @@ public class ExcelExportService
             StatusTitleRange.Style.Fill.BackgroundColor = XLColor.White;
 
 
-            // 🔹 **Merge Cells for a Search Text (Optional)**
+            //  **Merge Cells for a Search Text (Optional)**
             var searchHeaderRange = worksheet.Range("H2:I3").Merge();
             searchHeaderRange.Value = "Search Keyword";
             searchHeaderRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -135,7 +74,7 @@ public class ExcelExportService
             searchTitleRange.Style.Font.FontColor = XLColor.Black;
             searchTitleRange.Style.Fill.BackgroundColor = XLColor.White;
 
-            // 🔹 **Merge Cells for a Date Range (Optional)**
+            //  **Merge Cells for a Date Range (Optional)**
             var DateHeaderRange = worksheet.Range("A5:B6").Merge();
             DateHeaderRange.Value = "Date :";
             DateHeaderRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -152,7 +91,7 @@ public class ExcelExportService
             DateTitleRange.Style.Font.FontColor = XLColor.Black;
             DateTitleRange.Style.Fill.BackgroundColor = XLColor.White;
 
-            // 🔹 **No. Of Record **
+            //  **No. Of Record **
             var RecordHeaderRange = worksheet.Range("H5:I6").Merge();
             RecordHeaderRange.Value = "Total Records :";
             RecordHeaderRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -170,7 +109,7 @@ public class ExcelExportService
             RecordTitleRange.Style.Fill.BackgroundColor = XLColor.White;
 
 
-            // 🔹 **Style Header Row**
+            //  **Style Header Row**
             var headerRange = worksheet.Range("A9:O9");
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.DarkBlue;
@@ -179,7 +118,7 @@ public class ExcelExportService
             headerRange.Style.Font.FontColor = XLColor.White;
             headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
 
-            // 🟢 **Insert Data Rows**
+            // **Insert Data Rows**
             row++;
             foreach (var order in orders)
             {
@@ -208,7 +147,7 @@ public class ExcelExportService
                 row++;
             }
 
-            // 🔹 **Set Fixed Column Width**
+            //**Set Fixed Column Width**
             worksheet.Column(1).Width = 10;  // ID
             worksheet.Column(2).Width = 10;  // Date
             worksheet.Column(3).Width = 10;  // Customer
@@ -217,10 +156,10 @@ public class ExcelExportService
             worksheet.Column(6).Width = 10;  // Rating
             worksheet.Column(7).Width = 10;  // Total Amount
 
-            // 🔹 **AutoFit for Better Formatting**
+            //  **AutoFit for Better Formatting**
             // worksheet.Columns().AdjustToContents();
 
-            // 🔹 **Save File to MemoryStream**
+            //  **Save File to MemoryStream**
             using (var stream = new MemoryStream())
             {
                 workbook.SaveAs(stream);

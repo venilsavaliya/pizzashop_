@@ -1,0 +1,147 @@
+@model DAL.ViewModels.MainTaxViewModel
+
+@* <div class="d-flex flex-column flex-md-row justify-content-md-between pt-3 px-3 w-100 ">
+
+    <div class="">
+        <h2 class="custom-blue">Orders</h2>
+    </div>
+    <div class="d-flex gap-2 flex-wrap ">
+        <div class="d-flex flex-column flex-sm-row gap-2">
+            <div class="mb-2 position-relative w-100vw" style="width: 180px;">
+                <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search"
+                    id="orderitem-search-field">
+                <img src="~/images/icons/search.svg" alt="" class="position-absolute" style="right: 18px; top:18px">
+            </div>
+
+            <div class="mb-2" style="width: 180px;">
+                <select class="form-select py-3 border-0" id="OrderStatus">
+                    <option value="">All Status</option>
+                    <option value="1">Pending</option>
+                    <option value="2">Completed</option>
+                    <option value="3">Cancelled</option>
+                    <option value="4">In Progress</option>
+                    <option value="5">Served</option>
+                    <option value="6">On Hold</option>
+                    <option value="7">Failed</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="d-flex flex-column flex-sm-row gap-2">
+            <div class="mb-2" style="width: 180px;">
+                <select class="form-select py-3 border-0" aria-label="Default select example" id="timeframe">
+                    <option selected value="">All Time</option>
+                    <option value="1">Last 7 Days</option>
+                    <option value="2">Last 30 Days</option>
+                    <option value="3">Current Month</option>
+                </select>
+            </div>
+
+            <div class="mb-2 d-flex justify-content-center" style="width: fit-content;">
+                <div type="button" class=" custom-btn-bg text-white px-3 border rounded d-flex align-items-center "
+                    id="exportbtn">
+                    <span class="fs-5 fw-semibold m-2" style="margin-top: 0px !important;"><img
+                            src="~/images/icons/export.png" alt="" srcset="" height="25" width="25"
+                            style="filter: invert(1); "></span> <span>Export</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div> *@
+
+<div class="d-flex flex-column flex-md-row justify-content-md-between pt-3 px-3 w-100">
+
+    <div>
+        <h2 class="custom-blue">Orders</h2>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap w-100 justify-content-md-end">
+
+        <div class="d-none d-md-flex flex-column flex-sm-row gap-2 flex-grow-1">
+
+        </div>
+        <!-- Search Bar & Order Status -->
+        <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1">
+            <div class="mb-2 position-relative flex-grow-1">
+                <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search" id="orderitem-search-field">
+                <img src="~/images/icons/search.svg" alt="" class="position-absolute" style="right: 18px; top: 18px;">
+            </div>
+
+            <div class="mb-2 flex-grow-1">
+                <select class="form-select py-3 border-0 w-100" id="OrderStatus">
+                    <option value="">All Status</option>
+                    <option value="1">Pending</option>
+                    <option value="2">Completed</option>
+                    <option value="3">Cancelled</option>
+                    <option value="4">In Progress</option>
+                    <option value="5">Served</option>
+                    <option value="6">On Hold</option>
+                    <option value="7">Failed</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Timeframe & Export Button -->
+        <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1">
+            <div class="mb-2 flex-grow-1">
+                <select class="form-select py-3 border-0 w-100" id="timeframe">
+                    <option selected value="">All Time</option>
+                    <option value="1">Last 7 Days</option>
+                    <option value="2">Last 30 Days</option>
+                    <option value="3">Current Month</option>
+                </select>
+            </div>
+
+ <div class="mb-2 d-flex justify-content-center">
+    <div type="button" 
+         class="custom-btn-bg text-white px-3 border rounded d-flex align-items-center" 
+         id="exportbtn"
+         style="width: fit-content; min-width: max-content;">
+        <span class="fs-5 fw-semibold m-2">
+            <img src="~/images/icons/export.png" alt="" height="25" width="25" style="filter: invert(1);">
+        </span>
+        <span>Export</span>
+    </div>
+</div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="d-flex flex-column flex-md-row justify-content-md-end  gap-3  px-3 flex-wrap w-100">
+
+    <!-- Date Filters -->
+    <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1 justify-content-md-end" >
+        <div class="form-floating flex-grow-1 " style="max-width: 340px;">
+            <input type="date" id="fromDate" class="form-control py-2 w-100">
+            <label for="fromDate">From Date</label>
+        </div>
+
+        <div class="form-floating flex-grow-1" style="max-width: 340px;">
+            <input type="date" id="toDate" class="form-control py-2 w-100">
+            <label for="toDate">To Date</label>
+        </div>
+    </div>
+
+    
+
+    <!-- Buttons -->
+    <div class="d-flex gap-2">
+        <button class="custom-btn-bg text-white px-4 py-2 border rounded text-center"
+            onclick="HandleSearch()">
+            Search
+        </button>
+
+        <button class="custom-blue-border px-4 py-2 rounded text-center" onclick="ClearFilters()">
+            <span class="custom-blue">Clear</span>
+        </button>
+    </div>
+
+</div>
+

@@ -1050,10 +1050,14 @@
     </div>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script> *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
 <script>
 
 
@@ -1709,9 +1713,15 @@ $(document).ready(function () {
 
     console.log("venil",selectedModifierGroups);
 
+    var form =  $("#addItemForm");
+
     formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups)); 
- 
-    $.ajax({
+    
+    if($.validator && form.length > 0)
+    {
+         form.validate();
+          if (form.valid()){
+            $.ajax({
         url: "/Menu/AddNewItem",
         type: "POST",
         processData: false,
@@ -1723,7 +1733,11 @@ $(document).ready(function () {
         error: function(err) {
             console.error("Error adding item:", err);
         }
-    });
+         });
+          }
+        
+    }
+    
 });
 
 });
@@ -2241,7 +2255,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     }
 
     @* function need to be called after document get load *@ 
-
+@* pwd1 *@
     $(document).ready(function () {
 
         PaginationAjax();
@@ -2249,6 +2263,14 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         ModifieritemListForAddPaginationAjax();
         MenuitemsPaginationAjax();
         updateCheckboxStates();
+
+         $("#addmenuitem").on("hidden.bs.modal", function () {
+            var form = $("#addItemForm");
+    
+            form[0].reset();
+            form[0].validate().resetForm();
+            form.find(".is-invalid").removeClass("is-invalid");
+        });
     });
 
     let selectedModifiers = []; 
