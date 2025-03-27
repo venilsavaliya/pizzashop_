@@ -29,6 +29,14 @@ public class OrderController : BaseController
         return View();
     }
 
+    [AuthorizePermission(PermissionName.Orders, ActionPermission.CanView)]
+    public async Task<IActionResult> OrderDetail(int id)
+    {
+        ViewBag.active = "Order";
+        var model = await _orderservice.GetOrderDetailByOrderId(id);
+        return View(model);
+    }
+
     // Return Partial View Of Filtered Order Table List
     [AuthorizePermission(PermissionName.Orders, ActionPermission.CanView)]
     public async Task<IActionResult> GetOrderList(string sortColumn = "", string sortOrder = "", int pageNumber = 1, int pageSize = 5, string searchKeyword = "", string status = "", string startDate = null, string endDate = null)

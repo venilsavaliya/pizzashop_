@@ -25,7 +25,15 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Diningtable> Diningtables { get; set; }
 
+    public virtual DbSet<Dishritem> Dishritems { get; set; }
+
+    public virtual DbSet<Dishrmodifier> Dishrmodifiers { get; set; }
+
     public virtual DbSet<Expiredtoken> Expiredtokens { get; set; }
+
+    public virtual DbSet<Invoice> Invoices { get; set; }
+
+    public virtual DbSet<Invoicertax> Invoicertaxes { get; set; }
 
     public virtual DbSet<Item> Items { get; set; }
 
@@ -59,6 +67,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<State> States { get; set; }
 
+    public virtual DbSet<Tableorder> Tableorders { get; set; }
+
     public virtual DbSet<Taxis> Taxes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -67,7 +77,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -228,6 +238,65 @@ public partial class ApplicationDbContext : DbContext
                 .HasConstraintName("fk_diningtables_section");
         });
 
+        modelBuilder.Entity<Dishritem>(entity =>
+        {
+            entity.HasKey(e => e.Dishid).HasName("dishritem_pkey");
+
+            entity.ToTable("dishritem");
+
+            entity.Property(e => e.Dishid).HasColumnName("dishid");
+            entity.Property(e => e.Inprogressquantity)
+                .HasDefaultValueSql("0")
+                .HasColumnName("inprogressquantity");
+            entity.Property(e => e.Itemid).HasColumnName("itemid");
+            entity.Property(e => e.Itemname)
+                .HasColumnType("character varying")
+                .HasColumnName("itemname");
+            entity.Property(e => e.Itemprice).HasColumnName("itemprice");
+            entity.Property(e => e.Orderid).HasColumnName("orderid");
+            entity.Property(e => e.Pendingquantity).HasColumnName("pendingquantity");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.Readyquantity)
+                .HasDefaultValueSql("0")
+                .HasColumnName("readyquantity");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.Dishritems)
+                .HasForeignKey(d => d.Itemid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_item");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Dishritems)
+                .HasForeignKey(d => d.Orderid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_order");
+        });
+
+        modelBuilder.Entity<Dishrmodifier>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("dishrmodifier_pkey");
+
+            entity.ToTable("dishrmodifier");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Dishid).HasColumnName("dishid");
+            entity.Property(e => e.Modifieritemid).HasColumnName("modifieritemid");
+            entity.Property(e => e.Modifieritemname)
+                .HasColumnType("character varying")
+                .HasColumnName("modifieritemname");
+            entity.Property(e => e.Modifieritemprice).HasColumnName("modifieritemprice");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+
+            entity.HasOne(d => d.Dish).WithMany(p => p.Dishrmodifiers)
+                .HasForeignKey(d => d.Dishid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_dish");
+
+            entity.HasOne(d => d.Modifieritem).WithMany(p => p.Dishrmodifiers)
+                .HasForeignKey(d => d.Modifieritemid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_modifier");
+        });
+
         modelBuilder.Entity<Expiredtoken>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("expiredtokens_pkey");
@@ -238,6 +307,56 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Token)
                 .HasColumnType("character varying")
                 .HasColumnName("token");
+        });
+
+        modelBuilder.Entity<Invoice>(entity =>
+        {
+            entity.HasKey(e => e.InvoiceId).HasName("invoice_pkey");
+
+            entity.ToTable("invoice");
+
+            entity.HasIndex(e => e.OrderId, "invoice_order_id_key").IsUnique();
+
+            entity.Property(e => e.InvoiceId).HasColumnName("invoice_id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.Paidon)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("paidon");
+
+            entity.HasOne(d => d.Order).WithOne(p => p.Invoice)
+                .HasForeignKey<Invoice>(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_invoice_order");
+        });
+
+        modelBuilder.Entity<Invoicertax>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("invoicertax_pkey");
+
+            entity.ToTable("invoicertax");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.InvoiceId).HasColumnName("invoice_id");
+            entity.Property(e => e.TaxAmount)
+                .HasPrecision(7, 2)
+                .HasColumnName("tax_amount");
+            entity.Property(e => e.TaxId).HasColumnName("tax_id");
+            entity.Property(e => e.TaxName)
+                .HasMaxLength(20)
+                .HasColumnName("tax_name");
+            entity.Property(e => e.Taxtype)
+                .HasMaxLength(20)
+                .HasColumnName("taxtype");
+
+            entity.HasOne(d => d.Invoice).WithMany(p => p.Invoicertaxes)
+                .HasForeignKey(d => d.InvoiceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_invoice");
+
+            entity.HasOne(d => d.Tax).WithMany(p => p.Invoicertaxes)
+                .HasForeignKey(d => d.TaxId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_tax");
         });
 
         modelBuilder.Entity<Item>(entity =>
@@ -503,10 +622,15 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.PaymentMode)
                 .HasMaxLength(20)
                 .HasColumnName("payment_mode");
+            entity.Property(e => e.Placeon)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("placeon");
             entity.Property(e => e.Rating).HasColumnName("rating");
             entity.Property(e => e.TotalAmount)
                 .HasPrecision(10, 2)
                 .HasColumnName("total_amount");
+            entity.Property(e => e.TotalPerson).HasColumnName("total_person");
 
             entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.OrderCreatedbyNavigations)
                 .HasForeignKey(d => d.Createdby)
@@ -680,6 +804,25 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Country).WithMany(p => p.States)
                 .HasForeignKey(d => d.CountryId)
                 .HasConstraintName("state_country_id_fkey");
+        });
+
+        modelBuilder.Entity<Tableorder>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("tableorders_pkey");
+
+            entity.ToTable("tableorders");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.TableId).HasColumnName("table_id");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Tableorders)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("fk_order");
+
+            entity.HasOne(d => d.Table).WithMany(p => p.Tableorders)
+                .HasForeignKey(d => d.TableId)
+                .HasConstraintName("fk_table");
         });
 
         modelBuilder.Entity<Taxis>(entity =>

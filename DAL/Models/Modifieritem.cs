@@ -31,6 +31,8 @@ public partial class Modifieritem
 
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
+    public virtual ICollection<Dishrmodifier> Dishrmodifiers { get; } = new List<Dishrmodifier>();
+
     public virtual ICollection<Itemsrmodifiersgroup> Itemsrmodifiersgroups { get; } = new List<Itemsrmodifiersgroup>();
 
     public virtual ICollection<Modifieritemsmodifiersgroup> Modifieritemsmodifiersgroups { get; } = new List<Modifieritemsmodifiersgroup>();

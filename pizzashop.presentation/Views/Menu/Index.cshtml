@@ -1717,11 +1717,11 @@ $(document).ready(function () {
 
     formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups)); 
     
-    if($.validator && form.length > 0)
-    {
-         form.validate();
-          if (form.valid()){
-            $.ajax({
+  
+    
+         
+         
+        $.ajax({
         url: "/Menu/AddNewItem",
         type: "POST",
         processData: false,
@@ -1733,10 +1733,10 @@ $(document).ready(function () {
         error: function(err) {
             console.error("Error adding item:", err);
         }
-         });
-          }
+        });
+          
         
-    }
+    
     
 });
 
@@ -2255,7 +2255,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     }
 
     @* function need to be called after document get load *@ 
-@* pwd1 *@
+    @* pwd1 *@
     $(document).ready(function () {
 
         PaginationAjax();
@@ -2264,13 +2264,13 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         MenuitemsPaginationAjax();
         updateCheckboxStates();
 
-         $("#addmenuitem").on("hidden.bs.modal", function () {
+         @* $("#addmenuitem").on("hidden.bs.modal", function () {
             var form = $("#addItemForm");
     
             form[0].reset();
             form[0].validate().resetForm();
             form.find(".is-invalid").removeClass("is-invalid");
-        });
+        }); *@
     });
 
     let selectedModifiers = []; 

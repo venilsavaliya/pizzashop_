@@ -82,10 +82,12 @@
             <td class="table-row text-center">@u.TotalAmount</td>
             <td class="table-row text-center">
                 <div class="d-flex justify-content-center gap-5">
-                    <a asp-action="edituser" asp-controller="User" asp-route-id="@u.OrderId"><i
+                            <a class="text-black" asp-action="edituser" asp-controller="User" asp-route-id="@u.OrderId"><i
                             class="bi bi-filetype-pdf"></i></a>
-                    <i class="bi bi-eye" data-bs-toggle="modal" data-bs-target="#deleteusermodal"
-                        onclick="setDeleteUserId(this)" data-id="@u.OrderId"></i>
+                            <a class="text-black" asp-action="OrderDetail" asp-controller="Order" asp-route-id=@u.OrderId>
+                                <i class="bi bi-eye"  data-id="@u.OrderId"></i>
+                            </a>
+                    
                 </div>
             </td>
         </tr>

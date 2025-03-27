@@ -69,6 +69,10 @@
       "PackagePath": "staticwebassets\\images\\icons\\customer.svg"
     },
     {
+      "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\diningtable.png",
+      "PackagePath": "staticwebassets\\images\\icons\\diningtable.png"
+    },
+    {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\dinner-table.svg",
       "PackagePath": "staticwebassets\\images\\icons\\dinner-table.svg"
     },
@@ -111,6 +115,10 @@
     {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\person-fill.svg",
       "PackagePath": "staticwebassets\\images\\icons\\person-fill.svg"
+    },
+    {
+      "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\person-lines-fill.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\person-lines-fill.svg"
     },
     {
       "Id": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\person.svg",

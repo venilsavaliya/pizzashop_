@@ -29,5 +29,7 @@ public partial class Taxis
 
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
+    public virtual ICollection<Invoicertax> Invoicertaxes { get; } = new List<Invoicertax>();
+
     public virtual User? ModifyiedbyNavigation { get; set; }
 }

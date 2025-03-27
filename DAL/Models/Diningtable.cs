@@ -30,4 +30,6 @@ public partial class Diningtable
     public virtual User? ModifyiedbyNavigation { get; set; }
 
     public virtual Section? Section { get; set; }
+
+    public virtual ICollection<Tableorder> Tableorders { get; } = new List<Tableorder>();
 }

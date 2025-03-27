@@ -373,3 +373,30 @@ input[type=password]::-ms-clear {
 {
   padding: 15px 0px !important;
 }
+
+
+.orderStatusBox{
+  background-color: #add8e6;
+  color: #0e5c7d;
+  font-size: 15px;
+  font-weight: 700;
+  max-width: 150px;
+}
+
+.orderBorderRadius{
+  border-radius: 8px;
+}
+
+.order_header{
+  color: #0068a9;
+}
+
+#orderDetailOuter{
+  width: 65%;
+}
+
+@media (max-width: 991px) {
+  #orderDetailOuter{
+      width: 90%;
+    }
+  }

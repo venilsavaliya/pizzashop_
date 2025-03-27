@@ -45,6 +45,8 @@ public partial class Item
 
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
+    public virtual ICollection<Dishritem> Dishritems { get; } = new List<Dishritem>();
+
     public virtual ICollection<ItemModifiergroupMapping> ItemModifiergroupMappings { get; } = new List<ItemModifiergroupMapping>();
 
     public virtual ICollection<Itemsminmaxmapping> Itemsminmaxmappings { get; } = new List<Itemsminmaxmapping>();

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SpioPGIIxFP9PvNB7VAiHGrw9VBuecdycEyvVfhKu/0=",
+  "Hash": "/wVQqcRYrtzh68hDl3zS+puOgF7sAiz7WEQpIlEx6XA=",
   "Source": "pizzashop.presentation",
   "BasePath": "_content/pizzashop.presentation",
   "Mode": "Default",
@@ -357,6 +357,23 @@
       "OriginalItemSpec": "wwwroot\\images\\icons\\customer.svg"
     },
     {
+      "Identity": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\diningtable.png",
+      "SourceId": "pizzashop.presentation",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\",
+      "BasePath": "_content/pizzashop.presentation",
+      "RelativePath": "images/icons/diningtable.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\icons\\diningtable.png"
+    },
+    {
       "Identity": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\dinner-table.svg",
       "SourceId": "pizzashop.presentation",
       "SourceType": "Discovered",
@@ -542,6 +559,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\icons\\person-fill.svg"
+    },
+    {
+      "Identity": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\person-lines-fill.svg",
+      "SourceId": "pizzashop.presentation",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\",
+      "BasePath": "_content/pizzashop.presentation",
+      "RelativePath": "images/icons/person-lines-fill.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\icons\\person-lines-fill.svg"
     },
     {
       "Identity": "D:\\pizzashop_3tier\\pizzashop.presentation\\wwwroot\\images\\icons\\person.svg",

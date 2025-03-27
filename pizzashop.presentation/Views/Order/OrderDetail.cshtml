@@ -1,0 +1,152 @@
+@model DAL.ViewModels.OrderDetailViewModel
+@{
+    ViewData["Title"] = "Order Details Page";
+    decimal? total=0;
+}
+
+<div class="body_content d-flex justify-content-center">
+    @* <div style="width: 1000px;"> *@
+    <div id="orderDetailOuter">
+        <div class=" col d-flex flex-row justify-content-between user_list_header mb-4">
+            <div class="order_header">
+                <span class="fs-2 fw-medium">Order-Details</span>
+            </div>
+            <a asp-action="Index" asp-controller="Order" style="max-width: 150px;"
+                class="btn back_btn d-flex align-items-center justify-content-center">
+                <img src="~/images/icons/chevron-left.svg" alt="" />
+                Back
+            </a>
+        </div>
+
+        <!-- Order Summary Division-->
+    using DocumentFormat.OpenXml.Drawing.Diagrams;
+        <div class="bg-white p-3 orderBorderRadius">
+            <div class="d-flex flex-column flex-sm-row justify-content-between mb-3">
+                <div class="d-flex align-items-sm-center flex-column flex-sm-row justify-content-sm-center">
+                    <span class="fs-4 fw-medium me-2">Order Summary</span>
+                    <span class="orderStatusBox">@Model.OrderStatus</span>
+                </div>
+                <a class="btn w-auto my-1 my-lg-0 ms-1 d-flex align-items-center justify-content-center text-white"
+                    id="exportOrderBtn" style="background-color:#0066a7; max-width: 150px;">
+                    <img src="/images/icons/export.png" width="30px">
+                    Export
+                </a>
+            </div>
+
+            <p><span class="fw-medium">Invoice No.: &nbsp&nbsp</span>#DOM @Model.InvoiceId</p>
+            <div class="d-flex flex-column flex-lg-row flex-wrap">
+                <p class="me-3"><span class="fw-medium">Paid On :</span>@Model.Paidon</p>
+                <p class="me-3"><span class="fw-medium">Placed On :</span> @Model.Placeon</p>
+                <p class="me-3"><span class="fw-medium">Modified On : </span>@Model.Modifieddate</p>
+                <p class="me-3"><span class="fw-medium">Order Duration : </span>@(Model.CompletedTime - Model.Placeon)</p>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-sm-row mt-3 row gap-3 p-0 m-0 mb-3">
+            <div class="bg-white orderBorderRadius col p-3">
+                <div class="d-flex align-items-center justify-content-start mb-3">
+                    <img src="~/images/icons/person-lines-fill.svg" alt="" width="30px" height="30px">
+                    <span class=" ms-3 fs-4 fw-medium me-2">Customer Details</span>
+                </div>
+                <p class="mb-2">Name: @Model.CustomerName</p>
+                <p class="mb-2">Phone: @Model.CustomerMobile</p>
+                <p class="mb-2">No of Persons: @Model.TotalPerson</p>
+                <p class="mb-2">Email: @Model.CustomerEmail</p>
+
+            </div>
+            <div class="bg-white orderBorderRadius col p-3">
+                <div class="d-flex align-items-center justify-content-start mb-3">
+                    <img src="~/images/icons/diningtable.png" alt="" width="30px" height="30px">
+                    <span class=" ms-3 fs-4 fw-medium me-2">Table Details</span>
+                </div>
+
+                <p class="mb-2">Table: @Model.TableName</p>
+                <p class="mb-2">Section: @Model.SectionName</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-3 orderBorderRadius container-fluid">
+            <div>
+                <span class="fs-4 fw-medium">Order Items</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table text-nowrap">
+                    <thead>
+                        <tr class="text-center">
+                            <th>Sr.No</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var i in Model.ItemList)
+                        {
+                            <tr class="text-center">
+                                <td>1</td>
+                                <td class="text-nowrap">@i.ItemName
+                                    <ul class="d-flex align-items-center justify-content-center">
+                                        @foreach (var j in i.ModifierList)
+                                        {
+                                            <li>@j.ModifierItemName</li>
+                                        }
+                                    </ul>
+                                </td>
+                                <td>
+                                    <p class="m-0">@i.ItemQuantity</p>
+                                    @foreach (var j in i.ModifierList)
+                                    {
+                                        <p class="m-0">@j.ModifierItemQuantity</p>
+                                    }
+                                </td>
+                                <td>
+                                    <p class="m-0">@i.ItemPrice</p>
+                                    @foreach (var j in i.ModifierList)
+                                    {
+                                        <p class="m-0">@j.ModifierItemPrice</p>
+                                    }
+                                </td>
+                                <td>
+                                    <p class="m-0">
+                                        @(i.ItemPrice*i.ItemQuantity)
+                                        @{total=total + i.ItemPrice*i.ItemQuantity;}
+                                    </p>
+                                    @foreach (var j in i.ModifierList)
+                                    {
+                                        <p class="m-0">@(j.ModifierItemQuantity*j.ModifierItemPrice)</p>
+                                        { total=total + j.ModifierItemQuantity*j.ModifierItemPrice;}      
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-end">
+            <div class="d-flex flex-column" style="width: 300px;">
+                <p class="d-flex justify-content-between"><span>Subtotal:</span><span>₹ @total</span> </p>
+                @foreach(var i in Model.TaxList)
+                {
+                    <p class="d-flex justify-content-between"><span>@i.TaxName:</span> 
+                    
+                    @if(i.TaxType=="Percentage")
+                    {
+                        <span>₹ @((total*i.TaxAmount/100)?.ToString("f2"))</span>
+                        total = total+ (total*i.TaxAmount/100);
+                    }
+                    else{
+                        total = total + i.TaxAmount;
+                        <span>₹ @(i.TaxAmount.ToString("f2"))</span>
+                    }
+
+                    </p>
+                }
+                <p class="d-flex justify-content-between"><span>Total:</span>@total?.ToString("f2")</p>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

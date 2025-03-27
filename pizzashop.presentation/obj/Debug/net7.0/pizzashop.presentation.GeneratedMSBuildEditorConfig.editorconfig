@@ -100,6 +100,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/pizzashop_3tier/pizzashop.presentation/Views/Order/OrderDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcT3JkZXJEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/pizzashop_3tier/pizzashop.presentation/Views/Order/_OrderList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcX09yZGVyTGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
