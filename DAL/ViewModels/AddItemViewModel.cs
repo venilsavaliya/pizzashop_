@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
 namespace DAL.ViewModels;
@@ -7,18 +8,24 @@ public class AddItemViewModel
     public int? Id {get;set;}
     public int? CategoryId { get; set; }
 
-    public string ItemName { get; set; } = null!;
+    [Required(ErrorMessage = "Item Name is required")]
+    public string ItemName { get; set; } 
 
-    public string Type { get; set; } = null!;
+    [Required(ErrorMessage = "Please select The Type")]
+    public string Type { get; set; } 
 
+    [Range(0, short.MaxValue, ErrorMessage = "Rate cannot be negative")]
     public short Rate { get; set; }
 
+    [Range(0, short.MaxValue, ErrorMessage = "Quantity cannot be negative")]
     public short Quantity { get; set; }
 
-    public string Unit { get; set; } = null!;
+    [Required(ErrorMessage = "Please Select The Unit")]
+    public string Unit { get; set; } 
 
     public bool DefaultTax { get; set; }
 
+    [Range(0, 100, ErrorMessage = "Tax Percentage must between 0-100")]
     public double TaxPercentage { get; set; }
 
     public string? ShortCode { get; set; }

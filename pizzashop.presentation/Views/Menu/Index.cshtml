@@ -64,7 +64,7 @@
         @* ----first tab------- *@
 
         <div class="tab-pane fade show active w-100" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
-            tabindex="0">
+            tabindex="0" style="max-height: 600px;overflow-y: scroll;">
             <div class="d-flex w-100">
                 <div class=" category-menu border-0 pt-3 d-none d-lg-block" id="category-menu">
                     <div class="d-flex justify-content-between align-items-center p-1">
@@ -113,7 +113,7 @@
  
         </div>
         @* -----------second tab------------ *@
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0" style="max-height: 600px; overflow-y: scroll;">
                 <div class="d-flex w-100">
                 <div class=" category-menu border-0 pt-3 d-none d-lg-block">
                     <div class="d-flex justify-content-between align-items-center p-1">
@@ -164,7 +164,7 @@
 
     <!-- add category modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        aria-labelledby="staticBackdropLabel" aria-hidden="true" >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content w-100">
                 <div class="modal-header">
@@ -207,7 +207,7 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add ModifierGroup</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form asp-action="AddModifierGroup" asp-controller="Menu" method="post" id="addModifierGroupForm">
+                <form method="post" id="addModifierGroupForm">
                     <div class="modal-body">
                         <div class="d-flex flex-column"> 
 
@@ -483,9 +483,7 @@
                 <form id="addItemForm" enctype="multipart/form-data" >
                     <div class="modal-body">
                          <div class="add-menu-item row">
-
                                 <div class="col-8">
-
                     <div class="row">
                         <div class="col-6">
                             <div class="row">
@@ -512,7 +510,7 @@
                             <div class="row mt-4">
                                 <div class="form-floating col-6">
                                     <div class="form-floating col">
-                                        <select  class="form-select" asp-for="Menuitem.Type">
+                                        <select  class="form-select" asp-for="Menuitem.Type" id="ItemTypeForAdd">
                                             <option selected value="" >Select a Type</option>
                                             <option value="Veg">Veg</option>
                                             <option value="Non-Veg">Non-Veg</option>
@@ -524,8 +522,8 @@
 
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="floatingInput" value="0" asp-for="Menuitem.Rate">
-                                        <label for="floatingInput">Rate</label>
+                                        <input type="number" class="form-control" id="ItemRateForAdd" value="" asp-for="Menuitem.Rate">
+                                        <label for="ItemRateForAdd">Rate</label>
                                         <span class="text-danger" asp-validation-for="Menuitem.Rate"></span>
                                     </div>
                                 </div>
@@ -552,7 +550,7 @@
                         <div class="col-6">
                             <div class="row position-relative ">
                                 <div class="col">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Name" asp-for="Menuitem.ItemName" >
+                                    <input class="form-control form-control p-3" type="text" placeholder="Name" asp-for="Menuitem.ItemName" id="ItemNameForAdd">
                                 </div>
                                 <span class="text-danger position-absolute" style="bottom: -25px;" asp-validation-for="Menuitem.ItemName"></span>
                             </div>
@@ -560,14 +558,14 @@
                             <div class="row mt-4">
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="floatingInput" value="0" asp-for="Menuitem.Quantity">
-                                        <label for="floatingInput">Quantity</label>
+                                        <input type="number" class="form-control" id="ItemQuantityForAdd" value="" asp-for="Menuitem.Quantity">
+                                        <label for="ItemQuantityForAdd">Quantity</label>
                                         <span class="text-danger" asp-validation-for="Menuitem.Quantity"></span>
                                     </div>
                                 </div>
                                 <div class="form-floating col-6">
                                     <div class="form-floating col">
-                                        <select  class="form-select" asp-for="Menuitem.Unit">
+                                        <select  class="form-select" asp-for="Menuitem.Unit" id="ItemUnitForAdd">
                                             <option selected value="">Select a Unit</option>
 
                                             <option value="Pcs">Piece</option>
@@ -590,8 +588,8 @@
                                     <label for="floatingInput">Tax Percentage</label>
                                     <span class="text-danger" asp-validation-for="Menuitem.TaxPercentage"></span> *@
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="floatingInput" asp-for="Menuitem.TaxPercentage">
-                                        <label for="floatingInput">Tax Percentage</label>
+                                        <input type="text" class="form-control" id="TaxPercentageForAdd" asp-for="Menuitem.TaxPercentage">
+                                        <label for="TaxPercentageForAdd">Tax Percentage</label>
                                         <span class="text-danger" asp-validation-for="Menuitem.TaxPercentage"></span>
                                     </div>
                                 </div>
@@ -663,7 +661,7 @@
        
     <div class="modal fade " id="editmenuitem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content w-100">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Menu Item</h1>
@@ -671,11 +669,11 @@
                 </div>
                 <form id="editItemForm" enctype="multipart/form-data"  method="post" >
                     <div class="modal-body">
-                         <div class="add-menu-item row">
+                        <div class="add-menu-item row">
 
                             <input asp-for="Menuitem.Id" id ="itemId"  hidden>
 
-                                <div class="col-8">
+                    <div class="col-8">
 
                     <div class="row">
                         <div class="col-6">
@@ -702,8 +700,8 @@
                             <div class="row mt-4">
                                 <div class="form-floating col-6">
                                     <div class="form-floating col"> 
-                                        <select  class="form-select" asp-for="Menuitem.Type" id="type">
-                                            <option selected>Select a Type</option>
+                                        <select  class="form-select" asp-for="Menuitem.Type" id="itemtypeforedit">
+                                            <option selected value="">Select a Type</option>
                                             <option value="Veg">Veg</option>
                                             <option value="Non-Veg">Non-Veg</option>
                                         </select>
@@ -714,7 +712,7 @@
 
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="Rate" value="0" asp-for="Menuitem.Rate">
+                                        <input type="number" class="form-control" id="ItemRateForEdit" value="0" asp-for="Menuitem.Rate">
                                         <label for="floatingInput">Rate</label>
                                          <span class="text-danger" asp-validation-for="Menuitem.Rate"></span>
                                     </div>
@@ -740,25 +738,25 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="row">
+                            <div class="row position-relative ">
                                 <div class="col">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Name" asp-for="Menuitem.ItemName" id="itemname">
-                                     <span class="text-danger" asp-validation-for="Menuitem.ItemName"></span>
+                                    <input class="form-control form-control p-3" type="text" placeholder="Name" asp-for="Menuitem.ItemName" id="itemnameforedit">
+                                    <span class="text-danger position-absolute" style="bottom: -25px;" asp-validation-for="Menuitem.ItemName"></span>
                                 </div>
                             </div>
 
                             <div class="row mt-4">
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control"  value="0" asp-for="Menuitem.Quantity" id="Quantity">
+                                        <input type="number" class="form-control"  value="0" asp-for="Menuitem.Quantity" id="ItemQuantityForEdit">
                                         <label for="floatingInput">Quantity</label>
                                          <span class="text-danger" asp-validation-for="Menuitem.Quantity"></span>
                                     </div>
                                 </div>
                                 <div class="form-floating col-6">
                                     <div class="form-floating col">
-                                        <select  class="form-select" asp-for="Menuitem.Unit" id ="Unit">
-                                            <option selected>Select a Unit</option>
+                                        <select  class="form-select" asp-for="Menuitem.Unit" id ="ItemUnitForEdit">
+                                            <option selected value="">Select a Unit</option>
                                             <option value="Pcs">Piece</option>
                                             <option value="Kg">Kilogram</option>
                                             <option value="In">Inches</option>
@@ -775,7 +773,7 @@
 
                             <div class="row mt-4">
                                 <div class="col-6">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" asp-for="Menuitem.TaxPercentage" id="TaxPercentage">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" asp-for="Menuitem.TaxPercentage" id="itemTaxPercentageForEdit">
                                      <span class="text-danger" asp-validation-for="Menuitem.TaxPercentage"></span>
                                 </div>
                                 <div class="col-6">
@@ -803,10 +801,10 @@
                             </div>
                         </div>
                     </div> 
-                                </div>
+                    </div>
         
-                                 <div class="col-4" style="background-color: #fff5d7;">
-                                <div class="form col-12">
+                    <div class="col-4" style="background-color: #fff5d7;">
+                    <div class="form col-12">
                                     <div class="row mt-2">
                                         <div class="form col multiselect">
                                         <select  class="form-select selectBox" id="modifierGroupSelectforedit">
@@ -818,7 +816,7 @@
                                                     <option value=@m.ModifiergroupId>@m.Name</option>
                                                 }
                                         </select>
-                                        @*  *@
+                                     
                                         
                                         <div id="modifieritemspartialviewforedit" class="d-flex flex-column rounded d-none p-3 overflow-auto" style="height: 400px;">
                                            
@@ -826,8 +824,8 @@
                                     </div>
                                     </div>
 
-                                </div>
-                                 </div>
+                    </div>
+                    </div>
                          </div>
                          <div class="d-flex justify-content-end gap-2 p-2">
                         <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="editmodalbtn">Save</button>
@@ -890,23 +888,55 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Modifier Item</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="AddModifierItemForm" enctype="multipart/form-data" asp-action="AddModifierItem" asp-controller="Menu" >
+                @* currentpwd *@
+                <form id="AddModifierItemForm" enctype="multipart/form-data"  >
                     <div class="modal-body">
                         
                         <div class="row">
-                            <div class="col">
+                            @* <div class="col">
                                  <select  class="form-select selectBox p-3" id="modifierGroupSelect" asp-for="ModifierItem.ModifierGroupid">
                                                 <option selected value="">Select Modifier Group</option>
 
-                                                @* showing options for all modifiergroup name *@
+                                           
                                                 @foreach(var m in @Model.ModifierGroups)
                                                 {
                                                     <option value=@m.ModifiergroupId>@m.Name</option>
                                                 }
                                         </select>
                                         <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
+                            </div> *@
+
+
+
+                            <div class="col-6">
+                                @* <label>Select Modifier Group</label> *@
+                                <div class="position-relative">
+                                    <!-- Display Selected Names -->
+                                    <div class="form-control p-3"  id="modifierGroupSelectBox" style="cursor: pointer;">
+                                        Select Modifier Group
+                                    </div>
+
+                                    <!-- Floating Checkbox List -->
+                                    <div id="modifierGroupDropdown" class="position-absolute bg-white border rounded p-2 shadow" 
+                                        style="display: none; z-index: 1000; width: 100%;">
+                                        @foreach (var m in @Model.ModifierGroups)
+                                        {
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input modifier-group-checkbox" 
+                                                    id="modifierGroup_@m.ModifiergroupId" 
+                                                    value="@m.ModifiergroupId" 
+                                                    data-name="@m.Name">
+                                                <label class="form-check-label" for="modifierGroup_@m.ModifiergroupId">@m.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
+                                </div>
                             </div>
-                            <div class="col">
+
+
+
+                            <div class="col-6">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingInput" asp-for="ModifierItem.ModifierName">
                                     <label for="floatingInput">Name*</label>
@@ -924,7 +954,7 @@
                                 </div>
                             <div class="col">
                                 <div class="form-floating">
-                                        <input type="number" class="form-control" id="floatingInput" value="0" asp-for="ModifierItem.Quantity">
+                                        <input type="number" class="form-control" id="floatingInput" asp-for="ModifierItem.Quantity">
                                         <label for="floatingInput">Quantity</label>
                                         <span class="text-danger" asp-validation-for="ModifierItem.Quantity"></span>
                                 </div>
@@ -974,23 +1004,51 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Modifier Item</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="EditModifierItemForm" enctype="multipart/form-data" asp-action="EditModifierItem" asp-controller="Menu" >
+                <form id="EditModifierItemForm" enctype="multipart/form-data"  >
                     <div class="modal-body">
                         <input type="text" class="form-control" id="ModifierId" asp-for="ModifierItem.ModifierId" hidden>
                         <div class="row">
-                            <div class="col">
+                            @* <div class="col">
                                  <select  class="form-select selectBox p-3" asp-for="ModifierItem.ModifierGroupid" id="ModifierGroupid">
                                                 <option selected>Select Modifier Group</option>
 
-                                                @* showing options for all modifiergroup name *@
+                                                
                                                 @foreach(var m in @Model.ModifierGroups)
                                                 {
                                                     <option value=@m.ModifiergroupId>@m.Name</option>
                                                 }
                                         </select>
                                         <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
+                            </div> *@
+
+                            <div class="col-6">
+                                @* <label>Select Modifier Group</label> *@
+                                <div class="position-relative">
+                                    <!-- Display Selected Names -->
+                                    <div class="form-control p-3"  id="modifierGroupSelectBoxForEdit" style="cursor: pointer;">
+                                        Select Modifier Group
+                                    </div>
+
+                                    <!-- Floating Checkbox List -->
+                                    <div id="modifierGroupDropdownForEdit" class="position-absolute bg-white border rounded p-2 shadow" 
+                                        style="display: none; z-index: 1000; width: 100%;">
+                                        @foreach (var m in @Model.ModifierGroups)
+                                        {
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input modifier-group-checkbox-foredit" 
+                                                    id="modifierGroup_@m.ModifiergroupId" 
+                                                    value="@m.ModifiergroupId" 
+                                                    data-name="@m.Name">
+                                                <label class="form-check-label" for="modifierGroup_@m.ModifiergroupId">@m.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
+                                </div>
                             </div>
-                            <div class="col">
+
+
+                            <div class="col-6">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="ModifierName" asp-for="ModifierItem.ModifierName">
                                     <label for="ModifierName">Name*</label>
@@ -1230,6 +1288,8 @@
 
     @* First Time Page Load  *@
     $(document).ready(function () {
+
+    
         
         currentPage =1;
          
@@ -1632,7 +1692,7 @@ $(document).ready(function () {
 
         // Push new object to list
         selectedModifierGroups.push(newModifierGroup);
-    @* pwd *@
+  
         // AJAX call to fetch the partial view
         $.ajax({
             url: "/Menu/GetModifierItems", // Replace with actual controller/action
@@ -1704,23 +1764,24 @@ $(document).ready(function () {
         console.log(selectedModifierGroups)
     }
     
-    @* submiting add item form *@
+    // submiting add item form 
+
     $("#addItemForm").submit(function(e) {
-    e.preventDefault();
+
+        e.preventDefault();
+
+        if (!validateFormAddMenuItem()) {
+            return;
+        }
+        var formData = new FormData(this);
+
+        console.log("venil",selectedModifierGroups);
+
+        var form =  $("#addItemForm");
 
 
-    var formData = new FormData(this);
-
-    console.log("venil",selectedModifierGroups);
-
-    var form =  $("#addItemForm");
-
-    formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups)); 
+        formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups)); 
     
-  
-    
-         
-         
         $.ajax({
         url: "/Menu/AddNewItem",
         type: "POST",
@@ -1734,11 +1795,46 @@ $(document).ready(function () {
             console.error("Error adding item:", err);
         }
         });
-          
-        
-    
-    
-});
+
+    });
+
+// Form Validation Of Add New Menu Item
+    function validateFormAddMenuItem() {
+    let isValid = true;
+    let errorMessage = "";
+
+    const itemName = $("#ItemNameForAdd").val();
+    const type = $("#ItemTypeForAdd").val();
+    const unit = $("#ItemUnitForAdd").val();
+    const rate = $("#ItemRateForAdd").val();
+    const quantity = $("#ItemQuantityForAdd").val();
+    const tax = $("#TaxPercentageForAdd").val();
+
+    if (!itemName) {
+        isValid = false;
+    }
+
+    if (!type) {
+        isValid = false;
+    }
+
+    if (!unit) {
+        isValid = false;
+    }
+
+    if (!rate || isNaN(rate) || rate < 0) {
+        isValid = false;
+    }
+
+    if (!quantity || isNaN(quantity) || quantity < 0) {
+        isValid = false;
+    }
+    if (!tax || isNaN(tax) || tax < 0 || tax>100) {
+        isValid = false;
+    }
+
+    return isValid;
+}
 
 });
 
@@ -1875,6 +1971,10 @@ $(document).ready(function () {
     $("#editItemForm").submit(function(e) {
     e.preventDefault();
 
+    if(!validateFormEditMenuItem())
+    {
+        return;
+    }
     var formData = new FormData(this);
 
     console.log("venil",selectedModifierGroupsforedit);
@@ -1899,6 +1999,44 @@ $(document).ready(function () {
         }
     });
 });
+
+// Form Validation Of Edit Menu Item
+function validateFormEditMenuItem() {
+    let isValid = true;
+    let errorMessage = "";
+
+    const itemName = $("#itemnameforedit").val();
+    const type = $("#itemtypeforedit").val();
+    const unit = $("#ItemUnitForEdit").val();
+    const rate = $("#ItemRateForEdit").val();
+    const quantity = $("#ItemQuantityForEdit").val();
+    const tax = $("#itemTaxPercentageForEdit").val();
+
+    if (!itemName) {
+        isValid = false;
+    }
+
+    if (!type) {
+        isValid = false;
+    }
+
+    if (!unit) {
+        isValid = false;
+    }
+
+    if (!rate || isNaN(rate) || rate < 0) {
+        isValid = false;
+    }
+
+    if (!quantity || isNaN(quantity) || quantity < 0) {
+        isValid = false;
+    }
+    if (!tax || isNaN(tax) || tax < 0 || tax>100) {
+        isValid = false;
+    }
+
+    return isValid;
+}
 
 
 @* render new partial view for edit item modal *@
@@ -2505,6 +2643,8 @@ let  selectedModifierIdsforAdd= [];
     function handleAddButtonClickForAdd() {
         console.log("Selected IDs:", selectedModifierItemsForAddExistingModifierForAddModal);
 
+        //clear section so that only selected items will shown avoid duplicates
+        $("#selectedModifieritemcontainer").html("");
 
         // Perform further actions like submitting selectedModifiers to the server
        
@@ -2553,8 +2693,9 @@ let  selectedModifierIdsforAdd= [];
 
     var formData = new FormData(this);
 
+    console.log("he",selectedModifierItemsForAddExistingModifierForAddModal)
 
-    formData.append("ModifierItems", JSON.stringify(selectedModifierIdsforAdd)); 
+    formData.append("ModifierItems", JSON.stringify(selectedModifierItemsForAddExistingModifierForAddModal)); 
 
     $.ajax({
         url: "/Menu/AddModifierGroup",
@@ -2589,8 +2730,35 @@ function setDeleteModifierGroupId(element) {
     }
 
 function seteditmodifieritemdata(ele) {
-    console.log("clicked")
+    
     var c = JSON.parse(ele.getAttribute("item-obj"));
+
+            // Make an AJAX call to get the modifier group ID list
+                    $.ajax({
+                        url: `/Menu/GetModifierGroupIdListByModifierItemId`,
+                        type: 'GET',
+                        data: { id: c.modifierId },
+                        success: function (data) {
+            // Clear the set before updating
+            selectedGroupsForedit.clear();
+
+            // Add the fetched data to the set
+            data.forEach(item => {
+                selectedGroupsForedit.add({ id: item.id, name: item.name });
+
+                // Check the corresponding checkboxes
+                $(`.modifier-group-checkbox-foredit[value='${item.id}']`).prop("checked", true);
+            });
+
+            // Update the names in the div
+            updateSelectedNamesForEdit();
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching modifier group IDs:", error);
+        }
+    });
+
+    
     var modifiergroup_id = ele.getAttribute("modifiergroup-id");
     console.log(c);
 
@@ -2599,7 +2767,7 @@ function seteditmodifieritemdata(ele) {
     editmenuitem.querySelector("#ModifierName").value = c.name;
     editmenuitem.querySelector("#Quantity").value = c.quantity;
     editmenuitem.querySelector("#Unit").value = c.unit;
-    editmenuitem.querySelector("#ModifierGroupid").value = modifiergroup_id;
+    @* editmenuitem.querySelector("#ModifierGroupid").value = modifiergroup_id; *@
     editmenuitem.querySelector("#Description").value = c.description;
     editmenuitem.querySelector("#ModifierId").value = c.modifierId;
 
@@ -2852,4 +3020,140 @@ function checkSelectedCheckboxesforAdd() {
         $(`.modifieritemcheckboxofaddmodal[value='${id}']`).prop('checked', true);
     });
 }
+
+const selectedGroups = new Set();
+
+    // Toggle the visibility of the dropdown
+    $("#modifierGroupSelectBox").on("click", function () {
+        $("#modifierGroupDropdown").toggle();
+    });
+
+    // Hide the dropdown when clicking outside
+    $(document).on("click", function (e) {
+        if (!$(e.target).closest("#modifierGroupSelectBox, #modifierGroupDropdown").length) {
+            $("#modifierGroupDropdown").hide();
+        }
+    });
+
+    // Update selected group names when checkboxes are changed
+    $(document).on("change", ".modifier-group-checkbox", function () {
+        const groupId = $(this).val();
+        const groupName = $(this).data("name");
+
+        if ($(this).is(":checked")) {
+            selectedGroups.add({ id: groupId, name: groupName });
+        } else {
+            selectedGroups.forEach((item) => {
+                if (item.id == groupId) {
+                    selectedGroups.delete(item);
+                }
+            });
+        }
+
+        updateSelectedNames();
+    });
+
+    // Update the input box with the selected names
+    function updateSelectedNames() {
+        let names = Array.from(selectedGroups).map((item) => item.name).join(", ");
+        if (names.length === 0) names = "Select Modifier Group";
+        $("#modifierGroupSelectBox").text(names);
+    }
+    const selectedGroupsForedit = new Set();
+
+    // Toggle the visibility of the dropdown
+    $("#modifierGroupSelectBoxForEdit").on("click", function () {
+        $("#modifierGroupDropdownForEdit").toggle();
+    });
+
+    // Hide the dropdown when clicking outside
+    $(document).on("click", function (e) {
+        if (!$(e.target).closest("#modifierGroupSelectBoxForEdit, #modifierGroupDropdownForEdit").length) {
+            $("#modifierGroupDropdownForEdit").hide();
+        }
+    });
+
+    // Update selected group names when checkboxes are changed
+    $(document).on("change",".modifier-group-checkbox-foredit", function () {
+        const groupId = $(this).val();
+        const groupName = $(this).data("name");
+
+        if ($(this).is(":checked")) {
+            selectedGroupsForedit.add({ id: groupId, name: groupName });
+        } else {
+            selectedGroupsForedit.forEach((item) => {
+                if (item.id == groupId) {
+                    selectedGroupsForedit.delete(item);
+                }
+            });
+        }
+
+        updateSelectedNamesForEdit();
+    });
+
+    // Update the input box with the selected names
+    function updateSelectedNamesForEdit() {
+        let names = Array.from(selectedGroupsForedit).map((item) => item.name).join(", ");
+        if (names.length === 0) names = "Select Modifier Group";
+        $("#modifierGroupSelectBoxForEdit").text(names);
+    }
+
+    $("#AddModifierItemForm").submit(function(e) {
+
+        e.preventDefault();
+
+        
+        var formData = new FormData(this);
+
+        var selectedModGroupId = Array.from(selectedGroups).map((item) => item.id);
+
+        formData.append("ModifierGroupid", JSON.stringify(selectedModGroupId)); 
+    
+        $.ajax({
+        url: "/Menu/AddModifierItem",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(response) {
+            selectedGroups.clear();
+            window.location.href = response.redirectTo;
+        },
+        error: function(err) {
+            console.error("Error adding item:", err);
+        }
+        });
+
+    });
+
+
+    $("#EditModifierItemForm").submit(function(e) {
+
+        e.preventDefault();
+
+        
+        var formData = new FormData(this);
+
+        var selectedModGroupId = Array.from(selectedGroupsForedit).map((item) => item.id);
+
+        console.log("modidforedit",selectedModGroupId)
+        formData.append("ModifierGroupid", JSON.stringify(selectedModGroupId)); 
+    
+        $.ajax({
+        url: "/Menu/EditModifierItem",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function(response) {
+            selectedGroups.clear();
+            window.location.href = response.redirectTo;
+        },
+        error: function(err) {
+            console.error("Error adding item:", err);
+        }
+        });
+
+    });
+
 </script> 

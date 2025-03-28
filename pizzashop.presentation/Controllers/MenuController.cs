@@ -20,11 +20,11 @@ public class MenuController : BaseController
 
     private readonly INotyfService _notyf;
 
-    public MenuController(IMenuServices menuServices, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice,IAuthorizationService authservice) : base(jwtService, userService, adminservice,authservice)
+    public MenuController(IMenuServices menuServices, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice, IAuthorizationService authservice) : base(jwtService, userService, adminservice, authservice)
     {
         _menuservices = menuServices;
         _notyf = notyf;
-        
+
     }
     // GET : Index
 
@@ -165,12 +165,12 @@ public class MenuController : BaseController
     // POST : Menu
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     [HttpPost]
-    public IActionResult Category(MenuViewModel model)
+    public async Task<IActionResult> Category(MenuViewModel model)
     {
         if (model.Category.Id != null)
         {
 
-            var res = _menuservices.EditCategory(model.Category);
+            var res = _menuservices.EditCategory(model.Category).Result;
 
             if (res.Success)
             {
@@ -186,7 +186,7 @@ public class MenuController : BaseController
         }
         else
         {
-            var AuthResponse = _menuservices.AddCategory(model.Category);
+            var AuthResponse = _menuservices.AddCategory(model.Category).Result;
             if (AuthResponse.Success)
             {
                 TempData["ToastrType"] = "success";
@@ -195,7 +195,7 @@ public class MenuController : BaseController
             else
             {
                 TempData["ToastrType"] = "error";
-                TempData["ToastrMessage"] = "error in add category";
+                TempData["ToastrMessage"] = AuthResponse.Message;
             }
 
         }
@@ -204,7 +204,7 @@ public class MenuController : BaseController
     }
 
 
-   
+
 
     // GET : ModifierName List By Ids
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
@@ -222,16 +222,20 @@ public class MenuController : BaseController
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult EditCategoryById(MenuViewModel model)
     {
-        var AuthResponse = _menuservices.EditCategory(model.Category);
+        var AuthResponse = _menuservices.EditCategory(model.Category).Result;
 
         if (!AuthResponse.Success)
         {
             TempData["ToastrType"] = "error";
             TempData["ToastrMessage"] = AuthResponse.Message;
         }
+        else
+        {
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = AuthResponse.Message;
+        }
 
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
+
         return RedirectToAction("Index", "Menu");
     }
 
@@ -262,6 +266,7 @@ public class MenuController : BaseController
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult AddNewItem(MenuViewModel model)
     {
+
         string modifiersJson = Request.Form["ModifierGroups"];
 
         // deserialize the modifiersjson 
@@ -279,7 +284,7 @@ public class MenuController : BaseController
             return RedirectToAction("Menu", "Menu");
         }
 
-        TempData["ToastrType"] = "success";  // Options: success, error, warning, info
+        TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = "item add Successfully!";
         // return RedirectToAction("Menu","Menu");
         string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
@@ -398,7 +403,7 @@ public class MenuController : BaseController
             // Get list of modifiers
             var modifiers = _menuservices.GetModifierItemNamesByModifierItemId(modifier_id);
 
-            return PartialView("~/Views/Menu/_ModifieritemName.cshtml",modifiers);
+            return PartialView("~/Views/Menu/_ModifieritemName.cshtml", modifiers);
         }
         catch (Exception ex)
         {
@@ -473,7 +478,7 @@ public class MenuController : BaseController
     [HttpPost]
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult EditModifierGroup(MenuViewModel model)
-    {   
+    {
         string modifiersitemsJson = Request.Form["ModifierItems"];
 
         // deserialize the modifiersjson 
@@ -483,22 +488,22 @@ public class MenuController : BaseController
         }
         var response = _menuservices.EditModifierGroup(model.ModifierGroup).Result;
 
-        if(!response.Success)
+        if (!response.Success)
         {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = response.Message;
         }
-    
+
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = response.Message;
 
         return Json(new { redirectTo = Url.Action("Index", "Menu") });
-       
+
     }
     [HttpPost]
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult AddModifierGroup(MenuViewModel model)
-    {   
+    {
         string modifiersitemsJson = Request.Form["ModifierItems"];
 
         // deserialize the modifiersjson 
@@ -508,118 +513,146 @@ public class MenuController : BaseController
         }
         var response = _menuservices.AddModifierGroup(model.ModifierGroup).Result;
 
-        if(!response.Success)
+        if (!response.Success)
         {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = response.Message;
         }
-    
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
+        else if (response.Success)
+        {
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = response.Message;
+        }
 
         return Json(new { redirectTo = Url.Action("Index", "Menu") });
-       
+
     }
 
     //  Delete Modifier Group by Id
 
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
     public IActionResult DeleteModifierGroupById(string id)
-    {   
-        
+    {
+
         var response = _menuservices.DeleteModifierGroupById(id).Result;
 
-        if(!response.Success)
+        if (!response.Success)
         {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = response.Message;
         }
-    
+
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = response.Message;
 
-        return RedirectToAction("Index","Menu");
-       
+        return RedirectToAction("Index", "Menu");
+
     }
 
     [HttpPost]
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult AddModifierItem(MenuViewModel model)
-    {   
-        
+    {
+        string modifiersitemsJson = Request.Form["ModifierGroupid"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersitemsJson))
+        {
+            model.ModifierItem.ModifierGroupid = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+        }
+
         var response = _menuservices.AddModifierItem(model.ModifierItem).Result;
 
-        if(!response.Success)
+        if (!response.Success)
         {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = response.Message;
         }
-    
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
+        else
+        {
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = response.Message;
 
-        return RedirectToAction("Index","Menu");
-       
+        }
+        return Json(new { redirectTo = Url.Action("Index", "Menu") });
+
     }
     [HttpPost]
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
     public IActionResult EditModifierItem(MenuViewModel model)
-    {   
-        
+    {
+        string modifiersitemsJson = Request.Form["ModifierGroupid"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersitemsJson))
+        {
+            model.ModifierItem.ModifierGroupid = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+        }
+
         var response = _menuservices.EditModifierItem(model.ModifierItem).Result;
 
-        if(!response.Success)
+        if (!response.Success)
         {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = response.Message;
         }
-    
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
+        else
+        {
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = response.Message;
+        }
 
-        return RedirectToAction("Index","Menu");
-       
+         return Json(new { redirectTo = Url.Action("Index", "Menu") });
+
+    }
+
+    public IActionResult GetModifierGroupIdListByModifierItemId(int id)
+    {
+        var modgrouplist = _menuservices.GetModifierGroupIdListByModifierItemId(id).Result;
+
+        return Json(modgrouplist);
     }
 
     // Delete Modifier Item
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
-     public IActionResult DeleteModifierItemById(int modifierid,int modifiergroupid)
-    {   
-        
-        var response = _menuservices.DeleteModifierItemById(modifierid,modifiergroupid).Result;
+    public IActionResult DeleteModifierItemById(int modifierid, int modifiergroupid)
+    {
 
-        if(!response.Success)
+        var response = _menuservices.DeleteModifierItemById(modifierid, modifiergroupid).Result;
+
+        if (!response.Success)
         {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = response.Message;
         }
-    
+
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = response.Message;
 
-        return RedirectToAction("Index","Menu");
-       
+        return RedirectToAction("Index", "Menu");
+
     }
 
     // Delete Multiple Modifier Items
     [HttpPost]
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
-    public IActionResult DeleteModifierItems(int ModifierGroupid,List<string> ids)
+    public IActionResult DeleteModifierItems(int ModifierGroupid, List<string> ids)
     {
 
-        var AuthResponse = _menuservices.DeleteModifierItems(ModifierGroupid,ids).Result;
+        var AuthResponse = _menuservices.DeleteModifierItems(ModifierGroupid, ids).Result;
 
-        if(!AuthResponse.Success)
+        if (!AuthResponse.Success)
         {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = AuthResponse.Message;
+            TempData["ToastrType"] = "error";
+            TempData["ToastrMessage"] = AuthResponse.Message;
         }
-        else{
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
+        else
+        {
+            TempData["ToastrType"] = "success";
+            TempData["ToastrMessage"] = AuthResponse.Message;
         }
 
-        
+
 
         // return RedirectToAction("Menu","Menu",new {cat});
 

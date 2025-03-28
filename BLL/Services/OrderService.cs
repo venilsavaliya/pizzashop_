@@ -190,7 +190,7 @@ public class OrderService : IOrderService
                             ItemPrice = i.Itemprice
 
                         }).ToList(),
-                        TaxList = _context.Invoicertaxes.Where(i=> i.InvoiceId == i.InvoiceId).Select(t => new OrderTaxViewModel
+                        TaxList = _context.Invoicertaxes.Where(j=> j.InvoiceId == i.InvoiceId).Select(t => new OrderTaxViewModel
                         {
                             TaxAmount = t.TaxAmount,
                             TaxName = t.TaxName,

@@ -400,3 +400,36 @@ input[type=password]::-ms-clear {
       width: 90%;
     }
   }
+
+
+
+
+#modifierGroupDropdown {
+    max-height: 200px;
+    overflow-y: auto;
+}
+#modifierGroupDropdownForEdit {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#modifierGroupSelectBox:hover {
+    background-color: #f1f1f1;
+}
+#modifierGroupSelectBoxForEdit:hover {
+    background-color: #f1f1f1;
+}
+
+#modifierGroupSelectBox {
+  white-space: nowrap; 
+  overflow-x: auto;    
+  overflow-y: hidden; 
+  display: block;
+}
+#modifierGroupSelectBoxForEdit {
+  white-space: nowrap; 
+  overflow-x: auto;    
+  overflow-y: hidden; 
+  display: block;
+}
+

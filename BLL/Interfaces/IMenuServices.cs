@@ -8,8 +8,8 @@ public interface IMenuServices
 
 
     public IEnumerable<CategoryNameViewModel> GetCategoryList();
-    public AuthResponse AddCategory(AddCategoryViewModel model);
-    public AuthResponse EditCategory(AddCategoryViewModel model);
+    public Task<AuthResponse> AddCategory(AddCategoryViewModel model);
+    public Task<AuthResponse> EditCategory(AddCategoryViewModel model);
     public Task<AuthResponse> DeleteCategory(string id);
     public Task<AuthResponse> DeleteSingleItem(int id);
     public MenuItemsPaginationViewModel GetItemsListByCategoryId(int categoryid,int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
@@ -21,6 +21,8 @@ public interface IMenuServices
     public string GetCategoryNameFromId(int id);
 
     public IEnumerable<ModifierGroupNameViewModel> GetModifiersGroupList();
+
+    public Task<List<object>> GetModifierGroupIdListByModifierItemId(int modifierItemId);
     public ModifierItemsPagination GetModifierItemsListByModifierGroupId(int modifiergroup_id, int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
     public ModifierItemModalPagination GetAllModifierItemsList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
     public Task<AuthResponse> AddModifierGroup(AddModifierGroupViewModel model);

@@ -7184,8 +7184,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\pizzashop_3tier\\DAL\\DAL.csproj": {
-              "projectPath": "D:\\pizzashop_3tier\\DAL\\DAL.csproj"
+            "d:\\pizzashop_3tier\\DAL\\DAL.csproj": {
+              "projectPath": "d:\\pizzashop_3tier\\DAL\\DAL.csproj"
             }
           }
         }

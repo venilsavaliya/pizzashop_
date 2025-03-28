@@ -28,7 +28,7 @@ public class MenuServices : IMenuServices
         _jwtservices = jwtservices;
     }
 
-    public IEnumerable<CategoryNameViewModel> GetCategoryList() 
+    public IEnumerable<CategoryNameViewModel> GetCategoryList()
     {
 
         var categories = _context.Categories
@@ -63,7 +63,7 @@ public class MenuServices : IMenuServices
         return ModifierGroups;
     }
 
-    public AuthResponse AddCategory(AddCategoryViewModel model)
+    public async Task<AuthResponse> AddCategory(AddCategoryViewModel model)
     {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
 
@@ -78,8 +78,33 @@ public class MenuServices : IMenuServices
 
         };
 
+        var existingcategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+
+        if (existingcategory != null)
+        {
+
+            if (existingcategory.Isdeleted != true)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Category Already Existed!"
+                };
+            }
+            existingcategory.Isdeleted = false;
+            existingcategory.Description = model.Description;
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Category Added Succesfully !"
+            };
+        }
+
         _context.Categories.Add(category);
-        _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return new AuthResponse
         {
@@ -88,26 +113,66 @@ public class MenuServices : IMenuServices
         };
     }
 
-    public AuthResponse EditCategory(AddCategoryViewModel model)
+    public async Task<AuthResponse> EditCategory(AddCategoryViewModel model)
     {
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-
-        var userid = _userservices.GetUserIdfromToken(token);
-
-        var ExistingCategory = _context.Categories.FirstOrDefault(c => c.CategoryId.ToString() == model.Id);
-
-        ExistingCategory.Name = model.Name;
-        ExistingCategory.Description = model.Description;
-        ExistingCategory.Modifyiedby = userid;
-
-        _context.Categories.Update(ExistingCategory);
-        _context.SaveChangesAsync();
-
-        return new AuthResponse
+        try
         {
-            Success = true,
-            Message = "Category Updated Succesfully"
-        };
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+
+            var userid = _userservices.GetUserIdfromToken(token);
+
+            var ExistingCategory = _context.Categories.FirstOrDefault(c => c.CategoryId.ToString() == model.Id);
+
+            //finding existing name in the category list
+            var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+
+            if (existingcategoryname != null)
+            {
+
+                if (existingcategoryname.Isdeleted != true)
+                {
+                    return new AuthResponse
+                    {
+                        Success = false,
+                        Message = "Category Already Existed!"
+                    };
+                }
+                ExistingCategory.Name = model.Name;
+                ExistingCategory.Description = model.Description;
+                ExistingCategory.Modifyiedby = userid;
+
+                _context.Categories.Update(ExistingCategory);
+                await _context.SaveChangesAsync();
+
+                return new AuthResponse
+                {
+                    Success = true,
+                    Message = "Category Updated Succesfully !"
+                };
+            }
+
+            ExistingCategory.Name = model.Name;
+            ExistingCategory.Description = model.Description;
+            ExistingCategory.Modifyiedby = userid;
+
+            _context.Categories.Update(ExistingCategory);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Category Updated Succesfully"
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error In Edit Category :" + ex.Message);
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Error In Edit Category"
+            };
+        }
     }
 
 
@@ -187,18 +252,6 @@ public class MenuServices : IMenuServices
         model.CategoryId = categoryid;
         model.Page.SetPagination(totalCount, pageSize, pageNumber);
 
-        // return new ItemPaginationViewModel
-        // {
-        //     Category = category,
-        //     Items = items,
-        //     TotalCount = totalCount,
-        //     PageSize = pageSize,
-        //     CurrentPage = pageNumber,
-        //     TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-        //     StartIndex = (pageNumber - 1) * pageSize + 1,
-        //     EndIndex = Math.Min(pageNumber * pageSize, totalCount),
-        //     SearchKeyword = searchKeyword
-        // };
         return model;
     }
 
@@ -221,7 +274,7 @@ public class MenuServices : IMenuServices
                         Rate = i.Rate,
                         Quantity = i.Quantity,
                         Unit = i.Unit,
-                        Description=i.Description
+                        Description = i.Description
                     };
 
         if (!string.IsNullOrEmpty(searchKeyword))
@@ -239,19 +292,6 @@ public class MenuServices : IMenuServices
         model.Items = items;
         model.ModifierGroupId = modifiergroup_id;
         model.Page.SetPagination(totalCount, pageSize, pageNumber);
-
-        // return new ModifierItemsPagination 
-        // {
-        //     ModifierGroupId = modifiergroup_id,
-        //     Items = items,
-        //     TotalCount = totalCount,
-        //     PageSize = pageSize,
-        //     CurrentPage = pageNumber,
-        //     TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-        //     StartIndex = (pageNumber - 1) * pageSize + 1,
-        //     EndIndex = Math.Min(pageNumber * pageSize, totalCount),
-        //     SearchKeyword = searchKeyword
-        // };
         return model;
     }
 
@@ -534,7 +574,7 @@ public class MenuServices : IMenuServices
 
     // service for edit modifier group 
     public async Task<AuthResponse> EditModifierGroup(AddModifierGroupViewModel model)
-    {   
+    {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
@@ -555,7 +595,7 @@ public class MenuServices : IMenuServices
 
         // Update Modifier Items Mapping
         var existingMappings = modifierGroup.Modifieritemsmodifiersgroups.ToList();
-        
+
         // Remove old modifier items that are not in the new list
         foreach (var mapping in existingMappings)
         {
@@ -576,47 +616,70 @@ public class MenuServices : IMenuServices
                     ModifierId = modifierId
                 });
             }
-        } 
+        }
 
         // Save changes to database
         await _context.SaveChangesAsync();
 
         return new AuthResponse { Success = true, Message = "Modifier group updated successfully." };
-    
+
     }
 
     public async Task<AuthResponse> AddModifierGroup(AddModifierGroupViewModel model)
-{   
-    var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-    var userId = _userservices.GetUserIdfromToken(token);
-
-    // Create a new modifier group
-    var newModifierGroup = new Modifiersgroup
     {
-        Name = model.Name,
-        Description = model.Description,
-        Createdby = userId,  // Assuming you have a CreatedBy field
-    };
+        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+        var userId = _userservices.GetUserIdfromToken(token);
 
-    // Add the new modifier group to the context
-    _context.Modifiersgroups.Add(newModifierGroup);
-    await _context.SaveChangesAsync(); // Save first to get the generated ID
-
-    // Add associated modifier items
-    if (model.ModifierItems != null && model.ModifierItems.Any())
-    {
-        var modifierItemMappings = model.ModifierItems.Select(modifierId => new Modifieritemsmodifiersgroup
+        // Create a new modifier group
+        var newModifierGroup = new Modifiersgroup
         {
-            ModifiergroupId = newModifierGroup.ModifiergroupId,
-            ModifierId = modifierId
-        }).ToList();
+            Name = model.Name,
+            Description = model.Description,
+            Createdby = userId,  // Assuming you have a CreatedBy field
+        };
 
-        _context.Modifieritemsmodifiersgroups.AddRange(modifierItemMappings);
-        await _context.SaveChangesAsync();
+        var existingmodifiergroup = await _context.Modifiersgroups.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+
+        if (existingmodifiergroup != null)
+        {
+            if (existingmodifiergroup.Isdeleted != true)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Modifier Group Already Existed!"
+                };
+            }
+            existingmodifiergroup.Isdeleted = false;
+            existingmodifiergroup.Description = model.Description;
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Modifier Group Added Succesfully !"
+            };
+        }
+        // Add the new modifier group to the context
+        _context.Modifiersgroups.Add(newModifierGroup);
+        await _context.SaveChangesAsync(); // Save first to get the generated ID
+
+        // Add associated modifier items
+        if (model.ModifierItems != null && model.ModifierItems.Any())
+        {
+            var modifierItemMappings = model.ModifierItems.Select(modifierId => new Modifieritemsmodifiersgroup
+            {
+                ModifiergroupId = newModifierGroup.ModifiergroupId,
+                ModifierId = modifierId
+            }).ToList();
+
+            _context.Modifieritemsmodifiersgroups.AddRange(modifierItemMappings);
+            await _context.SaveChangesAsync();
+        }
+
+        return new AuthResponse { Success = true, Message = "Modifier group added successfully." };
     }
-
-    return new AuthResponse { Success = true, Message = "Modifier group added successfully." };
-}
 
 
     public string GetCategoryNameFromId(int id)
@@ -786,55 +849,55 @@ public class MenuServices : IMenuServices
         return mapping;
     }
 
-public async Task<AuthResponse> DeleteModifierGroupById(string id)
-{
-    if (!int.TryParse(id, out int modifierGroupId))
+    public async Task<AuthResponse> DeleteModifierGroupById(string id)
     {
-        return new AuthResponse { Success = false, Message = "Invalid ID format." };
+        if (!int.TryParse(id, out int modifierGroupId))
+        {
+            return new AuthResponse { Success = false, Message = "Invalid ID format." };
+        }
+
+        var modifierGroup = await _context.Modifiersgroups.FindAsync(modifierGroupId);
+        if (modifierGroup == null)
+        {
+            return new AuthResponse { Success = false, Message = "Modifier Group not found." };
+        }
+
+        try
+        {
+            // Remove related records from Modifieritemsmodifiersgroup
+            var relatedModifierItems = _context.Modifieritemsmodifiersgroups
+                .Where(m => m.ModifiergroupId == modifierGroupId);
+            _context.Modifieritemsmodifiersgroups.RemoveRange(relatedModifierItems);
+
+            // Remove related records from ItemModifiergroupMappings
+            var relatedItemMappings = _context.ItemModifiergroupMappings
+                .Where(m => m.ModifierGroupId == modifierGroupId);
+            _context.ItemModifiergroupMappings.RemoveRange(relatedItemMappings);
+
+            // Save changes to remove dependencies
+            await _context.SaveChangesAsync();
+
+            // Now delete the modifier group
+            _context.Modifiersgroups.Remove(modifierGroup);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse { Success = true, Message = "Modifier Group deleted successfully." };
+        }
+        catch (Exception ex)
+        {
+            return new AuthResponse { Success = false, Message = "Error deleting Modifier Group." };
+        }
     }
 
-    var modifierGroup = await _context.Modifiersgroups.FindAsync(modifierGroupId);
-    if (modifierGroup == null)
+    public async Task<AuthResponse> AddModifierItem(AddModifierItemViewModel model)
     {
-       return new AuthResponse  { Success = false, Message = "Modifier Group not found." };
-    }
-
-    try
-    {
-        // Remove related records from Modifieritemsmodifiersgroup
-        var relatedModifierItems = _context.Modifieritemsmodifiersgroups
-            .Where(m => m.ModifiergroupId == modifierGroupId);
-        _context.Modifieritemsmodifiersgroups.RemoveRange(relatedModifierItems);
-
-        // Remove related records from ItemModifiergroupMappings
-        var relatedItemMappings = _context.ItemModifiergroupMappings
-            .Where(m => m.ModifierGroupId == modifierGroupId);
-        _context.ItemModifiergroupMappings.RemoveRange(relatedItemMappings);
-
-        // Save changes to remove dependencies
-        await _context.SaveChangesAsync();
-
-        // Now delete the modifier group
-        _context.Modifiersgroups.Remove(modifierGroup);
-        await _context.SaveChangesAsync();
-
-        return new AuthResponse{ Success = true, Message = "Modifier Group deleted successfully." };
-    }
-    catch (Exception ex)
-    {
-         return new AuthResponse { Success = false, Message = "Error deleting Modifier Group."};
-    }
-}
-
-public async Task<AuthResponse> AddModifierItem (AddModifierItemViewModel model)
-{
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
-       
+
         var item = new Modifieritem
         {
-            ModifierName = model.ModifierName, 
+            ModifierName = model.ModifierName,
             Rate = model.Rate,
             Quantity = model.Quantity,
             Unit = model.Unit,
@@ -848,78 +911,111 @@ public async Task<AuthResponse> AddModifierItem (AddModifierItemViewModel model)
         // Get the new Item ID after saving
         int newItemId = item.ModifierId;
 
-        var mapping = new Modifieritemsmodifiersgroup {
-            ModifiergroupId = model.ModifierGroupid,
-            ModifierId = newItemId
-        };
-        _context.Modifieritemsmodifiersgroups.Add(mapping);
+        foreach (var groupId in model.ModifierGroupid)
+        {
+            var mapping = new Modifieritemsmodifiersgroup
+            {
+                ModifiergroupId = groupId,
+                ModifierId = newItemId
+            };
+            _context.Modifieritemsmodifiersgroups.Add(mapping);
+        }
         await _context.SaveChangesAsync();
- 
+
         return new AuthResponse
         {
             Success = true,
             Message = "ModifierItem Added Successfuuuly"
         };
-}
-public async Task<AuthResponse> EditModifierItem (AddModifierItemViewModel model)
-{
+    }
+    public async Task<AuthResponse> EditModifierItem(AddModifierItemViewModel model)
+    {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
-       var item = _context.Modifieritems.FirstOrDefault(mi => mi. ModifierId == model.ModifierId);
-       
-            item.ModifierName = model.ModifierName; 
-            item.Rate = model.Rate;
-            item.Quantity = model.Quantity;
-            item.Unit = model.Unit;
-            item.Description = model.Description;
-            item.Modifyiedby = userid;
+        var item = _context.Modifieritems.FirstOrDefault(mi => mi.ModifierId == model.ModifierId);
 
+        item.ModifierName = model.ModifierName;
+        item.Rate = model.Rate;
+        item.Quantity = model.Quantity;
+        item.Unit = model.Unit;
+        item.Description = model.Description;
+        item.Modifyiedby = userid;
+
+
+        var mapping = _context.Modifieritemsmodifiersgroups.Where(m => m.ModifierId == model.ModifierId).ToList();
+        if (mapping != null)
+        {
+            _context.Modifieritemsmodifiersgroups.RemoveRange(mapping);
+        }
+        foreach (var groupId in model.ModifierGroupid)
+        {
+                var newmapping = new Modifieritemsmodifiersgroup
+                {
+                    ModifiergroupId = groupId,
+                    ModifierId = model.ModifierId
+                };
+                _context.Modifieritemsmodifiersgroups.Add(newmapping);
+        }
         _context.Modifieritems.Update(item);
+
         await _context.SaveChangesAsync();
- 
+
+
         return new AuthResponse
         {
             Success = true,
             Message = "ModifierItem Added Successfuuuly"
         };
-}
-
-public async Task<AuthResponse> DeleteModifierItemById(int modifierid,int modifiergroupid)
-{
-    try
-    {
-        var mapping = _context.Modifieritemsmodifiersgroups.FirstOrDefault(i => i.ModifiergroupId==modifiergroupid  && i.ModifierId == modifierid);
-
-        if(mapping != null)
-        {
-            _context.Modifieritemsmodifiersgroups.Remove(mapping);
-            await _context.SaveChangesAsync();
-        }
-            return new AuthResponse{ Success = true, Message = "Modifier Item deleted successfully." };
-        }
-    catch (Exception)
-    {
-         return new AuthResponse{ Success = false, Message = "Error in Deleting Modifier Item!" };
     }
-    
-    
-}
 
-public async Task<AuthResponse> DeleteModifierItems(int ModifierGroupid,List<string> ids)
+    public async Task<AuthResponse> DeleteModifierItemById(int modifierid, int modifiergroupid)
+    {
+        try
+        {
+            var mapping = _context.Modifieritemsmodifiersgroups.FirstOrDefault(i => i.ModifiergroupId == modifiergroupid && i.ModifierId == modifierid);
+
+            if (mapping != null)
+            {
+                _context.Modifieritemsmodifiersgroups.Remove(mapping);
+                await _context.SaveChangesAsync();
+            }
+            return new AuthResponse { Success = true, Message = "Modifier Item deleted successfully." };
+        }
+        catch (Exception)
+        {
+            return new AuthResponse { Success = false, Message = "Error in Deleting Modifier Item!" };
+        }
+
+
+    }
+
+    public async Task<List<object>> GetModifierGroupIdListByModifierItemId(int modifierItemId)
+    {
+        return await _context.Modifieritemsmodifiersgroups
+            .Where(m => m.ModifierId == modifierItemId)
+            .Select(m => new
+            {
+                id = m.ModifiergroupId ?? 0,
+                name = m.Modifiergroup.Name
+            })
+            .ToListAsync<object>();
+    }
+
+    public async Task<AuthResponse> DeleteModifierItems(int ModifierGroupid, List<string> ids)
     {
         try
         {
             foreach (var i in ids)
             {
                 // var item = _context.Items.FirstOrDefault(itemInDb => itemInDb.ItemId.ToString() == i);
-                var item = _context.Modifieritemsmodifiersgroups.FirstOrDefault(itemInDb => itemInDb.ModifierId.ToString() == i && itemInDb.ModifiergroupId ==  ModifierGroupid);
-               
-               if(item!=null)
-               {
+                var item = _context.Modifieritemsmodifiersgroups.FirstOrDefault(itemInDb => itemInDb.ModifierId.ToString() == i && itemInDb.ModifiergroupId == ModifierGroupid);
 
-                _context.Modifieritemsmodifiersgroups.Remove(item);
-               }
+                if (item != null)
+                {
+
+                    _context.Modifieritemsmodifiersgroups.Remove(item);
+                }
                 await _context.SaveChangesAsync();
             }
 

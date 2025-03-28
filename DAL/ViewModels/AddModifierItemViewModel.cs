@@ -7,7 +7,7 @@ public class AddModifierItemViewModel
     public int? ModifierId { get; set; } 
     
     [Required(ErrorMessage = "Please Select Any Modifier Group")]
-    public int ModifierGroupid {get;set;} 
+    public List<int> ModifierGroupid {get;set;} 
 
     public string ModifierName { get; set; } = null!;
 
