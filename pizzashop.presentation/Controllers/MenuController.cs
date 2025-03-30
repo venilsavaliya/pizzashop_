@@ -94,7 +94,7 @@ public class MenuController : BaseController
     {
         var categories = _menuservices.GetCategoryList().ToList();
 
-        if (cat == 0)
+        if (cat == 0 || cat == null)
         {
             cat = categories.First().Id;
         }
@@ -165,7 +165,7 @@ public class MenuController : BaseController
     // POST : Menu
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     [HttpPost]
-    public async Task<IActionResult> Category(MenuViewModel model)
+    public IActionResult Category(MenuViewModel model)
     {
         if (model.Category.Id != null)
         {
@@ -182,7 +182,7 @@ public class MenuController : BaseController
                 TempData["ToastrType"] = "error";
                 TempData["ToastrMessage"] = res.Message;
             }
-
+            return Json(new { message = res.Message });
         }
         else
         {
@@ -191,6 +191,8 @@ public class MenuController : BaseController
             {
                 TempData["ToastrType"] = "success";
                 TempData["ToastrMessage"] = AuthResponse.Message;
+
+
             }
             else
             {
@@ -198,9 +200,10 @@ public class MenuController : BaseController
                 TempData["ToastrMessage"] = AuthResponse.Message;
             }
 
+            return Json(new { message = AuthResponse.Message });
         }
 
-        return RedirectToAction("Index", "Menu");
+        // return RedirectToAction("Index", "Menu");
     }
 
 
@@ -228,33 +231,36 @@ public class MenuController : BaseController
         {
             TempData["ToastrType"] = "error";
             TempData["ToastrMessage"] = AuthResponse.Message;
+
+            return Json(new { Success = false, message = AuthResponse.Message });
         }
         else
         {
             TempData["ToastrType"] = "success";
             TempData["ToastrMessage"] = AuthResponse.Message;
+            return Json(new { Success = true, message = AuthResponse.Message });
         }
-
-
-        return RedirectToAction("Index", "Menu");
     }
 
 
     // POST : Delete category 
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
+    [HttpPost]
     public IActionResult DeleteCategory(string id)
     {
         var AuthResponse = _menuservices.DeleteCategory(id).Result;
 
         if (!AuthResponse.Success)
         {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
+            return Json(new { Success = false, message = AuthResponse.Message });
+        }
+        else
+        {
+            return Json(new { Success = true, message = AuthResponse.Message });
         }
 
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
-        return RedirectToAction("Index", "Menu");
+
+
     }
 
     #endregion
@@ -276,19 +282,20 @@ public class MenuController : BaseController
         }
         var AuthResponse = _menuservices.AddNewItem(model.Menuitem).Result;
 
-
-
         if (!AuthResponse.Success)
         {
-            _notyf.Error(AuthResponse.Message);
-            return RedirectToAction("Menu", "Menu");
+            return Json(new { success = false, message = AuthResponse.Message });
+        }
+        else
+        {
+            return Json(new { success = true, message = AuthResponse.Message });
         }
 
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = "item add Successfully!";
-        // return RedirectToAction("Menu","Menu");
-        string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
-        return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
+        // TempData["ToastrType"] = "success";
+        // TempData["ToastrMessage"] = "item add Successfully!";
+        // // return RedirectToAction("Menu","Menu");
+        // string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
+        // return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
 
     }
 
@@ -309,15 +316,16 @@ public class MenuController : BaseController
 
         if (!AuthResponse.Success)
         {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            return RedirectToAction("Index", "Menu");
+            return Json(new { Success = false, message = AuthResponse.Message });
+        }
+        else
+        {
+            return Json(new { Success = true, message = AuthResponse.Message });
         }
 
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
-        string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
-        return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
+       
+        // string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
+        // return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
 
         // return Json(new { redirectTo = Url.Action("Menu", "Menu",new {cat=categoryName}) });
 
@@ -326,30 +334,32 @@ public class MenuController : BaseController
     // Post : Delete Items
     [HttpPost]
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
-
     public IActionResult DeleteItems(List<string> ids)
     {
 
         var AuthResponse = _menuservices.DeleteItems(ids).Result;
 
-        // if(!AuthResponse.Success)
-        // {
-        //     _notyf.Error(AuthResponse.Message);
-        //     return RedirectToAction("Menu");
-        // }
+        if (!AuthResponse.Success)
+        {
+            return Json(new { success = false, message = AuthResponse.Message });
+        }
+        else
+        {
+            return Json(new { success = true, message = AuthResponse.Message });
+        }
 
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
+
 
         // return RedirectToAction("Menu","Menu",new {cat});
 
-        return Json(new { redirectTo = Url.Action("Menu", "Menu") });
+
 
     }
 
     // Post : Delete Items
     // [HttpPost]
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
+    [HttpPost]
     public IActionResult DeleteSingleItem(int id, int catid)
     {
 
@@ -357,17 +367,12 @@ public class MenuController : BaseController
 
         if (!AuthResponse.Success)
         {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            return RedirectToAction("Menu");
+            return Json(new { success = false, message = AuthResponse.Message });
         }
 
         else
         {
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            // return Json(new { redirectTo = Url.Action("Menu", "Menu") });
-            return RedirectToAction("Index", "Menu", new { cat = catid });
+            return Json(new { success = true, message = AuthResponse.Message });
         }
 
     }
@@ -490,14 +495,12 @@ public class MenuController : BaseController
 
         if (!response.Success)
         {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = response.Message;
+            return Json(new {success = response.Success, message = response.Message });
         }
-
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
-
-        return Json(new { redirectTo = Url.Action("Index", "Menu") });
+        else
+        {
+            return Json(new {success = response.Success, message = response.Message });
+        }
 
     }
     [HttpPost]
@@ -515,16 +518,12 @@ public class MenuController : BaseController
 
         if (!response.Success)
         {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = response.Message;
+           return Json(new {success = response.Success, message = response.Message });
         }
-        else if (response.Success)
+        else
         {
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = response.Message;
+            return Json(new {success = response.Success, message = response.Message });
         }
-
-        return Json(new { redirectTo = Url.Action("Index", "Menu") });
 
     }
 
@@ -602,7 +601,7 @@ public class MenuController : BaseController
             TempData["ToastrMessage"] = response.Message;
         }
 
-         return Json(new { redirectTo = Url.Action("Index", "Menu") });
+        return Json(new { redirectTo = Url.Action("Index", "Menu") });
 
     }
 

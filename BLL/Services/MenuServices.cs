@@ -124,7 +124,7 @@ public class MenuServices : IMenuServices
             var ExistingCategory = _context.Categories.FirstOrDefault(c => c.CategoryId.ToString() == model.Id);
 
             //finding existing name in the category list
-            var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+            var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower() && c.CategoryId.ToString() != model.Id);
 
             if (existingcategoryname != null)
             {
@@ -348,6 +348,49 @@ public class MenuServices : IMenuServices
 
         }
 
+        var existingnameitem = await _context.Items.FirstOrDefaultAsync(i => i.ItemName.ToLower() == model.ItemName.ToLower() && i.CategoryId == model.CategoryId);
+
+        if (existingnameitem != null)
+        {
+            if (existingnameitem.Isdeleted == true)
+            {
+                existingnameitem.Isdeleted = false;
+                existingnameitem.ItemName = model.ItemName;
+                existingnameitem.Type = model.Type;
+                existingnameitem.Rate = model.Rate;
+                existingnameitem.Quantity = model.Quantity;
+                existingnameitem.CategoryId = model.CategoryId;
+                existingnameitem.Unit = model.Unit;
+                existingnameitem.DefaultTax = model.DefaultTax;
+                existingnameitem.TaxPercentage = model.TaxPercentage;
+                existingnameitem.ShortCode = model.ShortCode;
+                existingnameitem.Isavailable = model.Isavailable;
+                existingnameitem.Description = model.Description;
+                existingnameitem.Image = img;
+                existingnameitem.Createdby = userid;
+
+                _context.Items.Update(existingnameitem);
+                await _context.SaveChangesAsync();
+
+                return new AuthResponse
+                {
+                    Success = true,
+                    Message = "Item Added Succefully!"
+                };
+            }
+            else
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Item With Same Name Existed!"
+                };
+            }
+
+        }
+
+
+
         var item = new Item
         {
             ItemName = model.ItemName,
@@ -389,7 +432,7 @@ public class MenuServices : IMenuServices
         return new AuthResponse
         {
             Success = true,
-            Message = "Item Added Successfuuuly"
+            Message = "Item Added Successfully"
         };
     }
 
@@ -403,39 +446,63 @@ public class MenuServices : IMenuServices
 
             var existingitem = _context.Items.FirstOrDefault(i => i.ItemId == model.Id);
 
-            // var modifierGroupIds = model.ModifierGroups
-            // .Where(mg => mg.ModifierGroupId != null) // Ensure no null values
-            // .Select(mg => mg.ModifierGroupId)
-            // .ToList();
+            var existincategorywithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName == model.ItemName);
 
-            // var existingMappingsList = _context.Itemsmodifiergroupminmaxmappings
-            //     .Where(m => m.ItemId == existingitem.ItemId)
-            //     .ToList(); // Fetch list before using
+            if (existingitem != null && existincategorywithsamename == null)
+            {
+                existingitem.CategoryId = model.CategoryId;
+                existingitem.ItemName = model.ItemName;
+                existingitem.Type = model.Type;
+                existingitem.Rate = model.Rate;
+                existingitem.Quantity = model.Quantity;
+                existingitem.Unit = model.Unit;
+                existingitem.DefaultTax = model.DefaultTax;
+                existingitem.TaxPercentage = model.TaxPercentage;
+                existingitem.ShortCode = model.ShortCode;
+                existingitem.Isavailable = model.Isavailable;
+                existingitem.Description = model.Description;
+                existingitem.Image = model.Image != null ? "sfd" : null;
+                existingitem.Modifyiedby = userid;
 
-            // var toRemove = existingMappingsList
-            //     .Where(m => !modifierGroupIds.Contains(m.ModifiergroupId))
-            //     .ToList();
+                _context.Items.Update(existingitem);
+                await _context.SaveChangesAsync();
 
-            // _context.Itemsmodifiergroupminmaxmappings.RemoveRange(toRemove);
-
-            // await _context.SaveChangesAsync();
-
-
-            existingitem.ItemName = model.ItemName;
-            existingitem.Type = model.Type;
-            existingitem.Rate = model.Rate;
-            existingitem.Quantity = model.Quantity;
-            existingitem.Unit = model.Unit;
-            existingitem.DefaultTax = model.DefaultTax;
-            existingitem.TaxPercentage = model.TaxPercentage;
-            existingitem.ShortCode = model.ShortCode;
-            existingitem.Isavailable = model.Isavailable;
-            existingitem.Description = model.Description;
-            existingitem.Image = model.Image != null ? "sfd" : null;
-            existingitem.Modifyiedby = userid;
-
-            _context.Items.Update(existingitem);
-            await _context.SaveChangesAsync();
+            }
+            else if (existincategorywithsamename != null && existingitem != null)
+            {
+                if (existincategorywithsamename.Isdeleted == true)
+                {
+                    existincategorywithsamename.CategoryId = model.CategoryId;
+                    existincategorywithsamename.ItemName = model.ItemName;
+                    existincategorywithsamename.Type = model.Type;
+                    existincategorywithsamename.Rate = model.Rate;
+                    existincategorywithsamename.Quantity = model.Quantity;
+                    existincategorywithsamename.Unit = model.Unit;
+                    existincategorywithsamename.DefaultTax = model.DefaultTax;
+                    existincategorywithsamename.TaxPercentage = model.TaxPercentage;
+                    existincategorywithsamename.ShortCode = model.ShortCode;
+                    existincategorywithsamename.Isavailable = model.Isavailable;
+                    existincategorywithsamename.Description = model.Description;
+                    existincategorywithsamename.Image = model.Image != null ? "sfd" : null;
+                    existincategorywithsamename.Modifyiedby = userid;
+                }
+                else
+                {
+                    return new AuthResponse
+                    {
+                        Success = false,
+                        Message = "Item with same name Existed!"
+                    };
+                }
+            }
+            else
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "No Item Found!"
+                };
+            }
 
             if (model.ModifierGroups != null && model.ModifierGroups.Any())
             {
@@ -459,9 +526,6 @@ public class MenuServices : IMenuServices
 
                 await _context.SaveChangesAsync();
             }
-
-
-
 
             return new AuthResponse
             {
@@ -950,12 +1014,12 @@ public class MenuServices : IMenuServices
         }
         foreach (var groupId in model.ModifierGroupid)
         {
-                var newmapping = new Modifieritemsmodifiersgroup
-                {
-                    ModifiergroupId = groupId,
-                    ModifierId = model.ModifierId
-                };
-                _context.Modifieritemsmodifiersgroups.Add(newmapping);
+            var newmapping = new Modifieritemsmodifiersgroup
+            {
+                ModifiergroupId = groupId,
+                ModifierId = model.ModifierId
+            };
+            _context.Modifieritemsmodifiersgroups.Add(newmapping);
         }
         _context.Modifieritems.Update(item);
 

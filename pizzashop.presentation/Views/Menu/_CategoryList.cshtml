@@ -7,7 +7,7 @@
 {
         <div
             class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedCategory == c.Id ? "category-active-option" : "")" id="category_option" category-id="@c.Id" >
-            <div class="d-flex gap-2" style="cursor: pointer;" onclick="loadcategories(this)" category-id="@c.Id">
+            <div class="d-flex gap-2" style="cursor: pointer;" onclick="loadcategories(@c.Id)" category-id="@c.Id">
                 <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img ">
                 <div>@c.Name</div>
             </div>
@@ -24,41 +24,6 @@
 }
 
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    attachHoverEffect(); // Call the function when the page loads
-});
-
-// Function to handle hover effect
-function attachHoverEffect() {
-    document.querySelectorAll(".category-option").forEach(opt => {
-        opt.addEventListener("mouseover", function () {
-            console.log("Mouse Entered");
-            let actionbtn = opt.querySelector("#categoryoption_actionbtn");
-            if (actionbtn) {
-                actionbtn.classList.add("d-block");
-                actionbtn.classList.remove("d-none");
-            }
-        });
-
-        opt.addEventListener("mouseleave", function () {
-            let actionbtn = opt.querySelector("#categoryoption_actionbtn");
-            if (actionbtn) {
-                actionbtn.classList.remove("d-block");
-                actionbtn.classList.add("d-none");
-            }
-        });
-    });
-}
-
-// If the partial view is loaded dynamically, reattach events
-$(document).on("ajaxComplete", function () {
-    attachHoverEffect();
-});
-
-
-
-</script>
                   
 
        
