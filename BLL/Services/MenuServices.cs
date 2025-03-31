@@ -448,6 +448,13 @@ public class MenuServices : IMenuServices
 
             var existincategorywithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName == model.ItemName);
 
+            string img = "";
+            if (model.Image != null)
+            {
+                img = _userservices.UploadFile(model.Image);
+
+            }
+
             if (existingitem != null && existincategorywithsamename == null)
             {
                 existingitem.CategoryId = model.CategoryId;
@@ -461,7 +468,10 @@ public class MenuServices : IMenuServices
                 existingitem.ShortCode = model.ShortCode;
                 existingitem.Isavailable = model.Isavailable;
                 existingitem.Description = model.Description;
-                existingitem.Image = model.Image != null ? "sfd" : null;
+                if(model.Image != null)
+                {
+                    existingitem.Image = img;
+                }
                 existingitem.Modifyiedby = userid;
 
                 _context.Items.Update(existingitem);
@@ -642,6 +652,15 @@ public class MenuServices : IMenuServices
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
+        // Check if a modifier group with the same name already exists (excluding the current one)
+        bool isDuplicate = await _context.Modifiersgroups
+            .AnyAsync(mg => mg.Name == model.Name && mg.ModifiergroupId != model.ModifierId);
+
+        if (isDuplicate)
+        {
+            return new AuthResponse { Success = false, Message = "A modifier group with the same name already exists." };
+        }
+
         var modifierGroup = await _context.Modifiersgroups
             .Include(mg => mg.Modifieritemsmodifiersgroups)
             .FirstOrDefaultAsync(mg => mg.ModifiergroupId == model.ModifierId);
@@ -693,6 +712,19 @@ public class MenuServices : IMenuServices
     {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userId = _userservices.GetUserIdfromToken(token);
+
+        // Check if a modifier group with the same name already exists (case insensitive)
+        var existingModifierGroup = await _context.Modifiersgroups
+            .FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+
+        if (existingModifierGroup != null && existingModifierGroup.Isdeleted == false)
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Modifier Group already exists!"
+            };
+        }
 
         // Create a new modifier group
         var newModifierGroup = new Modifiersgroup

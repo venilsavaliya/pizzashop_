@@ -70,7 +70,7 @@
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Category</h5>
                         <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
-                            data-bs-toggle="modal" data-bs-target="#staticBackdrop">+
+                            data-bs-toggle="modal" data-bs-target="#addcategorymodal">+
                         </div>
                     </div>
                     <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="category-list">
@@ -140,7 +140,7 @@
                                 <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritems-search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
-                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deletemassitemmodal">
+                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;" onclick="openMassDeleteModalForModifierItem()">
                                 <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
                                     class="small-img" >
                             </div>
@@ -163,7 +163,7 @@
 
 
     <!-- add category modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="addcategorymodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true" >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content w-100">
@@ -213,7 +213,7 @@
 
                             <div class="mb-3">
                                 <input type="text" class="form-control p-3" asp-for="ModifierGroup.Name"
-                                    placeholder="Name">
+                                    placeholder="Name" id="addmodifiergroupname">
                                  <span class="text-danger" asp-validation-for="ModifierGroup.Name"></span>
                             </div>
                             <div class="mb-3">
@@ -319,7 +319,7 @@
             </div>  
         </div>
     </div>
-    <!-- show modifieritemslist modal for add modifier group modal-->
+    <!-- show modifieritemslist modal for add modifier group modal--> 
     <div class="modal fade" id="modifieritemslistforaddgroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -478,7 +478,7 @@
             <div class="modal-content w-100">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Menu Item</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> 
                 </div>
                 <form id="addItemForm" enctype="multipart/form-data" >
                     <div class="modal-body">
@@ -933,6 +933,7 @@
                                     <div class="form-control p-3"  id="modifierGroupSelectBox" style="cursor: pointer;">
                                         Select Modifier Group
                                     </div>
+                                    <span class="text-danger d-none" id="selectmodifiergroupvalidationforadd">Please select Modifier Group</span>
 
                                     <!-- Floating Checkbox List -->
                                     <div id="modifierGroupDropdown" class="position-absolute bg-white border rounded p-2 shadow" 
@@ -956,8 +957,8 @@
 
                             <div class="col-6">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="floatingInput" asp-for="ModifierItem.ModifierName">
-                                    <label for="floatingInput">Name*</label>
+                                    <input type="text" class="form-control" id="addmodifieritemname" asp-for="ModifierItem.ModifierName">
+                                    <label for="addmodifieritemname">Name*</label>
                                     <span class="text-danger" asp-validation-for="ModifierItem.ModifierName"></span>
                                 </div>
                             </div>
@@ -965,21 +966,21 @@
                         <div class="row">
                             <div class="col"> 
                                 <div class="form-floating">
-                                        <input type="number" class="form-control" id="floatingInput" value="0" asp-for="ModifierItem.Rate">
-                                        <label for="floatingInput">Rate</label>
+                                        <input type="number" class="form-control" id="addmodifieritemrate" value="0" asp-for="ModifierItem.Rate">
+                                        <label for="addmodifieritemrate">Rate</label>
                                         <span class="text-danger" asp-validation-for="ModifierItem.Rate"></span>
                                     </div>
                                 </div>
                             <div class="col">
                                 <div class="form-floating">
-                                        <input type="number" class="form-control" id="floatingInput" asp-for="ModifierItem.Quantity">
-                                        <label for="floatingInput">Quantity</label>
+                                        <input type="number" class="form-control" id="addmodifieritemquantity" asp-for="ModifierItem.Quantity">
+                                        <label for="addmodifieritemquantity">Quantity</label>
                                         <span class="text-danger" asp-validation-for="ModifierItem.Quantity"></span>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-floating col">
-                                        <select  class="form-select" asp-for="ModifierItem.Unit">
+                                        <select  class="form-select" asp-for="ModifierItem.Unit" id="addmodifieritemunit">
                                             <option selected value="">Select a Unit</option>
 
                                             <option value="Pcs">Piece</option>
@@ -996,7 +997,7 @@
                             <div class="col">
                                 <div class="mt-3">
 
-                                <textarea class="form-control" id="editcategoryformdescription" rows="3"
+                                <textarea class="form-control"  rows="3"
                                     placeholder="Description" name="Description"></textarea>
                             </div>
                             </div>
@@ -1046,6 +1047,7 @@
                                     <div class="form-control p-3"  id="modifierGroupSelectBoxForEdit" style="cursor: pointer;">
                                         Select Modifier Group
                                     </div>
+                                    <span class="text-danger d-none" id="selectmodifiergroupvalidationforedit">Please select Modifier Group</span>
 
                                     <!-- Floating Checkbox List -->
                                     <div id="modifierGroupDropdownForEdit" class="position-absolute bg-white border rounded p-2 shadow" 
@@ -1136,6 +1138,7 @@
 <script src="~/js/MenuItem.js"></script>
 <script src="~/js/MenuCategory.js"></script>
 <script src="~/js/ModifierGroup.js"></script>
+<script src="~/js/ModifierItem.js"></script>
 
 <script>
 
@@ -1158,58 +1161,9 @@
         var deleteBtn = document.getElementById("deleteCategoryBtn");
         deleteBtn.href = '@Url.Action("DeleteCategory", "Menu")' + '?id=' + Id;
     }
-    @* ----Load ModifierGroup List------- *@
 
-    
-    @* -----Load Category List -----*@
-    @* pwd *@
-    @* function loadcategories(ele)
-    {
-    
-    selectedMenuItems=[];
-
-    var id = ele.getAttribute("category-id");
-    console.log(id)
-        $.ajax({
-            type:"GET",
-            url:"/Menu/GetCategories",
-            data:{cat : id},
-            success:function(data)
-            {
-                $('#category-list').html(data);
-            }
-
-        });
-
-        $.ajax({
-            url: '@Url.Action("Menu", "Menu")',
-            type: 'GET',
-            data: {cat:id},
-            success: function (data) {
-                $('#menuTableContainer').html(data);
-                attachMassDeleteForMenuItem();
-            }
-        });
-    }
- *@
     document.addEventListener("DOMContentLoaded", () => {
 
-    @* let activeTab = localStorage.getItem("activeTab");
-
-    if (activeTab) {
-        let tabElement = document.querySelector(`[data-tab="${activeTab}"]`);
-        if (tabElement) {
-            new bootstrap.Tab(tabElement).show();
-        }
-    }
-
-    // Listen for tab change and store active tab in localStorage
-    document.querySelectorAll("#myTabs .nav-link").forEach(tab => {
-        tab.addEventListener("shown.bs.tab", function (event) {
-            let selectedTab = event.target.getAttribute("data-tab");
-            localStorage.setItem("activeTab", selectedTab);
-        });
-    }); *@
 
     var categoryoption = document.querySelectorAll(".category-option");
 
@@ -1384,28 +1338,10 @@
                 $('#menuTableContainer').html($partialView);
             }
         });
-        
-        @* $.ajax({
-            url: '@Url.Action("GetAllModifierItemsList", "Menu")',
-            type: 'GET',
-            success: function (data) {
-                $('#modifieritemstablecontainerofmodal').html(data);
-            }
-        }); *@
          
     });
 
-    @* function loadMenuTable(pageNumber, pageSize,cat) {
-        $.ajax({
-            url: '@Url.Action("Menu", "Menu")',
-            type: 'GET',
-            data: { pageNumber: pageNumber, pageSize: pageSize,cat:cat},
-            success: function (data) {
-                $('#menuTableContainer').html(data);
-            }
-        });
-    } *@
-
+   
      
 
 
@@ -1454,88 +1390,6 @@ function showCheckboxes() {
   }
 }
 
-@* $("#addItemForm").submit(function (e) {
-    e.preventDefault();
-    $('#addmenuitem').modal('hide'); 
-    console.log("inside form")
-    let formData = new FormData(this);
-
-    // Get checked modifier values
-    let selectedModifiers = [];
-    $("input[name='Modifiers']:checked").each(function () {
-        selectedModifiers.push($(this).val());
-    });
-
-    formData.append("Modifiers", selectedModifiers);
-    console.log(selectedModifiers);
-    $.ajax({
-        type: "POST",
-        url: "/Menu/AddNewItem",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success:function (response){
-           
-            if (response.redirectTo) {
-            window.location.href = response.redirectTo;  // Manually redirect
-        }
-             
-            
-        } 
-    });
-}); *@
-
-
-
-
-@* ---------- Menu Items Functionality ------------ *@
-
-@* select All inner checkbox based on main checkbox *@
-@* pwd *@
-document.addEventListener("DOMContentLoaded", function () {
-    // Select main checkbox
-
-    document.addEventListener("change",function (){
-    @* const mainCheckbox = document.getElementById("menu-main-checkbox");
-    const checkboxes = document.querySelectorAll(".inner_checkbox");
-
-    // When main checkbox is clicked
-    mainCheckbox.addEventListener("change", function () {
-        console.log("main checkbox change")
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = mainCheckbox.checked; // Set inner checkboxes same as main
-        });
-    });
-
-    // If any inner checkbox is unchecked, uncheck the main checkbox
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener("change", function () {
-            if (!this.checked) {
-                mainCheckbox.checked = false;
-            }
-            // If all checkboxes are checked, also check the main checkbox
-            else if (Array.from(checkboxes).every(chk => chk.checked)) {
-                mainCheckbox.checked = true;
-            }
-        });
-    }); *@
-
-    
-    });
-    
-});
-
-@* Delete single Menu item *@
-
-@* function setDeleteItemId(element) {
-
-    var Id = element.getAttribute("item-id");
-    let cat_id= $("#category-list .category-active-option").attr("category-id");
-    var deleteBtn = document.getElementById("deleteitemBtn");
-    deleteBtn.href = '@Url.Action("DeleteSingleItem", "Menu")' + '?id=' + Id+'&catid='+cat_id;
-
-} *@
-
 
 
 
@@ -1552,19 +1406,6 @@ document.getElementById("addexistingmodifierbtnforedit").addEventListener('click
 
 });
 
-
-    
-
-@* showing modifier item partial view when modifier group is selected for add menu item modal*@
-
-
-@* showing modifier item partial view when modifier group is selected for edit menu item modal*@
-
-
-
-    
-
-    
 
 @* -----Pagination For Menu Items List------- *@
 
@@ -1671,25 +1512,6 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
             type: "GET",
             dataType: "html",
             success: function (data) {
-                @* let $partialView = $(data);
-    
-                let maincb = $partialView.find("#menu-main-checkbox");
-                let checkboxes = $partialView.find(".modifieritemcheckbox");
-                console.log(maincb)
-                 // When main checkbox is clicked
-                maincb.on("change", function () {
-                    console.log("Main checkbox changed:", this.checked);
-                    checkboxes.prop("checked", this.checked); // Set all inner checkboxes same as main
-                });
-                  
-                // If any inner checkbox is unchecked, uncheck the main checkbox
-                checkboxes.on("change", function () {
-                    if (!this.checked) {
-                        maincb.prop("checked", false);
-                    } else if (checkboxes.length === checkboxes.filter(":checked").length) {
-                        maincb.prop("checked", true);
-                    }
-                }); *@
 
                 $('#modifieritemstablecontainer').html(data);
                 attachMassDeleteForModifierItem();
@@ -1701,48 +1523,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         });
     }
 
-    @* ---- Category Functionality ---- *@
-
-
-    @* ---------------------------------- *@
-
-    @* ---- Modifier Functionality------ *@
-
-    @* function for setting capsule at end of add or edit modifier group  modal *@
-
-    @* async function setcapsule(arr) {
-    let updatedArr = [...arr]; // Clone the array to prevent modification issues
-
-    for (let modifierId of arr) {
-        try {
-            let response = await $.ajax({
-                url: `/Menu/GetModifierItemsNamePVByModifieritemId`,
-                type: "GET",
-                data: { modifier_id: modifierId },
-            });
-
-            let $partialView = $(response);
-
-            $partialView.find(".delete-modifier-item").on("click", function () {
-                let itemId = $(this).attr("item-id");
-                console.log("Item ID:", itemId);
-
-                $partialView.remove();
-                updatedArr = updatedArr.filter(i => i != itemId);
-                console.log("Updated list after deletion:", updatedArr);
-            });
-
-            $("#selectedModifieritemcontainerforedit").append($partialView);
-
-        } catch (error) {
-            console.error(`Error fetching details for Modifier ID ${modifierId}:`, error);
-        }
-    }
-
-    return updatedArr; // Return updated array after all AJAX calls complete
-}
- *@
-
+   
     @* function for getting modifier item name which is related to perticular modifier group *@
 
     let  selectedModifierIdsforedit = [];
@@ -1763,15 +1544,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         ModifieritemsPaginationAjax();
         ModifieritemListForAddPaginationAjax();
         MenuitemsPaginationAjax();
-        updateCheckboxStates();
-
-         @* $("#addmenuitem").on("hidden.bs.modal", function () {
-            var form = $("#addItemForm");
-    
-            form[0].reset();
-            form[0].validate().resetForm();
-            form.find(".is-invalid").removeClass("is-invalid");
-        }); *@
+       
     });
 
     let selectedModifiers = []; 
@@ -1802,17 +1575,13 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
             checkbox.addEventListener("change", handleCheckboxChange);
         });
 
-        updateCheckboxStates(); // Re-check checkboxes after reloading the partial view
+        @* updateCheckboxStates(); // Re-check checkboxes after reloading the partial view *@
     }
 
     function onPartialViewLoaded() {
         attachCheckboxListeners();  // Rebind event listeners
     }
-@* 
-    $("#modifieritems-search-field").on('input',()=>{
-        console.log("inside.........")
-        PaginationAjax();
-    }) *@
+
 
     document.getElementById("modifieritemsmodal-search-field").addEventListener('keyup',()=>{
         PaginationAjax();
@@ -1871,18 +1640,6 @@ let  selectedModifierIdsforAdd= [];
         updateCheckboxStatesForAdd();
     });
 
-    
-@* showing and hiding modal manually *@
-
-@* document.getElementById("addexistingmodifierbtnforadd").addEventListener('click',()=>{
-    
-    var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("addmodifiergroupmodal"))
-    modifiermodal.hide();
-    var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"))
-    itemlistmodal.show();
-
-}); *@
-
      // Function to check checkboxes based on selectedModifiers
     function updateCheckboxStatesForAdd() {
 
@@ -1931,288 +1688,6 @@ let  selectedModifierIdsforAdd= [];
 
 @* Delete Modifier Group *@
 
-function setDeleteModifierGroupId(element) {
 
-    var Id = element.getAttribute("data-id");
-    var deleteBtn = document.getElementById("deleteModifierGroupBtn");
-    deleteBtn.href = '@Url.Action("DeleteModifierGroupById", "Menu")' + '?id=' + Id;
-}
-
- function setDeleteModifierid(element) {
-        var modifiergroupid = element.getAttribute("modifiergroup-id");
-        var modifierid = element.getAttribute("modifier-id");
-        var deleteBtn = document.getElementById("deleteModifierItemBtn");
-        deleteBtn.href = '@Url.Action("DeleteModifierItemById", "Menu")' + '?modifiergroupid=' + modifiergroupid+'&modifierid='+modifierid;
-    }
-
-function seteditmodifieritemdata(ele) {
-    
-    var c = JSON.parse(ele.getAttribute("item-obj"));
-
-            // Make an AJAX call to get the modifier group ID list
-                    $.ajax({
-                        url: `/Menu/GetModifierGroupIdListByModifierItemId`,
-                        type: 'GET',
-                        data: { id: c.modifierId },
-                        success: function (data) {
-            // Clear the set before updating
-            selectedGroupsForedit.clear();
-
-            // Add the fetched data to the set
-            data.forEach(item => {
-                selectedGroupsForedit.add({ id: item.id, name: item.name });
-
-                // Check the corresponding checkboxes
-                $(`.modifier-group-checkbox-foredit[value='${item.id}']`).prop("checked", true);
-            });
-
-            // Update the names in the div
-            updateSelectedNamesForEdit();
-        },
-        error: function (xhr, status, error) {
-            console.error("Error fetching modifier group IDs:", error);
-        }
-    });
-
-    
-    var modifiergroup_id = ele.getAttribute("modifiergroup-id");
-    console.log(c);
-
-    var editmenuitem = document.getElementById("editmodifieritemmodal");
-    editmenuitem.querySelector("#Rate").value = c.rate;
-    editmenuitem.querySelector("#ModifierName").value = c.name;
-    editmenuitem.querySelector("#Quantity").value = c.quantity;
-    editmenuitem.querySelector("#Unit").value = c.unit;
-    @* editmenuitem.querySelector("#ModifierGroupid").value = modifiergroup_id; *@
-    editmenuitem.querySelector("#Description").value = c.description;
-    editmenuitem.querySelector("#ModifierId").value = c.modifierId;
-
-}
-
-@* Mass Delete Of Modifier Item *@
-
-  $("#deletemassitemBtn").click(function (e) {
-    const modgroupid = $("#modifieritem_main_checkbox").attr('modifiergroup-id');
-
-    $.ajax({
-        url: "/Menu/DeleteModifierItems",
-        method: "POST",
-        data:{
-            ids: selectedModifierItems,
-            ModifierGroupid:modgroupid
-        },  
-        success: function (response) {
-            console.log("Items deleted successfully");
-            window.location.href='/Menu/Index?cat=@Model.SelectedCategory'; 
-        },
-        error: function (xhr, status, error) {
-            console.error("Error deleting items:", error);
-        }
-    });
-});
-
-@* mass delete function for menu item *@
-
-let selectedModifierItems = [];
-
-function attachMassDeleteForModifierItem() {
-    // Event listener for main checkbox
-    $(document).on("change", "#modifieritem_main_checkbox", function () {
-        let isChecked = this.checked;
-        $(".inner_checkbox_modifieritem").prop("checked", isChecked);
-        
-        if (isChecked) {
-            $(".inner_checkbox_modifieritem").each(function () {
-                let id = $(this).val();
-                if (!selectedModifierItems.includes(id)) {
-                    selectedModifierItems.push(id);
-                }
-            });
-        } else {
-            selectedModifierItems = [];
-        }
-    });
-
-    // Event listener for inner checkboxes
-    $(document).on("change", ".inner_checkbox_modifieritem", function () {
-        let id = $(this).val();
-        if (this.checked) {
-            if (!selectedModifierItems.includes(id)) {
-                selectedModifierItems.push(id);
-            }
-        } else {
-            selectedModifierItems = selectedModifierItems.filter(item => item !== id);
-        }
-
-        // Update main checkbox state
-        const allChecked = $(".inner_checkbox_modifieritem").length === $(".inner_checkbox_modifieritem:checked").length;
-        $("#modifieritem_main_checkbox").prop("checked", allChecked);
-    });
-
-    // Restore previously selected checkboxes
-    $(".inner_checkbox_modifieritem").each(function () {
-        if (selectedModifierItems.includes($(this).val())) {
-            $(this).prop("checked", true);
-        }
-    });
-
-    // Update main checkbox state initially
-    const allChecked = $(".inner_checkbox_modifieritem").length === $(".inner_checkbox_modifieritem:checked").length;
-    $("#modifieritem_main_checkbox").prop("checked", allChecked);
-}
-
-
-
-
-
-@* function to keep checkbox cheked if id existed in list *@
-
-function checkSelectedCheckboxesforAdd() {
-     // Uncheck all checkboxes first
-    $(".modifieritemcheckboxofaddmodal").prop('checked', false);
-    $(".modifieritem_main_checkbox_addmodal").prop('checked', false);
-
-    console.log("ok",selectedModifierItemsForAddExistingModifierForAddModal)
-
-    // Check only the ones that match IDs in selectedModifierItemsForAddExistingModifier
-    selectedModifierItemsForAddExistingModifierForAddModal.forEach(id => {
-        $(`.modifieritemcheckboxofaddmodal[value='${id}']`).prop('checked', true);
-    });
-}
-
-const selectedGroups = new Set();
-
-    // Toggle the visibility of the dropdown
-    $("#modifierGroupSelectBox").on("click", function () {
-        $("#modifierGroupDropdown").toggle();
-    });
-
-    // Hide the dropdown when clicking outside
-    $(document).on("click", function (e) {
-        if (!$(e.target).closest("#modifierGroupSelectBox, #modifierGroupDropdown").length) {
-            $("#modifierGroupDropdown").hide();
-        }
-    });
-
-    // Update selected group names when checkboxes are changed
-    $(document).on("change", ".modifier-group-checkbox", function () {
-        const groupId = $(this).val();
-        const groupName = $(this).data("name");
-
-        if ($(this).is(":checked")) {
-            selectedGroups.add({ id: groupId, name: groupName });
-        } else {
-            selectedGroups.forEach((item) => {
-                if (item.id == groupId) {
-                    selectedGroups.delete(item);
-                }
-            });
-        }
-
-        updateSelectedNames();
-    });
-
-    // Update the input box with the selected names
-    function updateSelectedNames() {
-        let names = Array.from(selectedGroups).map((item) => item.name).join(", ");
-        if (names.length === 0) names = "Select Modifier Group";
-        $("#modifierGroupSelectBox").text(names);
-    }
-    const selectedGroupsForedit = new Set();
-
-    // Toggle the visibility of the dropdown
-    $("#modifierGroupSelectBoxForEdit").on("click", function () {
-        $("#modifierGroupDropdownForEdit").toggle();
-    });
-
-    // Hide the dropdown when clicking outside
-    $(document).on("click", function (e) {
-        if (!$(e.target).closest("#modifierGroupSelectBoxForEdit, #modifierGroupDropdownForEdit").length) {
-            $("#modifierGroupDropdownForEdit").hide();
-        }
-    });
-
-    // Update selected group names when checkboxes are changed
-    $(document).on("change",".modifier-group-checkbox-foredit", function () {
-        const groupId = $(this).val();
-        const groupName = $(this).data("name");
-
-        if ($(this).is(":checked")) {
-            selectedGroupsForedit.add({ id: groupId, name: groupName });
-        } else {
-            selectedGroupsForedit.forEach((item) => {
-                if (item.id == groupId) {
-                    selectedGroupsForedit.delete(item);
-                }
-            });
-        }
-
-        updateSelectedNamesForEdit();
-    });
-
-    // Update the input box with the selected names
-    function updateSelectedNamesForEdit() {
-        let names = Array.from(selectedGroupsForedit).map((item) => item.name).join(", ");
-        if (names.length === 0) names = "Select Modifier Group";
-        $("#modifierGroupSelectBoxForEdit").text(names);
-    }
-
-    $("#AddModifierItemForm").submit(function(e) {
-
-        e.preventDefault();
-
-        
-        var formData = new FormData(this);
-
-        var selectedModGroupId = Array.from(selectedGroups).map((item) => item.id);
-
-        formData.append("ModifierGroupid", JSON.stringify(selectedModGroupId)); 
-    
-        $.ajax({
-        url: "/Menu/AddModifierItem",
-        type: "POST",
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: function(response) {
-            selectedGroups.clear();
-            window.location.href = response.redirectTo;
-        },
-        error: function(err) {
-            console.error("Error adding item:", err);
-        }
-        });
-
-    });
-
-
-    $("#EditModifierItemForm").submit(function(e) {
-
-        e.preventDefault();
-
-        
-        var formData = new FormData(this);
-
-        var selectedModGroupId = Array.from(selectedGroupsForedit).map((item) => item.id);
-
-        console.log("modidforedit",selectedModGroupId)
-        formData.append("ModifierGroupid", JSON.stringify(selectedModGroupId)); 
-    
-        $.ajax({
-        url: "/Menu/EditModifierItem",
-        type: "POST",
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: function(response) {
-            selectedGroups.clear();
-            window.location.href = response.redirectTo;
-        },
-        error: function(err) {
-            console.error("Error adding item:", err);
-        }
-        });
-
-    });
 
 </script> 

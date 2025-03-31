@@ -5,10 +5,13 @@ function ClearSectionForAddModifierGroup() {
   $(".modifieritemcheckboxofaddmodal").prop("checked", false);
   $("#modifieritem_main_checkbox_addmodal").prop("checked", false);
 }
+
+
+
 //clear the modifier list and the partial view in the add modifier group modal
 function ClearSectionForEditModifierGroup() {
   $("#selectedModifieritemcontainerforedit").html("");
-  selectedModifierItemsForAddExistingModifier = []
+  selectedModifierItemsForAddExistingModifier = [];
   $(".modifieritemcheckboxofmodal").prop("checked", false);
   $("#modifier_main_checkbox_modal").prop("checked", false);
 }
@@ -184,6 +187,19 @@ function loadmodifiers(id) {
   });
 }
 
+// function for opening mass delete modal for menu item
+
+function openMassDeleteModalForModifierItem() {
+  if (selectedModifierItems.length == 0) {
+    toastr.warning("Please Select Modifier Item!");
+    return;
+  }
+  var deleteModal = new bootstrap.Modal(
+    document.getElementById("deletemassitemmodal")
+  );
+  deleteModal.show();
+}
+
 // List of selected modifier item for edit modifier group modal
 let selectedModifierItemsForAddExistingModifier = [];
 
@@ -333,6 +349,14 @@ function attachCheckboxListnerModifierItemForEditModal() {
   $("#modifier_main_checkbox_modal").prop("checked", allChecked);
 }
 
+//set delete category url to the delete category modal yes button
+
+function setDeleteModifierGroupId(ele) {
+  let id = ele.getAttribute("data-id");
+  let deleteBtn = document.getElementById("deleteModifierGroupBtn");
+  deleteBtn.setAttribute("modifiergroup-id", id);
+}
+
 // Function to check checkboxes based on selectedModifiers
 // function updateCheckboxStates() {
 //   console.log(selectedModifierItemsForAddExistingModifier);
@@ -353,7 +377,7 @@ function attachCheckboxListnerModifierItemForEditModal() {
 
 // add partial view of the  selected modifier item in edit modifier group modal
 function handleAddButtonClick() {
-    console.log("hellokjfisdfiehfiuewhufehdfuwehfuihfufhiuewfhiwefd")
+  console.log("hellokjfisdfiehfiuewhufehdfuwehfuihfufhiuewfhiwefd");
   if (selectedModifierItemsForAddExistingModifier.length == 0) {
     toastr.warning("Please Select Modifier Item!");
     return;
@@ -456,10 +480,29 @@ $(document).ready(function () {
       itemlistmodal.show();
     });
 
+  // Add modifier Group Form Validation
+
+  function validateFormAddModifierGroup() {
+    let isValid = true;
+
+    const itemName = $("#addmodifiergroupname").val();
+
+    if (!itemName) {
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
   // submit the add modifier group form
 
   $("#addModifierGroupForm").submit(function (e) {
     e.preventDefault();
+
+    if(!validateFormAddModifierGroup())
+    {
+      return;
+    }
 
     var formData = new FormData(this);
 
@@ -500,44 +543,101 @@ $(document).ready(function () {
     });
   });
 
+  // edit modifier Group Form Validation
+
+  function validateFormeditModifierGroup() {
+    let isValid = true;
+
+    const itemName = $("#editmodifiergroupname").val();
+
+    if (!itemName) {
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+
   //submit the edit modifier group form
 
-
-  $("#editmodifierForm").submit(function(e) {
+  $("#editmodifierForm").submit(function (e) {
     e.preventDefault();
+
+    if(!validateFormeditModifierGroup())
+    {
+      return;
+    }
 
     var formData = new FormData(this);
 
-    formData.append("ModifierItems", JSON.stringify(selectedModifierItemsForAddExistingModifier)); 
+    formData.append(
+      "ModifierItems",
+      JSON.stringify(selectedModifierItemsForAddExistingModifier)
+    );
 
     $.ajax({
-        url: "/Menu/EditModifierGroup",
-        type: "POST",
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: function(response) {
-   
-            var Modal = bootstrap.Modal.getInstance(
-                document.getElementById("editmodifiergroupmodal")
-              );
-              Modal.hide();
-      
-              if (response.success) {
-                //get the active category id
-                let modgroup_id = $("#modifier-list .category-active-option").attr(
-                  "modifiergroup-id"
-                );
-                loadmodifiers(modgroup_id);
-                ClearSectionForEditModifierGroup();
-                toastr.success(response.message);
-              } else {
-                toastr.error(response.message);
-              }
-        },
-        error: function(err) {
-            console.error("Error adding item:", err);
+      url: "/Menu/EditModifierGroup",
+      type: "POST",
+      processData: false,
+      contentType: false,
+      data: formData,
+      success: function (response) {
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("editmodifiergroupmodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let modgroup_id = $("#modifier-list .category-active-option").attr(
+            "modifiergroup-id"
+          );
+          loadmodifiers(modgroup_id);
+          ClearSectionForEditModifierGroup();
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
         }
-    }); 
-});
+      },
+      error: function (err) {
+        console.error("Error adding item:", err);
+      },
+    });
+  });
+
+  // Delete Modifier Group Modal
+
+  $("#deleteModifierGroupBtn").click(function (e) {
+    var modgroupid = $(this).attr("modifiergroup-id").toString();
+    $.ajax({
+      url: "/Menu/DeleteModifierGroupById",
+      method: "POST",
+      data: {
+        id: modgroupid,
+      },
+      success: function (response) {
+        // close the opened delete modal
+
+        var deleteModal = bootstrap.Modal.getInstance(
+          document.getElementById("deleteModifierGroupmodal")
+        );
+        deleteModal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let mod_id = $("#modifier-list .category-active-option").attr(
+            "modifiergroup-id"
+          );
+          mod_id == modgroupid ? loadmodifiers() : loadmodifiers(mod_id); // if current modgropup id is deleted than by default select first modgroup
+
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error deleting items:", error);
+      },
+    });
+  });
 });

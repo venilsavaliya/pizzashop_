@@ -8,7 +8,6 @@ function loadcategories(id) {
 
   //   id = ele?.getAttribute("category-id");
 
-  console.log(id);
   $.ajax({
     type: "GET",
     url: "/Menu/GetCategories",
@@ -84,8 +83,21 @@ $(document).ready(function () {
       processData: false, // Important: prevent jQuery from processing the data
       contentType: false, // Important: prevent jQuery from setting content type
       success: function (response) {
-        // Handle success
-        toastr.success(response.message);
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("addcategorymodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let cat_id = $("#category-list .category-active-option").attr(
+            "category-id"
+          );
+          loadcategories(cat_id);
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
       },
       error: function (xhr, status, error) {
         toastr.error(error);
@@ -152,39 +164,41 @@ $(document).ready(function () {
     }
   }
 
-  // Delete Category 
+  // Delete Category
 
   $("#deleteCategoryBtn").click(function (e) {
-    var catid = $(this).attr("category-id")
+    var catid = $(this).attr("category-id");
     $.ajax({
-        url: "/Menu/DeleteCategory",
-        method: "POST",
-        data:{ 
-            id: catid
-         },  
-        success: function (response) {
-            // close the opened delete modal
+      url: "/Menu/DeleteCategory",
+      method: "POST",
+      data: {
+        id: catid,
+      },
+      success: function (response) {
+        // close the opened delete modal
 
-            var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deletecategorymodal'));
-            deleteModal.hide();
+        var deleteModal = bootstrap.Modal.getInstance(
+          document.getElementById("deletecategorymodal")
+        );
+        deleteModal.hide();
 
-            if(response.success)
-            {
-                //get the active category id
-                let cat_id= $("#category-list .category-active-option").attr("category-id");
-                cat_id==catid ?loadcategories():loadcategories(cat_id); // if current category is deleted than by default select first category
-                
-                toastr.success(response.message)
-            }
-            else{
-                toastr.error(response.message) 
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error deleting items:", error);
+        if (response.success) {
+          //get the active category id
+          let cat_id = $("#category-list .category-active-option").attr(
+            "category-id"
+          );
+          cat_id == catid ? loadcategories() : loadcategories(cat_id); // if current category is deleted than by default select first category
+
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
         }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error deleting items:", error);
+      },
     });
-});
+  });
 
   // Hover Effect On Category
 

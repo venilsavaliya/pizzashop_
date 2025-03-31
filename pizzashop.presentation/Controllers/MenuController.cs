@@ -172,38 +172,14 @@ public class MenuController : BaseController
 
             var res = _menuservices.EditCategory(model.Category).Result;
 
-            if (res.Success)
-            {
-                TempData["ToastrType"] = "success";
-                TempData["ToastrMessage"] = res.Message;
-            }
-            else
-            {
-                TempData["ToastrType"] = "error";
-                TempData["ToastrMessage"] = res.Message;
-            }
-            return Json(new { message = res.Message });
+            return Json(new { Success = res.Success, message = res.Message });
         }
         else
         {
             var AuthResponse = _menuservices.AddCategory(model.Category).Result;
-            if (AuthResponse.Success)
-            {
-                TempData["ToastrType"] = "success";
-                TempData["ToastrMessage"] = AuthResponse.Message;
-
-
-            }
-            else
-            {
-                TempData["ToastrType"] = "error";
-                TempData["ToastrMessage"] = AuthResponse.Message;
-            }
-
-            return Json(new { message = AuthResponse.Message });
+             return Json(new { Success = AuthResponse.Success, message = AuthResponse.Message });
         }
 
-        // return RedirectToAction("Index", "Menu");
     }
 
 
@@ -323,7 +299,7 @@ public class MenuController : BaseController
             return Json(new { Success = true, message = AuthResponse.Message });
         }
 
-       
+
         // string categoryName = _menuservices.GetCategoryNameFromId((int)model.Menuitem.CategoryId);
         // return Json(new { redirectTo = Url.Action("Index", "Menu", new { cat = categoryName }) });
 
@@ -495,11 +471,11 @@ public class MenuController : BaseController
 
         if (!response.Success)
         {
-            return Json(new {success = response.Success, message = response.Message });
+            return Json(new { success = response.Success, message = response.Message });
         }
         else
         {
-            return Json(new {success = response.Success, message = response.Message });
+            return Json(new { success = response.Success, message = response.Message });
         }
 
     }
@@ -518,11 +494,11 @@ public class MenuController : BaseController
 
         if (!response.Success)
         {
-           return Json(new {success = response.Success, message = response.Message });
+            return Json(new { success = response.Success, message = response.Message });
         }
         else
         {
-            return Json(new {success = response.Success, message = response.Message });
+            return Json(new { success = response.Success, message = response.Message });
         }
 
     }
@@ -530,21 +506,13 @@ public class MenuController : BaseController
     //  Delete Modifier Group by Id
 
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
+    [HttpPost]
     public IActionResult DeleteModifierGroupById(string id)
     {
 
         var response = _menuservices.DeleteModifierGroupById(id).Result;
 
-        if (!response.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = response.Message;
-        }
-
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
-
-        return RedirectToAction("Index", "Menu");
+        return Json(new { success = response.Success, message = response.Message });
 
     }
 
@@ -562,18 +530,8 @@ public class MenuController : BaseController
 
         var response = _menuservices.AddModifierItem(model.ModifierItem).Result;
 
-        if (!response.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = response.Message;
-        }
-        else
-        {
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = response.Message;
+        return Json(new { success = response.Success, message = response.Message });
 
-        }
-        return Json(new { redirectTo = Url.Action("Index", "Menu") });
 
     }
     [HttpPost]
@@ -590,19 +548,7 @@ public class MenuController : BaseController
 
         var response = _menuservices.EditModifierItem(model.ModifierItem).Result;
 
-        if (!response.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = response.Message;
-        }
-        else
-        {
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = response.Message;
-        }
-
-        return Json(new { redirectTo = Url.Action("Index", "Menu") });
-
+        return Json(new { success = response.Success, message = response.Message });
     }
 
     public IActionResult GetModifierGroupIdListByModifierItemId(int id)
@@ -614,21 +560,13 @@ public class MenuController : BaseController
 
     // Delete Modifier Item
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
+    [HttpPost]
     public IActionResult DeleteModifierItemById(int modifierid, int modifiergroupid)
     {
 
         var response = _menuservices.DeleteModifierItemById(modifierid, modifiergroupid).Result;
 
-        if (!response.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = response.Message;
-        }
-
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
-
-        return RedirectToAction("Index", "Menu");
+       return Json(new { success = response.Success, message = response.Message });
 
     }
 
@@ -642,21 +580,12 @@ public class MenuController : BaseController
 
         if (!AuthResponse.Success)
         {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
+            return Json(new { success = AuthResponse.Success, message = AuthResponse.Message });
         }
         else
         {
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = AuthResponse.Message;
+            return Json(new { success = AuthResponse.Success, message = AuthResponse.Message });
         }
-
-
-
-        // return RedirectToAction("Menu","Menu",new {cat});
-
-        return Json(new { redirectTo = Url.Action("Index", "Menu") });
-
     }
 
     #endregion

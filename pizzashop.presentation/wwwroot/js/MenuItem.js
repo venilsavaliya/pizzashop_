@@ -77,7 +77,6 @@ function setDeleteItemId(element) {
 }
 
 // Edit menu Item functionality
-
 let selectedModifierGroupsforedit = [];
 function setedititemdata(ele) {
   let modifiergroupids = [];
@@ -210,7 +209,20 @@ function updateMinValueForEdit() {
     modifierGroup.min = newValue;
   }
 
-  console.log(selectedModifierGroupsforedit);
+  // this will ensure that if user select min option than all the option whose value is less than the selected min option will be removed from max select options
+  let minVal = parseInt($(this).val());
+  let modgroup = $(this).closest(".modifiergroupminmaxsection");
+  let maxSelect = modgroup.find(".max-select");
+  console.log("minval", minVal);
+  maxSelect.find("option").each(function () {
+    console.log("hii", parseInt($(this).val()));
+    if (parseInt($(this).val()) < minVal) {
+      $(this).css("display", "none"); // Hide the option
+    } else {
+      $(this).css("display", "block"); // Show the option
+    }
+  });
+
 }
 
 // Function to update max value in the list
@@ -225,6 +237,20 @@ function updateMaxValueForEdit() {
   if (modifierGroup) {
     modifierGroup.max = newValue;
   }
+
+  // this will ensure that if user select max option than all the option whose value is greater than the selected max option will be removed from min select options
+  let maxVal = parseInt($(this).val());
+  let modgroup = $(this).closest(".modifiergroupminmaxsection");
+  let minSelect = modgroup.find(".min-select");
+
+  minSelect.find("option").each(function () {
+
+    if (parseInt($(this).val()) > maxVal) {
+      $(this).css("display", "none"); // Hide the option
+    } else {
+      $(this).css("display", "block"); // Show the option
+    }
+  });
 
   console.log(selectedModifierGroupsforedit);
 }
@@ -320,7 +346,21 @@ $(document).ready(function () {
       modifierGroup.min = newValue;
     }
 
-    console.log(selectedModifierGroups);
+    // this will ensure that if user select min option than all the option whose value is less than the selected min option will be removed from max select options
+    let minVal = parseInt($(this).val());
+    let modgroup = $(this).closest(".modifiergroupminmaxsection");
+    let maxSelect = modgroup.find(".max-select");
+    console.log("minval", minVal);
+    maxSelect.find("option").each(function () {
+      console.log("hii", parseInt($(this).val()));
+      if (parseInt($(this).val()) < minVal) {
+        $(this).css("display", "none"); // Hide the option
+      } else {
+        $(this).css("display", "block"); // Show the option
+      }
+    });
+
+    console.log("hi", selectedModifierGroups);
   }
 
   // Function to update max value in the list
@@ -335,6 +375,20 @@ $(document).ready(function () {
     if (modifierGroup) {
       modifierGroup.max = newValue;
     }
+
+    // this will ensure that if user select max option than all the option whose value is greater than the selected max option will be removed from min select options
+    let maxVal = parseInt($(this).val());
+    let modgroup = $(this).closest(".modifiergroupminmaxsection");
+    let minSelect = modgroup.find(".min-select");
+
+    minSelect.find("option").each(function () {
+ 
+      if (parseInt($(this).val()) > maxVal) {
+        $(this).css("display", "none"); // Hide the option
+      } else {
+        $(this).css("display", "block"); // Show the option
+      }
+    });
 
     console.log(selectedModifierGroups);
   }
@@ -366,6 +420,13 @@ $(document).ready(function () {
           document.getElementById("addmenuitem")
         );
         Modal.hide();
+
+        // reset form after item added succesfully
+        $("#addItemForm")[0].reset();
+        $("#modifieritemspartialview").html("");
+
+        // clear the list of selected modifier items for add item
+        selectedModifierGroups = [];
 
         if (response.success) {
           //get the active category id
@@ -493,54 +554,54 @@ $(document).ready(function () {
 
   //submit edit item form
 
-  $("#editItemForm").submit(function(e) {
+  $("#editItemForm").submit(function (e) {
     e.preventDefault();
 
-    if(!validateFormEditMenuItem())
-    {
-        return;
+    if (!validateFormEditMenuItem()) {
+      return;
     }
     var formData = new FormData(this);
 
-    console.log("venil",selectedModifierGroupsforedit);
+    console.log("venil", selectedModifierGroupsforedit);
 
-    formData.append("ModifierGroups", JSON.stringify(selectedModifierGroupsforedit)); 
-
+    formData.append(
+      "ModifierGroups",
+      JSON.stringify(selectedModifierGroupsforedit)
+    );
 
     $.ajax({
-        url: "/Menu/EditItem",
-        type: "POST",
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: function(response) {
-
+      url: "/Menu/EditItem",
+      type: "POST",
+      processData: false,
+      contentType: false,
+      data: formData,
+      success: function (response) {
         // close the opened delete modal
 
         var Modal = bootstrap.Modal.getInstance(
-            document.getElementById("editmenuitem")
-          );
-          Modal.hide();
-  
-          if (response.success) {
-            //get the active category id
-            let cat_id = $("#category-list .category-active-option").attr(
-              "category-id"
-            );
-            loadMenuItem(cat_id);
-            toastr.success(response.message);
-          } else {
-            toastr.error(response.message);
-          }
-        },
-        error: function(err) {
-            console.error("Error adding item:", err);
-        }
-    });
-});
+          document.getElementById("editmenuitem")
+        );
+        Modal.hide();
 
-// Form Validation Of Edit Menu Item
-function validateFormEditMenuItem() {
+        if (response.success) {
+          //get the active category id
+          let cat_id = $("#category-list .category-active-option").attr(
+            "category-id"
+          );
+          loadMenuItem(cat_id);
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (err) {
+        console.error("Error adding item:", err);
+      },
+    });
+  });
+
+  // Form Validation Of Edit Menu Item
+  function validateFormEditMenuItem() {
     let isValid = true;
     let errorMessage = "";
 
@@ -552,77 +613,92 @@ function validateFormEditMenuItem() {
     const tax = $("#itemTaxPercentageForEdit").val();
 
     if (!itemName) {
-        isValid = false;
+      isValid = false;
     }
 
     if (!type) {
-        isValid = false;
+      isValid = false;
     }
 
     if (!unit) {
-        isValid = false;
+      isValid = false;
     }
 
     if (!rate || isNaN(rate) || rate < 0) {
-        isValid = false;
+      isValid = false;
     }
 
     if (!quantity || isNaN(quantity) || quantity < 0) {
-        isValid = false;
+      isValid = false;
     }
-    if (!tax || isNaN(tax) || tax < 0 || tax>100) {
-        isValid = false;
+    if (!tax || isNaN(tax) || tax < 0 || tax > 100) {
+      isValid = false;
     }
 
     return isValid;
-}
+  }
 
+  // render new partial view for edit item modal
 
-// render new partial view for edit item modal 
-
-$("#modifierGroupSelectforedit").change(function () {
+  $("#modifierGroupSelectforedit").change(function () {
     let selectedValue = $(this).val();
     let selectedText = $("#modifierGroupSelect option:selected").text();
 
-    if (selectedValue === "Select Modifier Group" || selectedModifierGroupsforedit.some(obj => obj.modifierGroupId == selectedValue)) {
-        return;
+    if (
+      selectedValue === "Select Modifier Group" ||
+      selectedModifierGroupsforedit.some(
+        (obj) => obj.modifierGroupId == selectedValue
+      )
+    ) {
+      return;
     }
 
     let newModifierGroup = {
-        modifierGroupId: selectedValue,
-        min: '0',
-        max: '10'
+      modifierGroupId: selectedValue,
+      min: "0",
+      max: "10",
     };
     selectedModifierGroupsforedit.push(newModifierGroup);
 
     $.ajax({
-        url: "/Menu/GetModifierItems",
-        type: "GET",
-        data: { modifierGroupId: selectedValue },
-        success: function (response) {
-            let $partialView = $(response);
+      url: "/Menu/GetModifierItems",
+      type: "GET",
+      data: { modifierGroupId: selectedValue },
+      success: function (response) {
+        let $partialView = $(response);
 
-            $partialView.find("select.min-select").attr("data-group-id", selectedValue);
-            $partialView.find("select.max-select").attr("data-group-id", selectedValue);
+        $partialView
+          .find("select.min-select")
+          .attr("data-group-id", selectedValue);
+        $partialView
+          .find("select.max-select")
+          .attr("data-group-id", selectedValue);
 
-            $partialView.find("select.min-select").change(updateMinValue);
-            $partialView.find("select.max-select").change(updateMaxValue);
+        $partialView.find("select.min-select").change(updateMinValue);
+        $partialView.find("select.max-select").change(updateMaxValue);
 
-            let maxSelect = $partialView.find("select.max-select");
-            updateMaxValueForEdit.call(maxSelect);
+        let maxSelect = $partialView.find("select.max-select");
+        updateMaxValueForEdit.call(maxSelect);
 
-            $partialView.find(".delete-modifier-group").on("click", function () {
-                let groupId = $(this).attr("modifiergroup-id");
-                $partialView.remove();
-                selectedModifierGroupsforedit = selectedModifierGroupsforedit.filter(obj => obj.modifierGroupId != groupId);
-                console.log("Updated list after deletion:", selectedModifierGroupsforedit);
-            });
+        $partialView.find(".delete-modifier-group").on("click", function () {
+          let groupId = $(this).attr("modifiergroup-id");
+          $partialView.remove();
+          selectedModifierGroupsforedit = selectedModifierGroupsforedit.filter(
+            (obj) => obj.modifierGroupId != groupId
+          );
+          console.log(
+            "Updated list after deletion:",
+            selectedModifierGroupsforedit
+          );
+        });
 
-            $("#modifieritemspartialviewforedit").append($partialView).removeClass("d-none");
-        },
-        error: function () {
-            alert("Error loading modifier items!");
-        }
+        $("#modifieritemspartialviewforedit")
+          .append($partialView)
+          .removeClass("d-none");
+      },
+      error: function () {
+        alert("Error loading modifier items!");
+      },
     });
-});
+  });
 });
