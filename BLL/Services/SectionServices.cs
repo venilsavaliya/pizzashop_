@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BLL.Services;
 
-public class SectionServices:ISectionServices
+public class SectionServices : ISectionServices
 {
     private readonly ApplicationDbContext _context;
 
@@ -29,7 +29,7 @@ public class SectionServices:ISectionServices
     {
 
         var sections = _context.Sections
-                         .Where(c => c.Isdeleted!=true) // Exclude deleted categories
+                         .Where(c => c.Isdeleted != true) // Exclude deleted categories
                          .Select(c => new SectionNameViewModel
                          {
                              SectionId = c.SectionId,
@@ -45,8 +45,8 @@ public class SectionServices:ISectionServices
     // Return list Of Pagination Table List
 
     public TableListPaginationViewModel GetDiningTablesListBySectionId(int sectionid, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
-    {   
-        
+    {
+
         TableListPaginationViewModel model = new() { Page = new() };
         searchKeyword = searchKeyword.ToLower();
         // var categoryId = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryid)?.CategoryId;
@@ -80,56 +80,57 @@ public class SectionServices:ISectionServices
         return model;
     }
 
- 
+
 
     // Add new Section
     public async Task<AuthResponse> AddSection(AddSectionViewModel model)
-    {   
-        try{
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-        var userid = _userservices.GetUserIdfromToken(token);
-
-        var existingtable = _context.Sections.FirstOrDefault(s => s.SectionName == model.SectionName);
-
-        if(existingtable != null)
+    {
+        try
         {
-            if(existingtable.Isdeleted==true)
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
+
+            var existingtable = _context.Sections.FirstOrDefault(s => s.SectionName == model.SectionName);
+
+            if (existingtable != null)
             {
-                existingtable.Isdeleted = false;
-                existingtable.Description = model.Description;
-                existingtable.Createdby = userid;
-                _context.Sections.Update(existingtable);
-                await _context.SaveChangesAsync();
+                if (existingtable.Isdeleted == true)
+                {
+                    existingtable.Isdeleted = false;
+                    existingtable.Description = model.Description;
+                    existingtable.Createdby = userid;
+                    _context.Sections.Update(existingtable);
+                    await _context.SaveChangesAsync();
+                    return new AuthResponse
+                    {
+                        Success = true,
+                        Message = "Section Added Succesfully!"
+                    };
+                }
                 return new AuthResponse
                 {
-                    Success = true,
-                    Message = "Section Added Succesfully!"
+                    Success = false,
+                    Message = "Section Already Exists!"
                 };
             }
-            return new AuthResponse
+
+            var section = new Section
             {
-                Success = false,
-                Message = "Section Already Exists!"
+                SectionName = model.SectionName,
+                Description = model.Description,
+                Createdby = userid
             };
-        }
 
-        var section = new Section
-        {
-            SectionName = model.SectionName,
-            Description = model.Description,
-            Createdby = userid
-        };
+            _context.Sections.Add(section);
+            await _context.SaveChangesAsync();
 
-        _context.Sections.Add(section);
-        await _context.SaveChangesAsync();
-
-        return new AuthResponse
+            return new AuthResponse
             {
                 Success = true,
                 Message = "Section Added Succesfully!"
             };
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine($"Error in AddSection: {e.Message}");
 
@@ -143,38 +144,39 @@ public class SectionServices:ISectionServices
 
     // Edit Section
     public async Task<AuthResponse> EditSection(AddSectionViewModel model)
-    {   
-        try{
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-        var userid = _userservices.GetUserIdfromToken(token);
-        
-
-        var existingsection = _context.Sections.FirstOrDefault(s => s.SectionId == model.Sectionid);
-
-        if(existingsection == null)
+    {
+        try
         {
-            return new AuthResponse
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
+
+
+            var existingsection = _context.Sections.FirstOrDefault(s => s.SectionId == model.Sectionid);
+
+            if (existingsection == null)
             {
-                Success = false,
-                Message = "Section Not Found!"
-            };
-        }
-       
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Section Not Found!"
+                };
+            }
+
             existingsection.SectionName = model.SectionName;
             existingsection.Description = model.Description;
             existingsection.Modifyiedby = userid;
-    
 
-        _context.Sections.Update(existingsection);
-        await _context.SaveChangesAsync();
 
-        return new AuthResponse
+            _context.Sections.Update(existingsection);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
             {
                 Success = true,
                 Message = "Section Updated Succesfully!"
             };
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine($"Error in UpdateSection: {e.Message}");
 
@@ -227,30 +229,59 @@ public class SectionServices:ISectionServices
     // Add New Table
 
     public async Task<AuthResponse> AddTable(AddTableViewmodel model)
-    {   
-        try{
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-        var userid = _userservices.GetUserIdfromToken(token);
-
-        var table = new Diningtable
+    {
+        try
         {
-            SectionId = model.SectionId,
-            Name= model.Name,
-            Capacity=model.Capacity,
-            Status=model.Status,
-            Createdby = userid
-        };
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
 
-        _context.Diningtables.Add(table);
-        await _context.SaveChangesAsync();
+            var existingtablename = _context.Diningtables.FirstOrDefault(t => t.Name.ToLower() == model.Name.ToLower());
 
-        return new AuthResponse
+            if (existingtablename != null)
+            {
+                if (existingtablename.Isdeleted == true)
+                {
+                    existingtablename.Status = model.Status;
+                    existingtablename.Capacity = model.Capacity;
+                    existingtablename.SectionId = model.SectionId;
+
+                    _context.Diningtables.Update(existingtablename);
+                    await _context.SaveChangesAsync();
+
+                    return new AuthResponse
+                    {
+                        Success = true,
+                        Message = "Table Added Succesfully!"
+                    };
+                }
+                else{
+                    return new AuthResponse
+                    {
+                        Success = false,
+                        Message = "Table Already Existed!"
+                    };
+                }
+            }
+
+            var table = new Diningtable
+            {
+                SectionId = model.SectionId,
+                Name = model.Name,
+                Capacity = model.Capacity,
+                Status = model.Status,
+                Createdby = userid
+            };
+
+            _context.Diningtables.Add(table);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
             {
                 Success = true,
                 Message = "Table Added Succesfully!"
             };
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine($"Error in AddTable: {e.Message}");
 
@@ -264,31 +295,60 @@ public class SectionServices:ISectionServices
 
     //  Edit Table 
     public async Task<AuthResponse> EditTable(AddTableViewmodel model)
-    {   
-        try{
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-        var userid = _userservices.GetUserIdfromToken(token);
+    {
+        try
+        {
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
 
-        var table = _context.Diningtables.FirstOrDefault(t=> t.TableId == model.TableId);
+            var table = _context.Diningtables.FirstOrDefault(t => t.TableId == model.TableId);
 
-        
+            var existingtablename = _context.Diningtables.FirstOrDefault(t => t.Name.ToLower() == model.Name.ToLower());
+
+            if (existingtablename != null)
+            {
+                if (existingtablename.Isdeleted == true)
+                {
+                    existingtablename.Status = model.Status;
+                    existingtablename.Capacity = model.Capacity;
+                    existingtablename.SectionId = model.SectionId;
+
+                    _context.Diningtables.Update(existingtablename);
+                    await _context.SaveChangesAsync();
+
+                    return new AuthResponse
+                    {
+                        Success = true,
+                        Message = "Table edited Succesfully!"
+                    };
+                }
+                else{
+                    return new AuthResponse
+                    {
+                        Success = false,
+                        Message = "Table Already Existed!"
+                    };
+                }
+            }
+
+
             table.SectionId = model.SectionId;
-            table.Name= model.Name;
-            table.Capacity=model.Capacity;
-            table.Status=model.Status;
+            table.Name = model.Name;
+            table.Capacity = model.Capacity;
+            table.Status = model.Status;
             table.Modifyiedby = userid;
-        
 
-        _context.Diningtables.Update(table);
-        await _context.SaveChangesAsync();
 
-        return new AuthResponse
+            _context.Diningtables.Update(table);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
             {
                 Success = true,
                 Message = "Table Updated Succesfully!"
             };
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine($"Error in UpdateTable: {e.Message}");
 
@@ -333,14 +393,14 @@ public class SectionServices:ISectionServices
     public async Task<AuthResponse> DeleteTables(List<int> ids)
     {
         try
-        {   
+        {
             foreach (var i in ids)
             {
                 var item = _context.Diningtables.FirstOrDefault(itemInDb => itemInDb.TableId == i);
                 item.Isdeleted = true;
                 _context.Diningtables.Update(item);
             }
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return new AuthResponse
             {
@@ -360,5 +420,5 @@ public class SectionServices:ISectionServices
 
     }
 
- 
+
 }

@@ -53,7 +53,7 @@
                                 <input type="text" class="p-2 w-100" placeholder="Search" id="tableitem-search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
-                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#deletemultipletablemodal" id="DeleteTables">
+                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  onclick="openMassDeleteModalForTable()" id="DeleteTables">
                                 <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
                                     class="small-img" >
                             </div>
@@ -183,7 +183,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form asp-action="EditTable" asp-controller="Section" method="post">
+                <form id="EditTableform" method="post">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col">
@@ -253,7 +253,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form asp-action="AddTable" asp-controller="Section" method="post" id="addtableform">
+                <form  method="post" id="addtableform">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col">
@@ -262,17 +262,18 @@
                                 <label for="NameofTable">Name</label>
                                 <span class="text-danger" asp-validation-for="Table.Name"></span>
                             </div>
-                            </div>
+                            </div> 
                             <div class="col">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="statusoftable"  asp-for="Table.SectionId">
+                                    <select class="form-select" id="sectionoftable"  asp-for="Table.SectionId">
+                                        <option value="">Select section</option>
                                     @foreach(var c in Model.Sections){ 
                                      
                                     <option value="@c.SectionId">@c.SectionName</option>
                                      
                                     }
                                     </select>
-                                    <label for="statusoftable">Section</label>
+                                    <label for="sectionoftable">Section</label>
                                      <span class="text-danger" asp-validation-for="Table.SectionId"></span>
                                 </div>
                             </div>
@@ -280,8 +281,8 @@
                         <div class="row">
                             <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="number" class="form-control" id="floatingInput" asp-for="Table.Capacity" >
-                                <label for="floatingInput">Capacity</label>
+                                <input type="number" class="form-control" id="capacityoftable" asp-for="Table.Capacity" >
+                                <label for="capacityoftable">Capacity</label>
                                 <span class="text-danger" asp-validation-for="Table.Capacity"></span>
 
                             </div>
@@ -547,22 +548,6 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
             {
                 $('#section-list').html(data);
                 $('#section-list-for-smallscreen').html(data);
-
-                const activeSection = document.querySelector("#section-list .category-active-option");
-                const sectionid = activeSection.getAttribute("section-id");
-                const sectionDropdown = document.querySelector("#AddTablemodal select[name='SectionId']");
-
-                // function for automatic selected section option in edit table data
-                if (sectionDropdown) {
-                // Loop through all options and select the matching one
-                    for (let option of sectionDropdown.options) {
-                        console.log(2,option)
-                        if (option.value == sectionid) {
-                            option.selected = true;
-                            break; // Exit the loop after setting the selected option
-                        }
-                    }
-                }
             }
 
         });
@@ -611,7 +596,6 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
     function setDeleteSectionId(element) {
         var Id = element.getAttribute("section-id");
         var deleteBtn = document.getElementById("deleteSectionBtn");
-        //deleteBtn.href = '@Url.Action("DeleteSection", "Section")' + '?id=' + Id;
         deleteBtn.setAttribute("section-id", Id);
     }
 
@@ -633,99 +617,8 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
     }
 
 
-    @* Delete single Dining Table *@
 
-    function setDeleteTableData(element) {
-
-        var Id = element.getAttribute("table-id");
-        var deleteBtn = document.getElementById("deleteTableBtn");
-        //deleteBtn.href = '@Url.Action("DeleteTable", "Section")' + '?id=' + Id;
-        deleteBtn.setAttribute("table-id", Id);
-
-    }
-
-    @* Mass Delete Of Table *@
-
-  $("#deletemultipleTableBtn").click(function (e) {
-    var idlist = [];
-    const checkboxes = document.querySelectorAll(".tablelist_inner_checkbox");
-
-    checkboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            idlist.push(checkbox.value);  
-        }
-    });
-
-    console.log(idlist)
-    
-
-    $.ajax({
-        url: "/Section/DeleteTables",
-        method: "POST",
-        data:{
-            ids: idlist
-         },  
-        success: function (response) {
-            console.log("Items deleted successfully");
-            const activeSection = document.querySelector("#section-list .category-active-option");
-            const sectionid = activeSection.getAttribute("section-id");
-            window.location.href='/Section/Index?id='+sectionid; 
-        },
-        error: function (xhr, status, error) {
-            console.error("Error deleting items:", error);
-        }
-    });
-});
-
-@* Mass Delete For Table  *@
-
-let SelectedTableList = [];
-
-function attachMassDeleteForTable() {
-    // Event listener for main checkbox
-    $(document).on("change", "#main_table_checkbox", function () {
-        let isChecked = this.checked;
-        $(".tablelist_inner_checkbox").prop("checked", isChecked);
-        
-        if (isChecked) {
-            $(".tablelist_inner_checkbox").each(function () {
-                let id = $(this).val();
-                if (!SelectedTableList.includes(id)) {
-                    SelectedTableList.push(id);
-                }
-            });
-        } else {
-            SelectedTableList = [];
-        }
-    });
-
-    // Event listener for inner checkboxes
-    $(document).on("change", ".tablelist_inner_checkbox", function () {
-        let id = $(this).val();
-        if (this.checked) {
-            if (!SelectedTableList.includes(id)) {
-                SelectedTableList.push(id);
-            }
-        } else {
-            SelectedTableList = SelectedTableList.filter(item => item !== id);
-        }
-
-        // Update main checkbox state
-        const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length;
-        $("#main_table_checkbox").prop("checked", allChecked);
-    });
-
-    // Restore previously selected checkboxes
-    $(".tablelist_inner_checkbox").each(function () {
-        if (SelectedTableList.includes($(this).val())) {
-            $(this).prop("checked", true);
-        }
-    });
-
-    // Update main checkbox state initially
-    const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length;
-    $("#main_table_checkbox").prop("checked", allChecked);
-}
+   
 
 
 </script>

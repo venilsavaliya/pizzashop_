@@ -38,7 +38,7 @@
                 <div class="d-flex justify-content-start gap-5">
                     <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTablemodal"
                         item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditTabledata(this)">
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetablemodal" alt="" onclick="setDeleteTableData(this)" table-id="@i.TableId" >
+                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetablemodal" alt="" onclick="setDeleteTableData(this)" table-id="@i.TableId" section-id="@i.SectionId" >
                 </div>
 
             </td>

@@ -116,18 +116,7 @@ public class SectionController : BaseController
 
     var response = _sectionservice.AddTable(model.Table).Result;
 
-    if (!response.Success)
-    {
-      TempData["ToastrType"] = "error";
-      TempData["ToastrMessage"] = response.Message;
-    }
-    else
-    {
-      TempData["ToastrType"] = "success";
-      TempData["ToastrMessage"] = response.Message;
-    }
-
-    return RedirectToAction("Index", "Section");
+    return Json(new { message = response.Message, success = response.Success });
 
   }
 
@@ -138,16 +127,8 @@ public class SectionController : BaseController
   {
     var response = _sectionservice.EditTable(model.Table).Result;
 
-    if (!response.Success)
-    {
-      TempData["ToastrType"] = "error";
-      TempData["ToastrMessage"] = response.Message;
-    }
+    return Json(new { message = response.Message, success = response.Success });
 
-    TempData["ToastrType"] = "success";
-    TempData["ToastrMessage"] = response.Message;
-
-    return RedirectToAction("Index", "Section");
   }
 
   // Delete Table
@@ -156,15 +137,7 @@ public class SectionController : BaseController
   {
     var AuthResponse = _sectionservice.DeleteTable(id).Result;
 
-    if (!AuthResponse.Success)
-    {
-      TempData["ToastrType"] = "error";
-      TempData["ToastrMessage"] = AuthResponse.Message;
-    }
-
-    TempData["ToastrType"] = "success";
-    TempData["ToastrMessage"] = AuthResponse.Message;
-    return RedirectToAction("Index", "Section");
+    return Json(new { message = AuthResponse.Message, success = AuthResponse.Success });
   }
 
   // POST : Delete Multiple Tables
@@ -175,17 +148,7 @@ public class SectionController : BaseController
 
     var AuthResponse = _sectionservice.DeleteTables(ids).Result;
 
-    if (!AuthResponse.Success)
-    {
-      TempData["ToastrType"] = "error";
-      TempData["ToastrMessage"] = AuthResponse.Message;
-    }
-
-    TempData["ToastrType"] = "success";
-    TempData["ToastrMessage"] = AuthResponse.Message;
-    // return RedirectToAction("Index", "Section");
-
-    return Json(new { redirectTo = Url.Action("Index", "Section") });
+    return Json(new { message = AuthResponse.Message, success = AuthResponse.Success });
 
   }
 }

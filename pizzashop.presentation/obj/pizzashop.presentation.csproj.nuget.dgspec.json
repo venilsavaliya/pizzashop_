@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\pizzashop.presentation.csproj": {}
+    "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/pizzashop.presentation.csproj": {}
   },
   "projects": {
-    "D:\\pizzashop_main\\pizzashop_\\BLL\\BLL.csproj": {
+    "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop_main\\pizzashop_\\BLL\\BLL.csproj",
+        "projectUniqueName": "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/BLL.csproj",
         "projectName": "BLL",
-        "projectPath": "D:\\pizzashop_main\\pizzashop_\\BLL\\BLL.csproj",
-        "packagesPath": "C:\\Users\\pce175\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop_main\\pizzashop_\\BLL\\obj\\",
+        "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/BLL.csproj",
+        "packagesPath": "/Users/venil/.nuget/packages/",
+        "outputPath": "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\pce175\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/venil/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -26,8 +26,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
-                "projectPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj"
+              "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj": {
+                "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj"
               }
             }
           }
@@ -36,6 +36,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -83,21 +88,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.410\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
+    "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj",
+        "projectUniqueName": "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj",
-        "packagesPath": "C:\\Users\\pce175\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\obj\\",
+        "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj",
+        "packagesPath": "/Users/venil/.nuget/packages/",
+        "outputPath": "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\pce175\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/venil/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -115,6 +120,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -162,21 +172,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.410\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\pizzashop.presentation.csproj": {
+    "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/pizzashop.presentation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\pizzashop.presentation.csproj",
+        "projectUniqueName": "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/pizzashop.presentation.csproj",
         "projectName": "pizzashop.presentation",
-        "projectPath": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\pizzashop.presentation.csproj",
-        "packagesPath": "C:\\Users\\pce175\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\obj\\",
+        "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/pizzashop.presentation.csproj",
+        "packagesPath": "/Users/venil/.nuget/packages/",
+        "outputPath": "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\pce175\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/venil/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
@@ -188,11 +198,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\pizzashop_main\\pizzashop_\\BLL\\BLL.csproj": {
-                "projectPath": "D:\\pizzashop_main\\pizzashop_\\BLL\\BLL.csproj"
+              "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/BLL.csproj": {
+                "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/BLL.csproj"
               },
-              "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
-                "projectPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj"
+              "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj": {
+                "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj"
               }
             }
           }
@@ -201,6 +211,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -235,7 +250,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.410\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/RuntimeIdentifierGraph.json"
         }
       }
     }

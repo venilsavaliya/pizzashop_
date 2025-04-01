@@ -552,7 +552,7 @@ $(document).ready(function () {
     });
   });
 
-  //submit edit item form
+  //submit edit item form 
 
   $("#editItemForm").submit(function (e) {
     e.preventDefault();
