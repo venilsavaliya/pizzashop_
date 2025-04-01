@@ -110,10 +110,9 @@ function checkSelectedCheckboxesforAdd() {
   $(".modifieritemcheckboxofaddmodal").prop("checked", false);
   $(".modifieritem_main_checkbox_addmodal").prop("checked", false);
 
-  console.log("ok", selectedModifierItemsForAddExistingModifierForAddModal);
 
   // Check only the ones that match IDs in selectedModifierItemsForAddExistingModifier
-  selectedModifierItemsForAddExistingModifierForAddModal.forEach((id) => {
+  selectedModifierItemsForAddExistingModifierForAddModalTemp.forEach((id) => {
     $(`.modifieritemcheckboxofaddmodal[value='${id}']`).prop("checked", true);
   });
 }

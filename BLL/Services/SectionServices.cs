@@ -89,6 +89,30 @@ public class SectionServices:ISectionServices
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
+        var existingtable = _context.Sections.FirstOrDefault(s => s.SectionName == model.SectionName);
+
+        if(existingtable != null)
+        {
+            if(existingtable.Isdeleted==true)
+            {
+                existingtable.Isdeleted = false;
+                existingtable.Description = model.Description;
+                existingtable.Createdby = userid;
+                _context.Sections.Update(existingtable);
+                await _context.SaveChangesAsync();
+                return new AuthResponse
+                {
+                    Success = true,
+                    Message = "Section Added Succesfully!"
+                };
+            }
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Section Already Exists!"
+            };
+        }
+
         var section = new Section
         {
             SectionName = model.SectionName,

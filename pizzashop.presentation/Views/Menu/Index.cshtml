@@ -337,7 +337,7 @@
                 </div> 
                 <div class="d-flex justify-content-end gap-2 p-2">
                     <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClickForAdd()">Add</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="ClearSectionForAddModifierGroup()">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>  
         </div>
@@ -1393,18 +1393,18 @@ function showCheckboxes() {
 
 
 
-
+@* 
 document.getElementById("addexistingmodifierbtnforedit").addEventListener('click',()=>{
     
     var modifiermodal =  bootstrap.Modal.getInstance(document.getElementById("editmodifiergroupmodal"))
     modifiermodal.hide();
     ClearSection();
-    @* updateCheckboxStates(); *@
+
     attachCheckboxListnerModifierItemForEditModal();
     var itemlistmodal = new bootstrap.Modal(document.getElementById("modifieritemslist"));
     itemlistmodal.show();
 
-});
+}); *@
 
 
 @* -----Pagination For Menu Items List------- *@
@@ -1455,6 +1455,7 @@ function PaginationAjax(pageSize,pageNumber) {
                 @* onPartialViewLoaded(); // Ensure checkboxes update after reloading the partial *@
                 checkSelectedCheckboxes();
                 attachCheckboxListnerModifierItemForEditModal();
+    
             },
             error: function () {
                 alert("No Projects Found");
@@ -1481,9 +1482,6 @@ function ModifieritemListForAddPaginationAjax(pageSize,pageNumber) {
             dataType: "html",
             success: function (data) {
                 $("#modifieritemstablecontainerofaddmodal").html(data);
-                @* onPartialViewLoaded();  *@
-                @* attachCheckboxListenersforAddModal(); *@
-                console.log("hello",selectedModifierItemsForAddExistingModifierForAddModal);
                 checkSelectedCheckboxesforAdd();
                 attachCheckboxListnerModifierItemForAddModal();
             },

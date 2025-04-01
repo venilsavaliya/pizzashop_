@@ -13,201 +13,179 @@ using Newtonsoft.Json;
 
 public class SectionController : BaseController
 {
-   private readonly ISectionServices _sectionservice;
-   public SectionController(IJwtService jwtService,IUserService userService,IAdminService adminservice,ISectionServices sectionservice,IAuthorizationService authservice) : base(jwtService,userService,adminservice,authservice)
+  private readonly ISectionServices _sectionservice;
+  public SectionController(IJwtService jwtService, IUserService userService, IAdminService adminservice, ISectionServices sectionservice, IAuthorizationService authservice) : base(jwtService, userService, adminservice, authservice)
+  {
+    _sectionservice = sectionservice;
+  }
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
+  public IActionResult Index(int? id)
+  {
+    var sections = _sectionservice.GetSectionList();
+    if (id == null)
     {
-       _sectionservice = sectionservice;
+      id = sections.First().SectionId;
     }
-    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
-    public IActionResult Index(int? id)
-    { 
-      var sections = _sectionservice.GetSectionList();
-      if (id == null)
-        {
-            id = sections.First().SectionId;
-        }
 
-      ViewBag.active = "Section";
+    ViewBag.active = "Section";
 
-       var model = new SectionAndTableViewModel
-        {
-           SelectedSection = id,
-           Sections = sections,
-           Table = new AddTableViewmodel()
-        };
-       return View(model);
-    }
+    var model = new SectionAndTableViewModel
+    {
+      SelectedSection = id,
+      Sections = sections,
+      Table = new AddTableViewmodel()
+    };
+    return View(model);
+  }
 
   // Get : Return partial View Of Pagination Table List
   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
   public IActionResult GetDiningTableList(int id, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
+  {
+    var sections = _sectionservice.GetSectionList().ToList();
+
+    if (id == 0)
     {
-        var sections = _sectionservice.GetSectionList().ToList();
-
-        if (id == 0)
-        {
-          id = sections.First().SectionId;
-        }
-  
-        var model = _sectionservice.GetDiningTablesListBySectionId(id, pageNumber, pageSize, searchKeyword);
-        ViewBag.active = "Menu";
-
-        return PartialView("~/Views/Section/_TableList.cshtml", model);
+      id = sections.First().SectionId;
     }
 
-    // GET : Section List {Partial View Return}
-    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
-    public IActionResult GetSections(int? id)
+    var model = _sectionservice.GetDiningTablesListBySectionId(id, pageNumber, pageSize, searchKeyword);
+    ViewBag.active = "Menu";
+
+    return PartialView("~/Views/Section/_TableList.cshtml", model);
+  }
+
+  // GET : Section List {Partial View Return}
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanView)]
+  public IActionResult GetSections(int? id)
+  {
+    var sections = _sectionservice.GetSectionList().ToList();
+
+    if (id == null)
     {
-        var sections = _sectionservice.GetSectionList().ToList();
-
-        if (id == null)
-        {
-            id = sections.First().SectionId;
-        }
-
-        var model = new SectionNameListViewModel
-        {
-            Sections = sections,
-            SelectedSection = id
-        };
-
-        return PartialView("~/Views/Section/_SectionList.cshtml", model);
+      id = sections.First().SectionId;
     }
 
-   // POST : Add New Section
-   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
-   [HttpPost]
-    public IActionResult AddSection(SectionAndTableViewModel model)
+    var model = new SectionNameListViewModel
     {
-      var response = _sectionservice.AddSection(model.Section).Result;
+      Sections = sections,
+      SelectedSection = id
+    };
 
-       if(!response.Success)
-        {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
-        }
-    
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message; 
+    return PartialView("~/Views/Section/_SectionList.cshtml", model);
+  }
 
-      return RedirectToAction("Index","Section");
+  // POST : Add New Section
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  [HttpPost]
+  public IActionResult AddSection(SectionAndTableViewModel model)
+  {
+    var response = _sectionservice.AddSection(model.Section).Result;
+
+    return Json(new { message = response.Message, success = response.Success });
+
+
+  }
+  // POST : Edit New Section
+  [HttpPost]
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  public IActionResult EditSection(SectionAndTableViewModel model)
+  {
+    var response = _sectionservice.EditSection(model.Section).Result;
+
+    return Json(new { message = response.Message, success = response.Success });
+
+  }
+
+  // Delete Section
+
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
+  [HttpPost]
+  public IActionResult DeleteSection(int id)
+  {
+    var AuthResponse = _sectionservice.DeleteSection(id).Result;
+
+    return Json(new { message = AuthResponse.Message, success = AuthResponse.Success });
+  }
+
+  // POST : Add New Table
+  [HttpPost]
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  public IActionResult AddTable(SectionAndTableViewModel model)
+  {
+
+    var response = _sectionservice.AddTable(model.Table).Result;
+
+    if (!response.Success)
+    {
+      TempData["ToastrType"] = "error";
+      TempData["ToastrMessage"] = response.Message;
     }
-   // POST : Edit New Section
-   [HttpPost]
-   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
-    public IActionResult EditSection(SectionAndTableViewModel model)
+    else
     {
-      var response = _sectionservice.EditSection(model.Section).Result;
-
-       if(!response.Success)
-        {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
-        }
-    
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message; 
-
-      return RedirectToAction("Index","Section");
-    }
-
-    // Delete Section
-
-    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
-    public IActionResult DeleteSection(int id)
-    {
-        var AuthResponse = _sectionservice.DeleteSection(id).Result;
-
-        if (!AuthResponse.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-        }
-
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
-        return RedirectToAction("Index", "Section");
-    }
-
-    // POST : Add New Table
-   [HttpPost]
-   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
-    public IActionResult AddTable(SectionAndTableViewModel model)
-    {
-      
-      var response = _sectionservice.AddTable(model.Table).Result;
-
-       if(!response.Success)
-        {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
-        }
-        else
-        {
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
-        }
-
-      return RedirectToAction("Index","Section");
-
+      TempData["ToastrType"] = "success";
+      TempData["ToastrMessage"] = response.Message;
     }
 
-    
-   [HttpPost]
-   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
-    public IActionResult EditTable(SectionAndTableViewModel model)
+    return RedirectToAction("Index", "Section");
+
+  }
+
+
+  [HttpPost]
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  public IActionResult EditTable(SectionAndTableViewModel model)
+  {
+    var response = _sectionservice.EditTable(model.Table).Result;
+
+    if (!response.Success)
     {
-      var response = _sectionservice.EditTable(model.Table).Result;
-
-       if(!response.Success)
-        {
-        TempData["ToastrType"] = "error";
-        TempData["ToastrMessage"] = response.Message;
-        }
-    
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = response.Message;
-
-      return RedirectToAction("Index","Section");
+      TempData["ToastrType"] = "error";
+      TempData["ToastrMessage"] = response.Message;
     }
 
-    // Delete Table
-    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
-    public IActionResult DeleteTable(int id)
+    TempData["ToastrType"] = "success";
+    TempData["ToastrMessage"] = response.Message;
+
+    return RedirectToAction("Index", "Section");
+  }
+
+  // Delete Table
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
+  public IActionResult DeleteTable(int id)
+  {
+    var AuthResponse = _sectionservice.DeleteTable(id).Result;
+
+    if (!AuthResponse.Success)
     {
-        var AuthResponse = _sectionservice.DeleteTable(id).Result;
-
-        if (!AuthResponse.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-        }
-
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
-        return RedirectToAction("Index", "Section");
+      TempData["ToastrType"] = "error";
+      TempData["ToastrMessage"] = AuthResponse.Message;
     }
 
-    // POST : Delete Multiple Tables
-    [HttpPost]
-    [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
-    public IActionResult DeleteTables(List<int> ids)
+    TempData["ToastrType"] = "success";
+    TempData["ToastrMessage"] = AuthResponse.Message;
+    return RedirectToAction("Index", "Section");
+  }
+
+  // POST : Delete Multiple Tables
+  [HttpPost]
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
+  public IActionResult DeleteTables(List<int> ids)
+  {
+
+    var AuthResponse = _sectionservice.DeleteTables(ids).Result;
+
+    if (!AuthResponse.Success)
     {
-
-      var AuthResponse = _sectionservice.DeleteTables(ids).Result;
-
-       if (!AuthResponse.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-        }
-
-        TempData["ToastrType"] = "success";
-        TempData["ToastrMessage"] = AuthResponse.Message;
-        // return RedirectToAction("Index", "Section");
-
-        return Json(new { redirectTo = Url.Action("Index", "Section") });
-
+      TempData["ToastrType"] = "error";
+      TempData["ToastrMessage"] = AuthResponse.Message;
     }
+
+    TempData["ToastrType"] = "success";
+    TempData["ToastrMessage"] = AuthResponse.Message;
+    // return RedirectToAction("Index", "Section");
+
+    return Json(new { redirectTo = Url.Action("Index", "Section") });
+
+  }
 }

@@ -37,18 +37,8 @@
                     </div>
                     <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="section-list">
 
-                        @* category list  *@
-
                         @* -------partial view here of section list-------- *@
-
-                        @* @foreach(var c in Model.Sections){ 
-
-                            <div class="category-option-smallscreen d-flex justify-content-start align-items-center gap-2 ">
-                                <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img">
-                                <div>@c.SectionName</div>
-                            </div>
-                        }
-  *@
+  
                     </div>
 
                 </div>
@@ -98,14 +88,14 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Section</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form asp-action="AddSection" asp-controller="Section" method="post">
+                <form id="addsectionform" method="post">
                     <div class="modal-body">
 
                         <div class="d-flex flex-column">
                              
                             <div class="mb-3">
 
-                                <input type="text" class="form-control p-3" id="exampleFormControlInput1" asp-for="Section.SectionName"
+                                <input type="text" class="form-control p-3" id="addsectionname" asp-for="Section.SectionName"
                                     placeholder="Name">
                             </div>
                             <span class="text-danger" asp-validation-for="Section.SectionName"></span>
@@ -135,14 +125,14 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Section</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form asp-action="EditSection" asp-controller="Section" method="post">
+                <form  method="post" id="editsectionform">
                     <div class="modal-body">
                         <div class="d-flex flex-column">
                             <input type="text"  id="Sectionid" asp-for="Section.Sectionid"
                                    hidden>
                             <div class="mb-3">
 
-                                <input type="text" class="form-control p-3" id="SectionName" asp-for="Section.SectionName"
+                                <input type="text" class="form-control p-3" id="SectionNameforedit" asp-for="Section.SectionName"
                                     placeholder="Name">
                             </div>
                             <span class="text-danger" asp-validation-for="Section.SectionName"></span>
@@ -263,7 +253,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form asp-action="AddTable" asp-controller="Section" method="post">
+                <form asp-action="AddTable" asp-controller="Section" method="post" id="addtableform">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col">
@@ -361,6 +351,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/Section/TableItem.js"></script>
 
 
 <script>
@@ -369,7 +360,146 @@
     {
         loadsection();
         TableListPaginationAjax();
+
+    // add section form submission
+    $("#addsectionform").submit(function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    if (!validateAddSectionForm()) {
+      return;
+    }
+
+    // Create FormData object from the form
+    var formData = new FormData(this);
+
+    $.ajax({
+      url: "/Section/AddSection", // URL from the form's action attribute
+      type: "POST", // Form method
+      data: formData, // Form data
+      processData: false, // Important: prevent jQuery from processing the data
+      contentType: false, // Important: prevent jQuery from setting content type
+      success: function (response) {
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("Addsectionmodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let id = $("#section-list .category-active-option").attr(
+            "section-id"
+          );
+          loadsection(id);
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        toastr.error(error);
+      },
+    });
+  });
+
+    // validation for add section
+  function validateAddSectionForm() {
+    const name = $("#addsectionname").val().trim();
+
+    if (name === "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
     })
+    // edit section form submission
+    $("#editsectionform").submit(function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    if (!validateEditSectionForm()) {
+      return;
+    }
+
+    // Create FormData object from the form
+    var formData = new FormData(this);
+
+    $.ajax({
+      url: "/Section/EditSection", // URL from the form's action attribute
+      type: "POST", // Form method
+      data: formData, // Form data
+      processData: false, // Important: prevent jQuery from processing the data
+      contentType: false, // Important: prevent jQuery from setting content type
+      success: function (response) {
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("Editsectionmodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let id = $("#section-list .category-active-option").attr(
+            "section-id"
+          );
+          loadsection(id);
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        toastr.error(error);
+      },
+    });
+  });
+
+    // validation for edit section
+  function validateEditSectionForm() {
+    const name = $("#SectionNameforedit").val().trim();
+
+    if (name === "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+    
+    // delete section 
+
+ 
+
+  $("#deleteSectionBtn").click(function (e) {
+    var id = $(this).attr("section-id");
+    $.ajax({
+      url: "/Section/DeleteSection",
+      method: "POST",
+      data: {
+        id: id,
+      },
+      success: function (response) {
+        // close the opened delete modal
+
+        var deleteModal = bootstrap.Modal.getInstance(
+          document.getElementById("deletesectionmodal")
+        );
+        deleteModal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let secid = $("#section-list .category-active-option").attr(
+            "section-id"
+          );
+          secid == id ? loadsection() : loadsection(secid); // if current section is deleted than by default select first section
+
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error deleting items:", error);
+      },
+    });
+  });
 
     @* Pagination section *@
 
@@ -403,16 +533,12 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
 
     @* Load Sections List *@
 
-    function loadsection(ele)
+    function loadsection(id)
     {
     
-    var id = ele?.getAttribute("section-id");
+    @* var id = ele?.getAttribute("section-id"); *@
 
-    if(id==null)
-    {
-        id=@Model.SelectedSection;
-    }
-    console.log(id)
+
         $.ajax({
             type:"GET",
             url:"/Section/GetSections", 
@@ -424,12 +550,10 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
 
                 const activeSection = document.querySelector("#section-list .category-active-option");
                 const sectionid = activeSection.getAttribute("section-id");
-                console.log(sectionid,"hi")
-
                 const sectionDropdown = document.querySelector("#AddTablemodal select[name='SectionId']");
-        
+
+                // function for automatic selected section option in edit table data
                 if (sectionDropdown) {
-                    console.log(1)
                 // Loop through all options and select the matching one
                     for (let option of sectionDropdown.options) {
                         console.log(2,option)
@@ -454,6 +578,20 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
         });
     }
 
+
+    //load tables  partial view
+
+    function loadTables(id) {
+         $.ajax({
+            url: '@Url.Action("GetDiningTableList", "Section")',
+            type: 'GET',
+            data: {id:id},
+            success: function (data) {
+                $('#diningtablelistcontainer').html(data);
+                attachMassDeleteForTable();
+            }
+        });
+    }
     @* set edit data for section *@
 
     function setEditSectionData(ele)
@@ -464,7 +602,7 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
 
     var editsectionitem= document.getElementById("Editsectionmodal");
     editsectionitem.querySelector("#Sectionid").value = c.sectionId;
-    editsectionitem.querySelector("#SectionName").value = c.sectionName;
+    editsectionitem.querySelector("#SectionNameforedit").value = c.sectionName;
     editsectionitem.querySelector("#Description").value = c.description;
     }
 
@@ -473,7 +611,8 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
     function setDeleteSectionId(element) {
         var Id = element.getAttribute("section-id");
         var deleteBtn = document.getElementById("deleteSectionBtn");
-        deleteBtn.href = '@Url.Action("DeleteSection", "Section")' + '?id=' + Id;
+        //deleteBtn.href = '@Url.Action("DeleteSection", "Section")' + '?id=' + Id;
+        deleteBtn.setAttribute("section-id", Id);
     }
 
     @* set edit data for table *@
@@ -500,7 +639,8 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
 
         var Id = element.getAttribute("table-id");
         var deleteBtn = document.getElementById("deleteTableBtn");
-        deleteBtn.href = '@Url.Action("DeleteTable", "Section")' + '?id=' + Id;
+        //deleteBtn.href = '@Url.Action("DeleteTable", "Section")' + '?id=' + Id;
+        deleteBtn.setAttribute("table-id", Id);
 
     }
 

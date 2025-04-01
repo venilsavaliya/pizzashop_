@@ -245,6 +245,10 @@
       "PackagePath": "staticwebassets\\js\\ModifierItem.js"
     },
     {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\Section\\TableItem.js",
+      "PackagePath": "staticwebassets\\js\\Section\\TableItem.js"
+    },
+    {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

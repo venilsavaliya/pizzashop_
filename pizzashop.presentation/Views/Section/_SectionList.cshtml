@@ -7,7 +7,7 @@
 {
         <div
             class="category-option d-flex justify-content-between align-items-center gap-2 @(Model.SelectedSection == c.SectionId ? "category-active-option" : "")" id="category_option" section-id="@c.SectionId" >
-            <div class="d-flex gap-2" style="cursor: pointer;" onclick="loadsection(this)"  section-id="@c.SectionId"> 
+            <div class="d-flex gap-2" style="cursor: pointer;" onclick="loadsection('@c.SectionId')"  section-id="@c.SectionId"> 
                 <img src="~/images/icons/grid-3x2-gap-fill.svg" alt="" class="category-option-img ">
                 <div>@c.SectionName</div>
             </div>
@@ -16,7 +16,7 @@
           
                 <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#Editsectionmodal" onclick="setEditSectionData(this)" item-obj='@Html.Raw(Json.Serialize(c))'>
             
-                <img src="~/images/icons/trash.svg" data-bs-toggle="modal"
+                <img src="~/images/icons/trash.svg" data-bs-toggle="modal" id="deletesectionBtn"
                     data-bs-target="#deletesectionmodal" onclick="setDeleteSectionId(this)"  section-id="@c.SectionId"
                     alt="">
             </div>
