@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtConfig = builder.Configuration.GetSection("jwt");
@@ -97,11 +98,17 @@ builder.Services.AddScoped<ISectionServices, SectionServices>();
 builder.Services.AddScoped<IMenuServices,MenuServices>();
 builder.Services.AddScoped<ITaxService,TaxService>();
 builder.Services.AddScoped<IOrderService,OrderService>();
+builder.Services.AddScoped<ICustomerService,CustomerService>();
 builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddSingleton<ExcelExportService>();
+
+// Configure Rotativa
+// var rootPath = Directory.GetCurrentDirectory(); // Get the current directory
+// var wkhtmlPath = Path.Combine(rootPath, "wwwroot", "Rotativa"); // Combine paths
+// RotativaConfiguration.Setup(rootPath, wkhtmlPath); // Setup with root and executable path
 
 
 var app = builder.Build();
@@ -120,6 +127,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRotativa();
+
 
 app.MapControllerRoute(
     name: "default",

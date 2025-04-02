@@ -10,18 +10,18 @@ namespace pizzashop.presentation.Controllers;
 
 public class CustomerController : BaseController
 {
-    private readonly IOrderService _orderservice;
+    private readonly ICustomerService _customerservice;
 
     private readonly ExcelExportService _excelExportService;
 
-    public CustomerController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IAuthorizationService authservice, IOrderService orderservice, ExcelExportService excelExportService) : base(jwtService, userService, adminservice, authservice)
+    public CustomerController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IAuthorizationService authservice, ICustomerService customerservice, ExcelExportService excelExportService) : base(jwtService, userService, adminservice, authservice)
     {
-        _orderservice = orderservice;
+        _customerservice = customerservice;
         _excelExportService = excelExportService;
     }
 
 
-    [AuthorizePermission(PermissionName.Orders, ActionPermission.CanView)]
+    [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
     public IActionResult Index()
     {
         ViewBag.active = "Customer";
@@ -29,46 +29,52 @@ public class CustomerController : BaseController
     }
 
     // Return Partial View Of Filtered Order Table List
-    [AuthorizePermission(PermissionName.Orders, ActionPermission.CanView)]
-    public async Task<IActionResult> GetOrderList(string sortColumn = "", string sortOrder = "", int pageNumber = 1, int pageSize = 5, string searchKeyword = "", string status = "", string startDate = null, string endDate = null)
+    [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
+    public async Task<IActionResult> GetCustomerList(string sortColumn = "", string sortOrder = "", int pageNumber = 1, int pageSize = 5, string searchKeyword = "", string startDate = null, string endDate = null)
     {
 
         if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
         {
-            var model = await _orderservice.GetOrderList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword, status, DateTime.Parse(startDate), DateTime.Parse(endDate));
-            return PartialView("~/Views/Order/_OrderList.cshtml", model);
+            var model = await _customerservice.GetCustomerList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword, DateTime.Parse(startDate), DateTime.Parse(endDate));
+            return PartialView("~/Views/Customer/_CustomerList.cshtml", model);
         }
         else
         {
-            var model = await _orderservice.GetOrderList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword, status);
-            return PartialView("~/Views/Order/_OrderList.cshtml", model);
+            var model = await _customerservice.GetCustomerList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword);
+            return PartialView("~/Views/Customer/_CustomerList.cshtml", model);
         }
 
     }
-
 
     // Export The List Of Orders
-    [AuthorizePermission(PermissionName.Orders, ActionPermission.CanView)]
-    public async Task<IActionResult> ExportOrders(string searchKeyword = "", string status = "", string startDate = null, string endDate = null,string timeframe = "")
+    [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
+    public async Task<IActionResult> ExportCustomers(string searchKeyword = "", string startDate = null, string endDate = null,string timeframe = "")
     {
 
         if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
         {
-            var orders = await _orderservice.GetOrderListForExport(searchKeyword, status, DateTime.Parse(startDate), DateTime.Parse(endDate));
+            var customers = await _customerservice.GetCustomerListForExport(searchKeyword, DateTime.Parse(startDate), DateTime.Parse(endDate));
            
-            byte[] fileContents = _excelExportService.ExportOrdersToExcel(orders,searchKeyword,status,timeframe);
+            byte[] fileContents = _excelExportService.ExportCustomerToExcel(customers,searchKeyword,timeframe);
 
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Orders.xlsx");
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
         }
         else
         {
-            var orders = await _orderservice.GetOrderListForExport(searchKeyword, status);
+            var customers = await _customerservice.GetCustomerListForExport(searchKeyword);
 
-            byte[] fileContents = _excelExportService.ExportOrdersToExcel(orders,searchKeyword,status,timeframe);
+            byte[] fileContents = _excelExportService.ExportCustomerToExcel(customers,searchKeyword,timeframe);
 
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Orders.xlsx");
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
         }
 
     }
 
+    // Get Customer History Table Partial View 
+     [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
+    public async Task<IActionResult> GetCustomerHistory(int customerid)
+    {
+        var model = await _customerservice.GetCustomerOrderHistory(customerid);
+        return PartialView("~/Views/Customer/_CustomerOrderList.cshtml", model);
+    }
 }

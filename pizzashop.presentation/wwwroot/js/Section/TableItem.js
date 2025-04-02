@@ -32,7 +32,7 @@ function attachMassDeleteForTable() {
       }
 
       // Update main checkbox state
-      const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length;
+      const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length && $(".tablelist_inner_checkbox:checked").length!=0;
       $("#main_table_checkbox").prop("checked", allChecked);
   });
 
@@ -44,7 +44,7 @@ function attachMassDeleteForTable() {
   });
 
   // Update main checkbox state initially
-  const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length;
+  const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length && $(".tablelist_inner_checkbox:checked").length!=0;
   $("#main_table_checkbox").prop("checked", allChecked);
 }
 
@@ -239,7 +239,7 @@ $(document).ready(function () {
     $.ajax({
       url: "/Section/DeleteTables",
       method: "POST",
-      data: JSON.stringify({ ids: SelectedTableList }), // Properly serialize the data
+      data: { ids: SelectedTableList }, // Properly serialize the data
       success: function (response) {
         var deleteModal = bootstrap.Modal.getInstance(
           document.getElementById("deletemultipletablemodal")

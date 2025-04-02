@@ -1,0 +1,88 @@
+@* @model DAL.ViewModels.MenuViewModel; *@
+@model DAL.ViewModels.CustomerListPaginationViewModel;
+
+
+<table class="table">
+    <tr>
+        <th class="">
+            <div class="d-flex justify-content-center">
+                <span>Name</span>
+                <div
+                    onclick='CustomerListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage,"Name", "@(Model.SortColumn == "Name" && Model.SortOrder == "asc" ? "desc" : "asc")" )'>
+                    <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt="">
+                </div>
+            </div>
+
+        </th>
+        <th class="">
+            <div class="d-flex justify-content-center">
+                Email
+            </div>
+
+        </th>
+                <th class="text-center">Phone Number</th>
+        <th class="">
+            <div class="d-flex justify-content-center">
+                <span>Date</span>
+                <div 
+                    onclick='CustomerListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage,"Date", "@(Model.SortColumn == "Date" && Model.SortOrder == "asc" ? "desc" : "asc")" )'>
+                    <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt="">
+                </div>
+            </div>
+
+        </th>
+
+ 
+        <th class="">
+            <div class="d-flex justify-content-center">
+                <span>Total Order</span>
+                <div
+                    onclick='CustomerListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage,"TotalOrder", "@(Model.SortColumn == "TotalOrder" && Model.SortOrder == "asc" ? "desc" : "asc")" )'>
+                    <img src="~/images/icons/arrow-down-up.svg" class="mx-2" alt="">
+                </div>
+            </div>
+        </th>
+
+
+    </tr>
+
+
+    @foreach (var u in Model.Items)
+    {
+        <tr onclick="openCustomerHistoryModal(@u.CustomerId)">
+            <td class="table-row text-center">@u.Name</td>
+            <td class="table-row text-center">@u.Email</td>
+            <td class="table-row text-center">@u.Mobile</td>
+            <td class="table-row text-center">@u.JoinDate</td>
+            <td class="table-row text-center">@u.TotalVisit</td>
+        </tr>
+    }
+
+
+</table>
+<div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+    <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
+        <div>Items per page: </div>
+        <select class="form-select" style="width:68px ;" aria-label="Default select example" id="pageSizeDropdownfor"
+            onchange="CustomerListPaginationAjax(this.value,1)">
+
+            <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
+            <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
+            <option value=10 selected="@(Model.Page.PageSize == 10 ? true : false)">10</option>
+        </select>
+        <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
+
+        <div onclick="CustomerListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1)"
+            class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
+            <div class="border p-2 px-3"> &lt; </div>
+        </div>
+
+
+        <div onclick="CustomerListPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1)"
+            class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
+            style="text-decoration: none;">
+            <div class="border p-2 px-3">&gt;</div>
+        </div>
+
+    </div>
+</div>

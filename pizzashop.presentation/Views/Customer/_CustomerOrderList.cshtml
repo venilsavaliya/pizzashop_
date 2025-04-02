@@ -1,0 +1,26 @@
+@model IEnumerable<DAL.ViewModels.CustomerHistoryViewModel>;
+
+<table class="table shadow">
+    <tr class="text-success">
+   
+        <th class="text-center">Order Date</th>
+        <th class="text-center">Order Type</th>
+        <th class="text-center">Payment</th>
+        <th class="text-center">Items</th>
+        <th class="text-center">Amount</th>
+    </tr>
+
+
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td class="table-row text-center">@u.Date</td>
+            <td class="table-row text-center">@u.OrderType</td>
+            <td class="table-row text-center">@u.PaymentType</td>
+            <td class="table-row text-center">@u.Totalitems</td>
+            <td class="table-row text-center">@u.TotalAmount</td>
+        </tr>
+    }
+
+
+</table>

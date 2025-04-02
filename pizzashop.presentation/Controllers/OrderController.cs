@@ -5,6 +5,7 @@ using DAL.Constants;
 using BLL.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Rotativa.AspNetCore;
 
 namespace pizzashop.presentation.Controllers;
 
@@ -80,4 +81,16 @@ public class OrderController : BaseController
 
     }
 
+    public async Task<IActionResult> ExportToPdf(int id)
+    {
+        var model = await _orderservice.GetOrderDetailByOrderId(id);
+
+        return new ViewAsPdf("ExportView",model)
+        {
+            FileName = "Report.pdf",
+            PageSize = Rotativa.AspNetCore.Options.Size.A4,
+            PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+            PageMargins = new Rotativa.AspNetCore.Options.Margins(10, 10, 10, 10)
+        };
+    }
 }

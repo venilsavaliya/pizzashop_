@@ -47,7 +47,7 @@
                         </div>
                     </a>
                 </div>
-                @if (ViewBag.CanUserView)
+                @if (ViewBag.CanUserView )
                 {
                     <div class="sidebar-option w-100 p-3 @(ViewBag.active == "Users" ? "active-option" : "")">
                         <a asp-action="GetUserList" asp-controller="User"
@@ -122,8 +122,8 @@
 
                 @if (ViewBag.CanCustomersView)
                 {
-                    <div class="sidebar-option w-100 p-3">
-                        <a asp-action="Index" asp-controller="Customer" class="sidebar-link">
+                    <div class="sidebar-option w-100 p-3  @(ViewBag.active == "Customer" ? "active-option" : "")">
+                        <a asp-action="Index" asp-controller="Customer" class="sidebar-link @(ViewBag.active == "Customer" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/sidebar icons/customers.svg" alt="">
                                 <div>Customers</div>
@@ -268,8 +268,8 @@
                             </div>
                         </a>
                     </div>
-                    <div class="sidebar-option w-100 p-2">
-                        <a href="./superadmindashboard.html" class="sidebar-link">
+                    <div class="sidebar-option w-100 p-2 @(ViewBag.active == "Customer" ? "active-option" : "")">
+                        <a asp-action="Index" asp-controller="Customer" class="sidebar-link @(ViewBag.active == "Customer" ? "active-option" : "")">
                             <div class=" d-flex justify-content-start align-items-center gap-3">
                                 <img src="~/images/icons/customer.svg" alt="">
                                 <div>Customers</div>

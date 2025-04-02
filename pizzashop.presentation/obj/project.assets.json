@@ -915,6 +915,18 @@
           }
         }
       },
+      "Rotativa.AspNetCore/1.4.0": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/Rotativa.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0/Rotativa.AspNetCore.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
         "type": "package",
         "runtimeTargets": {
@@ -3614,6 +3626,24 @@
         "rbush.4.0.0.nupkg.sha512",
         "rbush.nuspec",
         "readme.md"
+      ]
+    },
+    "Rotativa.AspNetCore/1.4.0": {
+      "sha512": "zn0KgqCQqiTuNPYgeqrIJxXafjJUfDJBcUJIhAV5NgWSCX3DOEeg339zMJTbzcCyoJgGPL5LrG+IKZ3k8/Uk9Q==",
+      "type": "package",
+      "path": "rotativa.aspnetcore/1.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net5.0/Rotativa.AspNetCore.dll",
+        "lib/net6.0/Rotativa.AspNetCore.dll",
+        "lib/net7.0/Rotativa.AspNetCore.dll",
+        "lib/net8.0/Rotativa.AspNetCore.dll",
+        "lib/netcoreapp3.1/Rotativa.AspNetCore.dll",
+        "lib/netstandard2.0/Rotativa.AspNetCore.dll",
+        "rotativa.aspnetcore.1.4.0.nupkg.sha512",
+        "rotativa.aspnetcore.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
@@ -7267,23 +7297,24 @@
       "AspNetCoreHero.ToastNotification >= 1.1.0",
       "BLL >= 1.0.0",
       "DAL >= 1.0.0",
-      "Newtonsoft.Json >= 13.0.3"
+      "Newtonsoft.Json >= 13.0.3",
+      "Rotativa.AspNetCore >= 1.4.0"
     ]
   },
   "packageFolders": {
-    "/Users/venil/.nuget/packages/": {}
+    "C:\\Users\\pce175\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/pizzashop.presentation.csproj",
+      "projectUniqueName": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\pizzashop.presentation.csproj",
       "projectName": "pizzashop.presentation",
-      "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/pizzashop.presentation.csproj",
-      "packagesPath": "/Users/venil/.nuget/packages/",
-      "outputPath": "/Users/venil/Code/pizzashop_home/pizzashop_/pizzashop.presentation/obj/",
+      "projectPath": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\pizzashop.presentation.csproj",
+      "packagesPath": "C:\\Users\\pce175\\.nuget\\packages\\",
+      "outputPath": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/venil/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\pce175\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -7295,11 +7326,11 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/BLL.csproj": {
-              "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/BLL/BLL.csproj"
+            "D:\\pizzashop_main\\pizzashop_\\BLL\\BLL.csproj": {
+              "projectPath": "D:\\pizzashop_main\\pizzashop_\\BLL\\BLL.csproj"
             },
-            "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj": {
-              "projectPath": "/Users/venil/Code/pizzashop_home/pizzashop_/DAL/DAL.csproj"
+            "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
+              "projectPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj"
             }
           }
         }
@@ -7308,11 +7339,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -7326,6 +7352,10 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
+          },
+          "Rotativa.AspNetCore": {
+            "target": "Package",
+            "version": "[1.4.0, )"
           }
         },
         "imports": [
@@ -7347,7 +7377,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.410\\RuntimeIdentifierGraph.json"
       }
     }
   },

@@ -82,7 +82,7 @@
             <td class="table-row text-center">@u.TotalAmount</td>
             <td class="table-row text-center">
                 <div class="d-flex justify-content-center gap-5">
-                            <a class="text-black" asp-action="edituser" asp-controller="User" asp-route-id="@u.OrderId"><i
+                            <a class="text-black" asp-controller="Order" asp-action="ExportToPdf" asp-route-id=@u.OrderId><i
                             class="bi bi-filetype-pdf"></i></a>
                             <a class="text-black" asp-action="OrderDetail" asp-controller="Order" asp-route-id=@u.OrderId>
                                 <i class="bi bi-eye"  data-id="@u.OrderId"></i>

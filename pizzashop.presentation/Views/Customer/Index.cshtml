@@ -1,60 +1,9 @@
 @model DAL.ViewModels.MainTaxViewModel
 
-@* <div class="d-flex flex-column flex-md-row justify-content-md-between pt-3 px-3 w-100 ">
-
-    <div class="">
-        <h2 class="custom-blue">Orders</h2>
-    </div>
-    <div class="d-flex gap-2 flex-wrap ">
-        <div class="d-flex flex-column flex-sm-row gap-2">
-            <div class="mb-2 position-relative w-100vw" style="width: 180px;">
-                <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search"
-                    id="orderitem-search-field">
-                <img src="~/images/icons/search.svg" alt="" class="position-absolute" style="right: 18px; top:18px">
-            </div>
-
-            <div class="mb-2" style="width: 180px;">
-                <select class="form-select py-3 border-0" id="OrderStatus">
-                    <option value="">All Status</option>
-                    <option value="1">Pending</option>
-                    <option value="2">Completed</option>
-                    <option value="3">Cancelled</option>
-                    <option value="4">In Progress</option>
-                    <option value="5">Served</option>
-                    <option value="6">On Hold</option>
-                    <option value="7">Failed</option>
-                </select>
-            </div>
-
-        </div>
-        <div class="d-flex flex-column flex-sm-row gap-2">
-            <div class="mb-2" style="width: 180px;">
-                <select class="form-select py-3 border-0" aria-label="Default select example" id="timeframe">
-                    <option selected value="">All Time</option>
-                    <option value="1">Last 7 Days</option>
-                    <option value="2">Last 30 Days</option>
-                    <option value="3">Current Month</option>
-                </select>
-            </div>
-
-            <div class="mb-2 d-flex justify-content-center" style="width: fit-content;">
-                <div type="button" class=" custom-btn-bg text-white px-3 border rounded d-flex align-items-center "
-                    id="exportbtn">
-                    <span class="fs-5 fw-semibold m-2" style="margin-top: 0px !important;"><img
-                            src="~/images/icons/export.png" alt="" srcset="" height="25" width="25"
-                            style="filter: invert(1); "></span> <span>Export</span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</div> *@
-
 <div class="d-flex flex-column flex-md-row justify-content-md-between pt-3 px-3 w-100">
 
     <div>
-        <h2 class="custom-blue">Orders</h2>
+        <h2 class="custom-blue">Customers</h2>
     </div>
 
     <div class="d-flex gap-2 flex-wrap w-100 justify-content-md-end">
@@ -65,21 +14,9 @@
         <!-- Search Bar & Order Status -->
         <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1">
             <div class="mb-2 position-relative flex-grow-1">
-                <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search" id="orderitem-search-field">
+                <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search"
+                    id="customer-search-field">
                 <img src="~/images/icons/search.svg" alt="" class="position-absolute" style="right: 18px; top: 18px;">
-            </div>
-
-            <div class="mb-2 flex-grow-1">
-                <select class="form-select py-3 border-0 w-100" id="OrderStatus">
-                    <option value="">All Status</option>
-                    <option value="1">Pending</option>
-                    <option value="2">Completed</option>
-                    <option value="3">Cancelled</option>
-                    <option value="4">In Progress</option>
-                    <option value="5">Served</option>
-                    <option value="6">On Hold</option>
-                    <option value="7">Failed</option>
-                </select>
             </div>
         </div>
 
@@ -91,20 +28,19 @@
                     <option value="1">Last 7 Days</option>
                     <option value="2">Last 30 Days</option>
                     <option value="3">Current Month</option>
+                    <option value="4">Custome Date</option>
                 </select>
             </div>
 
- <div class="mb-2 d-flex justify-content-center">
-    <div type="button" 
-         class="custom-btn-bg text-white px-3 border rounded d-flex align-items-center" 
-         id="exportbtn"
-         style="width: fit-content; min-width: max-content;">
-        <span class="fs-5 fw-semibold m-2">
-            <img src="~/images/icons/export.png" alt="" height="25" width="25" style="filter: invert(1);">
-        </span>
-        <span>Export</span>
-    </div>
-</div>
+            <div class="mb-2 d-flex justify-content-center">
+                <div type="button" class="custom-btn-bg text-white px-3 border rounded d-flex align-items-center"
+                    id="customerexportbtn" style="width: fit-content; min-width: max-content;">
+                    <span class="fs-5 fw-semibold m-2">
+                        <img src="~/images/icons/export.png" alt="" height="25" width="25" style="filter: invert(1);">
+                    </span>
+                    <span>Export</span>
+                </div>
+            </div>
 
 
         </div>
@@ -113,35 +49,308 @@
 
 </div>
 
-
-<div class="d-flex flex-column flex-md-row justify-content-md-end  gap-3  px-3 flex-wrap w-100">
-
-    <!-- Date Filters -->
-    <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1 justify-content-md-end" >
-        <div class="form-floating flex-grow-1 " style="max-width: 340px;">
-            <input type="date" id="fromDate" class="form-control py-2 w-100">
-            <label for="fromDate">From Date</label>
-        </div>
-
-        <div class="form-floating flex-grow-1" style="max-width: 340px;">
-            <input type="date" id="toDate" class="form-control py-2 w-100">
-            <label for="toDate">To Date</label>
-        </div>
-    </div>
-
-    
-
-    <!-- Buttons -->
-    <div class="d-flex gap-2">
-        <button class="custom-btn-bg text-white px-4 py-2 border rounded text-center"
-            onclick="HandleSearch()">
-            Search
-        </button>
-
-        <button class="custom-blue-border px-4 py-2 rounded text-center" onclick="ClearFilters()">
-            <span class="custom-blue">Clear</span>
-        </button>
-    </div>
-
+<div class="table-section bg-white table-responsive mt-5 ms-2 me-2 py-3 px-4 shadow " id="Customerlistcontainer">
+    @* Customer Table List Partial View *@
 </div>
 
+@* =========== Modals =============== *@
+
+<div class="modal fade" id="CustomeDateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content w-100">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Select Date Range</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="customeDateForm" method="post">
+                <div class="modal-body">
+                    <div class="d-flex gap-2 flex-grow-1 justify-content-between">
+                        <div class="form-floating flex-grow-1 " style="max-width: 340px;">
+                            <input type="date" id="fromDate" class="form-control py-2 w-100">
+                            <label for="fromDate">From Date</label>
+                        </div>
+
+                        <div class="form-floating flex-grow-1" style="max-width: 340px;">
+                            <input type="date" id="toDate" class="form-control py-2 w-100">
+                            <label for="toDate">To Date</label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="d-flex justify-content-center gap-2 p-2 mb-2">
+                    <button type="submit" class="btn custom-btn-bg text-white fw-medium">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CustomerHistoryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content w-100">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Customer History</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body container">
+                <div class="">
+                    <div class="row mb-2 gap-2">
+                        <div class="col p-2 shadow-sm">
+                            <div class="border d-flex justify-content-between p-2 mb-2">
+                                <div>Name</div>
+                                <div class="fw-bold">Ria</div>
+                            </div>
+                            <div class="border d-flex justify-content-between p-2 mb-2">
+                                <div>Name</div>
+                                <div class="fw-bold">Ria</div>
+                            </div>
+                            <div class="border d-flex justify-content-between p-2 mb-2">
+                                <div>Name</div>
+                                <div class="fw-bold">Ria</div>
+                            </div>
+                        </div>
+                        <div class="col p-2 ">
+                            <div class="d-flex justify-content-between shadow-sm p-2 mb-2">
+                                <div>Average Bill</div>
+                                <div class="fw-bold">250.00</div>
+                            </div>
+                            <div class="d-flex justify-content-between shadow-sm p-2 mb-2">
+                                <div>Average Bill</div>
+                                <div class="fw-bold">250.00</div>
+                            </div>
+                            <div class="d-flex justify-content-between shadow-sm p-2 mb-2">
+                                <div>Average Bill</div>
+                                <div class="fw-bold">250.00</div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="" id="customerHistoryListContainer">
+                        @* Customer Order List Partial View *@
+                    </div>
+                    
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+
+    // ajax call to fetch customer history partial view
+        function getCustomerHistory(customerid) {
+            $.ajax({
+                url: "/Customer/GetCustomerHistory",
+                data: { 'customerid': customerid },
+                type: "GET",
+                dataType: "html",
+                success: function (data) {
+                    $("#customerHistoryListContainer").html(data);
+                },
+                error: function () {
+                    $("#customerHistoryListContainer").html('An error has occurred');
+                }
+            });
+        }
+
+    // open customer history modal
+
+    function openCustomerHistoryModal(customerid) {
+        var modal = new bootstrap.Modal(document.getElementById('CustomerHistoryModal'));
+        modal.show();
+
+        //set customer order list in modal
+
+        getCustomerHistory(customerid)
+    }
+    $(document).ready(function () {
+        CustomerListPaginationAjax();
+
+        // set min and max for the calender 
+        let today = new Date().toISOString().slice(0, 10);
+        $("#fromDate").attr("max", today);
+
+        $("#fromDate").on("change", function () {
+            let fromdate = $("#fromDate").val();
+            $("#toDate").attr("min", fromdate);
+        });
+
+        $("#toDate").on("change", function () {
+            let todate = $("#toDate").val();
+            $("#fromDate").attr("max", todate);
+        });
+
+
+        
+
+
+        // Export Customer detail to excel sheet
+
+        $("#customerexportbtn").on("click", () => {
+            let searchkeyword = $("#customer-search-field").val();
+
+
+            var startDate = $("#fromDate").val();
+            var endDate = $("#toDate").val();
+
+            var timeframevalue = $("#timeframe").val();
+            var timeframetext = $("#timeframe option:selected").text();
+
+
+
+
+            if (!startDate && !endDate && timeframevalue) {
+
+                endDate = new Date().toISOString().slice(0, 10);
+
+                startDate = new Date();
+
+                if (timeframevalue == "1") {
+                    startDate.setDate(startDate.getDate() - 7);
+                    startDate = startDate.toISOString().slice(0, 10);
+                }
+                else if (timeframevalue == "2") {
+                    startDate.setDate(startDate.getDate() - 30);
+                    startDate = startDate.toISOString().slice(0, 10);
+                }
+                else if (timeframevalue == "3") {
+                    let today = new Date();
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    console.log("hii1", startDate)
+                    startDate = startDate.getFullYear() + "-" +
+                        String(startDate.getMonth() + 1).padStart(2, '0') + "-" +
+                        String(startDate.getDate()).padStart(2, '0');
+                    console.log("hii", startDate)
+                }
+            }
+
+
+
+            $.ajax({
+                url: "/Customer/ExportCustomers",
+                type: "GET",
+                data: { 'searchKeyword': searchkeyword, 'startDate': startDate, 'endDate': endDate, 'timeframe': timeframetext },
+                xhrFields: {
+                    responseType: "blob" // Expect a binary file (blob) as the response
+                },
+                success: function (data) {
+                    var blob = new Blob([data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                    var link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Customers.xlsx";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                },
+                error: function () {
+                    alert("Error exporting the file.");
+                }
+            });
+
+        })
+
+
+
+
+        // submit cuastom date form 
+        $("#customeDateForm").submit(function (e) {
+            e.preventDefault();
+            console.log("dub")
+            console.log($("#fromDate"));
+            console.log($("#toDate").val());
+
+            if ($("#fromDate").val() == "" || $("#toDate").val() == "") {
+                toastr.warning("Please select valid date");
+                return;
+            }
+            CustomerListPaginationAjax();
+            var Modal = bootstrap.Modal.getInstance(
+                document.getElementById("CustomeDateModal")
+            );
+            Modal.hide();
+
+        });
+
+        //open custom date modal
+        function handleOpenDateModal() {
+            var modal = new bootstrap.Modal(document.getElementById('CustomeDateModal'));
+            modal.show();
+        }
+
+        $("#timeframe").change(function () {
+            if ($("#timeframe").val() == "4") {
+                handleOpenDateModal();
+            }
+            else {
+                CustomerListPaginationAjax();
+            }
+
+        });
+    })
+    function CustomerListPaginationAjax(pageSize, pageNumber, sortColumn, sortOrder) {
+
+        let searchkeyword = $("#customer-search-field").val();
+
+        var startDate = $("#fromDate").val();
+
+        var endDate = $("#toDate").val();
+
+        var timeframevalue = $("#timeframe").val();
+
+        if (!startDate && !endDate && timeframevalue) {
+
+            endDate = new Date().toISOString().slice(0, 10);
+
+            startDate = new Date();
+
+            if (timeframevalue == "1") {
+                startDate.setDate(startDate.getDate() - 7);
+                startDate = startDate.toISOString().slice(0, 10);
+            }
+            else if (timeframevalue == "2") {
+                startDate.setDate(startDate.getDate() - 30);
+                startDate = startDate.toISOString().slice(0, 10);
+            }
+            else if (timeframevalue == "3") {
+                let today = new Date();
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+
+                startDate = startDate.getFullYear() + "-" +
+                    String(startDate.getMonth() + 1).padStart(2, '0') + "-" +
+                    String(startDate.getDate()).padStart(2, '0');
+            }
+        }
+
+        $.ajax({
+            url: "/Customer/GetCustomerList",
+            data: { 'pageSize': pageSize, 'pageNumber': pageNumber, 'searchKeyword': searchkeyword, 'sortColumn': sortColumn, 'sortOrder': sortOrder, 'startDate': startDate, 'endDate': endDate },
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#Customerlistcontainer").html(data);
+            },
+            error: function () {
+                $("#Customerlistcontainer").html('An error has occurred');
+            }
+        });
+    }
+
+    document.getElementById("customer-search-field").addEventListener('keyup', () => {
+        CustomerListPaginationAjax();
+    })
+</script>
