@@ -1,0 +1,61 @@
+@model DAL.ViewModels.CustomerHistoryDetailViewModel;
+
+<div class="">
+    <div class="row mb-2 gap-2">
+        <div class="col p-2 shadow-sm">
+            <div class="border d-flex justify-content-between p-2 mb-2">
+                <div>Name</div>
+                <div class="fw-bold">@Model.Name</div>
+            </div>
+            <div class="border d-flex justify-content-between p-2 mb-2">
+                <div>MobileNumber</div>
+                <div class="fw-bold">@Model.Mobile</div>
+            </div>
+            <div class="border d-flex justify-content-between p-2 mb-2">
+                <div>Max Order</div>
+                <div class="fw-bold">@Model.MaxOrderAmount.ToString("f2")</div>
+            </div>
+        </div>
+        <div class="col p-2 ">
+            <div class="d-flex justify-content-between shadow-sm p-2 mb-2">
+                <div>Average Bill</div>
+                <div class="fw-bold">@Model.AverageOrderAmount.ToString("f2")</div>
+            </div>
+            <div class="d-flex justify-content-between shadow-sm p-2 mb-2">
+                <div>Coming Since</div>
+                <div class="fw-bold">@Model.JoinDate</div>
+            </div>
+            <div class="d-flex justify-content-between shadow-sm p-2 mb-2">
+                <div>Visits</div>
+                <div class="fw-bold">@Model.TotalVisit</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="">
+        <table class="table shadow">
+        <tr class="text-success">
+
+            <th class="text-center">Order Date</th>
+            <th class="text-center">Order Type</th>
+            <th class="text-center">Payment</th>
+            <th class="text-center">Items</th>
+            <th class="text-center">Amount</th>
+        </tr>
+
+
+        @foreach (var u in Model.Items)
+        {
+            <tr>
+                <td class="table-row text-center">@u.Date</td>
+                <td class="table-row text-center">@(u.OrderType ? "DineIn" : "Take Away")</td>
+                <td class="table-row text-center">@u.PaymentType</td>
+                <td class="table-row text-center">@u.Totalitems</td>
+                <td class="table-row text-center">@u.TotalAmount.ToString("f2")</td>
+            </tr>
+        }
+        </table>
+    </div>
+
+</div>

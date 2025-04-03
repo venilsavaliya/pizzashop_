@@ -1,8 +1,6 @@
 namespace DAL.ViewModels;
 
-
-
-public class CustomerHistoryViewModel
+public class CustomerHistoryViewModel 
 {
     public DateTime Date {get;set;}
 

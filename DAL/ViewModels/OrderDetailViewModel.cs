@@ -2,6 +2,7 @@ namespace DAL.ViewModels;
 
 public class OrderDetailViewModel
 {
+    public int OrderId { get; set; }
     public string OrderStatus { get; set; } = null!;
 
     public int InvoiceId { get; set; }

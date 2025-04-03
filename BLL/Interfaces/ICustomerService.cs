@@ -8,5 +8,5 @@ public interface ICustomerService
 
     public  Task<IEnumerable<CustomerViewModel>> GetCustomerListForExport(string searchKeyword = "", DateTime? startDate = null, DateTime? endDate = null);
 
-    public Task<IEnumerable<CustomerHistoryViewModel>> GetCustomerOrderHistory(int orderid);
+    public Task<CustomerHistoryDetailViewModel> GetCustomerOrderHistory(int orderid);
 }

@@ -151,7 +151,6 @@ public class OrderService : IOrderService
     }
 
     // Get Data For View Order Detail
-
     public async Task<OrderDetailViewModel> GetOrderDetailByOrderId(int id)
     {
 
@@ -166,7 +165,8 @@ public class OrderService : IOrderService
                     join dish in _context.Dishritems on id equals dish.Orderid
 
                     select new OrderDetailViewModel
-                    {
+                    {   
+                        OrderId = id,
                         OrderStatus = o.OrderStatus,
                         InvoiceId = i.InvoiceId,
                         Paidon = i.Paidon,

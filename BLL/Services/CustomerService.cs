@@ -143,20 +143,43 @@ public class CustomerService : ICustomerService
 
     // Get Customer Order History 
 
-    public async Task<IEnumerable<CustomerHistoryViewModel>> GetCustomerOrderHistory(int customerid)
+    public async Task<CustomerHistoryDetailViewModel> GetCustomerOrderHistory(int customerid)
     {
-        var query = from o in _context.Orders
-                    where o.CustomerId == customerid
-                    select new CustomerHistoryViewModel
-                    {
-                        Date = o.OrderDate,
-                        OrderType = true,
-                        PaymentType = o.PaymentMode,
-                        Totalitems = _context.Dishritems.Where(i=>i.Orderid == o.OrderId).Count(),
-                        TotalAmount = o.TotalAmount
-                    };
 
-        return query.ToList();
+        var query = from o in _context.Orders
+                     where o.CustomerId == customerid
+                     select new CustomerHistoryDetailViewModel
+                     {
+                         CustomerId = o.CustomerId,
+                         Name = o.Customer.Name,
+                         Mobile = o.Customer.Mobile,
+                         MaxOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Max(i => i.TotalAmount),
+                         AverageOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Average(i => i.TotalAmount),
+                         TotalVisit = _context.Customers.FirstOrDefault(i => i.CustomerId == customerid).TotalVisit,
+                         JoinDate = o.Customer.Createddate,
+                         Items = (from od in _context.Orders
+                                  where od.CustomerId == customerid
+                                  select new CustomerHistoryViewModel
+                                  {
+                                      Date = od.OrderDate,
+                                      OrderType = true,
+                                      PaymentType = od.PaymentMode,
+                                      Totalitems = _context.Dishritems.Where(i => i.Orderid == od.OrderId).Count(),
+                                      TotalAmount = od.TotalAmount
+                                  }).ToList()
+                     };
+        // var query = from o in _context.Orders
+        //             where o.CustomerId == customerid
+        //             select new CustomerHistoryViewModel
+        //             {
+        //                 Date = o.OrderDate,
+        //                 OrderType = true,
+        //                 PaymentType = o.PaymentMode,
+        //                 Totalitems = _context.Dishritems.Where(i => i.Orderid == o.OrderId).Count(),
+        //                 TotalAmount = o.TotalAmount
+        //             };
+
+        return query.FirstOrDefault();
     }
 
 }

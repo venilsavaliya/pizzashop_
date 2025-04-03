@@ -75,6 +75,6 @@ public class CustomerController : BaseController
     public async Task<IActionResult> GetCustomerHistory(int customerid)
     {
         var model = await _customerservice.GetCustomerOrderHistory(customerid);
-        return PartialView("~/Views/Customer/_CustomerOrderList.cshtml", model);
+        return PartialView("~/Views/Customer/_CustomerHistory.cshtml", model);
     }
 }

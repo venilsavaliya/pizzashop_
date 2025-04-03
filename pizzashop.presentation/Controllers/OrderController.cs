@@ -35,6 +35,10 @@ public class OrderController : BaseController
     {
         ViewBag.active = "Order";
         var model = await _orderservice.GetOrderDetailByOrderId(id);
+        if(model == null)
+        {
+            return View("Index");
+        }
         return View(model);
     }
 
@@ -55,7 +59,6 @@ public class OrderController : BaseController
         }
 
     }
-
 
     // Export The List Of Orders
     [AuthorizePermission(PermissionName.Orders, ActionPermission.CanView)]
