@@ -16,7 +16,15 @@ function attachMassDeleteForTable() {
               }
           });
       } else {
-          SelectedTableList = [];
+          $(".tablelist_inner_checkbox").each(function () {
+            let id = parseInt($(this).val());
+            // Remove the unchecked item from the array
+            SelectedTableList = SelectedTableList.filter(
+              (item) => item != id
+            );
+          });
+
+          console.log("ok table list",SelectedTableList);
       }
   });
 

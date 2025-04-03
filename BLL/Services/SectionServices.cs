@@ -244,6 +244,7 @@ public class SectionServices : ISectionServices
                     existingtablename.Status = model.Status;
                     existingtablename.Capacity = model.Capacity;
                     existingtablename.SectionId = model.SectionId;
+                    existingtablename.Isdeleted = false;
 
                     _context.Diningtables.Update(existingtablename);
                     await _context.SaveChangesAsync();

@@ -1,17 +1,13 @@
-
-
-
 // load partial views of selected item for add modifier group modal
 
-function SetPartialViewOfSelectedModifierItemsForAddModal()
-{
+function SetPartialViewOfSelectedModifierItemsForAddModal() {
   $("#selectedModifieritemcontainer").html("");
   // for showing partial view of selected modifier item
   selectedModifierItemsForAddExistingModifierForAddModal.forEach(function (
     modifierId
   ) {
     $.ajax({
-      url: `/Menu/GetModifierItemsNamePVByModifieritemId`, 
+      url: `/Menu/GetModifierItemsNamePVByModifieritemId`,
       type: "GET",
       data: { modifier_id: modifierId },
       success: function (modifierData) {
@@ -42,14 +38,11 @@ function SetPartialViewOfSelectedModifierItemsForAddModal()
         );
       },
     });
-
-    
   });
 }
 // load partial views of selected item for edit modifier group modal
 
-function SetPartialViewOfSelectedModifierItemsForEditModal()
-{
+function SetPartialViewOfSelectedModifierItemsForEditModal() {
   $("#selectedModifieritemcontainerforedit").html("");
   selectedModifierItemsForAddExistingModifier.forEach(function (modifierId) {
     $.ajax({
@@ -91,7 +84,7 @@ function ClearSectionForEditModifierGroup() {
   $("#selectedModifieritemcontainerforedit").html("");
   selectedModifierItemsForAddExistingModifier = [];
   selectedModifierItemsForAddExistingModifierTemp = [];
-  console.log("clear",selectedModifierItemsForAddExistingModifierTemp)
+  console.log("clear", selectedModifierItemsForAddExistingModifierTemp);
   $(".modifieritemcheckboxofmodal").prop("checked", false);
   $("#modifier_main_checkbox_modal").prop("checked", false);
 }
@@ -101,9 +94,10 @@ let selectedModifierItemsForAddExistingModifierForAddModalTemp = [];
 
 // handle check box selection in add existing modifier item for add modal
 function attachCheckboxListnerModifierItemForAddModal() {
-  if(selectedModifierItemsForAddExistingModifierForAddModalTemp.length==0)
-  {
-    selectedModifierItemsForAddExistingModifierForAddModalTemp = [...selectedModifierItemsForAddExistingModifierForAddModal];
+  if (selectedModifierItemsForAddExistingModifierForAddModalTemp.length == 0) {
+    selectedModifierItemsForAddExistingModifierForAddModalTemp = [
+      ...selectedModifierItemsForAddExistingModifierForAddModal,
+    ];
   }
 
   // Event listener for main checkbox
@@ -135,7 +129,10 @@ function attachCheckboxListnerModifierItemForAddModal() {
       });
     }
 
-    console.log("Selected Items:", selectedModifierItemsForAddExistingModifierForAddModal);
+    console.log(
+      "Selected Items:",
+      selectedModifierItemsForAddExistingModifierForAddModal
+    );
   });
 
   // Event listener for inner checkboxes
@@ -164,7 +161,10 @@ function attachCheckboxListnerModifierItemForAddModal() {
         $(".modifieritemcheckboxofaddmodal:checked").length &&
       $(".modifieritemcheckboxofaddmodal:checked").length !== 0;
     $("#modifieritem_main_checkbox_addmodal").prop("checked", allChecked);
-    console.log("Selected Items:", selectedModifierItemsForAddExistingModifierForAddModalTemp);
+    console.log(
+      "Selected Items:",
+      selectedModifierItemsForAddExistingModifierForAddModalTemp
+    );
   });
 
   // Restore previously selected checkboxes
@@ -186,7 +186,6 @@ function attachCheckboxListnerModifierItemForAddModal() {
   $("#modifieritem_main_checkbox_addmodal").prop("checked", allChecked);
 }
 
-
 // add partial view of the  selected modifier item in add modifier group modal
 
 function handleAddButtonClickForAdd() {
@@ -195,8 +194,10 @@ function handleAddButtonClickForAdd() {
     selectedModifierItemsForAddExistingModifierForAddModal
   );
 
-  selectedModifierItemsForAddExistingModifierForAddModal = [...selectedModifierItemsForAddExistingModifierForAddModalTemp];
-  selectedModifierItemsForAddExistingModifierForAddModalTemp=[];
+  selectedModifierItemsForAddExistingModifierForAddModal = [
+    ...selectedModifierItemsForAddExistingModifierForAddModalTemp,
+  ];
+  selectedModifierItemsForAddExistingModifierForAddModalTemp = [];
 
   if (selectedModifierItemsForAddExistingModifierForAddModal.length == 0) {
     toastr.warning("Please Select Modifier Item!");
@@ -345,12 +346,12 @@ function checkSelectedCheckboxes() {
 
 // handle check box selection in add existing modifier item for add modal
 function attachCheckboxListnerModifierItemForEditModal() {
-console.log("first",selectedModifierItemsForAddExistingModifierTemp)
-console.log("second",selectedModifierItemsForAddExistingModifier)
-  if(selectedModifierItemsForAddExistingModifierTemp.length==0)
-  {
-    selectedModifierItemsForAddExistingModifierTemp = [...selectedModifierItemsForAddExistingModifier];
-
+  console.log("first", selectedModifierItemsForAddExistingModifierTemp);
+  console.log("second", selectedModifierItemsForAddExistingModifier);
+  if (selectedModifierItemsForAddExistingModifierTemp.length == 0) {
+    selectedModifierItemsForAddExistingModifierTemp = [
+      ...selectedModifierItemsForAddExistingModifier,
+    ];
   }
   // Event listener for main checkbox
   $(document).on("change", "#modifier_main_checkbox_modal", function () {
@@ -361,7 +362,9 @@ console.log("second",selectedModifierItemsForAddExistingModifier)
       $(".modifieritemcheckboxofmodal").each(function () {
         let id = $(this).val();
         if (
-          !selectedModifierItemsForAddExistingModifierTemp.includes(parseInt(id))
+          !selectedModifierItemsForAddExistingModifierTemp.includes(
+            parseInt(id)
+          )
         ) {
           selectedModifierItemsForAddExistingModifierTemp.push(parseInt(id));
         }
@@ -382,7 +385,9 @@ console.log("second",selectedModifierItemsForAddExistingModifier)
   $(document).on("change", ".modifieritemcheckboxofmodal", function () {
     let id = $(this).val();
     if (this.checked) {
-      if (!selectedModifierItemsForAddExistingModifierTemp.includes(parseInt(id))) {
+      if (
+        !selectedModifierItemsForAddExistingModifierTemp.includes(parseInt(id))
+      ) {
         selectedModifierItemsForAddExistingModifierTemp.push(parseInt(id));
       }
     } else {
@@ -402,7 +407,9 @@ console.log("second",selectedModifierItemsForAddExistingModifier)
 
   // Restore previously selected checkboxes
   $(".modifieritemcheckboxofmodal").each(function () {
-    if (selectedModifierItemsForAddExistingModifierTemp.includes($(this).val())) {
+    if (
+      selectedModifierItemsForAddExistingModifierTemp.includes($(this).val())
+    ) {
       $(this).prop("checked", true);
     }
   });
@@ -443,10 +450,12 @@ function setDeleteModifierGroupId(ele) {
 
 // add partial view of the  selected modifier item in edit modifier group modal
 function handleAddButtonClick() {
-  console.log("add click")
-  console.log(selectedModifierItemsForAddExistingModifierTemp)
-  selectedModifierItemsForAddExistingModifier = [...selectedModifierItemsForAddExistingModifierTemp];
-  console.log(selectedModifierItemsForAddExistingModifier)
+  console.log("add click");
+  console.log(selectedModifierItemsForAddExistingModifierTemp);
+  selectedModifierItemsForAddExistingModifier = [
+    ...selectedModifierItemsForAddExistingModifierTemp,
+  ];
+  console.log(selectedModifierItemsForAddExistingModifier);
   selectedModifierItemsForAddExistingModifierTemp = [];
   if (selectedModifierItemsForAddExistingModifier.length == 0) {
     toastr.warning("Please Select Modifier Item!");
@@ -458,43 +467,47 @@ function handleAddButtonClick() {
     document.getElementById("modifieritemslist")
   );
   itemlistmodal.hide();
+}
 
-
+// this will make sure list is clear before opening add modifier group modal 
+function ClearListOfModifierItems()
+{
+  console.log("inn")
+  selectedModifierItemsForAddExistingModifierForAddModal = [];
+  selectedModifierItemsForAddExistingModifierForAddModalTemp = [];
+  console.log("clear", selectedModifierItemsForAddExistingModifierForAddModalTemp);
+  $(".modifieritemcheckboxofaddmodal").prop("checked", false);
+  $("#modifieritem_main_checkbox_addmodal").prop("checked", false);
 }
 
 $(document).ready(function () {
   attachHoverEffect();
 
   // Event listener for add modifier group modal
-  $('#modifieritemslist').on('shown.bs.modal', function () {
-    
+  $("#modifieritemslist").on("shown.bs.modal", function () {
     selectedModifierItemsForAddExistingModifierTemp = [];
-    
   });
-  $('#modifieritemslistforaddgroup').on('hide.bs.modal', function () {
-    
-    selectedModifierItemsForAddExistingModifierForAddModalTemp=[];
-  
+  $("#modifieritemslistforaddgroup").on("hide.bs.modal", function () {
+    selectedModifierItemsForAddExistingModifierForAddModalTemp = [];
+
     SetPartialViewOfSelectedModifierItemsForAddModal();
-    
+
     var Modal = bootstrap.Modal.getInstance(
       document.getElementById("addmodifiergroupmodal")
     );
     Modal.show();
   });
 
-  $('#modifieritemslist').on('hide.bs.modal', function () {
-    
-    selectedModifierItemsForAddExistingModifierTemp=[];
-  
+  $("#modifieritemslist").on("hide.bs.modal", function () {
+    selectedModifierItemsForAddExistingModifierTemp = [];
+
     SetPartialViewOfSelectedModifierItemsForEditModal();
-    
+
     var Modal = bootstrap.Modal.getInstance(
       document.getElementById("editmodifiergroupmodal")
     );
     Modal.show();
   });
-
 
   // Function to handle hover effect
   function attachHoverEffect() {
@@ -523,6 +536,14 @@ $(document).ready(function () {
     attachHoverEffect();
   });
 
+  // clear the selected modifier item list when the add modifier group modal is closed
+  //change1
+  $("#addmodifiergroupmodal").on("hide.bs.modal", function () {
+    $("#selectedModifieritemcontainer").html("");
+  });
+
+
+
   // showing and hiding add modifier group modal manually
   document
     .getElementById("addexistingmodifierbtn")
@@ -531,6 +552,7 @@ $(document).ready(function () {
         document.getElementById("addmodifiergroupmodal")
       );
       modifiermodal.hide();
+
       // to show modifier item from the first page
       ModifieritemListForAddPaginationAjax();
       attachCheckboxListnerModifierItemForAddModal();
@@ -577,8 +599,7 @@ $(document).ready(function () {
   $("#addModifierGroupForm").submit(function (e) {
     e.preventDefault();
 
-    if(!validateFormAddModifierGroup())
-    {
+    if (!validateFormAddModifierGroup()) {
       return;
     }
 
@@ -635,14 +656,12 @@ $(document).ready(function () {
     return isValid;
   }
 
-
   //submit the edit modifier group form
 
   $("#editmodifierForm").submit(function (e) {
     e.preventDefault();
 
-    if(!validateFormeditModifierGroup())
-    {
+    if (!validateFormeditModifierGroup()) {
       return;
     }
 

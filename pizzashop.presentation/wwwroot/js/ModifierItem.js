@@ -91,7 +91,7 @@ function updateSelectedNamesForEdit() {
   if (names.length === 0) {
     names = "Select Modifier Group";
   }
-  $("#modifierGroupSelectBoxForEdit").text(names);
+  $("#modifierGroupSelectBoxForEdit").text(names); 
 }
 
 // Update the input box with the selected names
