@@ -108,6 +108,26 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxfTW9kaWZpZXJOYW1lLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/OrderAppKOT/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBLT1RcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/OrderAppKOT/_OrderDetailCard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBLT1RcX09yZGVyRGV0YWlsQ2FyZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/OrderAppMenu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBNZW51XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/OrderAppTable/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBUYWJsZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/OrderAppWaitingList/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBXYWl0aW5nTGlzdFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Order/ExportView.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcRXhwb3J0Vmlldy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -150,6 +170,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Shared/_ModifiersList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Nb2RpZmllcnNMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Shared/_OrderAppLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9PcmRlckFwcExheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Shared/_SideList.cshtml]

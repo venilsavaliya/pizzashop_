@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "soIF8tDvjfXxBLAbMyWh8SnTOr7WaVt4hVg334uvbjA=",
+  "Hash": "pypxkhQT2t3+yt2YuN9sO7VGX8ttWyHYPyMq5679DNE=",
   "Source": "pizzashop.presentation",
   "BasePath": "_content/pizzashop.presentation",
   "Mode": "Default",
@@ -117,6 +117,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\obj\\Debug\\net7.0\\scopedcss\\projectbundle\\pizzashop.presentation.bundle.scp.css"
+    },
+    {
+      "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\css\\_OrderAppLayout.css",
+      "SourceId": "pizzashop.presentation",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\",
+      "BasePath": "_content/pizzashop.presentation",
+      "RelativePath": "css/_OrderAppLayout.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\_OrderAppLayout.css"
     },
     {
       "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\css\\site.css",
@@ -593,6 +610,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\icons\\person.svg"
+    },
+    {
+      "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\images\\icons\\phone.svg",
+      "SourceId": "pizzashop.presentation",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\",
+      "BasePath": "_content/pizzashop.presentation",
+      "RelativePath": "images/icons/phone.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\icons\\phone.svg"
     },
     {
       "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\images\\icons\\search.svg",

@@ -1,0 +1,90 @@
+@{
+    Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
+}
+@model List<DAL.ViewModels.CategoryNameViewModel>
+
+<div>
+    <h2 class="custom-blue fw-bolder">KOT</h2>
+
+    <div class="switching-tabs-section d-flex justify-content-start bg-white px-3 nav shadow
+                " role="tablist">
+
+        <div class="d-flex justify-content-center gap-2 nav-link  active p-3 " id="nav-profile-tab" data-bs-toggle="tab"
+            data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+
+            <div class="fw-bolder">All</div>
+
+        </div>
+        @foreach (var c in Model)
+        {
+            <div class="d-flex justify-content-center gap-2 nav-link p-3" id='nav-tab-@c.Id' data-bs-toggle="tab"
+                data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-@c.Id" aria-selected="true"
+                category-id="@c.Id">
+                <div class="fw-bolder" category-id="@c.Id">@c.Name</div>
+            </div>
+        }
+
+    </div>
+
+    <div class="order_list_container shadow mt-3 bg-white">
+        <div class="category_name_row d-flex justify-content-between" style="padding: 15px;">
+            <div>
+                <h2 class="custom-blue">Pizza</h2>
+            </div>
+            <div>
+                <button class="custom-btn-bg text-white p-2 border rounded">In Progress</button>
+                <button class="bg-white custom-blue-border rounded p-2 custom-blue">Ready</button>
+                <button class="custom-btn-bg text-white p-2 border rounded" onclick="prevSlide()"><i
+                        class="bi bi-chevron-left"></i></button>
+                <button class="custom-btn-bg text-white p-2 border rounded" onclick="nextSlide()"><i
+                        class="bi bi-chevron-right"></i></button>
+            </div>
+
+        </div>
+        <div class="carousel-container">
+            <div class="card-wrapper" id="cardWrapper">
+                @* ======== *@
+               
+                @* ======== *@
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    let currentSlide = 0;
+    const cardsToShow = 1; // Number of cards to slide at once
+    const cardWidth = 420; // Width of each card + margin
+
+    function nextSlide() {
+        const cardWrapper = document.getElementById("cardWrapper");
+        currentSlide += cardsToShow;
+
+        // Check if the slide goes out of bounds
+        const maxSlide = cardWrapper.children.length - cardsToShow;
+        if (currentSlide > maxSlide) {
+            currentSlide = 0;
+        }
+
+        const offset = -currentSlide * cardWidth;
+        cardWrapper.style.transform = `translateX(${offset}px)`;
+    }
+    function prevSlide() {
+        const cardWrapper = document.getElementById("cardWrapper");
+        currentSlide -= cardsToShow;
+
+        // Check if the slide goes out of bounds
+        const maxSlide = cardWrapper.children.length + cardsToShow;
+        if (currentSlide < 1) {
+            currentSlide = 0;
+        }
+
+        const offset = -currentSlide * cardWidth;
+        cardWrapper.style.transform = `translateX(${offset}px)`;
+    }
+
+</script>

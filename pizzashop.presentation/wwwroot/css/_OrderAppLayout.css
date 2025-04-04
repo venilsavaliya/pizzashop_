@@ -1,0 +1,68 @@
+.invert_color
+{
+    filter: invert(1) !important;
+}
+
+.offcanvas.custom-fit {
+    height: fit-content; /* Let the offcanvas height adjust automatically */
+    max-height: 100%; /* Prevent it from overflowing the viewport */
+}
+
+.offcanvas-body {
+    height: auto !important; /* Ensure content height is dynamic */
+    padding: 1rem;
+}
+
+.active_nav_item {
+    background-color: #8cace7;
+  }
+
+  .nav-link
+  {
+    color: rgb(143, 143, 143);
+  }
+
+  .nav-link:active
+  {
+    color: blue;
+  }
+
+  .nav-link:hover
+  {
+    color: black;
+  }
+/* 
+  .OrderDetailCard
+  {
+    width: 380px;
+    border: 1px dashed grey;
+    border-radius: 5px;
+  } */
+
+
+  .carousel-container {
+    width: 97%;
+    overflow: hidden;
+    padding: 0 0px;
+    margin: 20px 20px;
+    
+}
+
+.card-wrapper {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.OrderDetailCard {
+    min-width: 400px;
+    margin: 10px;
+    background-color: #ddd;
+    border: 1px dashed grey;
+    border-radius: 4px;
+    /* text-align: center; */
+    /* padding: 20px; */
+    flex-shrink: 0;
+}
+
+
+

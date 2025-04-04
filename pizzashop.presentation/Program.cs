@@ -99,6 +99,7 @@ builder.Services.AddScoped<IMenuServices,MenuServices>();
 builder.Services.AddScoped<ITaxService,TaxService>();
 builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<ICustomerService,CustomerService>();
+builder.Services.AddScoped<IOrderAppKOTService,OrderAppKOTService>();
 builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

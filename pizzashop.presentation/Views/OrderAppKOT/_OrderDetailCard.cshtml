@@ -1,0 +1,54 @@
+@model DAL.ViewModels.OrderDetailKOTViewModel;
+@{
+    int count = 1;
+}
+
+<div class="OrderDetailCard d-flex flex-column">
+    <div class="custom-bg-grey flex-column" style="height: 70px;"></div>
+    <div class="d-flex justify-content-between m-2">
+        <div class="text-primary fw-bold"># @Model.OrderId</div>
+        <div class="d-flex gap-1 text-secondary fw-"><span><i class="bi bi-stopwatch"></i></span> <span>2 Hour 3 Min 2
+                sec</span></div>
+    </div>
+    <div class="m-2 fw-semibold">
+
+        <span>@Model.SectionName</span>
+        <span><i class="bi bi-dot"></i></span>
+        @foreach (var i in Model.TableNames)
+        {
+            <span>@i</span>
+        }
+
+    </div>
+</div>
+<div style="height: 200px;" class="bg-white p-2 overflow-auto">
+    @foreach (var i in Model.OrderItems)
+    {
+        <div>
+            <div class="d-flex justify-content-between"><span class="text-secondary fw-bold">@i.ItemName</span>
+                <span>@i.ItemQuantity</span>
+            </div>
+            <ul>
+                @foreach (var j in i.ModifierList)
+                {
+                    <li class="text-secondary">@j.ModifierItemName</li>
+                }
+            </ul>
+            @if (i.Instruction != null)
+            {
+                <div class=""><span class="text-primary">Instruction : </span> <span>@i.Instruction</span></div>
+            }
+
+        </div>
+    }
+
+</div>
+<div class="custom-bg-grey" style="height: 70px;">
+    @if (Model.Instruction != null)
+    {
+        <div class="m-2"><span class="text-primary">Order Instruction : </span> <span>@Model.Instruction</span>
+        </div>
+    }
+
+</div>
+</div>

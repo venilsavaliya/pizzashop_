@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - pizzashop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/_OrderAppLayout.css" />
+
+    <style>
+        html {
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="vh-100 custom-bg-grey">
+        <nav class="navbar custom-btn-bg" style="z-index: 2;">
+
+
+            <div class="user-img h-100 w-100 d-flex justify-content-between  pe-3">
+
+                <img src="~/images/icons/hamburger-md-svgrepo-com.svg" alt="" srcset=""
+                    class="hamburger-img d-block d-md-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop"
+                    aria-controls="offcanvasTop">
+                <div class="d-none d-md-block">
+                    <div class="logo_div d-none d-md-flex align-items-center gap-2">
+                        <div class="bg-white">
+                            <img src="~/images/logos/pizzashop_logo.png" alt="" srcset="" height="50">
+                        </div>
+                        <div class="text-white fs-5">PIZZASHOP</div>
+                    </div>
+
+                </div>
+                <div class="dropdown d-flex gap-2 ">
+                <div class="nav-items d-none d-md-flex align-items-center gap-3 ">
+                    <a asp-action="Index" asp-controller="OrderAppKOT" class="text-decoration-none text-white">
+                        <div class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "KOT" ? "active_nav_item" : "")">
+                        <i class="bi bi-clipboard-minus-fill"></i>
+                        <div>KOT</div>
+                    </div>
+                    </a>
+                     <a asp-action="Index" asp-controller="OrderAppWaitingList" class="text-decoration-none text-white">
+                    <div class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "WaitingList" ? "active_nav_item" : "")">
+                        <i class="bi bi-clock-fill"></i>
+                        <div>Waiting List</div>
+                    </div>
+                    </a>
+                     <a asp-action="Index" asp-controller="OrderAppTable" class="text-decoration-none text-white">
+                    <div class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "Tables" ? "active_nav_item" : "")">
+                        <i class="bi bi-square-fill"></i>
+                        <div>Tables</div>
+                    </div>
+                    </a>
+                     <a asp-action="Index" asp-controller="OrderAppMenu" class="text-decoration-none text-white">
+                    <div class="nav-item d-flex border rounded-pill gap-1 px-2 py-1 text-white @(ViewBag.active == "Menu" ? "active_nav_item" : "")">
+                        <img src="~/images/sidebar icons/menu.png" alt="" height="25" class="invert_color">
+                        <div>Menu</div>
+                    </div>
+                    </a>
+                </div>
+
+                <img class="me-2 dropdown-toggle rounded-circle border" data-bs-toggle="dropdown" aria-expanded="false"
+                    width="50" height="50" src="@ViewBag.Profile" alt="">
+
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li
+                        class="d-flex justify-content-start gap-2 align-items-center border py-2 border-top-0 dropdown-item">
+                        <img src="@ViewBag.Profile" alt="" class="my-auto" height="40">
+                        <div>@ViewBag.Username</div>
+                    </li>
+
+                    <div class="">
+                        <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
+                                src="~/images/icons/person.svg" alt="" class="my-auto"
+                                style="height: 20px !important;"><a class="dropdown-item text-black"
+                                asp-action="Profile" asp-controller="User">My
+                                Profile</a></li>
+                        <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
+                                src="~/images/icons/arrow-clockwise.svg" alt=""> <a class="dropdown-item text-black"
+                                asp-action="ChangePassword" asp-controller="User">Change Password</a></li>
+                        <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"
+                            data-bs-toggle="modal" data-bs-target="#confirmationmodal"><img
+                                src="~/images/icons/box-arrow-right.svg" alt=""> <a class="dropdown-item text-black"
+                                style="cursor: pointer;">Log Out</a></li>
+                    </div>
+
+                </ul>
+                </div>
+            </div>
+    </nav>
+    <main role="main" class="p-3">
+        @* @await Html.PartialAsync("~/Views/Shared/_Notification.cshtml") *@
+        @RenderBody()
+    </main>
+
+
+    @* Offcanvas Body *@
+
+<div class="offcanvas offcanvas-top custom-btn-bg custom-fit" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasTopLabel">
+            <div class="logo_div d-flex align-items-center gap-2">
+                <div class="bg-white">
+                    <img src="~/images/logos/pizzashop_logo.png" alt="" height="50">
+                </div>
+                <div class="text-white fs-5">PIZZASHOP</div>
+            </div>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="dropdown d-flex flex-column gap-2">
+            <div class="nav-items d-flex flex-column align-items-start gap-3">
+                 <a asp-action="Index" asp-controller="OrderAppKOT" class="text-decoration-none text-white">
+                <div class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "KOT" ? "active_nav_item" : "") ">
+                    <i class="bi bi-clipboard-minus-fill"></i>
+                    <div>KOT</div>
+                </div>
+                </a>
+                 <a asp-action="Index" asp-controller="OrderAppWaitingList" class="text-decoration-none text-white">
+                <div class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "WaitingList" ? "active_nav_item" : "")">
+                    <i class="bi bi-clock-fill"></i>
+                    <div>Waiting List</div>
+                </div>
+                </a>
+                 <a asp-action="Index" asp-controller="OrderAppTable" class="text-decoration-none text-white">
+                <div class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "Tables" ? "active_nav_item" : "")">
+                    <i class="bi bi-square-fill"></i>
+                    <div>Tables</div>
+                </div>
+                </a>
+                 <a asp-action="Index" asp-controller="OrderAppMenu" class="text-decoration-none text-white">
+                <div class="nav-item d-flex border rounded-pill gap-1 px-2 py-1 text-white @(ViewBag.active == "Menu" ? "active_nav_item" : "")">
+                    <img src="~/images/sidebar icons/menu.png" alt="" height="25" class="invert_color">
+                    <div>Menu</div>
+                </div>
+                </a>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* @await Component.InvokeAsync("Notyf") *@
+    @RenderSection("Scripts", required: false)
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @await Html.PartialAsync("_Toaster.cshtml")
+
+</body>
+
+</html>

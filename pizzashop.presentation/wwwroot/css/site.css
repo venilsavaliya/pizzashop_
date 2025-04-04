@@ -77,6 +77,10 @@ body {
   background-color: #e2e2e2;
 }
 
+.custom-grey{
+  color: #e2e2e2;
+}
+
 .custom-bg-blue {
   background-color: #ddf1ff;
 }
@@ -432,4 +436,7 @@ input[type=password]::-ms-clear {
   overflow-y: hidden; 
   display: block;
 }
+
+
+
 

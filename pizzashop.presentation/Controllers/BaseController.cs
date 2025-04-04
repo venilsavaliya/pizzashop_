@@ -31,7 +31,7 @@ public class BaseController : Controller
 
     public BaseController(IJwtService jwtService,IUserService userService,IAdminService adminservice,BLL.Interfaces.IAuthorizationService authservice)
     {
-        _jwtservice = jwtService;
+        _jwtservice = jwtService; 
 
         _userService = userService;
 
@@ -44,7 +44,7 @@ public class BaseController : Controller
     {   
         base.OnActionExecuting(context);
         var token = Request.Cookies["jwt"];
-        email =  _jwtservice.GetEmailDetailsFromToken(token); 
+        email =  _jwtservice.GetEmailDetailsFromToken(token);  
 
         Userdetail user =  _userService.GetUserDetailByemail(email);
         username = user.UserName;
