@@ -1,0 +1,66 @@
+@model List<DAL.ViewModels.OrderDishKOTViewModel>;
+
+<table class="table">
+    
+    <thead>
+        <tr>
+            <th scope="col text-secondary">Item</th>
+            <th scope="col text-secondary" style="text-align: right;">Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var i in Model)
+        {
+            <tr>
+                <td class="d-flex">
+                    <div class="form-check">
+                        <input class="form-check-input inner_checkbox_orderitem" type="checkbox" value="@i.DishId">
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="">@i.ItemName</span>
+                        <ul>
+                            @foreach (var j in i.ModifierList)
+                            {
+                                <li class="text-secondary">@j.ModifierItemName</li>
+                            }
+                        </ul>
+                    </div>
+                </td>
+                <td scope="row text-end">
+                    <div class="d-flex border rounded justify-content-between align-items-center overflow-hidden"
+                        style="width: fit-content;">
+
+                        <!-- Minus Button -->
+                        <button type="button" class="btn custom-bg-grey px-3 py-2 border-0 rounded-0"
+                            onclick="decrementQuantity(this)">
+                            <i class="bi bi-dash"></i>
+                        </button>
+
+                        <!-- Input Field -->
+                        @if (i.PendingQuantity != null)
+                        {
+                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner"
+                                style="width: 60px;" max="@i.PendingQuantity" min="0" value="@i.PendingQuantity" />
+                        }
+                        else
+                        {
+                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner"
+                                style="width: 60px;" max="@i.ReadyQuantity" min="0" value="@i.ReadyQuantity" />
+                        }
+
+                        <!-- Plus Button -->
+                        <button type="button" class="btn custom-bg-grey px-3 py-2 border-0 rounded-0"
+                            onclick="incrementQuantity(this)">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+

@@ -1,5 +1,6 @@
 @{
     Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
+    bool inProgress = true;
 }
 @model List<DAL.ViewModels.CategoryNameViewModel>
 
@@ -10,7 +11,8 @@
                 " role="tablist">
 
         <div class="d-flex justify-content-center gap-2 nav-link  active p-3 " id="nav-profile-tab" data-bs-toggle="tab"
-            data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+            data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"
+            onclick="LoadOrders(this)">
 
             <div class="fw-bolder">All</div>
 
@@ -19,7 +21,7 @@
         {
             <div class="d-flex justify-content-center gap-2 nav-link p-3" id='nav-tab-@c.Id' data-bs-toggle="tab"
                 data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-@c.Id" aria-selected="true"
-                category-id="@c.Id">
+                category-id="@c.Id" category-name="@c.Name" onclick="LoadOrders(this)">
                 <div class="fw-bolder" category-id="@c.Id">@c.Name</div>
             </div>
         }
@@ -29,11 +31,14 @@
     <div class="order_list_container shadow mt-3 bg-white">
         <div class="category_name_row d-flex justify-content-between" style="padding: 15px;">
             <div>
-                <h2 class="custom-blue">Pizza</h2>
+                <h2 class="custom-blue" id="activecategoryName">All</h2>
             </div>
             <div>
-                <button class="custom-btn-bg text-white p-2 border rounded">In Progress</button>
-                <button class="bg-white custom-blue-border rounded p-2 custom-blue">Ready</button>
+                <button class="custom-btn-bg custom-blue-border text-white p-2 rounded active"
+                    onclick="LoadInProgressOrders()" id="InProgressBtn">In
+                    Progress</button>
+                <button class=" custom-blue-border rounded p-2 custom-blue" id="ReadyBtn"
+                    onclick="LoadReadyOrders()">Ready</button>
                 <button class="custom-btn-bg text-white p-2 border rounded" onclick="prevSlide()"><i
                         class="bi bi-chevron-left"></i></button>
                 <button class="custom-btn-bg text-white p-2 border rounded" onclick="nextSlide()"><i
@@ -44,7 +49,7 @@
         <div class="carousel-container">
             <div class="card-wrapper" id="cardWrapper">
                 @* ======== *@
-               
+                @* partial view of card *@
                 @* ======== *@
 
             </div>
@@ -54,8 +59,246 @@
 </div>
 
 
+@* ======= Modals ========= *@
 
+<div class="modal fade" id="orderDetailStatusModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fw-bolder fs-5" id="exampleModalLabel">Order Id: #2</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="QuantityForm">
+                <div class="modal-body " id="OrderItemTableContainer">
+                    @* here partial view  *@
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn custom-btn-bg text-white " id="orderdetailmodalbtn">Mark as
+                        Prepared
+                    </button>
+                    <button type="button" class="btn custom-blue-border" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="./js/OrderAppKOT.js"></script>
 <script>
+
+    $(document).ready(function () {
+        // Load all orders on page load
+        LoadOrders();
+
+        $('#QuantityForm').submit(function (e) {
+            e.preventDefault(); // prevent default form submission
+
+            let orderItems = [];
+
+            $('.inner_checkbox_orderitem:checked').each(function () {
+                let dishId = $(this).val();
+                let quantityInput = $('.quantity-input[data-dishid="' + dishId + '"]');
+                let quantity = quantityInput.val();
+
+                orderItems.push({
+                    DishId: parseInt(dishId),
+                    Quantity: parseInt(quantity)
+                });
+            });
+
+            // Optional: Validate empty list
+            if (orderItems.length === 0) {
+                alert("Please select at least one item.");
+                return;
+            }
+
+            const itemlist = getSelectedItemsWithQuantities();
+            var isPending = $("#InProgressBtn").hasClass("active");
+            console.log("venil", isPending, itemlist);
+
+
+            // AJAX call to your backend
+            $.ajax({
+                url: '/OrderAppKOT/UpdateOrderQuantity',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    items: itemlist,
+                    markasPrepared: isPending
+                }),
+                success: function (response) {
+                    // handle success
+                    $('#orderDetailStatusModal').modal('hide');
+                    if (isPending) {
+                        LoadInProgressOrders();
+                        toastr.success('Items marked Prepared!');
+                    }
+                    else {
+                        LoadReadyOrders();
+                        toastr.success('Items marked as InProgress!');
+                    }
+                },
+                error: function (err) {
+                    // handle error
+                    console.error(err);
+                    alert('Something went wrong');
+                }
+            });
+        });
+
+    });
+
+    let OrderItemList = [];
+
+    // This will be store id of selected checkbox
+    function attachOrderItemCheckboxEventListner() {
+        $('.inner_checkbox_orderitem').off('change').on('change', function () {
+            const dishId = parseInt($(this).val());
+
+            if ($(this).is(':checked')) {
+                if (!OrderItemList.includes(dishId)) {
+                    OrderItemList.push(dishId);
+                }
+            } else {
+                OrderItemList = OrderItemList.filter(id => id !== dishId);
+            }
+        });
+    }
+
+    // Get selected items with quantity
+    function getSelectedItemsWithQuantities() {
+        let selectedItems = [];
+
+        OrderItemList.forEach(id => {
+            const checkbox = $('.inner_checkbox_orderitem[value="' + id + '"]');
+            const input = checkbox.closest('tr').find('input[type="number"]');
+            const quantity = parseInt(input.val()) || 0;
+
+            selectedItems.push({
+                ItemId: id,
+                Quantity: quantity
+            });
+        });
+
+        return selectedItems;
+    }
+
+       function incrementQuantity(btn) {
+        const input = btn.parentElement.querySelector("input");
+        const max = parseInt(input.max);
+        let value = parseInt(input.value) || 0;
+        if (value < max) {
+            input.value = value + 1;
+        }
+    }
+
+    function decrementQuantity(btn) {
+        const input = btn.parentElement.querySelector("input");
+        let value = parseInt(input.value) || 0;
+        if (value > 0) {
+            input.value = value - 1;
+        }
+    }
+
+    // function to load pending orders
+
+    function LoadInProgressOrders(tab) {
+        const inProgressBtn = document.getElementById("InProgressBtn");
+        const readyBtn = document.getElementById("ReadyBtn");
+
+        inProgressBtn.classList.add("custom-btn-bg", "text-white", "active");
+        readyBtn.classList.remove("custom-btn-bg", "text-white", "active");
+
+        $("#orderdetailmodalbtn").text("Mark as Prepared")
+
+
+        const categoryid = $('.active').attr('category-id');
+        $.ajax({
+            url: "/OrderAppKOT/GetOrderDetails",
+            type: "GET",
+            data: { categoryid: categoryid, isPending: true },
+            success: function (data) {
+                $("#cardWrapper").html(data);
+            },
+            error: function (error) {
+                console.log("Error loading in-progress orders:", error);
+            }
+        });
+    }
+
+    // function to load ready orders
+
+    function LoadReadyOrders() {
+
+        const inProgressBtn = document.getElementById("InProgressBtn");
+        const readyBtn = document.getElementById("ReadyBtn");
+
+        readyBtn.classList.add("custom-btn-bg", "text-white", "active");
+        inProgressBtn.classList.remove("custom-btn-bg", "text-white", "active");
+
+        $("#orderdetailmodalbtn").text("Mark as InProgress");
+
+
+        const categoryid = $('.active').attr('category-id');
+        $.ajax({
+            url: "/OrderAppKOT/GetOrderDetails",
+            type: "GET",
+            data: { categoryid: categoryid, isPending: false },
+            success: function (data) {
+                $("#cardWrapper").html(data);
+            },
+            error: function (error) {
+                console.log("Error loading in-progress orders:", error);
+            }
+        });
+    }
+
+    // function to load all orders
+
+    function LoadOrders(ele) {
+       
+        var categoryid = ele?.getAttribute("category-id");
+        var categoryname = ele?.getAttribute("category-name");
+       
+        $("#activecategoryName").text(categoryname?categoryname:"All");
+        var isPending = $("#InProgressBtn").hasClass("active");
+        $.ajax({
+            url: "/OrderAppKOT/GetOrderDetails",
+            type: "GET",
+            data: { isPending: isPending, categoryid: categoryid ? categoryid : 0 },
+            success: function (data) {
+                $("#cardWrapper").html(data);
+            },
+            error: function (error) {
+                console.log("Error loading in-progress orders:", error);
+            }
+        });
+    }
+
+    // function to load order item in modal
+
+    function LoadOrderStatusItem(ele) {
+        var orderId = $(ele).find('.orderid').attr('order-id');
+        var isPending = $("#InProgressBtn").hasClass("active");
+        $.ajax({
+            url: "/OrderAppKOT/GetOrderitemList",
+            type: "GET",
+            data: { orderId: orderId, isPending: isPending },
+            success: function (data) {
+                $("#OrderItemTableContainer").html(data);
+                attachOrderItemCheckboxEventListner();
+            },
+            error: function (error) {
+                console.log("Error loading in-progress orders:", error);
+            }
+        });
+    }
+
+
+
+
     let currentSlide = 0;
     const cardsToShow = 1; // Number of cards to slide at once
     const cardWidth = 420; // Width of each card + margin

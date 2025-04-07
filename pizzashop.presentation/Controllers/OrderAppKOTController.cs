@@ -29,9 +29,22 @@ public class OrderAppKOTController:OrderAppBaseController
         return Json(new { data = categories });
     }
 
-    public async Task<IActionResult> GetOrderDetails(int orderId)
+    public async Task<IActionResult> GetOrderDetails(int categoryid,bool isPending )
     {
-        var orderDetails = await _orderAppKOTService.GetOrderDetailsAsync(orderId);
-        return Json(new { data = orderDetails });
+        var orderDetails = await _orderAppKOTService.GetOrderDetailsAsync(categoryid, isPending);
+        return PartialView("~/Views/OrderAppKOT/_OrderDetailCard.cshtml", orderDetails);
+    }
+
+    public async Task<IActionResult> GetOrderitemList(int orderid,bool isPending)
+    {
+        var orderDetails = await _orderAppKOTService.GetOrderitemListAsync(orderid, isPending);
+        return PartialView("~/Views/OrderAppKOT/_OrderItems.cshtml", orderDetails);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateOrderQuantity([FromBody] UpdateOrderRequestViewModel request)
+    {
+        var response = await _orderAppKOTService.UpdateOrderQuantityAsync(request.Items, request.MarkasPrepared);
+        return Json(new { success = response.Success , message = response.Message });
     }
 }

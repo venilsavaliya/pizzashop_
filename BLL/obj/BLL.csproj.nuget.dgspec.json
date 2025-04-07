@@ -26,8 +26,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
-                "projectPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj"
+              "d:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
+                "projectPath": "d:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj"
               }
             }
           }
@@ -87,14 +87,14 @@
         }
       }
     },
-    "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
+    "d:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj",
+        "projectUniqueName": "d:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj",
+        "projectPath": "d:\\pizzashop_main\\pizzashop_\\DAL\\DAL.csproj",
         "packagesPath": "C:\\Users\\pce175\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop_main\\pizzashop_\\DAL\\obj\\",
+        "outputPath": "d:\\pizzashop_main\\pizzashop_\\DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\pce175\\AppData\\Roaming\\NuGet\\NuGet.Config"

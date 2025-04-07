@@ -23,6 +23,12 @@ public partial class Dishritem
 
     public int? Readyquantity { get; set; }
 
+    public int? CategoryId { get; set; }
+
+    public string? Instructions { get; set; }
+
+    public virtual Category? Category { get; set; }
+
     public virtual ICollection<Dishrmodifier> Dishrmodifiers { get; } = new List<Dishrmodifier>();
 
     public virtual Item Item { get; set; } = null!;

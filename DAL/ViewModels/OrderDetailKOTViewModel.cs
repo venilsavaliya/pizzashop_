@@ -6,7 +6,7 @@ public class OrderDetailKOTViewModel
 
     public DateTime OrderDate { get; set; }
 
-    public string SectionName { get; set; } 
+    public string SectionName { get; set; }
 
     public List<string> TableNames { get; set; } = new List<string>();
 
@@ -27,7 +27,17 @@ public class OrderItemKOTViewModel
 
     public short? ItemPrice { get; set; }
 
-    public string ? Instruction { get; set; }
+    public string? Instruction { get; set; }
 
 }
- 
+
+public class OrderDishKOTViewModel
+{
+    public int DishId { get; set; }
+    public string ItemName { get; set; } = null!;
+    public List<OrderModifierViewModel> ModifierList { get; set; }
+
+    public int? PendingQuantity { get; set; }
+
+    public int? ReadyQuantity { get; set; }
+}

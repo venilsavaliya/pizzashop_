@@ -77,7 +77,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -245,9 +245,13 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("dishritem");
 
             entity.Property(e => e.Dishid).HasColumnName("dishid");
+            entity.Property(e => e.CategoryId).HasColumnName("category_id");
             entity.Property(e => e.Inprogressquantity)
                 .HasDefaultValueSql("0")
                 .HasColumnName("inprogressquantity");
+            entity.Property(e => e.Instructions)
+                .HasColumnType("character varying")
+                .HasColumnName("instructions");
             entity.Property(e => e.Itemid).HasColumnName("itemid");
             entity.Property(e => e.Itemname)
                 .HasColumnType("character varying")
@@ -259,6 +263,10 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Readyquantity)
                 .HasDefaultValueSql("0")
                 .HasColumnName("readyquantity");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Dishritems)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("fk_category_id");
 
             entity.HasOne(d => d.Item).WithMany(p => p.Dishritems)
                 .HasForeignKey(d => d.Itemid)
