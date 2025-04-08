@@ -450,4 +450,37 @@ input[type=password]::-ms-clear {
     -moz-appearance: textfield;
 }
 
+:root {
+  --table-running: #747ceb;
+  --table-assigned: #40f376;
+  --table-available: #bebcbc;
+  --table-running-bg: #daddff;
+  --table-assigned-bg: #defae4;
+  --table-available-bg: #f8f3f3;
+}
 
+
+.accordion-button:focus 
+{
+  box-shadow: none !important;
+}
+
+
+.accordion-button .accordion-arrow {
+  transition: transform 0.3s ease;
+  transform: rotate(270deg); /* default (right) */
+}
+
+.accordion-button:not(.collapsed) .accordion-arrow {
+  transform: rotate(360deg); /* down */
+}
+
+.accordion-button::after
+{
+  display: none !important;
+}
+
+.green_border
+{
+  border: 2px solid #99d363 !important;
+}

@@ -85,6 +85,14 @@
       "PackagePath": "staticwebassets\\images\\icons\\dinner-table.svg"
     },
     {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\images\\icons\\drop-down-arrow.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\drop-down-arrow.svg"
+    },
+    {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\images\\icons\\dropdown-png.png",
+      "PackagePath": "staticwebassets\\images\\icons\\dropdown-png.png"
+    },
+    {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\images\\icons\\export.png",
       "PackagePath": "staticwebassets\\images\\icons\\export.png"
     },
@@ -255,6 +263,10 @@
     {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\ModifierItem.js",
       "PackagePath": "staticwebassets\\js\\ModifierItem.js"
+    },
+    {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\OrderAppTable\\OrderAppTable.js",
+      "PackagePath": "staticwebassets\\js\\OrderAppTable\\OrderAppTable.js"
     },
     {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\Section\\TableItem.js",

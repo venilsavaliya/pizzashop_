@@ -3,5 +3,172 @@
 }
 
 <div>
-    Tables
+    <div class="d-flex justify-content-between ">
+        <div class="d-flex justify-content-between">
+            <h2 class="custom-blue">Table View</h2>
+        </div>
+        <div class=" d-flex justify-content-start justify-content-md-end align-items-center gap-3">
+            <div class="d-flex gap-2 align-items-center">
+                <span style="color: var(--table-available)"><i class="bi bi-circle-fill"></i></span>
+                <span>Available</span>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <span class="" style="color: var(--table-assigned)"><i class="bi bi-circle"></i></span>
+                <span>Selected</span>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <span style="color: var(--table-assigned)"><i class="bi bi-circle-fill"></i></span>
+                <span>Assigned</span>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <span class="" style="color: var(--table-running)"><i class="bi bi-circle-fill"></i></span>
+                <span>Running</span>
+            </div>
+        </div>
+    </div>
+
+    <div class=" mt-5" id="dining_table_container">
+        
+    </div>
 </div>
+
+@* ===== modal ======= *@
+
+<div class="modal fade" id="waitingtokenmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="TableAssignForm" class="d-flex flex-column gap-3">
+            <div class="form-floating">
+                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Email </label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingPassword" placeholder="Name">
+                <label for="floatingPassword">Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="Number" maxlength="10" class="form-control" id="floatingPassword" placeholder="Mobile No.">
+                <label for="floatingPassword">Mobile</label>
+            </div>
+
+            <div class="d-flex justify-content-between gap-2 row">
+                @* <select class="form-select" id="Category" asp-for="Menuitem.CategoryId">
+                
+                    @foreach (var c in Model.Categories)
+                    {
+                        if (c.Id == Model.SelectedCategory)
+                        {
+                            <option value=@c.Id selected>@c.Name</option>
+                        }
+                        else
+                        {
+
+                            <option value=@c.Id>@c.Name</option>
+                        }
+                    }
+                </select> *@
+                <div class="col">
+                    <div class="form-floating ">
+                    <input type="number" class="form-control" id="ItemRateForAdd" value="" placeholder="No. Of Person">
+                    <label for="ItemRateForAdd">No. Of Person</label>
+                    @* <span class="text-danger" asp-validation-for="Menuitem.Rate"></span> *@
+                </div>
+                </div>
+
+                <select class="form-select col">
+                    <option selected>Section</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+  
+            </div>
+           
+           
+    
+      
+      <div class="d-flex justify-content-end gap-2">
+        
+        <button type="button" class="btn custom-btn-bg text-white">Assign</button>
+        <button type="button" class=" btn custom-blue-border" data-bs-dismiss="modal">Cancel</button>
+      </div>
+         </form>
+    </div>
+  </div>
+</div>
+
+@* ===== Off Canvas ====== *@
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title custom-blue" id="offcanvasRightLabel">Waiting List</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h5 class="custom-blue">Customer Detail</h5>
+        <form id="TableAssignForm" class="d-flex flex-column gap-3">
+            <div class="form-floating">
+                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Email </label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingPassword" placeholder="Name">
+                <label for="floatingPassword">Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="Number" maxlength="10" class="form-control" id="floatingPassword" placeholder="Mobile No.">
+                <label for="floatingPassword">Mobile</label>
+            </div>
+
+            <div class="d-flex justify-content-between gap-2 row">
+                @* <select class="form-select" id="Category" asp-for="Menuitem.CategoryId">
+                
+                    @foreach (var c in Model.Categories)
+                    {
+                        if (c.Id == Model.SelectedCategory)
+                        {
+                            <option value=@c.Id selected>@c.Name</option>
+                        }
+                        else
+                        {
+
+                            <option value=@c.Id>@c.Name</option>
+                        }
+                    }
+                </select> *@
+                <div class="col">
+                    <div class="form-floating ">
+                    <input type="number" class="form-control" id="ItemRateForAdd" value="" placeholder="No. Of Person">
+                    <label for="ItemRateForAdd">No. Of Person</label>
+                    @* <span class="text-danger" asp-validation-for="Menuitem.Rate"></span> *@
+                </div>
+                </div>
+
+                    <select class="form-select col">
+                    <option selected>Section</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+      
+                
+               
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                 <button type="submit" class="btn custom-btn-bg text-white ">Assign
+            </button>
+            <button type="button" class="btn custom-blue-border">Cancel</button>
+            </div>
+           
+        </form>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/OrderAppTable/OrderAppTable.js"></script>

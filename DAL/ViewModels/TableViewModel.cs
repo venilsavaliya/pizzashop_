@@ -10,6 +10,6 @@ public class TableViewModel
 
     public int Capacity { get; set; }
 
-    public string Status { get; set; } = null!;
+    public string Status { get; set; } 
 
 }

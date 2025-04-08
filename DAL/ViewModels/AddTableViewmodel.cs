@@ -17,5 +17,5 @@ public class AddTableViewmodel
     public int Capacity { get; set; }
 
     [Required(ErrorMessage = "Status is required.")]
-    public string Status { get; set; }
+    public int Status { get; set; }
 }

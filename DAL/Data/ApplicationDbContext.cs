@@ -69,6 +69,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Tableorder> Tableorders { get; set; }
 
+    public virtual DbSet<Tablestatus> Tablestatuses { get; set; }
+
     public virtual DbSet<Taxis> Taxes { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -204,6 +206,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("diningtables");
 
             entity.Property(e => e.TableId).HasColumnName("table_id");
+            entity.Property(e => e.AssignTime).HasColumnType("timestamp without time zone");
             entity.Property(e => e.Capacity).HasColumnName("capacity");
             entity.Property(e => e.Createdby).HasColumnName("createdby");
             entity.Property(e => e.Createddate)
@@ -219,15 +222,16 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("name");
             entity.Property(e => e.SectionId).HasColumnName("section_id");
-            entity.Property(e => e.Status)
-                .HasDefaultValueSql("'available'::character varying")
-                .HasColumnType("character varying")
-                .HasColumnName("status");
+            entity.Property(e => e.Status).HasColumnName("status");
 
             entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.DiningtableCreatedbyNavigations)
                 .HasForeignKey(d => d.Createdby)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_diningtables_createdby");
+
+            entity.HasOne(d => d.CurrentOrder).WithMany(p => p.Diningtables)
+                .HasForeignKey(d => d.CurrentOrderId)
+                .HasConstraintName("fk_current_order");
 
             entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.DiningtableModifyiedbyNavigations)
                 .HasForeignKey(d => d.Modifyiedby)
@@ -236,6 +240,11 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Section).WithMany(p => p.Diningtables)
                 .HasForeignKey(d => d.SectionId)
                 .HasConstraintName("fk_diningtables_section");
+
+            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Diningtables)
+                .HasForeignKey(d => d.Status)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_diningtable_status");
         });
 
         modelBuilder.Entity<Dishritem>(entity =>
@@ -831,6 +840,18 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Table).WithMany(p => p.Tableorders)
                 .HasForeignKey(d => d.TableId)
                 .HasConstraintName("fk_table");
+        });
+
+        modelBuilder.Entity<Tablestatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("tablestatus_pkey");
+
+            entity.ToTable("tablestatus");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Statusname)
+                .HasMaxLength(50)
+                .HasColumnName("statusname");
         });
 
         modelBuilder.Entity<Taxis>(entity =>

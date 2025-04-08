@@ -39,6 +39,8 @@ public partial class Order
 
     public virtual Customer Customer { get; set; } = null!;
 
+    public virtual ICollection<Diningtable> Diningtables { get; } = new List<Diningtable>();
+
     public virtual ICollection<Dishritem> Dishritems { get; } = new List<Dishritem>();
 
     public virtual Invoice? Invoice { get; set; }

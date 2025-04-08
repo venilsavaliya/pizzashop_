@@ -24,6 +24,21 @@ public class SectionServices : ISectionServices
         _userservices = userService;
         _jwtservices = jwtservices;
     }
+
+    // Get List Of All Table status
+    public IEnumerable<Tablestatus> GetTableStatusList()
+    {
+        var tableStatus = _context.Tablestatuses
+            .Select(c => new Tablestatus
+            {
+                Id = c.Id,
+                Statusname = c.Statusname,
+            })
+            .OrderBy(c => c.Id).ToList();
+
+        tableStatus = new List<Tablestatus>(tableStatus);
+        return tableStatus;
+    }
     // Get List Of All Sections
     public IEnumerable<SectionNameViewModel> GetSectionList()
     {
@@ -59,7 +74,7 @@ public class SectionServices : ISectionServices
                         SectionId = i.SectionId,
                         Name = i.Name,
                         Capacity = i.Capacity,
-                        Status = i.Status
+                        Status = _context.Tablestatuses.FirstOrDefault(s=>s.Id == i.Status).Statusname
                     };
 
         if (!string.IsNullOrEmpty(searchKeyword))
@@ -304,7 +319,7 @@ public class SectionServices : ISectionServices
 
             var table = _context.Diningtables.FirstOrDefault(t => t.TableId == model.TableId);
 
-            var existingtablename = _context.Diningtables.FirstOrDefault(t => t.Name.ToLower() == model.Name.ToLower());
+            var existingtablename = _context.Diningtables.FirstOrDefault(t => t.Name.ToLower() == model.Name.ToLower() && t.TableId != model.TableId);
 
             if (existingtablename != null)
             {
@@ -421,5 +436,16 @@ public class SectionServices : ISectionServices
 
     }
 
+    // Get Table status Id By Name 
+
+    public int GetTableStatusIdByName(string name)
+    {
+        var tableStatus = _context.Tablestatuses.FirstOrDefault(c => c.Statusname == name);
+        if (tableStatus != null)
+        {
+            return tableStatus.Id;
+        }
+        return 0;
+    }
 
 }

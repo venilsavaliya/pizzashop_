@@ -33,6 +33,7 @@ public class SectionController : BaseController
     {
       SelectedSection = id,
       Sections = sections,
+      TableStatus =  _sectionservice.GetTableStatusList(),
       Table = new AddTableViewmodel()
     };
     return View(model);
@@ -150,5 +151,13 @@ public class SectionController : BaseController
 
     return Json(new { message = AuthResponse.Message, success = AuthResponse.Success });
 
+  }
+
+  // Get : Get Id of Table Status By Name
+
+  public IActionResult GetStatusIdByName(string name)
+  {
+    var statusId = _sectionservice.GetTableStatusIdByName(name);
+    return Json(new { statusId = statusId });
   }
 }

@@ -5,7 +5,7 @@ namespace DAL.Models;
 
 public partial class Section
 {
-    public int SectionId { get; set; }
+    public int SectionId { get; set; } 
 
     public string SectionName { get; set; } = null!;
 

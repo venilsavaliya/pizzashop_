@@ -10,17 +10,26 @@ namespace pizzashop.presentation.Controllers;
 public class OrderAppTableController:BaseController
 {
 
-    private readonly ITaxService _taxservice;
+    private readonly IOrderAppTableService _OrderAppTableService;
 
-    public OrderAppTableController(IJwtService jwtService,IUserService userService,IAdminService adminservice,ITaxService taxservice,IAuthorizationService authservice):base(jwtService,userService,adminservice,authservice)
+    public OrderAppTableController(IJwtService jwtService,IUserService userService,IAdminService adminservice,IOrderAppTableService OrderAppTableService,IAuthorizationService authservice):base(jwtService,userService,adminservice,authservice)
     {
-        _taxservice = taxservice;
+        _OrderAppTableService = OrderAppTableService;
     }
-    // [AuthorizePermission(PermissionName.TaxAndFees, ActionPermission.CanView)]
+
     public IActionResult Index()
     {  
-        ViewBag.active = "Tables";
+       
+        ViewBag.active = "OrderAppTable";
         return View();
+        
+    }
+
+    public IActionResult GetSectionList()
+    {
+        var SectionTableList = _OrderAppTableService.GetOrderAppTableAndSectionList().Result;
+
+        return PartialView("~/Views/OrderAppTable/_SectionTableList.cshtml", SectionTableList);
     }
 
 

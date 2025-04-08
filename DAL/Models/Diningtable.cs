@@ -13,7 +13,7 @@ public partial class Diningtable
 
     public int Capacity { get; set; }
 
-    public string Status { get; set; } = null!;
+    public int Status { get; set; }
 
     public DateTime Createddate { get; set; }
 
@@ -25,11 +25,19 @@ public partial class Diningtable
 
     public bool Isdeleted { get; set; }
 
+    public DateTime? AssignTime { get; set; }
+
+    public int? CurrentOrderId { get; set; }
+
     public virtual User CreatedbyNavigation { get; set; } = null!;
+
+    public virtual Order? CurrentOrder { get; set; }
 
     public virtual User? ModifyiedbyNavigation { get; set; }
 
     public virtual Section? Section { get; set; }
+
+    public virtual Tablestatus StatusNavigation { get; set; } = null!;
 
     public virtual ICollection<Tableorder> Tableorders { get; } = new List<Tableorder>();
 }

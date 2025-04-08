@@ -225,8 +225,18 @@
                             <div class="col">
                                 <div class="form-floating">
                                     <select class="form-select" id="statusoftableforedit"  asp-for="Table.Status">
-                                    <option value="Available" selected>Available</option>
-                                    <option value="Occupied">Occupied</option>
+                                     @foreach(var s in Model.TableStatus){ 
+                                     if(s.Id == 1)
+                                     {
+                                    <option value="@s.Id" selected>@s.Statusname</option>
+                                     }
+                                     else
+                                     {
+                                        <option value="@s.Id">@s.Statusname</option>
+                                     }
+                                    
+                                     
+                                    }
                                     </select>
                                     <label for="statusoftable">Status</label>
                                     <span class="text-danger" asp-validation-for="Table.Status"></span>
@@ -290,8 +300,18 @@
                             <div class="col">
                                 <div class="form-floating">
                                     <select class="form-select" id="statusoftable"  asp-for="Table.Status">
-                                    <option value="Available" selected>Available</option>
-                                    <option value="Occupied">Occupied</option>
+                                     @foreach(var s in Model.TableStatus){ 
+                                     if(s.Id == 1)
+                                     {
+                                    <option value="@s.Id" selected>@s.Statusname</option>
+                                     }
+                                     else
+                                     {
+                                        <option value="@s.Id">@s.Statusname</option>
+                                     }
+                                    
+                                     
+                                    }
                                     </select>
                                     <label for="statusoftable">Status</label>
                                     <span class="text-danger" asp-validation-for="Table.Status"></span>
@@ -612,6 +632,16 @@ function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
     editsectionitem.querySelector("#NameofTableforedit").value = c.name;
     editsectionitem.querySelector("#TableidForEdit").value = c.tableId;
     editsectionitem.querySelector("#capacityoftableforedit").value = c.capacity;
+    $.ajax({
+        url: "/Section/GetStatusIdByName", // URL from the form's action attribute
+        type: "Get", // Form method
+        data:{name:c.status},
+        success: function (data) {
+            console.log("venil",data)
+            editsectionitem.querySelector("#statusoftableforedit").value = data.statusId;
+        },
+        
+    });
     editsectionitem.querySelector("#statusoftableforedit").value = c.status;
     editsectionitem.querySelector("#sectionidforedit").value = c.sectionId;
     }

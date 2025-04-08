@@ -131,6 +131,7 @@ $(document).ready(function () {
           loadTableList(id);
           toastr.success(response.message);
         } else {
+          console.log("venil",response);
           toastr.error(response.message);
         }
       },
