@@ -9,4 +9,6 @@ public interface ICustomerService
     public  Task<IEnumerable<CustomerViewModel>> GetCustomerListForExport(string searchKeyword = "", DateTime? startDate = null, DateTime? endDate = null);
 
     public Task<CustomerHistoryDetailViewModel> GetCustomerOrderHistory(int orderid);
+
+    public Task<int> AddCustomer(AddCustomerViewModel model);
 }

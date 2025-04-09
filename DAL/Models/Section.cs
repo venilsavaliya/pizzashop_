@@ -5,7 +5,7 @@ namespace DAL.Models;
 
 public partial class Section
 {
-    public int SectionId { get; set; } 
+    public int SectionId { get; set; }
 
     public string SectionName { get; set; } = null!;
 
@@ -26,4 +26,6 @@ public partial class Section
     public virtual ICollection<Diningtable> Diningtables { get; } = new List<Diningtable>();
 
     public virtual User? ModifyiedbyNavigation { get; set; }
+
+    public virtual ICollection<Waitingtoken> Waitingtokens { get; } = new List<Waitingtoken>();
 }

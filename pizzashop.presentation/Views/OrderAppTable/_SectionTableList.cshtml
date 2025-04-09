@@ -1,9 +1,9 @@
 @model List<DAL.ViewModels.OrderAppTableViewModel>
 
+    <div class="accordion accordion-flush mb-2" id="accordionFlush">
 @foreach (var i in Model)
 {
 
-    <div class="accordion accordion-flush mb-2" id="accordionFlush-{@i.SectionId}">
         <div class="accordion-item">
             <div class="accordion-header">
                 <div class="d-flex justify-content-between align-items-center ">
@@ -35,22 +35,21 @@
                         </div>
 
                         <div class="custom-blue-border custom-blue p-2 d-flex align-items-center rounded text-nowrap"
-                            type="button" data-bs-toggle="modal" data-bs-target="#waitingtokenmodal" >
+                            type="button" onclick="openWaitingTokenModal(this)" section-id="@i.SectionId" >
                             <span>+ Waiting Token</span>
                         </div>
                     </div>
 
                 </div>
 
-
             </div>
             <div id="flush-collapseOne-@i.SectionId" class="accordion-collapse collapse"
-                data-bs-parent="#accordionFlush-@i.SectionId">
+                data-bs-parent="#accordionFlush">
                 <div class="accordion-body d-flex flex-wrap gap-3 justify-content-start align-items-center">
                     @foreach (var j in i.Tables)
                     {
-                        <div class="card p-3 d-flex flex-column gap-2" onclick="toggleBorder(this)" table-status="@j.Status"
-                            style="width: 270px; @(j.Status == 1 ? "background-color:var(--table-available-bg)" : j.Status == 2 ? "background-color: var(--table-assigned-bg)" : j.Status == 3 ? "background-color: var(--table-running-bg)" : "")">
+                        <div class="card p-3 d-flex flex-column gap-2" onclick="toggleBorder(this)" table-status="@j.Status" table-id="@j.TableId"
+                            style="width: 270px; @(j.Status == 1 ? "background-color:var(--table-available-bg)" : j.Status == 3 ? "background-color: var(--table-assigned-bg)" : j.Status == 2 ? "background-color: var(--table-running-bg)" : "")">
                             <div class="d-flex justify-content-between">
                                 <h4 class="fw-bolder">@j.Name</h4>
                                 <span>₹ @j.Amount</span>
@@ -71,13 +70,12 @@
 
                 </div>
                 <div class="d-flex justify-content-end p-2">
-                    <button type="button" class="btn custom-btn-bg text-white " data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                            aria-controls="offcanvasRight">Assign
+                    <button type="button" class="btn custom-btn-bg text-white " onclick="openAssignOffcanvas(this)"
+                            aria-controls="offcanvasRight" section-id="@i.SectionId">Assign
                     </button>
                 </div>
             </div>
         </div>
 
-    </div>
-
 }
+    </div>

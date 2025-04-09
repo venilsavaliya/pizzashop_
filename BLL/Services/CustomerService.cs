@@ -147,27 +147,27 @@ public class CustomerService : ICustomerService
     {
 
         var query = from o in _context.Orders
-                     where o.CustomerId == customerid
-                     select new CustomerHistoryDetailViewModel
-                     {
-                         CustomerId = o.CustomerId,
-                         Name = o.Customer.Name,
-                         Mobile = o.Customer.Mobile,
-                         MaxOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Max(i => i.TotalAmount),
-                         AverageOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Average(i => i.TotalAmount),
-                         TotalVisit = _context.Customers.FirstOrDefault(i => i.CustomerId == customerid).TotalVisit,
-                         JoinDate = o.Customer.Createddate,
-                         Items = (from od in _context.Orders
-                                  where od.CustomerId == customerid
-                                  select new CustomerHistoryViewModel
-                                  {
-                                      Date = od.OrderDate,
-                                      OrderType = true,
-                                      PaymentType = od.PaymentMode,
-                                      Totalitems = _context.Dishritems.Where(i => i.Orderid == od.OrderId).Count(),
-                                      TotalAmount = od.TotalAmount
-                                  }).ToList()
-                     };
+                    where o.CustomerId == customerid
+                    select new CustomerHistoryDetailViewModel
+                    {
+                        CustomerId = o.CustomerId,
+                        Name = o.Customer.Name,
+                        Mobile = o.Customer.Mobile,
+                        MaxOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Max(i => i.TotalAmount),
+                        AverageOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Average(i => i.TotalAmount),
+                        TotalVisit = _context.Customers.FirstOrDefault(i => i.CustomerId == customerid).TotalVisit,
+                        JoinDate = o.Customer.Createddate,
+                        Items = (from od in _context.Orders
+                                 where od.CustomerId == customerid
+                                 select new CustomerHistoryViewModel
+                                 {
+                                     Date = od.OrderDate,
+                                     OrderType = true,
+                                     PaymentType = od.PaymentMode,
+                                     Totalitems = _context.Dishritems.Where(i => i.Orderid == od.OrderId).Count(),
+                                     TotalAmount = od.TotalAmount
+                                 }).ToList()
+                    };
         // var query = from o in _context.Orders
         //             where o.CustomerId == customerid
         //             select new CustomerHistoryViewModel
@@ -181,5 +181,67 @@ public class CustomerService : ICustomerService
 
         return query.FirstOrDefault();
     }
+
+
+    // Add New Customer
+
+    public async Task<int> AddCustomer(AddCustomerViewModel model)
+    {
+        try
+        {
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
+
+            // check if customer already exists
+
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == model.Email);
+
+            if (customer != null)
+            {
+                customer.Name = model.Name;
+                customer.TotalVisit += 1;
+                customer.Mobile = model.Mobile;
+                customer.Totalperson = model.TotalPerson;
+
+                return customer.CustomerId;
+            }
+            else
+            {
+                var newCustomer = new Customer
+                {
+                    Name = model.Name,
+                    Email = model.Email,
+                    Mobile = model.Mobile,
+                    Totalperson = model.TotalPerson,
+                    Createdby = userid,
+                    Createddate = DateTime.Now,
+                    TotalVisit = 1
+                };
+
+                _context.Customers.Add(newCustomer);
+                await _context.SaveChangesAsync();
+
+                if(newCustomer.CustomerId != 0)
+                {
+                    return newCustomer.CustomerId;
+                }
+                else
+                {
+                    return 0;
+                }
+
+
+            }
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error in Add Token: {e.Message}");
+
+            return 0;
+        }
+
+    }
+   
 
 }

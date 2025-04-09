@@ -29,9 +29,13 @@ public partial class Diningtable
 
     public int? CurrentOrderId { get; set; }
 
+    public int? Customerid { get; set; }
+
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
     public virtual Order? CurrentOrder { get; set; }
+
+    public virtual Customer? Customer { get; set; }
 
     public virtual User? ModifyiedbyNavigation { get; set; }
 

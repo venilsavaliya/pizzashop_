@@ -76,7 +76,7 @@
 
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li
-                        class="d-flex justify-content-start gap-2 align-items-center border py-2 border-top-0 dropdown-item">
+                        class="d-flex justify-content-start gap-2 align-items-center border py-2 border-top-0 dropdown-item"> 
                         <img src="@ViewBag.Profile" alt="" class="my-auto" height="40">
                         <div>@ViewBag.Username</div>
                     </li>
@@ -172,6 +172,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
     @await Html.PartialAsync("_Toaster.cshtml")
 
 </body>

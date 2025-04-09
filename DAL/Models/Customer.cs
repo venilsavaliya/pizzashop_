@@ -19,7 +19,13 @@ public partial class Customer
 
     public Guid Createdby { get; set; }
 
+    public int? Totalperson { get; set; }
+
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
+    public virtual ICollection<Diningtable> Diningtables { get; } = new List<Diningtable>();
+
     public virtual ICollection<Order> Orders { get; } = new List<Order>();
+
+    public virtual ICollection<Waitingtoken> Waitingtokens { get; } = new List<Waitingtoken>();
 }

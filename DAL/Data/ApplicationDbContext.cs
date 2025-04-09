@@ -77,6 +77,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Userdetail> Userdetails { get; set; }
 
+    public virtual DbSet<Waitingtoken> Waitingtokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
@@ -192,6 +194,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.TotalVisit)
                 .HasDefaultValueSql("1")
                 .HasColumnName("total_visit");
+            entity.Property(e => e.Totalperson)
+                .HasDefaultValueSql("1")
+                .HasColumnName("totalperson");
 
             entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.Createdby)
@@ -213,6 +218,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("createddate");
+            entity.Property(e => e.Customerid).HasColumnName("customerid");
             entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
             entity.Property(e => e.Modifieddate)
                 .HasColumnType("timestamp without time zone")
@@ -232,6 +238,10 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.CurrentOrder).WithMany(p => p.Diningtables)
                 .HasForeignKey(d => d.CurrentOrderId)
                 .HasConstraintName("fk_current_order");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.Diningtables)
+                .HasForeignKey(d => d.Customerid)
+                .HasConstraintName("customer_fk_constraint");
 
             entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.DiningtableModifyiedbyNavigations)
                 .HasForeignKey(d => d.Modifyiedby)
@@ -989,6 +999,50 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserdetailUsers)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("userdetail_user_id_fkey");
+        });
+
+        modelBuilder.Entity<Waitingtoken>(entity =>
+        {
+            entity.HasKey(e => e.Tokenid).HasName("waitingtoken_pkey");
+
+            entity.ToTable("waitingtoken");
+
+            entity.Property(e => e.Tokenid).HasColumnName("tokenid");
+            entity.Property(e => e.Completiontime)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("completiontime");
+            entity.Property(e => e.Createdat)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createdat");
+            entity.Property(e => e.Createdby).HasColumnName("createdby");
+            entity.Property(e => e.Customerid).HasColumnName("customerid");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Modifiedby).HasColumnName("modifiedby");
+            entity.Property(e => e.Sectionid).HasColumnName("sectionid");
+            entity.Property(e => e.Updatetime)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("updatetime");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.WaitingtokenCreatedbyNavigations)
+                .HasForeignKey(d => d.Createdby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_waitingtoken_user");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.Waitingtokens)
+                .HasForeignKey(d => d.Customerid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_waitingtoken_customer");
+
+            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.WaitingtokenModifiedbyNavigations)
+                .HasForeignKey(d => d.Modifiedby)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_waitingtoken_modifiedbyuser");
+
+            entity.HasOne(d => d.Section).WithMany(p => p.Waitingtokens)
+                .HasForeignKey(d => d.Sectionid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_waitingtoken_section");
         });
 
         OnModelCreatingPartial(modelBuilder);
