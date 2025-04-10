@@ -269,6 +269,10 @@
       "PackagePath": "staticwebassets\\js\\OrderAppTable\\OrderAppTable.js"
     },
     {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\OrderAppWaitingList\\OrderAppWaitingList.js",
+      "PackagePath": "staticwebassets\\js\\OrderAppWaitingList\\OrderAppWaitingList.js"
+    },
+    {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\Section\\TableItem.js",
       "PackagePath": "staticwebassets\\js\\Section\\TableItem.js"
     },

@@ -100,6 +100,7 @@ builder.Services.AddScoped<ITaxService,TaxService>();
 builder.Services.AddScoped<IOrderService,OrderService>();
 builder.Services.AddScoped<ICustomerService,CustomerService>();
 builder.Services.AddScoped<IOrderAppKOTService,OrderAppKOTService>();
+builder.Services.AddScoped<IOrderAppWaitingListService,OrderAppWaitingListService>();
 builder.Services.AddScoped<IOrderAppTableService,OrderAppTableService>();
 
 builder.Services.AddScoped<IWaitingTokenService,WaitingTokenService>();

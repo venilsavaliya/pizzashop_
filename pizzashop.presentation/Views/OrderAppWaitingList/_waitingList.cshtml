@@ -1,0 +1,42 @@
+@model List<DAL.ViewModels.WaitingTokenViewModel>
+
+<table class="table">
+    <tr>
+
+        <th class="text-center">#Token No</th>
+        <th class="text-center">Created At</th>
+        <th class="text-center">Waiting Time</th>
+        <th class="text-center">Name</th>
+        <th class="text-center">No Of Person</th>
+        <th class="text-center">Phone Number</th>
+        <th class="text-center">Email</th>
+        <th class="text-center">Action</th>
+    </tr>
+
+
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td class="table-row text-center">#@u.Tokenid</td>
+            <td class="table-row text-center">@u.Createdat</td>
+            <td class="table-row text-center live-timer" data-createdat="@u.Createdat.ToString("yyyy-MM-ddTHH:mm:ss")"></td>
+            <td class="table-row text-center">@u.Name</td>
+            <td class="table-row text-center">@u.Totalperson</td>
+            <td class="table-row text-center">@u.Mobile</td>
+            <td class="table-row text-center">@u.Email</td>
+
+            <td class="table-row text-center">
+                <div class="d-flex justify-content-center gap-3">
+
+                    <span data-item='@Html.Raw(Json.Serialize(u))' onclick="setEditDataForWaitingToken(this)"><i
+                            class="bi bi-pencil-fill"></i></span>
+                    <span><i class="bi bi-trash"></i></span>
+                    <span><i class="bi bi-person-check"></i></span>
+
+                </div>
+            </td>
+        </tr>
+    }
+
+
+</table>

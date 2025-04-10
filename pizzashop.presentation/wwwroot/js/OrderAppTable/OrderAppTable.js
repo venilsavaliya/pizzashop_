@@ -17,13 +17,25 @@ function toggleBorder(ele) {
   }
 }
 
-// Load Section List
+// Load Section List 
 function LoadSectionList() {
   $.ajax({
     type: "GET",
     url: "/OrderAppTable/GetSectionList",
     success: function (data) {
       $("#dining_table_container").html(data);
+
+      // handle logic whic execute during any accordian get collapsed
+
+      $('.accordion-collapse').on('hidden.bs.collapse', function (e) {
+        console.log('Accordion closed:');
+
+        //empty the selected table list
+        selectedTableList=[];
+
+       $(this).find('.green_border').removeClass('green_border')
+        
+      });
     },
     error: function (xhr, status, error) {
       console.error("Error loading section list:", error);
@@ -121,7 +133,7 @@ $(document).ready(function () {
       $(element).removeClass("is-invalid");
     },
   });
-  // Add Waiting Token Validations
+  // Assign Table Token Validations
   $("#TableAssignForm").validate({
     rules: {
       "Customer.Email": {
@@ -258,3 +270,4 @@ $(document).ready(function () {
     })
   });
 });
+ 

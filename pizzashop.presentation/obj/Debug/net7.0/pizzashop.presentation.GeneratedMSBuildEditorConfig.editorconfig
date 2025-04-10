@@ -140,6 +140,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBXYWl0aW5nTGlzdFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/OrderAppWaitingList/_sectionList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBXYWl0aW5nTGlzdFxfc2VjdGlvbkxpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/OrderAppWaitingList/_waitingList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJBcHBXYWl0aW5nTGlzdFxfd2FpdGluZ0xpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Order/ExportView.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcRXhwb3J0Vmlldy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

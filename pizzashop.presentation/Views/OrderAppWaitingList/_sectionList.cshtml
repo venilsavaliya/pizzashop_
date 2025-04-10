@@ -1,0 +1,17 @@
+@model DAL.ViewModels.WaitingListMainViewModel
+
+<div class="d-flex justify-content-center gap-2 nav-link  active p-3 " id="nav-profile-tab" data-bs-toggle="tab"
+    data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"
+    section-id="" onclick="LoadWaitingList(0)">
+
+    <div class="fw-bolder">All @Model.TotalWaitingToken</div>
+
+</div>
+@foreach (var c in Model.section)
+{
+    <div class="d-flex justify-content-center gap-2 nav-link p-3 text-nowrap" id='nav-tab-@c.SectionId' data-bs-toggle="tab"
+        data-bs-target="#nav-home" type="button" role="tab" aria-selected="true" section-id="@c.SectionId"
+        section-name="@c.SectionName" onclick="LoadWaitingList(@c.SectionId)">
+        <div class="fw-bolder" section-id="@c.SectionId">@c.SectionName @c.TotalWaitingToken</div>
+    </div>
+}

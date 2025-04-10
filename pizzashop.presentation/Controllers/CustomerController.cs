@@ -77,4 +77,10 @@ public class CustomerController : BaseController
         var model = await _customerservice.GetCustomerOrderHistory(customerid);
         return PartialView("~/Views/Customer/_CustomerHistory.cshtml", model);
     }
+
+    public async Task<IActionResult> GetCustomerDetail(string email)
+    {
+        var model = await _customerservice.GetCustomerDetail(email);
+        return Json(new {success=true,customer=new {name=model.Name,mobile=model.Mobile}});
+    }
 }

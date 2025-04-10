@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "cJCbDZmLBbi+1jTov79/uEgSoIF+gOMhcJkoWu82I2Q=",
+  "Hash": "+zRu6cXo9OEfCYXTQrusExS8UqJ0QKA792twRnxX3Iw=",
   "Source": "pizzashop.presentation",
   "BasePath": "_content/pizzashop.presentation",
   "Mode": "Default",
@@ -1222,6 +1222,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\OrderAppTable\\OrderAppTable.js"
+    },
+    {
+      "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\OrderAppWaitingList\\OrderAppWaitingList.js",
+      "SourceId": "pizzashop.presentation",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\",
+      "BasePath": "_content/pizzashop.presentation",
+      "RelativePath": "js/OrderAppWaitingList/OrderAppWaitingList.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\OrderAppWaitingList\\OrderAppWaitingList.js"
     },
     {
       "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\Section\\TableItem.js",

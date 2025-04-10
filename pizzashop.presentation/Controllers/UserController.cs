@@ -25,7 +25,7 @@ public class UserController : BaseController
     }
 
     #region Profile
-    [Authorize(Roles="Admin")]
+    // [Authorize(Roles="Admin")]
     // GET : User/Profile
     public IActionResult Profile()
     {
@@ -49,7 +49,7 @@ public class UserController : BaseController
     }
 
     // POST : User/UpdateProfile
-    [Authorize(Roles="Admin")]
+    // [Authorize(Roles="Admin")]
     [HttpPost]
     public async Task<IActionResult> UpdateProfile(UpdateUserViewModel model)
     {
@@ -76,7 +76,7 @@ public class UserController : BaseController
     }
 
     // GET : User/ChangePassword
-    [Authorize(Roles="Admin")]
+    // [Authorize(Roles="Admin")]
     public IActionResult ChangePassword()
     {
         return View();
@@ -84,7 +84,7 @@ public class UserController : BaseController
 
     // POST : User/ChangePassword
     [HttpPost]
-    [Authorize(Roles="Admin")]
+    // [Authorize(Roles="Admin")]
     public IActionResult ChangePassword(ChangePasswordViewModel model)
     {
         if (!ModelState.IsValid)
