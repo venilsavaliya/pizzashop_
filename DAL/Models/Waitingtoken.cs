@@ -23,6 +23,8 @@ public partial class Waitingtoken
 
     public bool Isdeleted { get; set; }
 
+    public int? Totalperson { get; set; }
+
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
     public virtual Customer Customer { get; set; } = null!;

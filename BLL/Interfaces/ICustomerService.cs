@@ -11,4 +11,6 @@ public interface ICustomerService
     public Task<CustomerHistoryDetailViewModel> GetCustomerOrderHistory(int orderid);
 
     public Task<int> AddCustomer(AddCustomerViewModel model);
+    
+    public Task<CustomerViewModel> GetCustomerDetail(string email);
 }

@@ -52,7 +52,8 @@ public class OrderAppTableService : IOrderAppTableService
         try
         {
             var customer = model.Customer;
-
+            
+            //this will return id of newly created customer or existing customer
             var customerid = _customerservice.AddCustomer(customer).Result;
 
             var currenttables = await _context.Diningtables.Where(dt => dt.Isdeleted == false && model.TableId.Contains(dt.TableId)).ToListAsync();

@@ -1020,6 +1020,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
             entity.Property(e => e.Modifiedby).HasColumnName("modifiedby");
             entity.Property(e => e.Sectionid).HasColumnName("sectionid");
+            entity.Property(e => e.Totalperson)
+                .HasDefaultValueSql("1")
+                .HasColumnName("totalperson");
             entity.Property(e => e.Updatetime)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("updatetime");

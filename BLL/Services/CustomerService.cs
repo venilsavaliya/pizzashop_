@@ -202,7 +202,7 @@ public class CustomerService : ICustomerService
                 customer.TotalVisit += 1;
                 customer.Mobile = model.Mobile;
                 customer.Totalperson = model.TotalPerson;
-
+                await _context.SaveChangesAsync();
                 return customer.CustomerId;
             }
             else
@@ -243,5 +243,38 @@ public class CustomerService : ICustomerService
 
     }
    
+   // Get Detail Of Customer From Email
+
+   public async Task<CustomerViewModel> GetCustomerDetail(string email)
+   {
+    try
+    {
+        if(email!=null)
+        {
+            var customer =await _context.Customers.FirstOrDefaultAsync(c=> c.Email==email);
+
+            if(customer !=null)
+            {
+                return new CustomerViewModel
+                {
+                    Name = customer.Name,
+                    Email = customer.Email,
+                    Mobile = customer.Mobile
+                };
+            }
+            else
+            {
+                return new CustomerViewModel();
+            }
+        }
+
+        return new CustomerViewModel();
+    }
+    catch (System.Exception)
+    {
+        
+        return new CustomerViewModel();
+    }
+   }
 
 }
