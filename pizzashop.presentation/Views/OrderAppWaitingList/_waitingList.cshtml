@@ -30,8 +30,8 @@
 
                     <span data-item='@Html.Raw(Json.Serialize(u))' onclick="setEditDataForWaitingToken(this)"><i
                             class="bi bi-pencil-fill"></i></span>
-                    <span><i class="bi bi-trash"></i></span>
-                    <span><i class="bi bi-person-check"></i></span>
+                    <span onclick="openDeleteTokenModal(@u.Tokenid)"><i class="bi bi-trash"></i></span>
+                    <span onclick="openAssignTableModal(this)"  token-id="@u.Tokenid" section-id="@u.sectionid"><i class="bi bi-person-check"></i></span>
 
                 </div>
             </td>

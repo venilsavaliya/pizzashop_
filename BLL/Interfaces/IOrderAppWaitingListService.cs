@@ -11,4 +11,7 @@ public interface IOrderAppWaitingListService
    public Task<List<WaitingTokenViewModel>> GetWaitingTokenList(int sectionid = 0);
 
    public  Task<AuthResponse> AddWaitingToken(AddEditWaitingTokenViewModel model);
+
+   public  Task<AuthResponse> DeleteWaitingToken(int TokenId);
+   public Task<List<TableViewModel>> GetAvailableTableList(int SectionId);
 }

@@ -1,3 +1,67 @@
+// ============
+const selectedTables = new Set();
+
+function updateSelectedTableNames() {
+  let names = Array.from(selectedTables)
+    .map((item) => item.name)
+    .join(", ");
+  if (names.length === 0) names = "Select Table";
+  $("#tableSelectBox").text(names);
+}
+
+
+function openAssignTableModal(ele) {
+  const sectionid = $(ele).attr("section-id");
+  const form = $("#TableAssignForm");
+
+  form.find("select[name='SectionId']").val(sectionid);
+  
+  selectedTables.clear(); // clear previous selections
+  updateSelectedTableNames();
+
+  $.ajax({
+    type: "GET",
+    url: "/OrderAppWaitingList/GetAvailableTableList",
+    data: { SectionId: sectionid },
+    success: function (data) {
+      const tables = data;
+      console.log(tables)
+      const dropdown = $("#tableDropdown");
+
+      dropdown.empty(); // Clear old list
+
+      if (!tables || tables.length === 0) {
+        $("#tableSelectBox").text("No Tables Available").addClass("text-muted");
+        return;
+      }
+
+      $("#tableSelectBox").removeClass("text-muted").text("Select Table");
+
+      tables.forEach((table) => {
+        const checkbox = `
+          <div class="form-check ">
+          
+            <input type="checkbox" class="form-check-input table-checkbox" 
+              value="${table.tableId}" id="table_${table.tableId}" data-name="${table.name}">
+              <div class="d-flex justify-content-between">
+              <label class="form-check-label" for="table_${table.tableId}">${table.name}</label>
+              <div class="d-flex gap-2"><i class="bi bi-people"></i>${table.capacity}</div>
+            </div>
+          </div>
+        `;
+        dropdown.append(checkbox);
+      });
+    },
+  });
+
+  new bootstrap.Modal(document.getElementById("assignTableModal")).show();
+}
+
+
+// ==========
+
+
+
 // function to load  Waiting List
 
 function LoadWaitingList(sectionid) {
@@ -16,6 +80,62 @@ function LoadWaitingList(sectionid) {
   });
 }
 
+// open modal for waiting token
+
+function openDeleteTokenModal(tokenid) {
+  var deleteBtn = document.getElementById("deleteWaitingTokenBtn");
+  deleteBtn.setAttribute("token-id", tokenid);
+
+  var modal = new bootstrap.Modal(
+    document.getElementById("deleteWaitingTokenModal")
+  );
+  modal.show();
+}
+
+// oprn modal for assign table
+
+// function openAssignTableModal(ele) {
+//   sectionid = $(ele).attr("section-id");
+//   tokenid = $(ele).attr("token-id");
+
+//   $.ajax({
+//     type: "GET",
+//     url: "/OrderAppWaitingList/GetAvailableTableList",
+//     data: { SectionId: sectionid },
+//     success: function (data) {
+     
+//     },
+//   });
+
+//   var form = $("#TableAssignForm");
+
+//   form.find("select[name='SectionId']").val(sectionid);
+
+//   var modal = new bootstrap.Modal(document.getElementById("assignTableModal"));
+//   modal.show();
+// }
+
+// function to delete waiting token
+
+function deleteToken(ele) {
+  var tokenid = $(ele).attr("token-id");
+
+  $.ajax({
+    type: "POST",
+    url: "/OrderAppWaitingList/DeleteWaitingToken",
+    data: { TokenId: tokenid },
+    success: function (data) {
+      data.success ? toastr.success(data.message) : toastr.error(data.message);
+      var modal = bootstrap.Modal.getInstance(
+        document.getElementById("deleteWaitingTokenModal")
+      );
+      modal.hide();
+      var sectionid = $("#section_list").find(".active").attr("section-id");
+      LoadWaitingList(sectionid);
+    },
+  });
+}
+
 //function to load section list
 function LoadSectionList(sectionid) {
   $.ajax({
@@ -23,7 +143,7 @@ function LoadSectionList(sectionid) {
     type: "GET",
     success: function (data) {
       // Wrap the returned HTML string into a jQuery object
-    
+
       var $partialView = $(data);
 
       console.log("sectionid", sectionid);
@@ -50,40 +170,80 @@ function LoadSectionList(sectionid) {
 
 //function to set initial edit data for edit waiting modal
 
-function setEditDataForWaitingToken(ele)
-{
+function setEditDataForWaitingToken(ele) {
   const itemData = $(ele).data("item"); // jQuery
 
-  console.log(itemData)
+  console.log(itemData);
 
   const form = $("#addWaitingTokenForm");
 
-  form.find("input[name='Customer.Email']").val(itemData.email)
-  form.find("input[name='Customer.Mobile']").val(itemData.mobile)
-  form.find("input[name='Customer.Name']").val(itemData.name)
-  form.find("input[name='Customer.TotalPerson']").val(itemData.totalperson)
-  form.find("input[name='TokenId']").val(itemData.tokenid)
-  form.find("input[name='SectionId']").val(itemData.sectionid)
-  console.log("heloo bhai")
+  form.find("input[name='Customer.Email']").val(itemData.email);
+  form.find("input[name='Customer.Mobile']").val(itemData.mobile);
+  form.find("input[name='Customer.Name']").val(itemData.name);
+  form.find("input[name='Customer.TotalPerson']").val(itemData.totalperson);
+  form.find("input[name='TokenId']").val(itemData.tokenid);
+  form.find("select[name='SectionId']").val(itemData.sectionid);
+
+  console.log("heloo bhai", form.find("input[name='SectionId']").val());
   openWaitingTokenModal();
-  
 }
 
 // open modal for waiting token
 
-function openWaitingTokenModal() {
+function openWaitingTokenModal(forAdd) {
   var modal = new bootstrap.Modal(document.getElementById("waitingtokenmodal"));
   modal.show();
 
-  var sectionid = $("#section_list").find(".active").attr("section-id");
-  if (sectionid == null) {
-    sectionid = "";
+  if (forAdd) {
+    var sectionid = $("#section_list").find(".active").attr("section-id");
+    if (sectionid == null) {
+      sectionid = "";
+    }
+
+    var sectionElement = $('#addWaitingTokenForm [name="SectionId"]');
+    sectionElement.val(sectionid);
+    var submitBtn = $("#addWaitingTokenForm button[type='submit']").text(
+      "Assign"
+    );
+  } else {
+    var submitBtn = $("#addWaitingTokenForm button[type='submit']").text(
+      "Save"
+    );
   }
-  var sectionElement = $('#addWaitingTokenForm [name="SectionId"]');
-  sectionElement.val(sectionid);
 }
 
 $(document).ready(function () {
+
+  // ======
+
+  $(document).on("change", ".table-checkbox", function () {
+    const tableId = $(this).val();
+    const tableName = $(this).data("name");
+  
+    if ($(this).is(":checked")) {
+      selectedTables.add({ id: tableId, name: tableName });
+    } else {
+      // Remove the unchecked one
+      const toRemove = [...selectedTables].find((item) => item.id == tableId);
+      if (toRemove) selectedTables.delete(toRemove);
+    }
+    console.log(selectedTables)
+    updateSelectedTableNames(); // Always update UI
+  });
+
+  $("#tableSelectBox").on("click", function () {
+    if (!$(this).hasClass("text-muted")) {
+      $("#tableDropdown").toggle();
+    }
+  });
+  
+  $(document).on("click", function (e) {
+    if (!$(e.target).closest("#tableSelectBox, #tableDropdown").length) {
+      $("#tableDropdown").hide();
+    }
+  });
+
+  // ========
   // Load waitinglist for all section first
 
   LoadSectionList();
@@ -212,8 +372,12 @@ $(document).ready(function () {
         var modal = document.getElementById("waitingtokenmodal");
         bootstrap.Modal.getInstance(modal).hide();
 
-        var sectionid = $("#section_list").find(".active").attr("section-id")
+        var sectionid = $("#section_list").find(".active").attr("section-id");
         LoadSectionList(sectionid);
+
+        response.success
+          ? toastr.success(response.message)
+          : toastr.error(response.message);
       },
       error: function (xhr, status, error) {
         console.error("Error assigning table:", error);
@@ -226,25 +390,25 @@ $(document).ready(function () {
       const createdAt = new Date($(this).data("createdat"));
       const now = new Date();
       const diffMs = now - createdAt;
-  
+
       if (isNaN(diffMs)) {
         $(this).text("Invalid date");
         return;
       }
-  
+
       const diffSecs = Math.floor(diffMs / 1000);
       const hours = Math.floor(diffSecs / 3600);
       const minutes = Math.floor((diffSecs % 3600) / 60);
       const seconds = diffSecs % 60;
-  
+
       const formatted = `${hours}h ${minutes}min ${seconds}s`;
       $(this).text(formatted);
     });
   }
-  
+
   // Initial call
   updateTimers();
-  
+
   // Update every second
   setInterval(updateTimers, 1000);
 });

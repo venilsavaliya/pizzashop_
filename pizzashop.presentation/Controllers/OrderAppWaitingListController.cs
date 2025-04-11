@@ -43,4 +43,22 @@ public class OrderAppWaitingListController:OrderAppBaseController
 
         return PartialView("~/Views/OrderAppWaitingList/_sectionList.cshtml",model);
     }
+
+    // Delte Waiting Token
+    [HttpPost]
+    public async Task<IActionResult> DeleteWaitingToken(int TokenId)
+    {
+        var response = _waitingservice.DeleteWaitingToken(TokenId).Result;
+
+        return Json(new {message= response.Message, success = response.Success});
+    }
+
+    // Get Available Tables List Based On SectionId
+
+    public async Task<IActionResult> GetAvailableTableList(int SectionId)
+    {
+        var response = await _waitingservice.GetAvailableTableList(SectionId);
+
+        return Ok(response);
+    }
 }

@@ -69,7 +69,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
 
             var token = _httpContext.HttpContext.Request.Cookies["jwt"];
             var userid = _userservices.GetUserIdfromToken(token);
-            
+
             // if we get token id than we simply update the token
             if (model.Tokenid != null)
             {
@@ -98,7 +98,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             return new AuthResponse
             {
                 Success = true,
-                Message = "Token Created Successfully!"
+                Message = model.Tokenid != null ? "Token Updated Successfully!" : "Token Created Succesfully",
             };
         }
         catch (System.Exception)
@@ -107,7 +107,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             return new AuthResponse
             {
                 Success = false,
-                Message = "Error Creating Token!"
+                Message = "Some Error Occured!"
             };
         }
     }
@@ -132,7 +132,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
                     Mobile = customer.Mobile,
                     Totalperson = token.Totalperson
                 }
-            ).ToListAsync();
+            ).OrderBy(w => w.Tokenid).ToListAsync();
 
             return waitingtokenlist;
 
@@ -145,5 +145,63 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
     }
 
 
-}
+    // delete waiting token
+    public async Task<AuthResponse> DeleteWaitingToken(int TokenId)
+    {
+        try
+        {
+            var existingtoken = await _context.Waitingtokens.FirstOrDefaultAsync(t => t.Tokenid == TokenId);
+            if (existingtoken != null)
+            {
+                existingtoken.Isdeleted = true;
+
+                await _context.SaveChangesAsync();
+                return new AuthResponse
+                {
+                    Message = "Token Deleted Succefully!",
+                    Success = true
+                };
+            }
+            else
+            {
+                return new AuthResponse
+                {
+                    Message = "Error Occured!",
+                    Success = false
+                };
+            }
+        }
+        catch (System.Exception)
+        {
+            return new AuthResponse
+            {
+                Message = "Error Occured!",
+                Success = false
+            };
+            throw;
+        }
+    }
+
+
+    // get available table list
+
+    public async Task<List<TableViewModel>> GetAvailableTableList(int SectionId)
+    {
+        try
+        {   var availablestatus = _context.Tablestatuses.FirstOrDefault(s=>s.Statusname==Constants.Available)!.Id;
+            var tables = await _context.Diningtables.Where(t=> t.SectionId==SectionId && t.Status==availablestatus && t.Isdeleted!=true).Select(i=> new TableViewModel{
+                TableId = i.TableId,
+                Name = i.Name,
+                Capacity = i.Capacity
+            }).ToListAsync();
+
+            return tables;
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+    }
+}   
 
