@@ -9,13 +9,14 @@ function updateSelectedTableNames() {
   $("#tableSelectBox").text(names);
 }
 
-
 function openAssignTableModal(ele) {
   const sectionid = $(ele).attr("section-id");
+  const totalperson = $(ele).attr("total-person");
   const form = $("#TableAssignForm");
 
   form.find("select[name='SectionId']").val(sectionid);
-  
+  form.find("input[name='TotalPerson']").val(totalperson);
+
   selectedTables.clear(); // clear previous selections
   updateSelectedTableNames();
 
@@ -25,7 +26,7 @@ function openAssignTableModal(ele) {
     data: { SectionId: sectionid },
     success: function (data) {
       const tables = data;
-      console.log(tables)
+      console.log(tables);
       const dropdown = $("#tableDropdown");
 
       dropdown.empty(); // Clear old list
@@ -42,7 +43,7 @@ function openAssignTableModal(ele) {
           <div class="form-check ">
           
             <input type="checkbox" class="form-check-input table-checkbox" 
-              value="${table.tableId}" id="table_${table.tableId}" data-name="${table.name}">
+              value="${table.tableId}" id="table_${table.tableId}" data-name="${table.name}" data-capacity="${table.capacity}">
               <div class="d-flex justify-content-between">
               <label class="form-check-label" for="table_${table.tableId}">${table.name}</label>
               <div class="d-flex gap-2"><i class="bi bi-people"></i>${table.capacity}</div>
@@ -57,10 +58,7 @@ function openAssignTableModal(ele) {
   new bootstrap.Modal(document.getElementById("assignTableModal")).show();
 }
 
-
 // ==========
-
-
 
 // function to load  Waiting List
 
@@ -103,7 +101,7 @@ function openDeleteTokenModal(tokenid) {
 //     url: "/OrderAppWaitingList/GetAvailableTableList",
 //     data: { SectionId: sectionid },
 //     success: function (data) {
-     
+
 //     },
 //   });
 
@@ -213,21 +211,21 @@ function openWaitingTokenModal(forAdd) {
 }
 
 $(document).ready(function () {
-
   // ======
 
   $(document).on("change", ".table-checkbox", function () {
     const tableId = $(this).val();
     const tableName = $(this).data("name");
-  
+    const tableCapacity = $(this).data("capacity");
+
     if ($(this).is(":checked")) {
-      selectedTables.add({ id: tableId, name: tableName });
+      selectedTables.add({ id: tableId, name: tableName ,capacity:tableCapacity});
     } else {
       // Remove the unchecked one
       const toRemove = [...selectedTables].find((item) => item.id == tableId);
       if (toRemove) selectedTables.delete(toRemove);
     }
-    console.log(selectedTables)
+    console.log(selectedTables);
     updateSelectedTableNames(); // Always update UI
   });
 
@@ -236,7 +234,7 @@ $(document).ready(function () {
       $("#tableDropdown").toggle();
     }
   });
-  
+
   $(document).on("click", function (e) {
     if (!$(e.target).closest("#tableSelectBox, #tableDropdown").length) {
       $("#tableDropdown").hide();
@@ -350,7 +348,7 @@ $(document).ready(function () {
     }
   );
 
-  // submit assign table form
+  // submit waiting token form
 
   $("#addWaitingTokenForm").on("submit", function (e) {
     e.preventDefault();
@@ -383,6 +381,47 @@ $(document).ready(function () {
         console.error("Error assigning table:", error);
       },
     });
+  });
+
+  $("#TableAssignForm").on("submit", function (e) {
+    e.preventDefault();
+
+    var formdata = new FormData(this);
+    var capacity =0;
+
+    selectedTables.forEach((i) => {
+      formdata.append("TableId", i.id);
+      capacity += parseInt(i.capacity);
+    });
+
+    formdata.append("TokenId", i.id);
+  
+    if(capacity<formdata.get("TotalPerson"))
+    {
+      toastr.error("Selected Capcity is Less Than Required!");
+    }
+
+    // $.ajax({
+    //   type: "POST",
+    //   url: "/OrderAppWaitingList/AddWaitingToken",
+    //   data: formdata,
+    //   contentType: false,
+    //   processData: false,
+    //   success: function (response) {
+    //     // Close the offcanvas
+        
+
+    //     // var sectionid = $("#section_list").find(".active").attr("section-id");
+    //     // LoadSectionList(sectionid);
+
+    //     // response.success
+    //     //   ? toastr.success(response.message)
+    //     //   : toastr.error(response.message);
+    //   },
+    //   error: function (xhr, status, error) {
+    //     console.error("Error assigning table:", error);
+    //   },
+    // });
   });
 
   function updateTimers() {
