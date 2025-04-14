@@ -29,7 +29,7 @@ public class OrderAppWaitingListController:OrderAppBaseController
 
     // Get List of Waiting Token 
 
-    public IActionResult GetWaitingList(int sectionid =0)
+    public IActionResult GetWaitingList(int sectionid = 0)
     {
         var model = _waitingservice.GetWaitingTokenList(sectionid).Result;
 

@@ -4,7 +4,7 @@
 
 @model DAL.ViewModels.WaitingListMainViewModel
 <div>
-    <div class="p-2">
+    <div class="p-5">
         <div class="mb-4 d-flex justify-content-between">
             <h2 class="custom-blue fw-semibold ">Waiting List</h2>
             <div class="custom-blue-border custom-blue p-2 d-flex align-items-center rounded text-nowrap" type="button"
@@ -27,8 +27,6 @@
 
 
 @* ===== modal ======= *@
-
-
 
 <div class="modal fade" id="waitingtokenmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -107,7 +105,7 @@
     </div>
 </div>
 
-@*  === Assign Tabole Form ==*@
+@*  === Assign Table Form ==*@
 <div class="modal" tabindex="-1" id="assignTableModal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -119,7 +117,8 @@
             <div class="modal-body">
 
                 <form id="TableAssignForm" class="d-flex flex-column gap-3">
-                    <input type="text" name="TotalPerson" hidden value="hello">
+                    <input type="text" name="TotalPerson" hidden value="">
+                    <input type="text" name="TokenId" hidden value="">
 
                     <div class="d-flex justify-content-between gap-2 row">
                         <div class="col">

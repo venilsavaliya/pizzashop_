@@ -81,7 +81,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Sendrock@1");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -406,6 +406,9 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Image).HasColumnName("image");
             entity.Property(e => e.Isavailable).HasColumnName("isavailable");
             entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Isfavourite)
+                .HasDefaultValueSql("false")
+                .HasColumnName("isfavourite");
             entity.Property(e => e.ItemName)
                 .HasMaxLength(50)
                 .HasColumnName("item_name");
@@ -1017,7 +1020,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("createdat");
             entity.Property(e => e.Createdby).HasColumnName("createdby");
             entity.Property(e => e.Customerid).HasColumnName("customerid");
-            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Isdeleted)
+                .HasDefaultValueSql("false")
+                .HasColumnName("isdeleted");
             entity.Property(e => e.Modifiedby).HasColumnName("modifiedby");
             entity.Property(e => e.Sectionid).HasColumnName("sectionid");
             entity.Property(e => e.Totalperson)
@@ -1027,7 +1032,7 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("updatetime");
 
-            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.WaitingtokenCreatedbyNavigations)
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.Waitingtokens)
                 .HasForeignKey(d => d.Createdby)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_waitingtoken_user");
@@ -1036,11 +1041,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.Customerid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_waitingtoken_customer");
-
-            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.WaitingtokenModifiedbyNavigations)
-                .HasForeignKey(d => d.Modifiedby)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_waitingtoken_modifiedbyuser");
 
             entity.HasOne(d => d.Section).WithMany(p => p.Waitingtokens)
                 .HasForeignKey(d => d.Sectionid)

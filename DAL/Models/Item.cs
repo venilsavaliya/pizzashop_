@@ -41,6 +41,8 @@ public partial class Item
 
     public bool? Isdeleted { get; set; }
 
+    public bool? Isfavourite { get; set; }
+
     public virtual Category? Category { get; set; }
 
     public virtual User CreatedbyNavigation { get; set; } = null!;

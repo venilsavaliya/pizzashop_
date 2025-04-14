@@ -13,16 +13,19 @@ public class OrderAppTableController : BaseController
     private readonly IOrderAppTableService _OrderAppTableService;
     private readonly ISectionServices _sectioService;
 
-    public OrderAppTableController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IOrderAppTableService OrderAppTableService, IAuthorizationService authservice, ISectionServices sectioService) : base(jwtService, userService, adminservice, authservice)
+    private readonly IOrderAppWaitingListService _waitingservice;
+
+    public OrderAppTableController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IOrderAppTableService OrderAppTableService, IAuthorizationService authservice, ISectionServices sectioService,IOrderAppWaitingListService waitingservice) : base(jwtService, userService, adminservice, authservice)
     {
         _OrderAppTableService = OrderAppTableService;
         _sectioService = sectioService;
+        _waitingservice = waitingservice;
     }
 
     public IActionResult Index()
     {
 
-        ViewBag.active = "OrderAppTable";
+        ViewBag.active = "Tables";
         var sectionList = _sectioService.GetSectionList();
         return View(sectionList);
 
@@ -42,6 +45,15 @@ public class OrderAppTableController : BaseController
         var result = _OrderAppTableService.AssignTableAsync(model).Result;
 
         return Json(new { success = result.Success, message = result.Message });
+    }
+
+    // Get List of Waiting Token 
+
+    public async Task<IActionResult> GetWaitingList(int sectionid = 0)
+    {
+        var model = await _waitingservice.GetWaitingTokenList(sectionid);
+
+        return PartialView("~/Views/OrderAppTable/_WaitingList.cshtml", model);
     }
 
 

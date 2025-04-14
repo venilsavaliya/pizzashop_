@@ -17,7 +17,7 @@ function toggleBorder(ele) {
   }
 }
 
-// Load Section List 
+// Load Section List
 function LoadSectionList() {
   $.ajax({
     type: "GET",
@@ -27,14 +27,13 @@ function LoadSectionList() {
 
       // handle logic whic execute during any accordian get collapsed
 
-      $('.accordion-collapse').on('hidden.bs.collapse', function (e) {
-        console.log('Accordion closed:');
+      $(".accordion-collapse").on("hidden.bs.collapse", function (e) {
+        console.log("Accordion closed:");
 
         //empty the selected table list
-        selectedTableList=[];
+        selectedTableList = [];
 
-       $(this).find('.green_border').removeClass('green_border')
-        
+        $(this).find(".green_border").removeClass("green_border");
       });
     },
     error: function (xhr, status, error) {
@@ -66,6 +65,39 @@ function openAssignOffcanvas(ele) {
   var sectionid = $(ele).attr("section-id");
   var sectionElement = $('#TableAssignForm [name="SectionId"]');
   sectionElement.val(sectionid);
+
+  // ajax call to get waiting list of customers
+
+  $.ajax({
+    url: "/OrderAppTable/GetWaitingList",
+    type: "GET",
+    data: { sectionid: sectionid },
+    success: function (data) {
+      $("#waitinglistCustomerDeatil").html(data);
+      attachEventListnerForRadio();
+    },
+    error: function (error) {
+      console.log("Error loading in-progress orders:", error);
+    },
+  });
+}
+
+// function to attach event listner on radio buttons
+
+function attachEventListnerForRadio()
+{
+  $(".RadionBtn").on('change',function () {
+    var obj = $(this).data('obj');
+    console.log(obj);
+    console.log('helo');
+
+    $("#TableAssignForm input[name='Customer.Email']").val(obj.email);
+    $("#TableAssignForm input[name='Customer.Name']").val(obj.name);
+    $("#TableAssignForm input[name='Customer.Mobile']").val(obj.mobile);
+    $("#TableAssignForm input[name='Customer.TotalPerson']").val(obj.totalperson);
+    $("#TableAssignForm input[name='TokenId']").val(obj.tokenid);
+
+  });
 }
 
 $(document).ready(function () {
@@ -77,22 +109,23 @@ $(document).ready(function () {
   LoadSectionList();
 
   // Add Waiting Token Validations
-  $("#addWaitingTokenForm").validate({
+   // Add Waiting Token Validations
+   $("#addWaitingTokenForm").validate({
     rules: {
-      CustomerEmail: {
+      "Customer.Email": {
         required: true,
         email: true,
       },
-      CustomerName: {
+      "Customer.Name": {
         required: true,
       },
-      CustomerPhone: {
+      "Customer.Mobile": {
         required: true,
         digits: true,
         minlength: 10,
         maxlength: 10,
       },
-      NoOfPeople: {
+      "Customer.TotalPerson": {
         required: true,
         number: true,
         min: 1,
@@ -102,20 +135,20 @@ $(document).ready(function () {
       },
     },
     messages: {
-      CustomerEmail: {
+      "Customer.Email": {
         required: "Please enter the Email",
-        email: "Please enter a valid Email (e.g. mailto:name@example.com)",
+        email: "Please enter a valid Email (e.g. name@example.com)",
       },
-      CustomerName: {
+      "Customer.Name": {
         required: "Please enter a Name",
       },
-      CustomerPhone: {
+      "Customer.Mobile": {
         required: "Please enter a Mobile Number",
         digits: "Please enter digits only",
         minlength: "Mobile number must be 10 digits",
         maxlength: "Mobile number must be 10 digits",
       },
-      NoOfPeople: {
+      "Customer.TotalPerson": {
         required: "Please enter the No of People",
         number: "Please enter a valid number",
         min: "No of People must be at least 1",
@@ -130,7 +163,7 @@ $(document).ready(function () {
       $(element).addClass("is-invalid");
     },
     unhighlight: function (element) {
-      $(element).removeClass("is-invalid");
+      $(element).removeClass("is-invalid"); 
     },
   });
   // Assign Table Token Validations
@@ -154,7 +187,7 @@ $(document).ready(function () {
         number: true,
         min: 1,
       },
-      "SectionId": {
+      SectionId: {
         required: true,
       },
     },
@@ -177,7 +210,7 @@ $(document).ready(function () {
         number: "Please enter a valid number",
         min: "No of People must be at least 1",
       },
-      "SectionId": {
+      SectionId: {
         required: "Please select the Section",
       },
     },
@@ -190,7 +223,8 @@ $(document).ready(function () {
       $(element).removeClass("is-invalid");
     },
   });
-  
+
+
 
   // reset validation after modal close
 
@@ -220,23 +254,46 @@ $(document).ready(function () {
     $("#addWaitingTokenForm ").find(".is-invalid").removeClass("is-invalid");
   });
 
-
   // submit waiting token form
 
   $("#addWaitingTokenForm").on("submit", function (e) {
-    e.preventDefault(); 
+    e.preventDefault();
 
     if (!$(this).valid()) {
       return;
     }
-    console.log("submitted!")
+
+    var formdata = new FormData(this);
+
+    $.ajax({
+      type: "POST",
+      url: "/OrderAppWaitingList/AddWaitingToken",
+      data: formdata,
+      contentType: false,
+      processData: false,
+      success: function (response) {
+        // Close the offcanvas
+        var modal = document.getElementById("waitingtokenmodal");
+        bootstrap.Modal.getInstance(modal).hide();
+
+        LoadSectionList();
+
+        response.success
+          ? toastr.success(response.message)
+          : toastr.error(response.message);
+      },
+      error: function (xhr, status, error) {
+        console.error("Error assigning table:", error);
+      },
+    });
+    
+    
   });
 
   // submit assign table form
 
   $("#TableAssignForm").on("submit", function (e) {
-
-    e.preventDefault(); 
+    e.preventDefault();
 
     if (!$(this).valid()) {
       return;
@@ -260,14 +317,13 @@ $(document).ready(function () {
         var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
         bsOffcanvas.hide();
 
-        selectedTableList=[];
-        console.log("done",selectedTableList);
+        selectedTableList = [];
+        console.log("done", selectedTableList);
         LoadSectionList();
       },
       error: function (xhr, status, error) {
         console.error("Error assigning table:", error);
       },
-    })
+    });
   });
 });
- 

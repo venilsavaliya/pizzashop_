@@ -1,0 +1,31 @@
+@model List<DAL.ViewModels.OrderAppMenuItemViewModel>
+
+@foreach(var i in Model)
+{
+     <div class="card position-relative" style="width: 280px; border-radius: 10px; overflow: hidden;">
+            <!-- Stripe -->
+            <div class="top-right-stripe"></div>
+
+            <!-- Card Content -->
+            <div class="d-flex">
+                <div class="flex-shrink-0 p-1 shadow-sm border rounded">
+                    @* @if(i.Image !=null)
+                    {
+                        <img src="@(i.Image)"  height="50">
+                    }
+                    else{
+                    } *@
+                        <img src="~/images/dining-menu.png" alt="" height="50">
+                    
+                </div>
+
+                <div class="d-flex flex-column flex-grow-1 py-1 px-2 justify-content-between">
+                    <div>@i.ItemName</div>
+                    <div class="d-flex justify-content-between">
+                        <span>₹ @i.Rate</span>
+                        <span><i class="bi bi-heart"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+}

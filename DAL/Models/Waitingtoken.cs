@@ -19,17 +19,15 @@ public partial class Waitingtoken
 
     public Guid Createdby { get; set; }
 
-    public Guid Modifiedby { get; set; }
+    public Guid? Modifiedby { get; set; }
 
-    public bool Isdeleted { get; set; }
+    public bool? Isdeleted { get; set; }
 
     public int? Totalperson { get; set; }
 
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
     public virtual Customer Customer { get; set; } = null!;
-
-    public virtual User ModifiedbyNavigation { get; set; } = null!;
 
     public virtual Section Section { get; set; } = null!;
 }

@@ -1,6 +1,6 @@
 namespace DAL.ViewModels;
 
-public class TableAssignViewModel
+public class TableAssignViewModel 
 {   
     public int? Tokenid { get; set; }
     public List<int> TableId { get; set; } 

@@ -51,15 +51,27 @@ public class OrderAppTableService : IOrderAppTableService
     {
         try
         {
-            var customer = model.Customer;
-            
-            //this will return id of newly created customer or existing customer
-            var customerid = _customerservice.AddCustomer(customer).Result;
+            var customerid = 0;
+            // if token id present then it mean existing waiting token would be assigned a table
+            if (model.Tokenid != null)
+            {
+                var waitingtokendetail = await _context.Waitingtokens.FirstOrDefaultAsync(i => i.Tokenid == model.Tokenid);
+                waitingtokendetail.Completiontime = DateTime.Now;
+                customerid = waitingtokendetail.Customerid;
+            }
+            // table assign to the new customer 
+            else
+            {
+                var customer = model.Customer;
+                //this will return id of newly created customer or existing customer
+                 customerid = await _customerservice.AddCustomer(customer);
+            }
+
 
             var currenttables = await _context.Diningtables.Where(dt => dt.Isdeleted == false && model.TableId.Contains(dt.TableId)).ToListAsync();
             foreach (var table in currenttables)
             {
-                table.Status = _context.Tablestatuses.FirstOrDefault(s => s.Statusname == Constants.Assigned).Id;
+                table.Status =  _context.Tablestatuses.FirstOrDefault(s => s.Statusname == Constants.Assigned).Id;
                 table.Customerid = customerid;
                 table.AssignTime = DateTime.Now;
                 table.CurrentOrderId = null;

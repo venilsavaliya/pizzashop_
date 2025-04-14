@@ -57,7 +57,5 @@ public partial class User
 
     public virtual ICollection<Userdetail> UserdetailUsers { get; } = new List<Userdetail>();
 
-    public virtual ICollection<Waitingtoken> WaitingtokenCreatedbyNavigations { get; } = new List<Waitingtoken>();
-
-    public virtual ICollection<Waitingtoken> WaitingtokenModifiedbyNavigations { get; } = new List<Waitingtoken>();
+    public virtual ICollection<Waitingtoken> Waitingtokens { get; } = new List<Waitingtoken>();
 }

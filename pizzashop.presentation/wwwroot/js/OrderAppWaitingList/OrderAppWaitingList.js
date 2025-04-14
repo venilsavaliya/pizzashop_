@@ -12,10 +12,12 @@ function updateSelectedTableNames() {
 function openAssignTableModal(ele) {
   const sectionid = $(ele).attr("section-id");
   const totalperson = $(ele).attr("total-person");
+  const tokenid = $(ele).attr("token-id");
   const form = $("#TableAssignForm");
 
   form.find("select[name='SectionId']").val(sectionid);
   form.find("input[name='TotalPerson']").val(totalperson);
+  form.find("input[name='TokenId']").val(tokenid);
 
   selectedTables.clear(); // clear previous selections
   updateSelectedTableNames();
@@ -219,7 +221,11 @@ $(document).ready(function () {
     const tableCapacity = $(this).data("capacity");
 
     if ($(this).is(":checked")) {
-      selectedTables.add({ id: tableId, name: tableName ,capacity:tableCapacity});
+      selectedTables.add({
+        id: tableId,
+        name: tableName,
+        capacity: tableCapacity,
+      });
     } else {
       // Remove the unchecked one
       const toRemove = [...selectedTables].find((item) => item.id == tableId);
@@ -300,7 +306,7 @@ $(document).ready(function () {
       $(element).addClass("is-invalid");
     },
     unhighlight: function (element) {
-      $(element).removeClass("is-invalid");
+      $(element).removeClass("is-invalid"); 
     },
   });
 
@@ -387,41 +393,38 @@ $(document).ready(function () {
     e.preventDefault();
 
     var formdata = new FormData(this);
-    var capacity =0;
+    var capacity = 0;
 
     selectedTables.forEach((i) => {
       formdata.append("TableId", i.id);
       capacity += parseInt(i.capacity);
     });
 
-    formdata.append("TokenId", i.id);
-  
-    if(capacity<formdata.get("TotalPerson"))
-    {
+    if (capacity < formdata.get("TotalPerson")) {
       toastr.error("Selected Capcity is Less Than Required!");
     }
 
-    // $.ajax({
-    //   type: "POST",
-    //   url: "/OrderAppWaitingList/AddWaitingToken",
-    //   data: formdata,
-    //   contentType: false,
-    //   processData: false,
-    //   success: function (response) {
-    //     // Close the offcanvas
-        
+    $.ajax({
+      type: "POST",
+      url: "/OrderAppTable/AssignTable",
+      data: formdata,
+      contentType: false,
+      processData: false,
+      success: function (response) {
+        var sectionid = $("#section_list").find(".active").attr("section-id");
+        LoadSectionList(sectionid);
 
-    //     // var sectionid = $("#section_list").find(".active").attr("section-id");
-    //     // LoadSectionList(sectionid);
+        response.success
+          ? toastr.success(response.message)
+          : toastr.error(response.message);
 
-    //     // response.success
-    //     //   ? toastr.success(response.message)
-    //     //   : toastr.error(response.message);
-    //   },
-    //   error: function (xhr, status, error) {
-    //     console.error("Error assigning table:", error);
-    //   },
-    // });
+        var modal = bootstrap.Modal.getInstance(document.getElementById("assignTableModal"));
+        modal.hide();
+      },
+      error: function (xhr, status, error) {
+        console.error("Error assigning table:", error);
+      },
+    });
   });
 
   function updateTimers() {

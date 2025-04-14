@@ -457,6 +457,8 @@ input[type=password]::-ms-clear {
   --table-running-bg: #daddff;
   --table-assigned-bg: #defae4;
   --table-available-bg: #f8f3f3;
+  --veg: #008a35;
+  --nonveg: #ff0000;
 }
 
 
@@ -484,3 +486,34 @@ input[type=password]::-ms-clear {
 {
   border: 2px solid #99d363 !important;
 }
+
+/* .orderApp-category-item:hover
+{
+  background-color: #c7cacc;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  color: black;
+} */
+
+.OrderApp_menu_active_option
+{
+  background-color: #0066a7;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  color: white;
+}
+
+.top-right-stripe {
+  position: absolute;
+  top: -1px;
+  right: -25px;
+  width: 60px;
+  height: 20px;
+  background-color: #ff6347;
+  /* border-bottom-left-radius: 5px; */
+  rotate: 42deg;
+}
+
+
+
+

@@ -37,7 +37,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             {
                 SectionId = s.SectionId,
                 SectionName = s.SectionName,
-                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Sectionid == s.SectionId).Count()
+                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Sectionid == s.SectionId && t.Completiontime ==null).Count()
 
             }).ToListAsync();
 
@@ -121,7 +121,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             var waitingtokenlist = await (
                 from token in _context.Waitingtokens
                 join customer in _context.Customers on token.Customerid equals customer.CustomerId
-                where token.Isdeleted == false && (sectionid == 0 || token.Sectionid == sectionid)
+                where token.Isdeleted == false && (sectionid == 0 || token.Sectionid == sectionid) && token.Completiontime ==null
                 select new WaitingTokenViewModel
                 {
                     Tokenid = token.Tokenid,

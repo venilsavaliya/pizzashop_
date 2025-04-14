@@ -2,6 +2,39 @@
     Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
 }
 
-<div>
-    Menu
+<div class="p-0">
+
+    <div class="d-flex flex-column bg-white position-fixed" style="width: 250px;font-weight: 600;height: 92.5vh;"
+        id="category_list">
+        @* pv of category list *@
+    </div>
+    <div class="main-container p-3" style="margin-left: 250px;">
+
+        <div class="d-flex justify-content-between mb-3 ">
+            <div class="d-flex justify-content-between">
+                <div class="position-relative " style="width: 380px;">
+                    <input type="text" class="p-2 w-100 " placeholder="Search" id="menuitem-search-field">
+                    <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
+                </div>
+            </div>
+            <div class=" d-flex justify-content-start justify-content-md-end align-items-center gap-3">
+                
+                <div class="d-flex gap-2 align-items-center">
+                    <span style="color: var(--veg)"><i class="bi bi-circle-fill"></i></span>
+                    <span>Vegetarian</span>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="" style="color: var(--nonveg)"><i class="bi bi-circle-fill"></i></span>
+                    <span>Non-Vegetarian</span>
+                </div>
+            </div>
+        </div>
+       
+        <div id="menuitems_card" class="d-flex gap-2 flex-wrap">
+            @* pv of menuitems *@
+        </div>
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/OrderAppMenu/OrderAppMenu.js"></script>
