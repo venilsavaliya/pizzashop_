@@ -2,28 +2,27 @@
 
 @foreach(var i in Model)
 {
-     <div class="card position-relative" style="width: 280px; border-radius: 10px; overflow: hidden;">
+     <div class="card position-relative" style="width: 300px; border-radius: 10px; overflow: hidden; min-height: 80px;" item-id="@i.ItemId" onclick="openSelectModifierItemModal(this)">
             <!-- Stripe -->
-            <div class="top-right-stripe"></div>
-
+            <div class="top-right-stripe" style="background-color: @(i.Type == "Veg" ? "var(--veg)" : "var(--nonveg)");"></div>
             <!-- Card Content -->
             <div class="d-flex">
-                <div class="flex-shrink-0 p-1 shadow-sm border rounded">
+                <div class="flex-shrink-0 p-1 shadow-sm border rounded ">
                     @* @if(i.Image !=null)
                     {
                         <img src="@(i.Image)"  height="50">
                     }
                     else{
                     } *@
-                        <img src="~/images/dining-menu.png" alt="" height="50">
+                        <img src="~/images/dining-menu.png" alt="" height="65" >
                     
                 </div>
 
                 <div class="d-flex flex-column flex-grow-1 py-1 px-2 justify-content-between">
-                    <div>@i.ItemName</div>
+                    <div style="font-weight: 500;">@i.ItemName</div>
                     <div class="d-flex justify-content-between">
                         <span>₹ @i.Rate</span>
-                        <span><i class="bi bi-heart"></i></span>
+                        <div onclick="AddToFavourite(this)"><i class="bi bi-heart"></i></div>
                     </div>
                 </div>
             </div>

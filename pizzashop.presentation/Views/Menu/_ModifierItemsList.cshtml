@@ -4,18 +4,21 @@
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                <input class="form-check-input outer_checkbox_modifieritemmodal" id="modifieritem_main_checkbox" type="checkbox" value=""
-                    id="flexCheckIndeterminate" modifiergroup-id="@Model.ModifierGroupId">
+                <input class="form-check-input outer_checkbox_modifieritemmodal" id="modifieritem_main_checkbox"
+                    type="checkbox" value="" id="flexCheckIndeterminate" modifiergroup-id="@Model.ModifierGroupId">
             </div> <span>Name</span>
         </th>
         <th>Unit</th>
         <th>Rate</th>
         <th>Quantity</th>
-        <th>Action</th>
+        @if (ViewBag.CanMenuAddEdit || ViewBag.CanMenuDelete)
+        {
+            <th>Action</th>
+        }
     </tr>
 
 
-    @foreach (var i in Model.Items) 
+    @foreach (var i in Model.Items)
     {
 
         <tr>
@@ -23,7 +26,7 @@
                 <div class="d-flex justify-content-start gap-2 align-items-center">
                     <div class="form-check">
                         <input class="form-check-input inner_checkbox_modifieritem" type="checkbox" value="@i.ModifierId"
-                            id="flexCheckIndeterminate" >
+                            id="flexCheckIndeterminate">
                     </div>
 
                     <span>@i.Name</span>
@@ -34,9 +37,21 @@
             <td>@i.Quantity</td>
             <td>
                 <div class="d-flex justify-content-start gap-5">
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifieritemmodal"
-                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="seteditmodifieritemdata(this)" modifiergroup-id= "@Model.ModifierGroupId">
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteModifieritemmodal" alt="" onclick="setDeleteModifierid(this)" modifiergroup-id= "@Model.ModifierGroupId" modifier-id="@i.ModifierId">
+                    @if (ViewBag.CanMenuAddEdit)
+                    {
+                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifieritemmodal"
+                            item-obj='@Html.Raw(Json.Serialize(i))' onclick="seteditmodifieritemdata(this)"
+                            modifiergroup-id="@Model.ModifierGroupId">
+                    }
+
+                    @if (ViewBag.CanMenuDelete)
+                    {
+                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteModifieritemmodal"
+                            alt="" onclick="setDeleteModifierid(this)" modifiergroup-id="@Model.ModifierGroupId"
+                            modifier-id="@i.ModifierId">
+                    }
+
+
                 </div>
 
             </td>

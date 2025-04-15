@@ -40,10 +40,17 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-center gap-5">
-                            <a asp-action="edituser" asp-controller="User" asp-route-id="@u.Id"><img
+                            @if( ViewBag.CanUserAddEdit)
+                            {
+                                <a asp-action="edituser" asp-controller="User" asp-route-id="@u.Id"><img
                                     src="~/images/icons/pen.svg" alt=""></a>
-                            <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteusermodal"
+                            }
+                            @if( ViewBag.CanUserDelete)
+                            {
+                                <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteusermodal"
                                 onclick="setDeleteUserId(this)" data-id="@u.Id" alt="">
+                            }
+                            
                         </div>
                     </td>
                 </tr>

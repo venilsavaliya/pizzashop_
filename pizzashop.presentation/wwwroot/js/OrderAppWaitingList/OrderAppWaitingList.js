@@ -312,7 +312,7 @@ $(document).ready(function () {
 
   // reset validation after modal close
 
-  $("#waitingtokenmodal").on("hidden.bs.modal", function () {
+  $("#waitingtokenmodal").on("hidden.bs.modal", function () { 
     // Reset form fields
     $("#addWaitingTokenForm")[0].reset();
 

@@ -41,9 +41,16 @@
 
             <td>
                 <div class="d-flex justify-content-start gap-5">
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTaxmodal"
+                    @if( ViewBag.CanTaxAndFeesAddEdit)
+                    {
+                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTaxmodal"
                         item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditTaxData(this)">
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetaxmodal" alt="" onclick="setDeleteTaxData(this)" tax-id="@i.TaxId" >
+                    }
+                    @if( ViewBag.CanTaxAndFeesDelete)
+                    {
+                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetaxmodal" alt="" onclick="setDeleteTaxData(this)" tax-id="@i.TaxId" >
+                    }
+                    
                 </div>
 
             </td>

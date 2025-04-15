@@ -13,12 +13,19 @@
             </div>
        
             <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
-          
-                <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#Editsectionmodal" onclick="setEditSectionData(this)" item-obj='@Html.Raw(Json.Serialize(c))'>
-            
-                <img src="~/images/icons/trash.svg" data-bs-toggle="modal" id="deletesectionBtn"
+                
+                @if(ViewBag.CanTableAndSectionAddEdit)
+                {
+                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#Editsectionmodal" onclick="setEditSectionData(this)" item-obj='@Html.Raw(Json.Serialize(c))'>
+                }
+
+                @if(ViewBag.CanTableAndSectionDelete)
+                {
+                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" id="deletesectionBtn"
                     data-bs-target="#deletesectionmodal" onclick="setDeleteSectionId(this)"  section-id="@c.SectionId"
                     alt="">
+                }
+                       
             </div>
         </div>
 }

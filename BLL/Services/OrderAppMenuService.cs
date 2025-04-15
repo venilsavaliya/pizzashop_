@@ -20,7 +20,7 @@ public class OrderAppMenuService : IOrderAppMenuService
 
     // get list of menu item based on category id
 
-    public async Task<List<OrderAppMenuItemViewModel>> GetMenuItem(int catid = 0, string searchkeyword = "",bool isfav = false)
+    public async Task<List<OrderAppMenuItemViewModel>> GetMenuItem(int catid = 0, string searchkeyword = "", bool isfav = false)
     {
         try
         {
@@ -30,7 +30,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 .Where(i => i.Isdeleted != true)
                 .AsQueryable();
 
-           
+
 
             if (catid != 0)
             {
@@ -42,7 +42,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 query = query.Where(i => i.ItemName.ToLower().Contains(searchkeyword));
             }
 
-            if(isfav)
+            if (isfav)
             {
                 query = query.Where(i => i.Isfavourite == true);
             }
@@ -68,6 +68,80 @@ public class OrderAppMenuService : IOrderAppMenuService
             throw;
         }
     }
+
+    public async Task<OrderAppModifierItemList> GetModifierGroupsByItemId(int itemId)
+    {
+        try
+        {
+            var result = await _context.Items
+     .Where(i => i.ItemId == itemId)
+     .Select(i => new OrderAppModifierItemList
+     {
+         ItemId = i.ItemId,
+         ItemName = i.ItemName,
+         Modifiergroups = (
+             from mgm in _context.ItemModifiergroupMappings
+             where mgm.ItemId == i.ItemId && mgm.Isdeleted != true
+             join mgMinMax in _context.Itemsmodifiergroupminmaxmappings
+                 on new { mgm.ItemId, mgm.ModifierGroupId } equals new {  mgMinMax.ItemId, ModifierGroupId = mgMinMax.ModifiergroupId }
+             join mg in _context.Modifiersgroups
+                 on mgm.ModifierGroupId equals mg.ModifiergroupId
+             select new OrderAppModifier
+             {
+                 ModifiergroupId = mg.ModifiergroupId,
+                 Name = mg.Name,
+                 MinValue = mgMinMax.MinValue,
+                 MaxValue = mgMinMax.MaxValue,
+                 ModifierItems = (
+                     from mig in _context.Modifieritemsmodifiersgroups
+                     where mig.ModifiergroupId == mg.ModifiergroupId
+                     join mi in _context.Modifieritems
+                         on mig.ModifierId equals mi.ModifierId
+                     where mi.Isdeleted != true
+                     select new OrderAppModifierItemsDetail
+                     {
+                         ModifierId = mi.ModifierId,
+                         ModifierName = mi.ModifierName,
+                         Rate = mi.Rate
+                     }).ToList()
+             }).ToList()
+     }).FirstOrDefaultAsync();
+
+            return result;
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+
+    }
+
+//    public async Task<OrderAppModifierItemList> GetModifierGroupsByItemId(int itemId)
+//     {
+//         try
+//         {
+//            from i in _context.Items
+//            where i.ItemId == itemId && i.Isdeleted != true
+//            join mgminmax in _context.Itemsmodifiergroupminmaxmappings 
+//            on i.ItemId equals mgminmax.ItemId
+//            join mgm in _context.Modifieritemsmodifiersgroups 
+//            on mgminmax.ModifiergroupId equals mgm.ModifiergroupId
+//            join mg in _context.Modifiersgroups 
+//            on mgm.ModifiergroupId equals mg.ModifiergroupId
+//            join mgi in _context.Modifieritems
+//            on mgm.ModifierId equals mgi.ModifierId
+//         }
+//         catch (System.Exception)
+//         {
+
+//             throw;
+//         }
+
+//     }
+
+   
+
 
 
 }

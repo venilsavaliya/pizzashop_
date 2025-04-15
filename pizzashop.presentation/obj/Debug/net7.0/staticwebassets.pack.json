@@ -281,6 +281,10 @@
       "PackagePath": "staticwebassets\\js\\Section\\TableItem.js"
     },
     {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\Tax\\Tax.js",
+      "PackagePath": "staticwebassets\\js\\Tax\\Tax.js"
+    },
+    {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
@@ -599,6 +603,10 @@
     {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\72270da8-f454-479b-bb1a-3c8586cab841.jfif",
       "PackagePath": "staticwebassets\\profile_images\\72270da8-f454-479b-bb1a-3c8586cab841.jfif"
+    },
+    {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\74f06e84-f6d8-48be-a295-20977b49c61d.png",
+      "PackagePath": "staticwebassets\\profile_images\\74f06e84-f6d8-48be-a295-20977b49c61d.png"
     },
     {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\87242fde-a1ac-4f6d-8839-100a76839148.jfif",

@@ -9,14 +9,18 @@
                     id="flexCheckIndeterminate">
             </div> <span>Name</span>
         </th>
-       
+
         <th>Capacity</th>
         <th>Status</th>
-        <th>Action</th>
+        @if (ViewBag.CanTableAndSectionDelete || ViewBag.CanTableAndSectionAddEdit)
+        {
+
+            <th>Action</th>
+        }
     </tr>
 
 
-    @foreach (var i in Model.Items) 
+    @foreach (var i in Model.Items)
     {
         <tr>
             <td>
@@ -25,20 +29,28 @@
                         <input class="form-check-input tablelist_inner_checkbox" type="checkbox" value="@i.TableId">
                     </div>
 
-                    
+
                     <span>@i.Name</span>
                 </div>
             </td>
-           
+
             <td>@i.Capacity</td>
             <td>
                 <span class="bg-secondary p-1 px-2 border rounded-pill text-white">@i.Status</span>
             </td>
             <td>
                 <div class="d-flex justify-content-start gap-5">
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTablemodal"
-                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditTabledata(this)">
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetablemodal" alt="" onclick="setDeleteTableData(this)" table-id="@i.TableId" section-id="@i.SectionId" >
+                    @if (ViewBag.CanTableAndSectionAddEdit)
+                    {
+                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTablemodal"
+                            item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditTabledata(this)">
+                    }
+                    @if (ViewBag.CanTableAndSectionDelete)
+                    {
+                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetablemodal" alt=""
+                            onclick="setDeleteTableData(this)" table-id="@i.TableId" section-id="@i.SectionId">
+                    }
+
                 </div>
 
             </td>
@@ -76,6 +88,3 @@
 
     </div>
 </div>
-
-
-

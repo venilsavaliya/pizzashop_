@@ -33,4 +33,10 @@ public class OrderAppMenuController : OrderAppBaseController
 
         return PartialView("~/Views/OrderAppMenu/_Menuitems.cshtml", model);
     }
+    public async Task<IActionResult> GetModifierGroupListById(int itemid)
+    {
+        var model =await _orderAppMenuservice.GetModifierGroupsByItemId(itemid);
+
+        return PartialView("~/Views/OrderAppMenu/_Menuitems.cshtml", model);
+    }
 }

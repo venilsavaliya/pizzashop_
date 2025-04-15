@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "zkzWX8BFpffUhHjZ7Ke6VEaXaaeSnjrCqXkkKN2Q+CM=",
+  "Hash": "CIMkH2GsJ3Bj51mMSvgprAS7jGJVwmsFh4/9mSSqIXg=",
   "Source": "pizzashop.presentation",
   "BasePath": "_content/pizzashop.presentation",
   "Mode": "Default",
@@ -1290,6 +1290,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\js\\Tax\\Tax.js",
+      "SourceId": "pizzashop.presentation",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\",
+      "BasePath": "_content/pizzashop.presentation",
+      "RelativePath": "js/Tax/Tax.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Tax\\Tax.js"
     },
     {
       "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
@@ -2633,6 +2650,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\profile_images\\72270da8-f454-479b-bb1a-3c8586cab841.jfif"
+    },
+    {
+      "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\74f06e84-f6d8-48be-a295-20977b49c61d.png",
+      "SourceId": "pizzashop.presentation",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\",
+      "BasePath": "_content/pizzashop.presentation",
+      "RelativePath": "profile_images/74f06e84-f6d8-48be-a295-20977b49c61d.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\profile_images\\74f06e84-f6d8-48be-a295-20977b49c61d.png"
     },
     {
       "Identity": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\87242fde-a1ac-4f6d-8839-100a76839148.jfif",

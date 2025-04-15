@@ -459,10 +459,12 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.Item).WithMany(p => p.ItemModifiergroupMappings)
                 .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("item_modifiergroup_mapping_item_id_fkey");
 
             entity.HasOne(d => d.ModifierGroup).WithMany(p => p.ItemModifiergroupMappings)
                 .HasForeignKey(d => d.ModifierGroupId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("item_modifiergroup_mapping_modifier_group_id_fkey");
         });
 

@@ -7,13 +7,13 @@ public partial class ItemModifiergroupMapping
 {
     public int Id { get; set; }
 
-    public int? ItemId { get; set; }
+    public int ItemId { get; set; }
 
-    public int? ModifierGroupId { get; set; }
+    public int ModifierGroupId { get; set; }
 
     public bool? Isdeleted { get; set; }
 
-    public virtual Item? Item { get; set; }
+    public virtual Item Item { get; set; } = null!;
 
-    public virtual Modifiersgroup? ModifierGroup { get; set; }
+    public virtual Modifiersgroup ModifierGroup { get; set; } = null!;
 }

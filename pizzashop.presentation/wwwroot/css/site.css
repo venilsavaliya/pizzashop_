@@ -120,6 +120,8 @@ body {
   margin-left: 240px;
   height: 100vh;
   overflow: auto;
+  /* position: fixed; */
+
 }
 
 .navbar {
@@ -513,6 +515,7 @@ input[type=password]::-ms-clear {
   /* border-bottom-left-radius: 5px; */
   rotate: 42deg;
 }
+
 
 
 

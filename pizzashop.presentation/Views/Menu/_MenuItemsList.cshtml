@@ -13,7 +13,11 @@
         <th>Rate</th>
         <th>Quantity</th>
         <th>Available</th>
-        <th>Action</th>
+        @if(ViewBag.CanMenuAddEdit || ViewBag.CanMenuDelete)
+        {
+            <th>Action</th>
+        }
+        
     </tr>
 
 
@@ -53,9 +57,17 @@
             </td>
             <td>
                 <div class="d-flex justify-content-start gap-5">
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmenuitem"
+                    @if (ViewBag.CanMenuAddEdit)
+                    {
+                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmenuitem"
                         item-obj='@Html.Raw(Json.Serialize(i))' category-id= "@Model.CategoryId" onclick="setedititemdata(this)">
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteitemmodal" alt="" onclick="setDeleteItemId(this)" item-id="@i.ItemId" >
+                    }
+                    @if(ViewBag.CanMenuDelete)
+                    {
+                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deleteitemmodal" alt="" onclick="setDeleteItemId(this)" item-id="@i.ItemId" >
+                    }
+                    
+                    
                 </div>
 
             </td>

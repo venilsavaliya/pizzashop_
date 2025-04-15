@@ -93,10 +93,14 @@
                                 <input type="text" class="p-2 w-100" placeholder="Search" id="menuitem-search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
-                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  onclick="openMassDeleteModalForMenuItem()">
+                            @if(ViewBag.CanMenuDelete)
+                            {
+                                <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;"  onclick="openMassDeleteModalForMenuItem()">
                                 <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
                                     class="small-img" >
                             </div>
+                            }
+                            
                             <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmenuitem"><span
                                     class="fs-5 fw-semibold" >+</span> New Item</button>
                             <button type="button"
@@ -140,10 +144,14 @@
                                 <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritems-search-field">
                                 <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
                             </div>
-                            <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;" onclick="openMassDeleteModalForModifierItem()">
+                            @if (ViewBag.CanMenuDelete)
+                            {
+                                <div class="d-flex justify-content-center align-items-center w-auto border rounded px-3 " style="cursor: pointer;" onclick="openMassDeleteModalForModifierItem()">
                                 <img src="~/images/icons/trash.svg" alt="" srcset="" style="width: 20px;"
                                     class="small-img" >
                             </div>
+                            }
+                            
                             <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmodifieritemmodal"><span
                                     class="fs-5 fw-semibold" >+</span> New
                                 Item</button>

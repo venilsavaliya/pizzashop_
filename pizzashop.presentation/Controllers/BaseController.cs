@@ -63,6 +63,26 @@ public class BaseController : Controller
         ViewBag.CanCustomersView = _authservice.HasPermission(PermissionName.Customers,ActionPermission.CanView);
         ViewBag.CanTableAndSectionView = _authservice.HasPermission(PermissionName.TableAndSection,ActionPermission.CanView);
         ViewBag.CanRolesAndPermissionView = _authservice.HasPermission(PermissionName.RolesAndPermission,ActionPermission.CanView);
+
+
+        ViewBag.CanUserAddEdit = _authservice.HasPermission(PermissionName.Users,ActionPermission.CanAddEdit);
+        ViewBag.CanMenuAddEdit = _authservice.HasPermission(PermissionName.Menu,ActionPermission.CanAddEdit);
+        ViewBag.CanTaxAndFeesAddEdit = _authservice.HasPermission(PermissionName.TaxAndFees,ActionPermission.CanAddEdit);
+        ViewBag.CanOrdersAddEdit = _authservice.HasPermission(PermissionName.Orders,ActionPermission.CanAddEdit);
+        ViewBag.CanCustomersAddEdit = _authservice.HasPermission(PermissionName.Customers,ActionPermission.CanAddEdit);
+        ViewBag.CanTableAndSectionAddEdit = _authservice.HasPermission(PermissionName.TableAndSection,ActionPermission.CanAddEdit);
+        ViewBag.CanRolesAndPermissionAddEdit = _authservice.HasPermission(PermissionName.RolesAndPermission,ActionPermission.CanAddEdit);
+
+
+        ViewBag.CanUserDelete = _authservice.HasPermission(PermissionName.Users,ActionPermission.CanDelete);
+        ViewBag.CanMenuDelete = _authservice.HasPermission(PermissionName.Menu,ActionPermission.CanDelete);
+        ViewBag.CanTaxAndFeesDelete = _authservice.HasPermission(PermissionName.TaxAndFees,ActionPermission.CanDelete);
+        ViewBag.CanOrdersDelete = _authservice.HasPermission(PermissionName.Orders,ActionPermission.CanDelete);
+        ViewBag.CanCustomersDelete = _authservice.HasPermission(PermissionName.Customers,ActionPermission.CanDelete);
+        ViewBag.CanTableAndSectionDelete = _authservice.HasPermission(PermissionName.TableAndSection,ActionPermission.CanDelete);
+        ViewBag.CanRolesAndPermissionDelete = _authservice.HasPermission(PermissionName.RolesAndPermission,ActionPermission.CanDelete);
+
+
     }
 
     public string GetuserName()

@@ -1,3 +1,16 @@
+//  function to open add table modal 
+
+function openAddTableModal(ele)
+{
+  var sectionid = $("#section-list").find('.category-active-option').attr('section-id');
+
+  $("#sectionoftable").val(sectionid)
+
+  var modal = new bootstrap.Modal(document.getElementById("AddTablemodal"));
+  modal.show();
+
+}
+
 // Mass Delete For Table 
 
 let SelectedTableList = [];
@@ -303,6 +316,90 @@ $(document).ready(function () {
       },
     });
   });
+
+
+
+
+  // ==========================
+
+
+
+  // Add Section Form Validation
+$("#addsectionform").validate({
+  rules: {
+    "Section.SectionName": {
+      required: true,
+    },
+    "Section.Description": {
+      required: true,
+    },
+  },
+  messages: {
+    "Section.SectionName": {
+      required: "Please enter a section name",
+    },
+    "Section.Description": {
+      required: "Please enter a description",
+    },
+  },
+  errorElement: "span",
+  errorClass: "text-danger",
+  highlight: function (element) {
+    $(element).addClass("is-invalid");
+  },
+  unhighlight: function (element) {
+    $(element).removeClass("is-invalid");
+  },
+});
+
+
+// $("#Addsectionmodal").on("hidden.bs.modal", function () {
+//   console.log("hii")
+//   // $("#addsectionform")[0].reset();
+//   // var validator = $("#addsectionform").validate();
+//   // validator.resetForm();
+//   // $("#addsectionform").find(".is-invalid").removeClass("is-invalid");
+// });
+
+
+// $("#Editsectionmodal").on("hidden.bs.modal", function () {
+
+//   console.log("hii")
+//   $("#editsectionform")[0].reset();
+//   var validator = $("#editsectionform").validate();
+//   validator.resetForm();
+//   $("#editsectionform").find(".is-invalid").removeClass("is-invalid");
+// });
+
+// Edit Section Form Validation
+$("#editsectionform").validate({
+  rules: {
+    "Section.SectionName": {
+      required: true,
+    },
+    "Section.Description": {
+      required: true,
+    },
+  },
+  messages: {
+    "Section.SectionName": {
+      required: "Please enter a section name",
+    },
+    "Section.Description": {
+      required: "Please enter a description",
+    },
+  },
+  errorElement: "span",
+  errorClass: "text-danger",
+  highlight: function (element) {
+    $(element).addClass("is-invalid");
+  },
+  unhighlight: function (element) {
+    $(element).removeClass("is-invalid");
+  },
+});
+
+
   
 
 });
