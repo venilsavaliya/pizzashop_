@@ -353,13 +353,17 @@ $("#addsectionform").validate({
 });
 
 
-// $("#Addsectionmodal").on("hidden.bs.modal", function () {
-//   console.log("hii")
-//   // $("#addsectionform")[0].reset();
-//   // var validator = $("#addsectionform").validate();
-//   // validator.resetForm();
-//   // $("#addsectionform").find(".is-invalid").removeClass("is-invalid");
-// });
+$("#Addsectionmodal").on("hidden.bs.modal", function () {
+  console.log("hii")
+  $("#addsectionform")[0].reset();
+  var validator = $("#addsectionform").validate();
+  validator.resetForm();
+  $("#addsectionform").find(".is-invalid").removeClass("is-invalid");
+});
+
+$('#Addsectionmodal').on('show.bs.modal',function(){
+  alert("Modal Closed");
+});
 
 
 // $("#Editsectionmodal").on("hidden.bs.modal", function () {

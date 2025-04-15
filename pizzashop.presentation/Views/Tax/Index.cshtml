@@ -44,31 +44,31 @@
                         <div class="row">
                             <div class="col">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control"  asp-for="Taxes.TaxName" placeholder="Name*">
+                                    <input type="text" class="form-control" name="Taxes.TaxName" placeholder="Name*">
                                     <label for="floatingInput">Name*</label>
-                                    <span class="text-danger" asp-validation-for="Taxes.TaxName"></span>
+                                    @* <span class="text-danger" asp-validation-for="Taxes.TaxName"></span> *@
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="statusoftable" asp-for="Taxes.Type">
+                                    <select class="form-select" id="statusoftable" name="Taxes.Type">
 
                                         <option value="Percentage">Percentage</option>
                                         <option value="Flat Amount">Flat Amount</option>
 
                                     </select>
                                     <label for="statusoftable">Type</label>
-                                    <span class="text-danger" asp-validation-for="Taxes.Type"></span>
+                                    @* <span class="text-danger" asp-validation-for="Taxes.Type"></span> *@
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="floatingInput" placeholder="Tax Amount*"
-                                        asp-for="Taxes.TaxAmount">
+                                        name="Taxes.TaxAmount">
                                     <label for="floatingInput">Tax Amount*</label>
-                                    <span class="text-danger" asp-validation-for="Taxes.TaxAmount"></span>
+                                    @* <span class="text-danger" asp-validation-for="Taxes.TaxAmount"></span> *@
                                 </div>
                             </div>
                         </div>
@@ -76,15 +76,18 @@
                     <div class="d-flex justify-content-start gap-2">
 
                         <div class="form-check form-switch d-flex align-items-center gap-3">
+
                             <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                id="flexSwitchCheckDefault" asp-for="Taxes.Isenable" checked>
-                            <label class="form-check-label mt-1" for="flexSwitchCheckDefault">IsEnable</label>
+                                name="Taxes.Isenable" checked value="true">
+                            <label class="form-check-label mt-1">IsEnable</label>
+                            <input name="Taxes.Isenable" value="false" hidden />
                         </div>
 
                         <div class="form-check form-switch  d-flex align-items-center gap-3">
                             <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                id="flexSwitchCheckDefault" asp-for="Taxes.Isdefault">
+                                id="flexSwitchCheckDefault" name="Taxes.Isdefault" value="true">
                             <label class="form-check-label mt-1" for="flexSwitchCheckDefault">Default</label>
+                            <input name="Taxes.Isdefault" value="false" hidden />
                         </div>
 
                     </div>
@@ -106,38 +109,38 @@
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Tax</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="EditTax" asp-controller="Tax" method="post">
+            <form asp-action="EditTax" asp-controller="Tax" method="post" id="EditTaxForm">
                 <div class="modal-body">
-                    <input type="text" class="form-control" id="taxIdForEdit" asp-for="Taxes.TaxId" hidden>
+                    <input type="text" class="form-control" id="taxIdForEdit" name="Taxes.TaxId" hidden>
                     <div>
                         <div class="row">
                             <div class="col">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="taxNameForEdit" asp-for="Taxes.TaxName">
+                                    <input type="text" class="form-control" id="taxNameForEdit" name="Taxes.TaxName">
                                     <label for="taxNameForEdit">Name*</label>
-                                    <span class="text-danger" asp-validation-for="Taxes.TaxName"></span>
+                                    @* <span class="text-danger" asp-validation-for="Taxes.TaxName"></span> *@
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="typeOfTaxForEdit" asp-for="Taxes.Type">
+                                    <select class="form-select" id="typeOfTaxForEdit" name="Taxes.Type">
 
                                         <option value="Percentage">Percentage</option>
                                         <option value="Flat Amount">Flat Amount</option>
 
                                     </select>
                                     <label for="statusoftable">Type</label>
-                                    <span class="text-danger" asp-validation-for="Taxes.Type"></span>
+                                    @* <span class="text-danger" asp-validation-for="Taxes.Type"></span> *@
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="taxAmountForEdit"
-                                        asp-for="Taxes.TaxAmount">
+                                        name="Taxes.TaxAmount">
                                     <label for="floatingInput">Tax Amount*</label>
-                                    <span class="text-danger" asp-validation-for="Taxes.TaxAmount"></span>
+                                    @* <span class="text-danger" asp-validation-for="Taxes.TaxAmount"></span> *@
                                 </div>
                             </div>
                         </div>
@@ -145,15 +148,18 @@
                     <div class="d-flex justify-content-start gap-2">
 
                         <div class="form-check form-switch d-flex align-items-center gap-3">
+
                             <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                id="isEnabledForEdit" asp-for="Taxes.Isenable">
+                                id="isEnabledForEdit" name="Taxes.Isenable" value="true">
                             <label class="form-check-label mt-1" for="isEnabledForEdit">IsEnable</label>
+                            <input name="Taxes.Isenable" value="false" hidden />
                         </div>
 
                         <div class="form-check form-switch  d-flex align-items-center gap-3">
                             <input class="form-check-input toggle-btn" type="checkbox" role="switch"
-                                id="isDefaultForEdit" asp-for="Taxes.Isdefault">
+                                id="isDefaultForEdit" name="Taxes.Isdefault" value="true">
                             <label class="form-check-label mt-1" for="isDefaultForEdit">Default</label>
+                            <input name="Taxes.Isdefault" value="false" hidden />
                         </div>
 
                     </div>
@@ -191,123 +197,5 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script
-    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/js/Tax/Tax.js"></script>
-<script>
-    
-
-    $(document).ready(function () {
-
-        TableListPaginationAjax();
-
-        // add tax valiadtion rule
-        $("#AddTaxForm").validate({
-            rules: {
-                "Taxes.TaxName": {
-                    required: true,
-                },
-                "Taxes.Type": {
-                    required: true,
-                },
-                "Taxes.TaxAmount": {
-                    required: true,
-                },
-            },
-            messages: {
-                "Taxes.TaxName": {
-                    required: "Please enter a Tax name",
-                },
-                "Taxes.Type": {
-                    required: "Please select Tax Type",
-                },
-                "Taxes.TaxAmount": {
-                    required: "Please select Tax Amount",
-                },
-            },
-            errorElement: "span",
-            errorClass: "text-danger",
-            highlight: function (element) {
-                $(element).addClass("is-invalid");
-            },
-            unhighlight: function (element) {
-                $(element).removeClass("is-invalid");
-            },
-        });
-
-        // Reset Form When Modal Close
-        $('#AddTaxmodal').on('hidden.bs.modal', function () {
-            console.log("Modal hidden!");
-
-            // Reset the form inside the modal
-            $(this).find('form')[0].reset();
-
-            // Reset ASP.NET Core validation
-            var validator = $(this).find('form').validate();
-            validator.resetForm();
-
-            // Remove invalid classes
-            $(this).find('.is-invalid').removeClass('is-invalid');
-
-            // Optional: Clear validation summary if you're using one
-            $(this).find('.validation-summary-errors').html('');
-        });
-    })
-
-    function TableListPaginationAjax(pageSize, pageNumber) {
-
-        let id = $("#section-list .category-active-option").attr("section-id");
-
-        let searchkeyword = $("#taxitem-search-field").val();
-
-        console.log("inside item", searchkeyword)
-        console.log("get id", id)
-
-        $.ajax({
-            url: "/Tax/GetTaxList",
-            data: { 'pageSize': pageSize, 'pageNumber': pageNumber, 'searchKeyword': searchkeyword },
-            type: "GET",
-            dataType: "html",
-            success: function (data) {
-                $("#taxlistcontainer").html(data);
-                @* onPartialViewLoaded();  *@
-            },
-            error: function () {
-                $("#taxlistcontainer").html('An error has occurred');
-            }
-        });
-    }
-
-    document.getElementById("taxitem-search-field").addEventListener('keyup', () => {
-        TableListPaginationAjax();
-    })
-
-    @* set data for edit tax *@
-
-        function setEditTaxData(ele) {
-
-            var c = JSON.parse(ele.getAttribute("item-obj"));
-            console.log(c);
-
-            var editsectionitem = document.getElementById("EditTaxmodal");
-            editsectionitem.querySelector("#taxIdForEdit").value = c.taxId;
-            editsectionitem.querySelector("#taxNameForEdit").value = c.taxName;
-            editsectionitem.querySelector("#typeOfTaxForEdit").value = c.type;
-            editsectionitem.querySelector("#taxAmountForEdit").value = c.taxAmount;
-            editsectionitem.querySelector("#isEnabledForEdit").checked = c.isenable;
-            editsectionitem.querySelector("#isDefaultForEdit").checked = c.isdefault;
-            editsectionitem.querySelector("#Description").value = c.description;
-        }
-
-    @* Delete Tax *@
-
-        function setDeleteTaxData(element) {
-
-            var Id = element.getAttribute("tax-id");
-            var deleteBtn = document.getElementById("deleteTaxBtn");
-            deleteBtn.href = '@Url.Action("DeleteTax", "Tax")' + '?id=' + Id;
-
-        }
-
-
-</script>
