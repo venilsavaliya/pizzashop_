@@ -440,7 +440,7 @@ public class SectionServices : ISectionServices
 
     public int GetTableStatusIdByName(string name)
     {
-        var tableStatus = _context.Tablestatuses.FirstOrDefault(c => c.Statusname == name);
+        var tableStatus = _context.Tablestatuses.FirstOrDefault(c => c.Statusname.ToLower() == name.ToLower());
         if (tableStatus != null)
         {
             return tableStatus.Id;

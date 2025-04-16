@@ -101,8 +101,8 @@
                             </div>
                             }
                             
-                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmenuitem"><span
-                                    class="fs-5 fw-semibold" >+</span> New Item</button>
+                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block"  onclick="openAddMenuItemModal()"><span
+                                    class="fs-5 fw-semibold" >+</span> New Item</button> 
                             <button type="button"
                                 class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
                         </div>
@@ -185,15 +185,15 @@
 
                             <div class="mb-3">
 
-                                <input type="text" class="form-control p-3" id="addCategoryName" asp-for="Category.Name"
+                                <input type="text" class="form-control p-3" id="addCategoryName" name="Category.Name"
                                     placeholder="Name">
-                                <span class="text-danger" asp-validation-for="Category.Name"></span>
+                                @* <span class="text-danger" asp-validation-for="Category.Name"></span> *@
                             </div>
                             <div class="mb-3">
 
                                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                    placeholder="Description" asp-for="Category.Description"></textarea>
-                                 <span class="text-danger" asp-validation-for="Category.Description"></span>
+                                    placeholder="Description" name="Category.Description"></textarea>
+                                 @* <span class="text-danger" asp-validation-for="Category.Description"></span> *@
                             </div>
                         </div>
                          <div class="d-flex justify-content-end gap-2 p-2">
@@ -449,16 +449,16 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">edit Category</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form asp-action="EditCategoryById" asp-controller="Menu" method="post" id="editcategoryform">
+                <form  method="post" id="editcategoryform">
                     <div class="modal-body">
                         <div class="d-flex flex-column">
-                            <input type="text" id="editcategoryid" asp-for="Category.Id" hidden>
+                            <input type="text" id="editcategoryid" name="Category.Id" hidden>
 
                             <div class="mb-3">
 
-                                <input type="text" class="form-control p-3" id="editcategoryformname" asp-for="Category.Name"
+                                <input type="text" class="form-control p-3" id="editcategoryformname" name="Category.Name"
                                     placeholder="Name">
-                                    <span class="text-danger" asp-validation-for="Category.Name"></span>
+                                    @* <span class="text-danger" asp-validation-for="Category.Name"></span> *@
                             </div>
                             <div class="mb-3">
 
@@ -497,7 +497,8 @@
                             <div class="row">
                                 <div class="form-floating col">
                                     <div class="form-floating col">
-                                        <select  class="form-select" id="Category" asp-for="Menuitem.CategoryId">
+                                         <input type="hidden" class="form-select" id="Select-Category-option-hidden" name="Menuitem.CategoryId" >
+                                        <select  class="form-select" id="Select-Category-option" disabled >
                                             @* <option selected>Select Categories</option> *@
                                             @foreach(var c in Model.Categories){
                                                 if(c.Id == Model.SelectedCategory){
@@ -518,7 +519,7 @@
                             <div class="row mt-4">
                                 <div class="form-floating col-6">
                                     <div class="form-floating col">
-                                        <select  class="form-select" asp-for="Menuitem.Type" id="ItemTypeForAdd">
+                                        <select  class="form-select" name="Menuitem.Type" id="ItemTypeForAdd">
                                             <option selected value="" >Select a Type</option>
                                             <option value="Veg">Veg</option>
                                             <option value="Non-Veg">Non-Veg</option>
@@ -530,7 +531,7 @@
 
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="ItemRateForAdd" value="" asp-for="Menuitem.Rate">
+                                        <input type="number" class="form-control" id="ItemRateForAdd" value="" name="Menuitem.Rate" placeholder="Rate">
                                         <label for="ItemRateForAdd">Rate</label>
                                         <span class="text-danger" asp-validation-for="Menuitem.Rate"></span>
                                     </div>
@@ -541,14 +542,14 @@
                             <div class="row mt-4">
                                 <div class="col-6">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" asp-for="Menuitem.Isavailable" value="true">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.Isavailable" value="true">
                                         <span class="ms-3">Available</span>
                                         <span class="text-danger" asp-validation-for="Menuitem.Isavailable"></span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" asp-for="Menuitem.DefaultTax" value="true">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.DefaultTax" value="true">
                                         <span class="ms-3">Default Tax</span>
                                         <span class="text-danger" asp-validation-for="Menuitem.DefaultTax"></span>
                                     </div>
@@ -558,7 +559,12 @@
                         <div class="col-6">
                             <div class="row position-relative ">
                                 <div class="col">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Name" asp-for="Menuitem.ItemName" id="ItemNameForAdd">
+                              
+                                         <div class="form-floating">
+                                        <input type="text" class="form-control"   name="Menuitem.ItemName" placeholder="Name">
+                                        <label >Name</label>
+                           
+                                    </div>
                                 </div>
                                 <span class="text-danger position-absolute" style="bottom: -25px;" asp-validation-for="Menuitem.ItemName"></span>
                             </div>
@@ -566,14 +572,14 @@
                             <div class="row mt-4">
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="ItemQuantityForAdd" value="" asp-for="Menuitem.Quantity">
+                                        <input type="number" class="form-control" id="ItemQuantityForAdd" value="" name="Menuitem.Quantity" placeholder="Quantity">
                                         <label for="ItemQuantityForAdd">Quantity</label>
                                         <span class="text-danger" asp-validation-for="Menuitem.Quantity"></span>
                                     </div>
                                 </div>
                                 <div class="form-floating col-6">
                                     <div class="form-floating col">
-                                        <select  class="form-select" asp-for="Menuitem.Unit" id="ItemUnitForAdd">
+                                        <select  class="form-select" name="Menuitem.Unit" id="ItemUnitForAdd">
                                             <option selected value="">Select a Unit</option>
 
                                             <option value="Pcs">Piece</option>
@@ -592,19 +598,19 @@
 
                             <div class="row mt-4">
                                 <div class="col-6 form-floating">
-                                    @* <input class="form-control form-control p-3" id="floatingInput" type="text" placeholder="Tax Percentage" asp-for="Menuitem.TaxPercentage">
-                                    <label for="floatingInput">Tax Percentage</label>
-                                    <span class="text-danger" asp-validation-for="Menuitem.TaxPercentage"></span> *@
+                            
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="TaxPercentageForAdd" asp-for="Menuitem.TaxPercentage">
+                                        <input type="text" class="form-control" id="TaxPercentageForAdd" name="Menuitem.TaxPercentage" placeholder="Tax Percentage">
                                         <label for="TaxPercentageForAdd">Tax Percentage</label>
                                         <span class="text-danger" asp-validation-for="Menuitem.TaxPercentage"></span>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" asp-for="Menuitem.ShortCode">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" name="Menuitem.ShortCode">
                                    
                                     <span class="text-danger" asp-validation-for="Menuitem.ShortCode"></span>
+
+                                    
                                 </div>
                             </div>
                         </div>
@@ -612,21 +618,32 @@
 
                     <div class="row mt-4">
                         <div class="form-floating">
-                             <textarea type="text" class="form-control" style="height: 100px;" id="floatingTextarea" asp-for="Menuitem.Description"></textarea>
+                             <textarea type="text" class="form-control" style="height: 100px;" id="floatingTextarea" name="Menuitem.Description" placeholder="Description"></textarea>
                             <label for="floatingTextarea">Description</label>
                             <span class="text-danger" asp-validation-for="Menuitem.Description"></span>
                         </div>
+
+
                        
                     </div>
 
                     <div class="row mt-4">
-                        <div >
-                            <input type="file" id="" class="bg-primary w-100 file-input position-absolute opacity-0" asp-for="Menuitem.Image">
-                            <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
-                                <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
-                                <div>Browse Files</div>
+                      
+                        <div class="">
+                                <div class="col-12">
+                                    <div class="position-relative border" style="height: 120px;">
+                                        <input type="file" id="myFile" 
+                                            class="inputfiletag bg-primary position-absolute" name="Menuitem.Image"  onchange="updateFileName('myFile','fileNameSpan','imageFileValidation')">
+                                        <button type="button"
+                                            class="btn  h-100 w-100 d-flex gap-1 justify-content-center align-items-center">
+                                            <div><i class="bi bi-cloud-arrow-up fw-bold fs-3"></i></div>
+                                            <div><span id="fileNameSpan">Drag and Drop or browse
+                                                    file</span></div>
+                                        </button>
+                                        <div class="text-danger" id="imageFileValidation"></div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                     </div> 
                                 </div>
         
@@ -679,7 +696,7 @@
                     <div class="modal-body">
                         <div class="add-menu-item row">
 
-                            <input asp-for="Menuitem.Id" id ="itemId"  hidden>
+                            <input name="Menuitem.Id" id ="itemId"  hidden>
 
                     <div class="col-8">
 
@@ -688,7 +705,7 @@
                             <div class="row">
                                 <div class="form-floating col">
                                     <div class="form-floating col">
-                                        <select  class="form-select" id="CategoryForEdit" asp-for="Menuitem.CategoryId">
+                                        <select  class="form-select" id="CategoryForEdit" name="Menuitem.CategoryId">
                                             @* <option selected>Select Categories</option> *@
                                             @foreach(var c in Model.Categories){
                                                 if(c.Id == Model.SelectedCategory){
@@ -708,7 +725,7 @@
                             <div class="row mt-4">
                                 <div class="form-floating col-6">
                                     <div class="form-floating col"> 
-                                        <select  class="form-select" asp-for="Menuitem.Type" id="itemtypeforedit">
+                                        <select  class="form-select" name="Menuitem.Type" id="itemtypeforedit">
                                             <option selected value="">Select a Type</option>
                                             <option value="Veg">Veg</option>
                                             <option value="Non-Veg">Non-Veg</option>
@@ -720,7 +737,7 @@
 
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="ItemRateForEdit" value="0" asp-for="Menuitem.Rate">
+                                        <input type="number" class="form-control" id="ItemRateForEdit" value="0" name="Menuitem.Rate" placeholder="Rate">
                                         <label for="floatingInput">Rate</label>
                                          <span class="text-danger" asp-validation-for="Menuitem.Rate"></span>
                                     </div>
@@ -731,14 +748,14 @@
                             <div class="row mt-4">
                                 <div class="col-6">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" asp-for="Menuitem.Isavailable" id="Isavailableforedit" value="true">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.Isavailable" id="Isavailableforedit" value="true">
                                         <span class="ms-3">Available</span>
                                          <span class="text-danger" asp-validation-for="Menuitem.Isavailable"></span>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" asp-for="Menuitem.DefaultTax" id="DefaultTaxforedit" value="true">
+                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.DefaultTax" id="DefaultTaxforedit" value="true">
                                         <span class="ms-3">Default Tax</span>
                                          <span class="text-danger" asp-validation-for="Menuitem.DefaultTax"></span>
                                     </div>
@@ -748,22 +765,25 @@
                         <div class="col-6">
                             <div class="row position-relative ">
                                 <div class="col">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Name" asp-for="Menuitem.ItemName" id="itemnameforedit">
+                                    <div class="form-floating">
+                                    <input class="form-control form-control p-3" type="text"  name="Menuitem.ItemName" id="itemnameforedit" placeholder="Name">
+                                    <label for="floatingInput">Name</label>
                                     <span class="text-danger position-absolute" style="bottom: -25px;" asp-validation-for="Menuitem.ItemName"></span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="row mt-4">
                                 <div class="col-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control"  value="0" asp-for="Menuitem.Quantity" id="ItemQuantityForEdit">
+                                        <input type="number" class="form-control"  value="0" name="Menuitem.Quantity" id="ItemQuantityForEdit" placeholder="Quantity">
                                         <label for="floatingInput">Quantity</label>
                                          <span class="text-danger" asp-validation-for="Menuitem.Quantity"></span>
                                     </div>
                                 </div>
                                 <div class="form-floating col-6">
                                     <div class="form-floating col">
-                                        <select  class="form-select" asp-for="Menuitem.Unit" id ="ItemUnitForEdit">
+                                        <select  class="form-select" name="Menuitem.Unit" id ="ItemUnitForEdit">
                                             <option selected value="">Select a Unit</option>
                                             <option value="Pcs">Piece</option>
                                             <option value="Kg">Kilogram</option>
@@ -781,12 +801,17 @@
 
                             <div class="row mt-4">
                                 <div class="col-6">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" asp-for="Menuitem.TaxPercentage" id="itemTaxPercentageForEdit">
-                                     <span class="text-danger" asp-validation-for="Menuitem.TaxPercentage"></span>
+                                   
+                                     <div class="form-floating">
+                           <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" name="Menuitem.TaxPercentage" id="itemTaxPercentageForEdit">
+                            <label for="floatingTextarea">Tax Percentage</label>
+                            
+                          </div>
                                 </div>
                                 <div class="col-6">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" asp-for="Menuitem.ShortCode" id="ShortCodeforedit">
+                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" name="Menuitem.ShortCode" id="ShortCodeforedit">
                                      <span class="text-danger" asp-validation-for="Menuitem.ShortCode"></span>
+                                     
                                 </div>
                             </div>
                         </div>
@@ -794,20 +819,28 @@
 
                     <div class="row mt-4">
                         <div class="form-floating">
-                            <textarea class="form-control"  style="height: 100px" asp-for="Menuitem.Description" id="Descriptionforedit"></textarea>
+                            <textarea class="form-control"  style="height: 100px" name="Menuitem.Description" id="Descriptionforedit"></textarea>
                             <label for="floatingTextarea">Description</label>
                              <span class="text-danger" asp-validation-for="Menuitem.Description"></span>
                           </div>
                     </div>
 
                     <div class="row mt-4">
-                        <div>
-                            <input type="file" id="" class="bg-primary w-100 file-input position-absolute opacity-0" asp-for="Menuitem.Image">
-                            <div class="d-flex flex-column w-100 align-items-center border rounded py-4 gap-2 bg-white">
-                                <img src="~/images/icons/cloud-upload.svg" alt="" srcset="" class="">
-                                <div>Browse Files</div>
+                         <div class="">
+                                <div class="col-12">
+                                    <div class="position-relative border" style="height: 120px;">
+                                        <input type="file" id="myFileEdit" 
+                                            class="inputfiletag bg-primary position-absolute" name="Menuitem.Image"  onchange="updateFileName('myFileEdit','fileNameSpanForEdit','imageFileValidationForEdit')">
+                                        <button type="button"
+                                            class="btn  h-100 w-100 d-flex gap-1 justify-content-center align-items-center">
+                                            <div><i class="bi bi-cloud-arrow-up fw-bold fs-3"></i></div>
+                                            <div><span id="fileNameSpanForEdit">Drag and Drop or browse
+                                                    file</span></div>
+                                        </button>
+                                        <div class="text-danger" id="imageFileValidationForEdit"></div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                     </div> 
                     </div>
         
@@ -919,21 +952,7 @@
                     <div class="modal-body">
                         
                         <div class="row">
-                            @* <div class="col">
-                                 <select  class="form-select selectBox p-3" id="modifierGroupSelect" asp-for="ModifierItem.ModifierGroupid">
-                                                <option selected value="">Select Modifier Group</option>
-
-                                           
-                                                @foreach(var m in @Model.ModifierGroups)
-                                                {
-                                                    <option value=@m.ModifiergroupId>@m.Name</option>
-                                                }
-                                        </select>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
-                            </div> *@
-
-
-
+                           
                             <div class="col-6">
                                 @* <label>Select Modifier Group</label> *@
                                 <div class="position-relative">
@@ -946,7 +965,7 @@
                                     <!-- Floating Checkbox List -->
                                     <div id="modifierGroupDropdown" class="position-absolute bg-white border rounded p-2 shadow" 
                                         style="display: none; z-index: 1000; width: 100%;">
-                                        @foreach (var m in @Model.ModifierGroups)
+                                        @* @foreach (var m in @Model.ModifierGroups)
                                         {
                                             <div class="form-check">
                                                 <input type="checkbox" class="form-check-input modifier-group-checkbox" 
@@ -955,7 +974,7 @@
                                                     data-name="@m.Name">
                                                 <label class="form-check-label" for="modifierGroup_@m.ModifiergroupId">@m.Name</label>
                                             </div>
-                                        }
+                                        } *@
                                     </div>
                                     <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
                                 </div>
@@ -1035,18 +1054,6 @@
                     <div class="modal-body">
                         <input type="text" class="form-control" id="ModifierId" asp-for="ModifierItem.ModifierId" hidden>
                         <div class="row">
-                            @* <div class="col">
-                                 <select  class="form-select selectBox p-3" asp-for="ModifierItem.ModifierGroupid" id="ModifierGroupid">
-                                                <option selected>Select Modifier Group</option>
-
-                                                
-                                                @foreach(var m in @Model.ModifierGroups)
-                                                {
-                                                    <option value=@m.ModifiergroupId>@m.Name</option>
-                                                }
-                                        </select>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
-                            </div> *@
 
                             <div class="col-6">
                                 @* <label>Select Modifier Group</label> *@
@@ -1142,6 +1149,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script> *@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+@* <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/additional-methods.min.js"></script> *@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/js/MenuItem.js"></script>
 <script src="~/js/MenuCategory.js"></script>

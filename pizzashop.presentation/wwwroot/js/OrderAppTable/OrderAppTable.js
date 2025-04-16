@@ -242,7 +242,7 @@ $(document).ready(function () {
 
   // reset validation after offcanvas close
 
-  $("#offcanvasRight").on("hidden.bs.offcanvas", function () {
+  $("#offcanvasRight").on("hidden.bs.offcanvas", function () { 
     // Reset form fields
     $("#TableAssignForm")[0].reset();
 

@@ -83,7 +83,7 @@ function setedititemdata(ele) {
   selectedModifierGroupsforedit = [];
   var c = JSON.parse(ele.getAttribute("item-obj"));
   var catid = ele.getAttribute("category-id");
-  console.log(c);
+  console.log("edititem",c);
 
   var editmenuitem = document.getElementById("editmenuitem");
   editmenuitem.querySelector("#CategoryForEdit").value = catid;
@@ -99,12 +99,14 @@ function setedititemdata(ele) {
     c.taxPercentage;
   editmenuitem.querySelector("#ShortCodeforedit").value = c.shortCode;
   editmenuitem.querySelector("#Descriptionforedit").value = c.description;
+  $("#fileNameSpanForEdit").text(c.image.substring(17,25)+'.jpg');
   editmenuitem.querySelector("#DefaultTaxforedit").checked = c.defaultTax
     ? true
     : false;
   editmenuitem.querySelector("#itemId").value = c.itemId;
 
   console.log("id", c.itemId);
+  console.log("image", c.image);
 
   $("#modifieritemspartialviewforedit").html("");
 
@@ -159,6 +161,10 @@ function setedititemdata(ele) {
             let maxSelect = $partialView.find("select.max-select");
             updateMaxValueForEdit.call(maxSelect);
 
+            // Trigger updateMaxValue once after rendering the partial view
+            let minSelect = $partialView.find("select.min-select");
+            updateMinValueForEdit.call(minSelect);
+
             // Attach delete event listener for the trash icon
             $partialView
               .find(".delete-modifier-group")
@@ -200,6 +206,7 @@ function setedititemdata(ele) {
 function updateMinValueForEdit() {
   let groupId = $(this).attr("data-group-id");
   let newValue = $(this).val();
+
 
   // Find and update the object in the list
   let modifierGroup = selectedModifierGroupsforedit.find(
@@ -253,6 +260,53 @@ function updateMaxValueForEdit() {
   });
 
   console.log(selectedModifierGroupsforedit);
+}
+
+// Function To Open Add Menu Item Modal
+
+function openAddMenuItemModal()
+{
+  var catid = $("#category-list").find(".category-active-option").attr('category-id');
+  $("#Select-Category-option").val(catid);
+  $("#Select-Category-option-hidden").val(catid);
+  var modal = new bootstrap.Modal(document.getElementById("addmenuitem"));
+  modal.show();
+}
+
+ // Function to update file name in the input field and File Validations
+ function updateFileName(myFile, fileNameSpan, imageFileValidation) {
+
+  var input = document.getElementById(myFile);
+  var fileNameSpan = document.getElementById(fileNameSpan);
+  var validationSpan = document.getElementById(imageFileValidation);
+  validationSpan.textContent = "";
+
+  if (input.files && input.files.length > 0) {
+      var file = input.files[0];
+      var fileSizeMB = file.size / (1024 * 1024);
+      var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.jfif)$/i;
+
+      //  Check extension
+      if (!allowedExtensions.exec(file.name)) {
+          validationSpan.textContent = "Only JPG, JPEG, PNG, and JFIF files are allowed.";
+          fileNameSpan.textContent = 'Drag and Drop or browse file';
+          input.value = "";
+          return;
+      }
+
+      //  Check file size 
+      if (fileSizeMB > 2) {
+          validationSpan.textContent = "File size should not exceed 2 MB.";
+          fileNameSpan.textContent = 'Drag and Drop or browse file';
+          input.value = "";
+          return;
+      }
+
+      //  If valid, show file name
+      fileNameSpan.textContent = file.name;
+  } else {
+      fileNameSpan.textContent = 'Drag and Drop or browse file';
+  }
 }
 
 $(document).ready(function () {
@@ -393,12 +447,97 @@ $(document).ready(function () {
     console.log(selectedModifierGroups);
   }
 
+  // Add New Menu Item Validation
+  $("#addItemForm").validate({
+    rules: {
+        "Menuitem.ItemName": {
+            required: true,
+            minlength: 2
+        },
+        "Menuitem.Type": {
+            required: true
+        },
+        "Menuitem.Rate": {
+            required: true,
+            number: true,
+            min: 0
+        },
+        "Menuitem.Quantity": {
+            required: true,
+            number: true,
+            min: 1
+        },
+        "Menuitem.Unit": {
+            required: true
+        },
+        "Menuitem.TaxPercentage": {
+            required: true,
+            number: true,
+            min: 0,
+            max: 100
+        },
+        
+    },
+    messages: {
+        "Menuitem.ItemName": {
+            required: "Please enter the item name.",
+            minlength: "Name should be at least 2 characters."
+        },
+        "Menuitem.Type": {
+            required: "Please select the item type."
+        },
+        "Menuitem.Rate": {
+            required: "Please enter the rate.",
+            number: "Please enter a valid number.",
+            min: "Rate must be at least 0."
+        },
+        "Menuitem.Quantity": {
+            required: "Please enter the quantity.",
+            number: "Please enter a valid number.",
+            min: "Quantity must be at least 1."
+        },
+        "Menuitem.Unit": {
+            required: "Please select the unit."
+        },
+        "Menuitem.TaxPercentage": {
+            required: "Please enter the tax percentage.",
+            number: "Please enter a valid number.",
+            min: "Minimum value is 0.",
+            max: "Maximum value is 100."
+        },
+       
+    },
+    errorElement: 'span',
+    errorClass: 'text-danger',
+    highlight: function (element) {
+        $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element) {
+        $(element).removeClass('is-invalid');
+    }
+});
+
+  // Reset Add Form When Modal Close
+  $("#addmenuitem").on("hidden.bs.modal", function () {
+    // Reset the form inside the modal
+    $(this).find("form")[0].reset();
+
+    // Reset ASP.NET Core validation
+    var validator = $(this).find("form").validate();
+    validator.resetForm();
+    $("#imageFileValidation").text('');
+
+    // Remove invalid classes
+    $(this).find(".is-invalid").removeClass("is-invalid");
+  });
+
   // Add New Menu Item Form Submition
 
-  $("#addItemForm").submit(function (e) {
+  $("#addItemForm").on('submit',function (e) {
     e.preventDefault();
-
-    if (!validateFormAddMenuItem()) {
+    
+    if(!$(this).valid())
+    {
       return;
     }
     var formData = new FormData(this);
@@ -445,44 +584,91 @@ $(document).ready(function () {
     });
   });
 
-  // Add item Form Validation
+    // Edit Menu Item Validation
+  $("#editItemForm").validate({
+      rules: {
+          "Menuitem.ItemName": {
+              required: true,
+              minlength: 2
+          },
+          "Menuitem.Type": {
+              required: true
+          },
+          "Menuitem.Rate": {
+              required: true,
+              number: true,
+              min: 0
+          },
+          "Menuitem.Quantity": {
+              required: true,
+              number: true,
+              min: 1
+          },
+          "Menuitem.Unit": {
+              required: true
+          },
+          "Menuitem.TaxPercentage": {
+              required: true,
+              number: true,
+              min: 0,
+              max: 100
+          },
+          
+      },
+      messages: {
+          "Menuitem.ItemName": {
+              required: "Please enter the item name.",
+              minlength: "Name should be at least 2 characters."
+          },
+          "Menuitem.Type": {
+              required: "Please select the item type."
+          },
+          "Menuitem.Rate": {
+              required: "Please enter the rate.",
+              number: "Please enter a valid number.",
+              min: "Rate must be at least 0."
+          },
+          "Menuitem.Quantity": {
+              required: "Please enter the quantity.",
+              number: "Please enter a valid number.",
+              min: "Quantity must be at least 1."
+          },
+          "Menuitem.Unit": {
+              required: "Please select the unit."
+          },
+          "Menuitem.TaxPercentage": {
+              required: "Please enter the tax percentage.",
+              number: "Please enter a valid number.",
+              min: "Minimum value is 0.",
+              max: "Maximum value is 100."
+          },
+         
+      },
+      errorElement: 'span',
+      errorClass: 'text-danger',
+      highlight: function (element) {
+          $(element).addClass('is-invalid');
+      },
+      unhighlight: function (element) {
+          $(element).removeClass('is-invalid');
+      }
+  });
 
-  function validateFormAddMenuItem() {
-    let isValid = true;
-    let errorMessage = "";
+   // Reset Edit Menu Item Form When Modal Close
+   $("#editmenuitem").on("hidden.bs.modal", function () {
+    // Reset the form inside the modal
+    $(this).find("form")[0].reset();
 
-    const itemName = $("#ItemNameForAdd").val();
-    const type = $("#ItemTypeForAdd").val();
-    const unit = $("#ItemUnitForAdd").val();
-    const rate = $("#ItemRateForAdd").val();
-    const quantity = $("#ItemQuantityForAdd").val();
-    const tax = $("#TaxPercentageForAdd").val();
+    // Reset ASP.NET Core validation
+    var validator = $(this).find("form").validate();
+    validator.resetForm();
+    $("#imageFileValidationForEdit").text('');
 
-    if (!itemName) {
-      isValid = false;
-    }
+    // Remove invalid classes
+    $(this).find(".is-invalid").removeClass("is-invalid");
+  });
 
-    if (!type) {
-      isValid = false;
-    }
 
-    if (!unit) {
-      isValid = false;
-    }
-
-    if (!rate || isNaN(rate) || rate < 0) {
-      isValid = false;
-    }
-
-    if (!quantity || isNaN(quantity) || quantity < 0) {
-      isValid = false;
-    }
-    if (!tax || isNaN(tax) || tax < 0 || tax > 100) {
-      isValid = false;
-    }
-
-    return isValid;
-  }
 
   // mass delete of menu item
 
@@ -557,7 +743,11 @@ $(document).ready(function () {
   $("#editItemForm").submit(function (e) {
     e.preventDefault();
 
-    if (!validateFormEditMenuItem()) {
+    // if (!validateFormEditMenuItem()) {
+    //   return;
+    // }
+    if(!$(this).valid())
+    {
       return;
     }
     var formData = new FormData(this);

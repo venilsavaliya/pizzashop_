@@ -446,7 +446,7 @@ public class MenuServices : IMenuServices
 
             var existingitem = _context.Items.FirstOrDefault(i => i.ItemId == model.Id);
 
-            var existincategorywithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName == model.ItemName);
+            var existincategorywithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName.ToLower() == model.ItemName.ToLower() && i.Isdeleted!=true);
 
             string img = "";
             if (model.Image != null)
@@ -654,7 +654,7 @@ public class MenuServices : IMenuServices
 
         // Check if a modifier group with the same name already exists (excluding the current one)
         bool isDuplicate = await _context.Modifiersgroups
-            .AnyAsync(mg => mg.Name == model.Name && mg.ModifiergroupId != model.ModifierId);
+            .AnyAsync(mg => mg.Name.ToLower() == model.Name.ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted==false);
 
         if (isDuplicate)
         {

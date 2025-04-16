@@ -1,91 +1,105 @@
-//  function to open add table modal 
+//  function to open add table modal
 
-function openAddTableModal(ele)
-{
-  var sectionid = $("#section-list").find('.category-active-option').attr('section-id');
+function openAddTableModal(ele) {
+  var sectionid = $("#section-list")
+    .find(".category-active-option")
+    .attr("section-id");
+    $.ajax({
+      type: "GET",
+      url: "/Section/GetSectionListData",
+      success: function (data) {
+        console.log(data)
+        // this will load modifier group list 
+        $("#sectionoftable").html('');
+        data.forEach((c) => {
+          $("#sectionoftable").append(`
+            <option value="${c.sectionId}" ${c.sectionId==sectionid?'selected':''}>${c.sectionName}</option>`);
+        });
+      },
+    });
 
-  $("#sectionoftable").val(sectionid)
+  // $("#sectionoftable").val(sectionid);
 
   var modal = new bootstrap.Modal(document.getElementById("AddTablemodal"));
   modal.show();
-
 }
 
-// Mass Delete For Table 
+// Mass Delete For Table
 
 let SelectedTableList = [];
 
 function attachMassDeleteForTable() {
   // Event listener for main checkbox
   $(document).on("change", "#main_table_checkbox", function () {
-      let isChecked = this.checked;
-      $(".tablelist_inner_checkbox").prop("checked", isChecked);
+    let isChecked = this.checked;
+    $(".tablelist_inner_checkbox").prop("checked", isChecked);
 
-      if (isChecked) {
-          $(".tablelist_inner_checkbox").each(function () {
-              let id = parseInt($(this).val()); // Convert to integer
-              if (!SelectedTableList.includes(id)) {
-                  SelectedTableList.push(id);
-              }
-          });
-      } else {
-          $(".tablelist_inner_checkbox").each(function () {
-            let id = parseInt($(this).val());
-            // Remove the unchecked item from the array
-            SelectedTableList = SelectedTableList.filter(
-              (item) => item != id
-            );
-          });
+    if (isChecked) {
+      $(".tablelist_inner_checkbox").each(function () {
+        let id = parseInt($(this).val()); // Convert to integer
+        if (!SelectedTableList.includes(id)) {
+          SelectedTableList.push(id);
+        }
+      });
+    } else {
+      $(".tablelist_inner_checkbox").each(function () {
+        let id = parseInt($(this).val());
+        // Remove the unchecked item from the array
+        SelectedTableList = SelectedTableList.filter((item) => item != id);
+      });
 
-          console.log("ok table list",SelectedTableList);
-      }
+      console.log("ok table list", SelectedTableList);
+    }
   });
 
   // Event listener for inner checkboxes
   $(document).on("change", ".tablelist_inner_checkbox", function () {
-      let id = parseInt($(this).val()); // Convert to integer
-      if (this.checked) {
-          if (!SelectedTableList.includes(id)) {
-              SelectedTableList.push(id);
-          }
-      } else {
-          SelectedTableList = SelectedTableList.filter(item => item !== id);
+    let id = parseInt($(this).val()); // Convert to integer
+    if (this.checked) {
+      if (!SelectedTableList.includes(id)) {
+        SelectedTableList.push(id);
       }
+    } else {
+      SelectedTableList = SelectedTableList.filter((item) => item !== id);
+    }
 
-      // Update main checkbox state
-      const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length && $(".tablelist_inner_checkbox:checked").length!=0;
-      $("#main_table_checkbox").prop("checked", allChecked);
+    // Update main checkbox state
+    const allChecked =
+      $(".tablelist_inner_checkbox").length ===
+        $(".tablelist_inner_checkbox:checked").length &&
+      $(".tablelist_inner_checkbox:checked").length != 0;
+    $("#main_table_checkbox").prop("checked", allChecked);
   });
 
   // Restore previously selected checkboxes
   $(".tablelist_inner_checkbox").each(function () {
-      if (SelectedTableList.includes(parseInt($(this).val()))) { // Convert to integer
-          $(this).prop("checked", true);
-      }
+    if (SelectedTableList.includes(parseInt($(this).val()))) {
+      // Convert to integer
+      $(this).prop("checked", true);
+    }
   });
 
   // Update main checkbox state initially
-  const allChecked = $(".tablelist_inner_checkbox").length === $(".tablelist_inner_checkbox:checked").length && $(".tablelist_inner_checkbox:checked").length!=0;
+  const allChecked =
+    $(".tablelist_inner_checkbox").length ===
+      $(".tablelist_inner_checkbox:checked").length &&
+    $(".tablelist_inner_checkbox:checked").length != 0;
   $("#main_table_checkbox").prop("checked", allChecked);
 }
 
-
-
-// Delete single Dining Table 
+// Delete single Dining Table
 
 function setDeleteTableData(element) {
-
-    var Id = element.getAttribute("table-id");
-    var sectionid = element.getAttribute("section-id");
-    var deleteBtn = document.getElementById("deleteTableBtn");
-    deleteBtn.setAttribute("table-id", Id);
-    deleteBtn.setAttribute("section-id", sectionid);
-
+  var Id = element.getAttribute("table-id");
+  var sectionid = element.getAttribute("section-id");
+  var deleteBtn = document.getElementById("deleteTableBtn");
+  deleteBtn.setAttribute("table-id", Id);
+  deleteBtn.setAttribute("section-id", sectionid);
 }
 
 function loadTableList(id) {
   $.ajax({
-    url: '/Section/GetDiningTableList',
+    url: "/Section/GetDiningTableList",
     type: "GET",
     data: { id: id },
     success: function (data) {
@@ -108,15 +122,399 @@ function openMassDeleteModalForTable() {
   deleteModal.show();
 }
 
+// Load Sections List
+
+function loadsection(id) {
+  $.ajax({
+    type: "GET",
+    url: "/Section/GetSections",
+    data: { id: id },
+    success: function (data) {
+      $("#section-list").html(data);
+      $("#section-list-for-smallscreen").html(data);
+    },
+  });
+
+  $.ajax({
+    url: "/Section/GetDiningTableList",
+    type: "GET",
+    data: { id: id },
+    success: function (data) {
+      $("#diningtablelistcontainer").html(data);
+      attachMassDeleteForTable();
+    },
+  });
+}
+
+// Table List Pagination
+function TableListPaginationAjax(pageSize, pageNumber, sectionid) {
+  // Get the dropdown element
+
+  let id = $("#section-list .category-active-option").attr("section-id");
+  let searchkeyword = $("#tableitem-search-field").val();
+
+  $.ajax({
+    url: "/Section/GetDiningTableList",
+    data: {
+      pageSize: pageSize,
+      pageNumber: pageNumber,
+      searchKeyword: searchkeyword,
+      id: id,
+    },
+    type: "GET",
+    dataType: "html",
+    success: function (data) {
+      $("#diningtablelistcontainer").html(data);
+      attachMassDeleteForTable();
+    },
+    error: function () {
+      $("#diningtablelistcontainer").html("An error has occurred");
+    },
+  });
+}
+
+//load tables  partial view
+
+function loadTables(id) {
+  $.ajax({
+    url: '@Url.Action("GetDiningTableList", "Section")',
+    type: "GET",
+    data: { id: id },
+    success: function (data) {
+      $("#diningtablelistcontainer").html(data);
+      attachMassDeleteForTable();
+    },
+  });
+}
+
+// set edit data for table
+
+function setEditTabledata(ele) {
+  var c = JSON.parse(ele.getAttribute("item-obj"));
+  console.log(c);
+
+  var editsectionitem = document.getElementById("EditTablemodal");
+
+  editsectionitem.querySelector("#NameofTableforedit").value = c.name;
+  editsectionitem.querySelector("#TableidForEdit").value = c.tableId;
+  editsectionitem.querySelector("#capacityoftableforedit").value = c.capacity;
+  $.ajax({
+    url: "/Section/GetStatusIdByName", // URL from the form's action attribute
+    type: "Get", // Form method
+    data: { name: c.status },
+    success: function (data) {
+      console.log("venil", data);
+      editsectionitem.querySelector("#statusoftableforedit").value =
+        data.statusId;
+    },
+  });
+  editsectionitem.querySelector("#statusoftableforedit").value = c.status;
+  editsectionitem.querySelector("#sectionidforedit").value = c.sectionId;
+}
+
+//set edit data for section
+
+function setEditSectionData(ele) {
+  var c = JSON.parse(ele.getAttribute("item-obj"));
+  console.log(c);
+
+  var editsectionitem = document.getElementById("Editsectionmodal");
+  editsectionitem.querySelector("#Sectionid").value = c.sectionId;
+  editsectionitem.querySelector("#SectionNameforedit").value = c.sectionName;
+  editsectionitem.querySelector("#Description").value = c.description;
+}
+
+// set delete data for section
+
+function setDeleteSectionId(element) {
+  var Id = element.getAttribute("section-id");
+  var deleteBtn = document.getElementById("deleteSectionBtn");
+  deleteBtn.setAttribute("section-id", Id);
+}
+
 $(document).ready(function () {
-  // Add New table Form Submition
+  loadsection();
+  TableListPaginationAjax();
 
-  $("#addtableform").submit(function (e) {
-    e.preventDefault();
+   // handle list showing of section in add table form
+  //  $("#AddTablemodal").on("shown.bs.modal", function () {
+    
+  // });
+   // handle list showing of section in edit table form
+   $("#EditTablemodal").on("shown.bs.modal", function () {
+    $.ajax({
+      type: "GET",
+      url: "/Section/GetSectionListData",
+      success: function (data) {
+        console.log(data)
+        // this will load modifier group list 
+        $("#sectionidforedit").html('');
+        data.forEach((c) => {
+          $("#sectionidforedit").append(`
+            <option value="${c.sectionId}">${c.sectionName}</option>`);
+        });
+      },
+    });
+  });
 
-    if (!validateFormAddTableItem()) {
+  // keyup search
+  document
+    .getElementById("tableitem-search-field")
+    .addEventListener("keyup", () => {
+      console.log("hello");
+      TableListPaginationAjax();
+    });
+
+  // Add Section Form Validation
+  $("#addsectionform").validate({
+    rules: {
+      "Section.SectionName": {
+        required: true,
+      },
+      "Section.Description": {
+        required: true,
+      },
+    },
+    messages: {
+      "Section.SectionName": {
+        required: "Please enter a section name",
+      },
+      "Section.Description": {
+        required: "Please enter a description",
+      },
+    },
+    errorElement: "span",
+    errorClass: "text-danger",
+    highlight: function (element) {
+      $(element).addClass("is-invalid");
+    },
+    unhighlight: function (element) {
+      $(element).removeClass("is-invalid");
+    },
+  });
+
+  // add section form reset
+  $("#Addsectionmodal").on("hidden.bs.modal", function () {
+    $("#addsectionform")[0].reset();
+    var validator = $("#addsectionform").validate();
+    validator.resetForm();
+    $("#addsectionform").find(".is-invalid").removeClass("is-invalid");
+  });
+
+  // add section form submission
+  $("#addsectionform").on("submit", function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    if (!$(this).valid()) {
+      event.preventDefault();
       return;
     }
+
+    // Create FormData object from the form
+    var formData = new FormData(this);
+
+    $.ajax({
+      url: "/Section/AddSection", // URL from the form's action attribute
+      type: "POST", // Form method
+      data: formData, // Form data
+      processData: false, // Important: prevent jQuery from processing the data
+      contentType: false, // Important: prevent jQuery from setting content type
+      success: function (response) {
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("Addsectionmodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let id = $("#section-list .category-active-option").attr(
+            "section-id"
+          );
+          loadsection(id);
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        toastr.error(error);
+      },
+    });
+  });
+
+  // Edit Section Form Validation
+  $("#editsectionform").validate({
+    rules: {
+      "Section.SectionName": {
+        required: true,
+      },
+      "Section.Description": {
+        required: true,
+      },
+    },
+    messages: {
+      "Section.SectionName": {
+        required: "Please enter a section name",
+      },
+      "Section.Description": {
+        required: "Please enter a description",
+      },
+    },
+    errorElement: "span",
+    errorClass: "text-danger",
+    highlight: function (element) {
+      $(element).addClass("is-invalid");
+    },
+    unhighlight: function (element) {
+      $(element).removeClass("is-invalid");
+    },
+  });
+
+  // add section form reset
+  $("#Editsectionmodal").on("hidden.bs.modal", function () {
+    $("#editsectionform")[0].reset();
+    var validator = $("#editsectionform").validate();
+    validator.resetForm();
+    $("#editsectionform").find(".is-invalid").removeClass("is-invalid");
+  });
+
+  // Edit section form submission
+  $("#editsectionform").on("submit", function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    if (!$(this).valid()) {
+      return;
+    }
+
+    // Create FormData object from the form
+    var formData = new FormData(this);
+
+    $.ajax({
+      url: "/Section/EditSection", // URL from the form's action attribute
+      type: "POST", // Form method
+      data: formData, // Form data
+      processData: false, // Important: prevent jQuery from processing the data
+      contentType: false, // Important: prevent jQuery from setting content type
+      success: function (response) {
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("Editsectionmodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let id = $("#section-list .category-active-option").attr(
+            "section-id"
+          );
+          loadsection(id);
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        toastr.error(error);
+      },
+    });
+  });
+
+  // delete section
+
+  $("#deleteSectionBtn").click(function (e) {
+    var id = $(this).attr("section-id");
+    $.ajax({
+      url: "/Section/DeleteSection",
+      method: "POST",
+      data: {
+        id: id,
+      },
+      success: function (response) {
+        // close the opened delete modal
+
+        var deleteModal = bootstrap.Modal.getInstance(
+          document.getElementById("deletesectionmodal")
+        );
+        deleteModal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let secid = $("#section-list .category-active-option").attr(
+            "section-id"
+          );
+          secid == id ? loadsection() : loadsection(secid); // if current section is deleted than by default select first section
+
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error deleting items:", error);
+      },
+    });
+  });
+
+  // Add Table Form Validation
+
+  $("#addtableform").validate({
+    rules: {
+      "Table.Name": {
+        required: true,
+      },
+      "Table.SectionId": {
+        required: true,
+      },
+      "Table.Capacity": {
+        required: true,
+        number: true, // Ensures the input is a number
+        min: 1, // Minimum value validation (if needed)
+      },
+      "Table.Status": {
+        required: true,
+      },
+    },
+    messages: {
+      "Table.Name": {
+        required: "Please enter a table name",
+      },
+      "Table.SectionId": {
+        required: "Please select a section",
+      },
+      "Table.Capacity": {
+        required: "Please enter a capacity",
+        number: "Capacity must be a number",
+        min: "Capacity must be greater than 0",
+      },
+      "Table.Status": {
+        required: "Please select a status",
+      },
+    },
+    errorElement: "span",
+    errorClass: "text-danger",
+    highlight: function (element) {
+      $(element).addClass("is-invalid");
+    },
+    unhighlight: function (element) {
+      $(element).removeClass("is-invalid");
+    },
+  });
+
+  // add Table form reset
+  $("#AddTablemodal").on("hidden.bs.modal", function () {
+    $("#addtableform")[0].reset();
+    var validator = $("#addtableform").validate();
+    validator.resetForm();
+    $("#addtableform").find(".is-invalid").removeClass("is-invalid");
+  });
+
+  // Add New table Form Submition
+  $("#addtableform").on("submit", function (e) {
+    e.preventDefault();
+
+    if (!$(this).valid()) {
+      return;
+    }
+
     var formData = new FormData(this);
 
     $.ajax({
@@ -144,7 +542,7 @@ $(document).ready(function () {
           loadTableList(id);
           toastr.success(response.message);
         } else {
-          console.log("venil",response);
+          console.log("venil", response);
           toastr.error(response.message);
         }
       },
@@ -154,40 +552,64 @@ $(document).ready(function () {
     });
   });
 
-  // Add table Form Validation
+  // Edit Table Form Validation
+  $("#EditTableform").validate({
+    rules: {
+      "Table.Name": {
+        required: true,
+      },
+      "Table.SectionId": {
+        required: true,
+      },
+      "Table.Capacity": {
+        required: true,
+        number: true, // Ensures the input is a number
+        min: 1, // Minimum value validation (if needed)
+      },
+      "Table.Status": {
+        required: true,
+      },
+    },
+    messages: {
+      "Table.Name": {
+        required: "Please enter a table name",
+      },
+      "Table.SectionId": {
+        required: "Please select a section",
+      },
+      "Table.Capacity": {
+        required: "Please enter a capacity",
+        number: "Capacity must be a number",
+        min: "Capacity must be greater than 0",
+      },
+      "Table.Status": {
+        required: "Please select a status",
+      },
+    },
+    errorElement: "span",
+    errorClass: "text-danger",
+    highlight: function (element) {
+      $(element).addClass("is-invalid");
+    },
+    unhighlight: function (element) {
+      $(element).removeClass("is-invalid");
+    },
+  });
 
-  function validateFormAddTableItem() {
-    let isValid = true;
+  // Edit Table Form Reset
 
-    const itemName = $("#NameofTable").val();
-    const status = $("#statusoftable").val();
-    const capacity = $("#capacityoftable").val();
-    const section = $("#sectionoftable").val();
+  $("#EditTablemodal").on("hidden.bs.modal", function () {
+    $("#EditTableform")[0].reset();
+    var validator = $("#EditTableform").validate();
+    validator.resetForm();
+    $("#EditTableform").find(".is-invalid").removeClass("is-invalid");
+  });
 
-    if (!itemName) {
-      isValid = false;
-    }
-
-    if (!status) {
-      isValid = false;
-    }
-
-    if (!section) {
-      isValid = false;
-    }
-
-    if (!capacity || isNaN(capacity) || capacity <= 0) {
-      isValid = false;
-    }
-
-    return isValid;
-  }
-  // edit table Form Submition
-
-  $("#EditTableform").submit(function (e) {
+  // Edit table form submission
+  $("#EditTableform").on("submit", function (e) {
     e.preventDefault();
 
-    if (!validateFormEditTableItem()) {
+    if (!$(this).valid()) {
       return;
     }
     var formData = new FormData(this);
@@ -224,70 +646,10 @@ $(document).ready(function () {
     });
   });
 
-  // Add table Form Validation
-
-  function validateFormEditTableItem() {
-    let isValid = true;
-
-    const itemName = $("#NameofTableforedit").val();
-    const status = $("#statusoftableforedit").val();
-    const capacity = $("#capacityoftableforedit").val();
-    const section = $("#sectionidforedit").val();
-
-    if (!itemName) {
-      isValid = false;
-    }
-
-    if (!status) {
-      isValid = false;
-    }
-
-    if (!section) {
-      isValid = false;
-    }
-
-    if (!capacity || isNaN(capacity) || capacity <= 0) {
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  // mass delete of menu item
-
-  $("#deletemultipleTableBtn").click(function (e) {
-    e.preventDefault(); // Prevent the default action of the button
-    
-    $.ajax({
-      url: "/Section/DeleteTables",
-      method: "POST",
-      data: { ids: SelectedTableList }, // Properly serialize the data
-      success: function (response) {
-        var deleteModal = bootstrap.Modal.getInstance(
-          document.getElementById("deletemultipletablemodal")
-        );
-        deleteModal.hide();
-
-        DeleteTables =[];
-  
-        if (response.success) {
-          let id = $("#section-list .category-active-option").attr("section-id");
-          loadTableList(id);
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error deleting items:", error);
-      },
-    });
-  });
-
-  // single delete of menu item
+  // single Table delete
 
   $("#deleteTableBtn").click(function (e) {
-    var sectionid = $(this).attr("section-id")
+    var sectionid = $(this).attr("section-id");
     var tableid = $(this).attr("table-id");
 
     $.ajax({
@@ -317,93 +679,36 @@ $(document).ready(function () {
     });
   });
 
+  // mass delete of multiple table
 
+  $("#deletemultipleTableBtn").click(function (e) {
+    e.preventDefault(); // Prevent the default action of the button
 
+    $.ajax({
+      url: "/Section/DeleteTables",
+      method: "POST",
+      data: { ids: SelectedTableList }, // Properly serialize the data
+      success: function (response) {
+        var deleteModal = bootstrap.Modal.getInstance(
+          document.getElementById("deletemultipletablemodal")
+        );
+        deleteModal.hide();
 
-  // ==========================
+        DeleteTables = [];
 
-
-
-  // Add Section Form Validation
-$("#addsectionform").validate({
-  rules: {
-    "Section.SectionName": {
-      required: true,
-    },
-    "Section.Description": {
-      required: true,
-    },
-  },
-  messages: {
-    "Section.SectionName": {
-      required: "Please enter a section name",
-    },
-    "Section.Description": {
-      required: "Please enter a description",
-    },
-  },
-  errorElement: "span",
-  errorClass: "text-danger",
-  highlight: function (element) {
-    $(element).addClass("is-invalid");
-  },
-  unhighlight: function (element) {
-    $(element).removeClass("is-invalid");
-  },
-});
-
-
-$("#Addsectionmodal").on("hidden.bs.modal", function () {
-  console.log("hii")
-  $("#addsectionform")[0].reset();
-  var validator = $("#addsectionform").validate();
-  validator.resetForm();
-  $("#addsectionform").find(".is-invalid").removeClass("is-invalid");
-});
-
-$('#Addsectionmodal').on('show.bs.modal',function(){
-  alert("Modal Closed");
-});
-
-
-// $("#Editsectionmodal").on("hidden.bs.modal", function () {
-
-//   console.log("hii")
-//   $("#editsectionform")[0].reset();
-//   var validator = $("#editsectionform").validate();
-//   validator.resetForm();
-//   $("#editsectionform").find(".is-invalid").removeClass("is-invalid");
-// });
-
-// Edit Section Form Validation
-$("#editsectionform").validate({
-  rules: {
-    "Section.SectionName": {
-      required: true,
-    },
-    "Section.Description": {
-      required: true,
-    },
-  },
-  messages: {
-    "Section.SectionName": {
-      required: "Please enter a section name",
-    },
-    "Section.Description": {
-      required: "Please enter a description",
-    },
-  },
-  errorElement: "span",
-  errorClass: "text-danger",
-  highlight: function (element) {
-    $(element).addClass("is-invalid");
-  },
-  unhighlight: function (element) {
-    $(element).removeClass("is-invalid");
-  },
-});
-
-
-  
-
+        if (response.success) {
+          let id = $("#section-list .category-active-option").attr(
+            "section-id"
+          );
+          loadTableList(id);
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error deleting items:", error);
+      },
+    });
+  });
 });

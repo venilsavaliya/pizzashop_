@@ -21,8 +21,6 @@ body {
   margin-bottom: 60px;
 } */
 
-
-
 * {
   margin: 0;
   padding: 0;
@@ -77,7 +75,7 @@ body {
   background-color: #e2e2e2;
 }
 
-.custom-grey{
+.custom-grey {
   color: #e2e2e2;
 }
 
@@ -99,7 +97,6 @@ body {
 
 .sidebar {
   width: 240px;
-
 }
 
 .sidebar-option img {
@@ -109,7 +106,6 @@ body {
 .small-img {
   width: 25px;
 }
-
 
 .sidebar-link {
   text-decoration: none;
@@ -121,7 +117,6 @@ body {
   height: 100vh;
   overflow: auto;
   /* position: fixed; */
-
 }
 
 .navbar {
@@ -137,11 +132,13 @@ body {
 }
 
 .active-option img {
-  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%)
+    hue-rotate(186deg) brightness(96%) contrast(102%);
 }
 
 .active-option-img {
-  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%)
+    hue-rotate(186deg) brightness(96%) contrast(102%);
 }
 
 .category-option-img {
@@ -152,12 +149,14 @@ body {
   color: #1f74ad;
 }
 
-.category-active-option>div:nth-child(1)>img{
-  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+.category-active-option > div:nth-child(1) > img {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%)
+    hue-rotate(186deg) brightness(96%) contrast(102%);
 }
 
-.category-active-option>img {
-  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+.category-active-option > img {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%)
+    hue-rotate(186deg) brightness(96%) contrast(102%);
 }
 
 .CategoryForSmallScreen {
@@ -165,7 +164,7 @@ body {
   overflow: hidden;
 }
 
-.pagination-section>div {
+.pagination-section > div {
   width: fit-content;
   text-wrap: nowrap;
 }
@@ -193,10 +192,13 @@ body {
   height: 96px;
 }
 
-.form-floating>.form-control-plaintext~label, .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
-  color: rgba(var(--bs-body-color-rgb), .65);
-  opacity: .65;
-  transform: scale(.85) translateY(-0.9rem) translateX(.5rem);
+.form-floating > .form-control-plaintext ~ label,
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+  color: rgba(var(--bs-body-color-rgb), 0.65);
+  opacity: 0.65;
+  transform: scale(0.85) translateY(-0.9rem) translateX(0.5rem);
 }
 
 /* label {
@@ -221,14 +223,15 @@ body {
 }
 
 .nav-link.active img {
-  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%) hue-rotate(186deg) brightness(96%) contrast(102%);
+  filter: brightness(0) saturate(100%) invert(20%) sepia(89%) saturate(2371%)
+    hue-rotate(186deg) brightness(96%) contrast(102%);
 }
 
-.tab-content>.active {
+.tab-content > .active {
   display: flex;
 }
 
-@media only screen and (min-width:992px) {
+@media only screen and (min-width: 992px) {
   .pizza-logo {
     width: 100px;
   }
@@ -260,9 +263,8 @@ body {
   }
 }
 
-
-input[type=password]::-ms-reveal,
-input[type=password]::-ms-clear {
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
   display: none;
 }
 
@@ -346,7 +348,6 @@ input[type=password]::-ms-clear {
   background-color: #1e90ff;
 } */
 
-
 .disabled-button {
   pointer-events: none;
   opacity: 0.7;
@@ -357,31 +358,26 @@ input[type=password]::-ms-clear {
   cursor: not-allowed;
 }
 
-.dashboard-icon{
-  
+.dashboard-icon {
   width: 40px;
   height: 40px;
   border-radius: 100%;
 }
-.dashboard-icon-outer
-{
+.dashboard-icon-outer {
   width: 60px;
   height: 60px;
   padding: 10px;
 }
 
-.cursor-pointer
-{
+.cursor-pointer {
   cursor: pointer;
 }
 
-.table-row
-{
+.table-row {
   padding: 15px 0px !important;
 }
 
-
-.orderStatusBox{
+.orderStatusBox {
   background-color: #add8e6;
   color: #0e5c7d;
   font-size: 15px;
@@ -389,67 +385,63 @@ input[type=password]::-ms-clear {
   max-width: 150px;
 }
 
-.orderBorderRadius{
+.orderBorderRadius {
   border-radius: 8px;
 }
 
-.order_header{
+.order_header {
   color: #0068a9;
 }
 
-#orderDetailOuter{
+#orderDetailOuter {
   width: 65%;
 }
 
 @media (max-width: 991px) {
-  #orderDetailOuter{
-      width: 90%;
-    }
+  #orderDetailOuter {
+    width: 90%;
   }
-
-
-
+}
 
 #modifierGroupDropdown {
-    max-height: 200px;
-    overflow-y: auto;
+  max-height: 200px;
+  overflow-y: auto;
 }
 #modifierGroupDropdownForEdit {
-    max-height: 200px;
-    overflow-y: auto;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 #modifierGroupSelectBox:hover {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 #modifierGroupSelectBoxForEdit:hover {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 #modifierGroupSelectBox {
-  white-space: nowrap; 
-  overflow-x: auto;    
-  overflow-y: hidden; 
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
   display: block;
 }
 #modifierGroupSelectBoxForEdit {
-  white-space: nowrap; 
-  overflow-x: auto;    
-  overflow-y: hidden; 
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
   display: block;
 }
-
 
 /* Chrome, Safari, Edge, Opera */
 .no-spinner::-webkit-outer-spin-button,
 .no-spinner::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Firefox */
 .no-spinner {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 :root {
@@ -463,12 +455,9 @@ input[type=password]::-ms-clear {
   --nonveg: #ff0000;
 }
 
-
-.accordion-button:focus 
-{
+.accordion-button:focus {
   box-shadow: none !important;
 }
-
 
 .accordion-button .accordion-arrow {
   transition: transform 0.3s ease;
@@ -479,13 +468,11 @@ input[type=password]::-ms-clear {
   transform: rotate(360deg); /* down */
 }
 
-.accordion-button::after
-{
+.accordion-button::after {
   display: none !important;
 }
 
-.green_border
-{
+.green_border {
   border: 2px solid #99d363 !important;
 }
 
@@ -497,8 +484,7 @@ input[type=password]::-ms-clear {
   color: black;
 } */
 
-.OrderApp_menu_active_option
-{
+.OrderApp_menu_active_option {
   background-color: #0066a7;
   border-top-right-radius: 25px;
   border-bottom-right-radius: 25px;
@@ -516,7 +502,9 @@ input[type=password]::-ms-clear {
   rotate: 42deg;
 }
 
-
-
-
-
+.inputfiletag {
+  width: 100%;
+  height: 120px;
+  opacity: 0;
+  z-index: 100;
+}

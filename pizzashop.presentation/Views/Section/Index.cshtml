@@ -22,12 +22,12 @@
     </div>
 
  
-    <div class=" bg-white mt-2 bg-white position-relative  " style="height: fit-content;">
+    <div class=" bg-white mt-2 bg-white position-relative  " style="height: fit-content;"> 
 
         @* ----first tab------- *@
 
         <div class=" w-100" >
-            <div class="d-flex w-100">
+            <div class="d-flex w-100" style="height: 500px;">
                 <div class=" category-menu border-0 pt-3 d-none d-lg-block" id="category-menu">
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Section</h5>
@@ -62,9 +62,9 @@
                             }
                            
                             <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" onclick="openAddTableModal()"><span
-                                    class="fs-5 fw-semibold" >+</span> New Item</button>
+                                    class="fs-5 fw-semibold" >+</span> New Table</button>
                             <button type="button"
-                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
+                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none" onclick="openAddTableModal()">+</button>
                         </div>
                     </div>
                     <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="diningtablelistcontainer">
@@ -92,23 +92,23 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Section</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="addsectionform" method="post">
+                <form id="addsectionform">
                     <div class="modal-body">
 
                         <div class="d-flex flex-column">
                              
                             <div class="mb-3">
 
-                                <input type="text" class="form-control p-3" id="addsectionname" asp-for="Section.SectionName"
+                                <input type="text" class="form-control p-3" id="addsectionname" name="Section.SectionName"
                                     placeholder="Name">
                             </div>
-                            <span class="text-danger" asp-validation-for="Section.SectionName"></span>
+                            @* <span class="text-danger" asp-validation-for="Section.SectionName"></span> *@
                             <div class="mb-3">
 
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                    placeholder="Description" asp-for="Section.Description"></textarea>
+                                <textarea class="form-control" rows="3"
+                                    placeholder="Description" name="Section.Description"></textarea>
                             </div>
-                                    <span class="text-danger" asp-validation-for="Section.Description"></span>
+                                    @* <span class="text-danger" asp-validation-for="Section.Description"></span> *@
                         </div>
                          <div class="d-flex justify-content-end gap-2 p-2">
                             <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
@@ -191,17 +191,17 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" id="TableidForEdit" asp-for="Table.TableId" hidden>
+                                <input type="text" class="form-control" id="TableidForEdit" name="Table.TableId" hidden>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="NameofTableforedit" asp-for="Table.Name">
+                                <input type="text" class="form-control" id="NameofTableforedit" name="Table.Name">
                                 <label for="NameofTable">Name</label>
-                                <span class="text-danger" asp-validation-for="Table.Name"></span>
+                                @* <span class="text-danger" asp-validation-for="Table.Name"></span> *@
                             </div>
                             </div>
                             <div class="col">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select disabled-toggle " id="sectionidforedit"  asp-for="Table.SectionId">
-                                    @foreach(var c in Model.Sections){ 
+                                    <select class="form-select disabled-toggle " id="sectionidforedit"  name="Table.SectionId">
+                                    @* @foreach(var c in Model.Sections){ 
                                      if(c.SectionId==Model.SelectedSection)
                                      {
 
@@ -211,24 +211,24 @@
                                      {
                                     <option value="@c.SectionId">@c.SectionName</option>
                                      }
-                                    }
+                                    } *@
                                     </select>
                                     <label for="statusoftable">Section</label>
-                                    <span class="text-danger" asp-validation-for="Table.SectionId"></span>
+                                    @* <span class="text-danger" asp-validation-for="Table.SectionId"></span> *@
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="number" class="form-control" id="capacityoftableforedit" asp-for="Table.Capacity" >
+                                <input type="number" class="form-control" id="capacityoftableforedit" name="Table.Capacity" >
                                 <label for="floatingInput">Capacity</label>
-                                <span class="text-danger" asp-validation-for="Table.Capacity"></span>
+                                @* <span class="text-danger" asp-validation-for="Table.Capacity"></span> *@
                             </div>
                             </div>
                             <div class="col">
                                 <div class="form-floating">
-                                    <select class="form-select disabled-toggle " id="statusoftableforedit"  asp-for="Table.Status">
+                                    <select class="form-select disabled-toggle " id="statusoftableforedit"  name="Table.Status">
                                      @foreach(var s in Model.TableStatus){ 
                                      if(s.Id == 1)
                                      {
@@ -243,7 +243,7 @@
                                     }
                                     </select>
                                     <label for="statusoftable">Status</label>
-                                    <span class="text-danger" asp-validation-for="Table.Status"></span>
+                                    @* <span class="text-danger" asp-validation-for="Table.Status"></span> *@
                                 </div>
                             </div>
                         </div>
@@ -272,38 +272,38 @@
                         <div class="row">
                             <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="NameofTable" asp-for="Table.Name" placeholder="tablename">
+                                <input type="text" class="form-control" id="NameofTable" name="Table.Name" placeholder="tablename">
                                 <label for="NameofTable">Name</label>
-                                <span class="text-danger" asp-validation-for="Table.Name"></span>
+                                @* <span class="text-danger" asp-validation-for="Table.Name"></span> *@
                             </div>
                             </div> 
                             <div class="col">
                                 <div class="form-floating mb-3">
-                                    <select class="form-select" id="sectionoftable"  asp-for="Table.SectionId">
+                                    <select class="form-select" id="sectionoftable"  name="Table.SectionId">
                                         <option value="">Select section</option>
-                                    @foreach(var c in Model.Sections){ 
+                                    @* @foreach(var c in Model.Sections){ 
                                      
                                     <option value="@c.SectionId">@c.SectionName</option>
                                      
-                                    }
+                                    } *@
                                     </select>
                                     <label for="sectionoftable">Section</label>
-                                     <span class="text-danger" asp-validation-for="Table.SectionId"></span>
+                                     @* <span class="text-danger" asp-validation-for="Table.SectionId"></span> *@
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                             <div class="form-floating mb-3">
-                                <input type="number" class="form-control" id="capacityoftable" asp-for="Table.Capacity" >
+                                <input type="number" class="form-control" id="capacityoftable" name="Table.Capacity" placeholder="Capacity" >
                                 <label for="capacityoftable">Capacity</label>
-                                <span class="text-danger" asp-validation-for="Table.Capacity"></span>
+                                @* <span class="text-danger" asp-validation-for="Table.Capacity"></span> *@
 
                             </div>
                             </div>
                             <div class="col">
                                 <div class="form-floating">
-                                    <select class="form-select disabled-toggle " id="statusoftable"  asp-for="Table.Status">
+                                    <select class="form-select disabled-toggle " id="statusoftable"  name="Table.Status">
                                      @foreach(var s in Model.TableStatus){ 
                                      if(s.Id == 1)
                                      {
@@ -318,7 +318,7 @@
                                     }
                                     </select>
                                     <label for="statusoftable">Status</label>
-                                    <span class="text-danger" asp-validation-for="Table.Status"></span>
+                                    @* <span class="text-danger" asp-validation-for="Table.Status"></span> *@
                                 </div>
                             </div>
                         </div>
@@ -372,10 +372,7 @@
     </div>
 
 @* ============================== *@
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>  *@
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -383,285 +380,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/js/Section/TableItem.js"></script>
 
-
 <script>
+    @* $(document).ready(function(){
+          
+    }) *@
+</script>
 
-    $(document).ready(function()
-    {
-        loadsection();
-        TableListPaginationAjax();
-
-    // add section form submission
-    $("#addsectionform").submit(function (event) {
-    event.preventDefault(); // Prevent the default form submission
-
-    if (!validateAddSectionForm()) {
-      return;
-    }
-
-    // Create FormData object from the form
-    var formData = new FormData(this);
-
-    $.ajax({
-      url: "/Section/AddSection", // URL from the form's action attribute
-      type: "POST", // Form method
-      data: formData, // Form data
-      processData: false, // Important: prevent jQuery from processing the data
-      contentType: false, // Important: prevent jQuery from setting content type
-      success: function (response) {
-        var Modal = bootstrap.Modal.getInstance(
-          document.getElementById("Addsectionmodal")
-        );
-        Modal.hide();
-
-        if (response.success) {
-          //get the active category id
-          let id = $("#section-list .category-active-option").attr(
-            "section-id"
-          );
-          loadsection(id);
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (xhr, status, error) {
-        toastr.error(error);
-      },
-    });
-  });
-
-    // validation for add section
-  function validateAddSectionForm() {
-    const name = $("#addsectionname").val().trim();
-
-    if (name === "") {
-      return false;
-    } else {
-      return true;
-    }
-  }
-    })
-    // edit section form submission
-    $("#editsectionform").submit(function (event) {
-    event.preventDefault(); // Prevent the default form submission
-
-    if (!validateEditSectionForm()) {
-      return;
-    }
-
-    // Create FormData object from the form
-    var formData = new FormData(this);
-
-    $.ajax({
-      url: "/Section/EditSection", // URL from the form's action attribute
-      type: "POST", // Form method
-      data: formData, // Form data
-      processData: false, // Important: prevent jQuery from processing the data
-      contentType: false, // Important: prevent jQuery from setting content type
-      success: function (response) {
-        var Modal = bootstrap.Modal.getInstance(
-          document.getElementById("Editsectionmodal")
-        );
-        Modal.hide();
-
-        if (response.success) {
-          //get the active category id
-          let id = $("#section-list .category-active-option").attr(
-            "section-id"
-          );
-          loadsection(id);
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (xhr, status, error) {
-        toastr.error(error);
-      },
-    });
-  });
-
-    // validation for edit section
-  function validateEditSectionForm() {
-    const name = $("#SectionNameforedit").val().trim();
-
-    if (name === "") {
-      return false;
-    } else {
-      return true;
-    }
-  }
-    
-    // delete section 
 
  
 
-  $("#deleteSectionBtn").click(function (e) {
-    var id = $(this).attr("section-id");
-    $.ajax({
-      url: "/Section/DeleteSection",
-      method: "POST",
-      data: {
-        id: id,
-      },
-      success: function (response) {
-        // close the opened delete modal
-
-        var deleteModal = bootstrap.Modal.getInstance(
-          document.getElementById("deletesectionmodal")
-        );
-        deleteModal.hide();
-
-        if (response.success) {
-          //get the active category id
-          let secid = $("#section-list .category-active-option").attr(
-            "section-id"
-          );
-          secid == id ? loadsection() : loadsection(secid); // if current section is deleted than by default select first section
-
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error deleting items:", error);
-      },
-    });
-  });
-
-    @* Pagination section *@
-
-    @* -----Pagination For Menu Items List------- *@
-
-function TableListPaginationAjax(pageSize,pageNumber,sectionid) {
-     // Get the dropdown element
-
-    let id= $("#section-list .category-active-option").attr("section-id");
-    let searchkeyword = $("#tableitem-search-field").val();
-       
-        $.ajax({
-            url: "/Section/GetDiningTableList",
-            data: { 'pageSize': pageSize, 'pageNumber': pageNumber,'searchKeyword':searchkeyword,'id':id},
-            type: "GET",
-            dataType: "html",
-            success: function (data) {
-                $('#diningtablelistcontainer').html(data);
-                attachMassDeleteForTable();
-            },
-            error: function () {
-                $("#diningtablelistcontainer").html('An error has occurred');
-            }
-        });
-    }
-
-    document.getElementById("tableitem-search-field").addEventListener('keyup',()=>{
-        console.log("hello")
-        TableListPaginationAjax();
-    })
-
-    @* Load Sections List *@
-
-    function loadsection(id)
-    {
-    
-    @* var id = ele?.getAttribute("section-id"); *@
 
 
-        $.ajax({
-            type:"GET",
-            url:"/Section/GetSections", 
-            data:{id : id},
-            success:function(data)
-            {
-                $('#section-list').html(data);
-                $('#section-list-for-smallscreen').html(data);
-            }
-
-        });
-
-        $.ajax({
-            url: '@Url.Action("GetDiningTableList", "Section")',
-            type: 'GET',
-            data: {id:id},
-            success: function (data) {
-                $('#diningtablelistcontainer').html(data);
-                attachMassDeleteForTable();
-            }
-        });
-    }
 
 
-    //load tables  partial view
-
-    function loadTables(id) {
-         $.ajax({
-            url: '@Url.Action("GetDiningTableList", "Section")',
-            type: 'GET',
-            data: {id:id},
-            success: function (data) {
-                $('#diningtablelistcontainer').html(data);
-                attachMassDeleteForTable();
-            }
-        });
-    }
-    @* set edit data for section *@
-
-    function setEditSectionData(ele)
-    {
-
-    var c = JSON.parse(ele.getAttribute("item-obj"));
-    console.log(c);
-
-    var editsectionitem= document.getElementById("Editsectionmodal");
-    editsectionitem.querySelector("#Sectionid").value = c.sectionId;
-    editsectionitem.querySelector("#SectionNameforedit").value = c.sectionName;
-    editsectionitem.querySelector("#Description").value = c.description;
-    }
-
-    @* set delete data for section *@
-
-    function setDeleteSectionId(element) {
-        var Id = element.getAttribute("section-id");
-        var deleteBtn = document.getElementById("deleteSectionBtn");
-        deleteBtn.setAttribute("section-id", Id);
-    }
-
-    @* set edit data for table *@
-
-    function setEditTabledata(ele)
-    {
-
-    var c = JSON.parse(ele.getAttribute("item-obj"));
-    console.log(c);
-
-    var editsectionitem= document.getElementById("EditTablemodal");
-  
-    editsectionitem.querySelector("#NameofTableforedit").value = c.name;
-    editsectionitem.querySelector("#TableidForEdit").value = c.tableId;
-    editsectionitem.querySelector("#capacityoftableforedit").value = c.capacity;
-    $.ajax({
-        url: "/Section/GetStatusIdByName", // URL from the form's action attribute
-        type: "Get", // Form method
-        data:{name:c.status},
-        success: function (data) {
-            console.log("venil",data)
-            editsectionitem.querySelector("#statusoftableforedit").value = data.statusId;
-        },
-        
-    });
-    editsectionitem.querySelector("#statusoftableforedit").value = c.status;
-    editsectionitem.querySelector("#sectionidforedit").value = c.sectionId;
-    }
 
 
-$("#Addsectionmodal").on("hidden.bs.modal", function () {
-  console.log("hii")
-
-});
-
-   
-
-
-</script>

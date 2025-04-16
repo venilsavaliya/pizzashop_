@@ -91,7 +91,7 @@ function updateSelectedNamesForEdit() {
   if (names.length === 0) {
     names = "Select Modifier Group";
   }
-  $("#modifierGroupSelectBoxForEdit").text(names); 
+  $("#modifierGroupSelectBoxForEdit").text(names);
 }
 
 // Update the input box with the selected names
@@ -110,7 +110,6 @@ function checkSelectedCheckboxesforAdd() {
   $(".modifieritemcheckboxofaddmodal").prop("checked", false);
   $(".modifieritem_main_checkbox_addmodal").prop("checked", false);
 
-
   // Check only the ones that match IDs in selectedModifierItemsForAddExistingModifier
   selectedModifierItemsForAddExistingModifierForAddModalTemp.forEach((id) => {
     $(`.modifieritemcheckboxofaddmodal[value='${id}']`).prop("checked", true);
@@ -127,28 +126,48 @@ function seteditmodifieritemdata(ele) {
     url: `/Menu/GetModifierGroupIdListByModifierItemId`,
     type: "GET",
     data: { id: c.modifierId },
-    success: function (data) {
-      // Clear the set before updating
+    success: function (selectedData) {
       selectedGroupsForedit.clear();
-
-      // Add the fetched data to the set
-      data.forEach((item) => {
+  
+      // Save selected data to a temp variable so it's available inside next ajax call
+      const selectedIdsSet = new Set(selectedData.map(item => {
         selectedGroupsForedit.add({ id: item.id, name: item.name });
-
-        // Check the corresponding checkboxes
-        $(`.modifier-group-checkbox-foredit[value='${item.id}']`).prop(
-          "checked",
-          true
-        );
+        return item.id;
+      }));
+  
+      $.ajax({
+        type: "GET",
+        url: "/Menu/GetModifierGroupListData",
+        success: function (allGroups) {
+          console.log(allGroups);
+  
+          $("#modifierGroupDropdownForEdit").html('');
+          allGroups.forEach((m) => {
+            const isChecked = selectedIdsSet.has(m.modifiergroupId) ? 'checked' : '';
+            $("#modifierGroupDropdownForEdit").append(`
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input modifier-group-checkbox-foredit" 
+                    id="modifierGroup_${m.modifiergroupId}" 
+                    value="${m.modifiergroupId}" 
+                    data-name="${m.name}"
+                    ${isChecked}>
+                <label class="form-check-label" for="modifierGroup_${m.modifiergroupId}">${m.name}</label>
+              </div>`);
+          });
+  
+          // Update names display
+          updateSelectedNamesForEdit();
+        },
+        error: function (xhr, status, error) {
+          console.error("Error loading modifier groups:", error);
+        },
       });
-
-      // Update the names in the div
-      updateSelectedNamesForEdit();
     },
     error: function (xhr, status, error) {
       console.error("Error fetching modifier group IDs:", error);
     },
   });
+  
 
   var editmenuitem = document.getElementById("editmodifieritemmodal");
   editmenuitem.querySelector("#Rate").value = c.rate;
@@ -169,6 +188,33 @@ function setDeleteModifierid(element) {
 }
 
 $(document).ready(function () {
+  // Load Modifier Group list when addmodifieritemmodal open
+
+  // handle list showing of modifier group in add modifier item form
+  $("#addmodifieritemmodal").on("shown.bs.modal", function () {
+    $.ajax({
+      type: "GET",
+      url: "/Menu/GetModifierGroupListData",
+      success: function (data) {
+        
+        // this will load modifier group list 
+        $("#modifierGroupDropdown").html('');
+        data.forEach((m) => {
+          $("#modifierGroupDropdown").append(`
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input modifier-group-checkbox" 
+                    id="modifierGroup_${m.modifiergroupId}" 
+                    value="${m.modifiergroupId}" 
+                    data-name="${m.name}">
+                <label class="form-check-label" for="modifierGroup_${m.modifiergroupId}">${m.name}</label>
+            </div>`);
+        });
+      },
+    });
+  });
+
+
+
   // mass delete of modifier items
   $("#deletemassitemBtn").click(function (e) {
     const modgroupid = $("#modifieritem_main_checkbox").attr(
@@ -229,7 +275,7 @@ $(document).ready(function () {
     }
 
     // remove validation span if user check any checkbox
-    if(selectedGroups.size>0){
+    if (selectedGroups.size > 0) {
       $("#selectmodifiergroupvalidationforadd").addClass("d-none");
     }
 
@@ -263,7 +309,7 @@ $(document).ready(function () {
     }
 
     // remove validation span if user check any checkbox
-    if(selectedGroupsForedit.size>0){
+    if (selectedGroupsForedit.size > 0) {
       $("#selectmodifiergroupvalidationforedit").addClass("d-none");
     }
 
@@ -362,7 +408,6 @@ $(document).ready(function () {
     });
   });
 
-  
   // edit modifier item Form Validation
 
   function validateFormeditModifierItem() {
@@ -402,8 +447,7 @@ $(document).ready(function () {
   $("#EditModifierItemForm").submit(function (e) {
     e.preventDefault();
 
-    if(!validateFormeditModifierItem())
-    {
+    if (!validateFormeditModifierItem()) {
       return;
     }
 
@@ -485,3 +529,6 @@ $(document).ready(function () {
     });
   });
 });
+
+
+

@@ -483,6 +483,180 @@ function ClearListOfModifierItems()
 $(document).ready(function () {
   attachHoverEffect();
 
+   // Add Modifier Group Form Validation
+
+   $("#addModifierGroupForm").validate({
+    rules: {
+      "ModifierGroup.Name": {
+        required: true,
+        minlength: 2,
+      },
+    },
+    messages: {
+      "ModifierGroup.Name": {
+        required: "Please enter a Modifier Group name.",
+        minlength: "Name must be at least 2 characters.",
+      },
+    },
+    errorElement: "span",
+    errorClass: "text-danger",
+    highlight: function (element) {
+      $(element).addClass("is-invalid");
+    },
+    unhighlight: function (element) {
+      $(element).removeClass("is-invalid");
+    },
+  });
+
+  // Reset Modifier Group Form When Modal Close
+  $("#addmodifiergroupmodal").on("hidden.bs.modal", function () {
+    // Reset the form inside the modal
+    $(this).find("form")[0].reset();
+
+    // Reset ASP.NET Core validation
+    var validator = $(this).find("form").validate();
+    validator.resetForm();
+
+    // Remove invalid classes
+    $(this).find(".is-invalid").removeClass("is-invalid");
+  });
+
+  // submit the add modifier group form
+
+  $("#addModifierGroupForm").submit(function (e) {
+    e.preventDefault();
+
+    // if (!validateFormAddModifierGroup()) {
+    //   return;
+    // }
+    if (!$(this).valid()) {
+      return;
+    }
+
+    var formData = new FormData(this);
+
+    console.log("he", selectedModifierItemsForAddExistingModifierForAddModal);
+
+    formData.append(
+      "ModifierItems",
+      JSON.stringify(selectedModifierItemsForAddExistingModifierForAddModal)
+    );
+
+    $.ajax({
+      url: "/Menu/AddModifierGroup",
+      type: "POST",
+      processData: false,
+      contentType: false,
+      data: formData,
+      success: function (response) {
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("addmodifiergroupmodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let modgroup_id = $("#modifier-list .category-active-option").attr(
+            "modifiergroup-id"
+          );
+          loadmodifiers(modgroup_id);
+          selectedModifierItemsForAddExistingModifierForAddModalTemp = [];
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (err) {
+        console.error("Error adding item:", err);
+      },
+    });
+  });
+
+  // Edit Modifier Group Form Validation
+
+  $("#editmodifierForm").validate({
+    rules: {
+      "ModifierGroup.Name": {
+        required: true,
+        minlength: 2,
+      },
+    },
+    messages: {
+      "ModifierGroup.Name": {
+        required: "Please enter a Modifier Group name.",
+        minlength: "Name must be at least 2 characters.",
+      },
+    },
+    errorElement: "span",
+    errorClass: "text-danger",
+    highlight: function (element) {
+      $(element).addClass("is-invalid");
+    },
+    unhighlight: function (element) {
+      $(element).removeClass("is-invalid");
+    },
+  });
+
+  // Reset Edit Modifier Group Form When Modal Close
+  $("#editmodifiergroupmodal").on("hidden.bs.modal", function () {
+    // Reset the form inside the modal
+    $(this).find("form")[0].reset();
+
+    // Reset ASP.NET Core validation
+    var validator = $(this).find("form").validate();
+    validator.resetForm();
+
+    // Remove invalid classes
+    $(this).find(".is-invalid").removeClass("is-invalid");
+  });
+
+  //submit the edit modifier group form
+
+  $("#editmodifierForm").submit(function (e) {
+    e.preventDefault();
+
+    if (!$(this).valid()) {
+      return;
+    }
+
+    var formData = new FormData(this);
+
+    formData.append(
+      "ModifierItems",
+      JSON.stringify(selectedModifierItemsForAddExistingModifier)
+    );
+
+    $.ajax({
+      url: "/Menu/EditModifierGroup",
+      type: "POST",
+      processData: false,
+      contentType: false,
+      data: formData,
+      success: function (response) {
+        var Modal = bootstrap.Modal.getInstance(
+          document.getElementById("editmodifiergroupmodal")
+        );
+        Modal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let modgroup_id = $("#modifier-list .category-active-option").attr(
+            "modifiergroup-id"
+          );
+          loadmodifiers(modgroup_id);
+          ClearSectionForEditModifierGroup();
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (err) {
+        console.error("Error adding item:", err);
+      },
+    });
+  });
+
+
   // Event listener for add modifier group modal
   $("#modifieritemslist").on("shown.bs.modal", function () {
     selectedModifierItemsForAddExistingModifierTemp = [];
@@ -579,128 +753,6 @@ $(document).ready(function () {
       );
       itemlistmodal.show();
     });
-
-  // Add modifier Group Form Validation
-
-  function validateFormAddModifierGroup() {
-    let isValid = true;
-
-    const itemName = $("#addmodifiergroupname").val();
-
-    if (!itemName) {
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  // submit the add modifier group form
-
-  $("#addModifierGroupForm").submit(function (e) {
-    e.preventDefault();
-
-    if (!validateFormAddModifierGroup()) {
-      return;
-    }
-
-    var formData = new FormData(this);
-
-    console.log("he", selectedModifierItemsForAddExistingModifierForAddModal);
-
-    formData.append(
-      "ModifierItems",
-      JSON.stringify(selectedModifierItemsForAddExistingModifierForAddModal)
-    );
-
-    $.ajax({
-      url: "/Menu/AddModifierGroup",
-      type: "POST",
-      processData: false,
-      contentType: false,
-      data: formData,
-      success: function (response) {
-        var Modal = bootstrap.Modal.getInstance(
-          document.getElementById("addmodifiergroupmodal")
-        );
-        Modal.hide();
-
-        if (response.success) {
-          //get the active category id
-          let modgroup_id = $("#modifier-list .category-active-option").attr(
-            "modifiergroup-id"
-          );
-          loadmodifiers(modgroup_id);
-          selectedModifierItemsForAddExistingModifierForAddModalTemp = [];
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (err) {
-        console.error("Error adding item:", err);
-      },
-    });
-  });
-
-  // edit modifier Group Form Validation
-
-  function validateFormeditModifierGroup() {
-    let isValid = true;
-
-    const itemName = $("#editmodifiergroupname").val();
-
-    if (!itemName) {
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  //submit the edit modifier group form
-
-  $("#editmodifierForm").submit(function (e) {
-    e.preventDefault();
-
-    if (!validateFormeditModifierGroup()) {
-      return;
-    }
-
-    var formData = new FormData(this);
-
-    formData.append(
-      "ModifierItems",
-      JSON.stringify(selectedModifierItemsForAddExistingModifier)
-    );
-
-    $.ajax({
-      url: "/Menu/EditModifierGroup",
-      type: "POST",
-      processData: false,
-      contentType: false,
-      data: formData,
-      success: function (response) {
-        var Modal = bootstrap.Modal.getInstance(
-          document.getElementById("editmodifiergroupmodal")
-        );
-        Modal.hide();
-
-        if (response.success) {
-          //get the active category id
-          let modgroup_id = $("#modifier-list .category-active-option").attr(
-            "modifiergroup-id"
-          );
-          loadmodifiers(modgroup_id);
-          ClearSectionForEditModifierGroup();
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (err) {
-        console.error("Error adding item:", err);
-      },
-    });
-  });
 
   // Delete Modifier Group Modal
 

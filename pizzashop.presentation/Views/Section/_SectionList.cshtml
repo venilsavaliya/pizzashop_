@@ -30,7 +30,7 @@
         </div>
 }
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     attachHoverEffect(); // Call the function when the page loads
@@ -40,7 +40,7 @@
 function attachHoverEffect() {
     document.querySelectorAll(".category-option").forEach(opt => {
         opt.addEventListener("mouseover", function () {
-            console.log("Mouse Entered");
+     
             let actionbtn = opt.querySelector("#categoryoption_actionbtn");
             if (actionbtn) {
                 actionbtn.classList.add("d-block");

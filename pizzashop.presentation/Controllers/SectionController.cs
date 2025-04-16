@@ -70,10 +70,17 @@ public class SectionController : BaseController
     var model = new SectionNameListViewModel
     {
       Sections = sections,
-      SelectedSection = id
+      SelectedSection = id 
     };
 
     return PartialView("~/Views/Section/_SectionList.cshtml", model);
+  }
+
+  // GET : Get Json Data Of SectionLIst
+  public IActionResult GetSectionListData()
+  {
+     var sections = _sectionservice.GetSectionList();
+     return Json(sections);
   }
 
   // POST : Add New Section
@@ -83,7 +90,7 @@ public class SectionController : BaseController
   {
     var response = _sectionservice.AddSection(model.Section).Result;
 
-    return Json(new { message = response.Message, success = response.Success });
+    return Json(new { message = response.Message, success = response.Success }); 
 
 
   }

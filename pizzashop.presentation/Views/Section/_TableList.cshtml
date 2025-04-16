@@ -5,8 +5,11 @@
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                <input class="form-check-input outer_checkbox" id="main_table_checkbox" type="checkbox" value=""
+                @if(Model.Items!=null && Model.Items.Any()){
+                     <input class="form-check-input outer_checkbox" id="main_table_checkbox" type="checkbox" value=""
                     id="flexCheckIndeterminate">
+                }
+               
             </div> <span>Name</span>
         </th>
 
@@ -19,8 +22,9 @@
         }
     </tr>
 
-
-    @foreach (var i in Model.Items)
+    @if(Model.Items !=null && Model.Items.Any())
+    {
+         @foreach (var i in Model.Items)
     {
         <tr>
             <td>
@@ -58,9 +62,18 @@
 
     }
 
-
+    }
+    else{
+        <tr>
+            <td colspan="5" class="text-center" style="font-weight: 400;">No Record Found !</td>
+        </tr>
+    }
+   
 </table>
-<div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+
+@if(Model.Items!=null && Model.Items.Any())
+{
+    <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
     <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
         <div>Items per page: </div>
         <select class="form-select" style="width:68px ;" aria-label="Default select example"
@@ -87,4 +100,6 @@
         </div>
 
     </div>
-</div>
+    </div>
+}
+

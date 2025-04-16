@@ -64,12 +64,50 @@ function setDeleteCategoryId(ele) {
 }
 
 $(document).ready(function () {
+  // Add Category Form Validation
+
+  $("#categoryForm").validate({
+    rules: {
+      "Category.Name": {
+        required: true,
+        minlength: 2,
+      },
+    },
+    messages: {
+      "Category.Name": {
+        required: "Please enter a category name.",
+        minlength: "Name must be at least 2 characters.",
+      },
+    },
+    errorElement: "span",
+    errorClass: "text-danger",
+    highlight: function (element) {
+      $(element).addClass("is-invalid");
+    },
+    unhighlight: function (element) {
+      $(element).removeClass("is-invalid");
+    },
+  });
+
+  // Reset Add Form When Modal Close
+  $("#addcategorymodal").on("hidden.bs.modal", function () {
+    // Reset the form inside the modal
+    $(this).find("form")[0].reset();
+
+    // Reset ASP.NET Core validation
+    var validator = $(this).find("form").validate();
+    validator.resetForm();
+
+    // Remove invalid classes
+    $(this).find(".is-invalid").removeClass("is-invalid");
+  });
+
   // Add Category (done by asp-controller and action direct form submission)
 
   $("#categoryForm").submit(function (event) {
     event.preventDefault(); // Prevent the default form submission
 
-    if (!validateAddCategoryForm()) {
+    if (!$(this).valid()) {
       return;
     }
 
@@ -105,22 +143,52 @@ $(document).ready(function () {
     });
   });
 
-  function validateAddCategoryForm() {
-    const name = $("#addCategoryName").val().trim();
+    // Add Category Form Validation
 
-    if (name === "") {
-      return false;
-    } else {
-      return true;
-    }
-  }
+    $("#editcategoryform").validate({
+      rules: {
+        "Category.Name": {
+          required: true,
+          minlength: 2,
+        },
+      },
+      messages: {
+        "Category.Name": {
+          required: "Please enter a category name.",
+          minlength: "Name must be at least 2 characters.",
+        },
+      },
+      errorElement: "span",
+      errorClass: "text-danger",
+      highlight: function (element) {
+        $(element).addClass("is-invalid");
+      },
+      unhighlight: function (element) {
+        $(element).removeClass("is-invalid");
+      },
+    });
+  
+    // Reset Add Form When Modal Close
+    $("#editcategory").on("hidden.bs.modal", function () {
+      // Reset the form inside the modal
+      $(this).find("form")[0].reset();
+  
+      // Reset ASP.NET Core validation
+      var validator = $(this).find("form").validate();
+      validator.resetForm();
+  
+      // Remove invalid classes
+      $(this).find(".is-invalid").removeClass("is-invalid");
+    });
+
+
 
   //Edit Category (Form Direct Submitted Using Asp Controller And Action)
 
   $("#editcategoryform").submit(function (event) {
     event.preventDefault(); // Prevent the default form submission
 
-    if (!validateEditCategoryForm()) {
+    if (!$(this).valid()) {
       return;
     }
 
