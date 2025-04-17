@@ -101,10 +101,14 @@
                             </div>
                             }
                             
-                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block"  onclick="openAddMenuItemModal()"><span
+                            @if(ViewBag.CanMenuAddEdit)
+                            {
+                                <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block"  onclick="openAddMenuItemModal()"><span
                                     class="fs-5 fw-semibold" >+</span> New Item</button> 
                             <button type="button"
                                 class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
+                            }
+                            
                         </div>
                     </div>
                     <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="menuTableContainer">
@@ -151,12 +155,15 @@
                                     class="small-img" >
                             </div>
                             }
-                            
-                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmodifieritemmodal"><span
+                            @if(ViewBag.CanMenuAddEdit)
+                            {
+                                <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmodifieritemmodal"><span
                                     class="fs-5 fw-semibold" >+</span> New
                                 Item</button>
                             <button type="button"
-                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
+                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button> 
+                            }
+                            
                         </div>
                     </div>
                     <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainer">
@@ -500,14 +507,14 @@
                                          <input type="hidden" class="form-select" id="Select-Category-option-hidden" name="Menuitem.CategoryId" >
                                         <select  class="form-select" id="Select-Category-option" disabled >
                                             @* <option selected>Select Categories</option> *@
-                                            @foreach(var c in Model.Categories){
+                                            @* @foreach(var c in Model.Categories){
                                                 if(c.Id == Model.SelectedCategory){
                                                     <option value=@c.Id selected>@c.Name</option>
                                                 }else{
 
                                                 <option value=@c.Id>@c.Name</option>
                                                 }
-                                            }
+                                            } *@
                                         </select>
                                         <label for="floatingSelect">Categories</label>
                                          <span class="text-danger" asp-validation-for="Menuitem.CategoryId"></span>
@@ -707,14 +714,14 @@
                                     <div class="form-floating col">
                                         <select  class="form-select" id="CategoryForEdit" name="Menuitem.CategoryId">
                                             @* <option selected>Select Categories</option> *@
-                                            @foreach(var c in Model.Categories){
+                                            @* @foreach(var c in Model.Categories){
                                                 if(c.Id == Model.SelectedCategory){
                                                     <option value=@c.Id selected>@c.Name</option>
                                                 }else{
 
                                                 <option value=@c.Id>@c.Name</option>
                                                 }
-                                            }
+                                            } *@
                                         </select>
                                         <label for="floatingSelect">Categories</label>
                                         <span class="text-danger" asp-validation-for="Menuitem.CategoryId"></span>
@@ -950,7 +957,8 @@
               
                 <form id="AddModifierItemForm" enctype="multipart/form-data"  >
                     <div class="modal-body">
-                        
+
+                         
                         <div class="row">
                            
                             <div class="col-6">
@@ -960,23 +968,16 @@
                                     <div class="form-control p-3"  id="modifierGroupSelectBox" style="cursor: pointer;">
                                         Select Modifier Group
                                     </div>
-                                    <span class="text-danger d-none" id="selectmodifiergroupvalidationforadd">Please select Modifier Group</span>
+                                     <p id="selectmodifiergroupvalidationforadd" class="text-danger d-none">please  select Modifier Group</p>
+                          
+                                  
 
                                     <!-- Floating Checkbox List -->
                                     <div id="modifierGroupDropdown" class="position-absolute bg-white border rounded p-2 shadow" 
                                         style="display: none; z-index: 1000; width: 100%;">
-                                        @* @foreach (var m in @Model.ModifierGroups)
-                                        {
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input modifier-group-checkbox" 
-                                                    id="modifierGroup_@m.ModifiergroupId" 
-                                                    value="@m.ModifiergroupId" 
-                                                    data-name="@m.Name">
-                                                <label class="form-check-label" for="modifierGroup_@m.ModifiergroupId">@m.Name</label>
-                                            </div>
-                                        } *@
+                                       @* Dropdown list populate here *@
                                     </div>
-                                    <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
+                                    @* <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span> *@
                                 </div>
                             </div>
 
@@ -984,30 +985,30 @@
 
                             <div class="col-6">
                                 <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="addmodifieritemname" asp-for="ModifierItem.ModifierName">
+                                    <input type="text" class="form-control" id="addmodifieritemname" placeholder="Name" name="ModifierItem.ModifierName">
                                     <label for="addmodifieritemname">Name*</label>
-                                    <span class="text-danger" asp-validation-for="ModifierItem.ModifierName"></span>
+                                    @* <span class="text-danger" asp-validation-for="ModifierItem.ModifierName"></span> *@
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col"> 
                                 <div class="form-floating">
-                                        <input type="number" class="form-control" id="addmodifieritemrate" value="0" asp-for="ModifierItem.Rate">
+                                        <input type="number" class="form-control" id="addmodifieritemrate" placeholder="Rate" name="ModifierItem.Rate">
                                         <label for="addmodifieritemrate">Rate</label>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.Rate"></span>
+                                        @* <span class="text-danger" asp-validation-for="ModifierItem.Rate"></span> *@
                                     </div>
                                 </div>
                             <div class="col">
                                 <div class="form-floating">
-                                        <input type="number" class="form-control" id="addmodifieritemquantity" asp-for="ModifierItem.Quantity">
+                                        <input type="number" class="form-control" id="addmodifieritemquantity" placeholder="Quantity" name="ModifierItem.Quantity">
                                         <label for="addmodifieritemquantity">Quantity</label>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.Quantity"></span>
+                                        @* <span class="text-danger" asp-validation-for="ModifierItem.Quantity"></span> *@
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-floating col">
-                                        <select  class="form-select" asp-for="ModifierItem.Unit" id="addmodifieritemunit">
+                                        <select  class="form-select" name="ModifierItem.Unit" id="addmodifieritemunit">
                                             <option selected value="">Select a Unit</option>
 
                                             <option value="Pcs">Piece</option>
@@ -1016,7 +1017,7 @@
                                             <option value="Ltr">Liter</option>
                                         </select>
                                         <label for="floatingSelect">Unit</label>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.Unit"></span>
+                                        @* <span class="text-danger" asp-validation-for="ModifierItem.Unit"></span> *@
                                     </div>
                             </div>
                         </div>
@@ -1040,6 +1041,7 @@
             </div>
         </div>
     </div>
+
 @* Edit Modifier Item Modal *@
 
 <div class="modal fade " id="editmodifieritemmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -1062,21 +1064,12 @@
                                     <div class="form-control p-3"  id="modifierGroupSelectBoxForEdit" style="cursor: pointer;">
                                         Select Modifier Group
                                     </div>
-                                    <span class="text-danger d-none" id="selectmodifiergroupvalidationforedit">Please select Modifier Group</span>
+                                    <p class="text-danger d-none" id="selectmodifiergroupvalidationforedit">Please select Modifier Group</p>
 
                                     <!-- Floating Checkbox List -->
                                     <div id="modifierGroupDropdownForEdit" class="position-absolute bg-white border rounded p-2 shadow" 
                                         style="display: none; z-index: 1000; width: 100%;">
-                                        @foreach (var m in @Model.ModifierGroups)
-                                        {
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input modifier-group-checkbox-foredit" 
-                                                    id="modifierGroup_@m.ModifiergroupId" 
-                                                    value="@m.ModifiergroupId" 
-                                                    data-name="@m.Name">
-                                                <label class="form-check-label" for="modifierGroup_@m.ModifiergroupId">@m.Name</label>
-                                            </div>
-                                        }
+                                       @* load modifier group list *@
                                     </div>
                                     <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
                                 </div>

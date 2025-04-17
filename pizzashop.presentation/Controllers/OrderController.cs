@@ -90,7 +90,7 @@ public class OrderController : BaseController
 
         return new ViewAsPdf("ExportView",model)
         {
-            FileName = "Report.pdf",
+            FileName = "Report"+model.OrderId+DateTime.Now+".pdf",
             PageSize = Rotativa.AspNetCore.Options.Size.A4,
             PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
             PageMargins = new Rotativa.AspNetCore.Options.Margins(10, 10, 10, 10)

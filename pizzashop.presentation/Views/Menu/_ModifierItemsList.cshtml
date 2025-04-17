@@ -4,8 +4,11 @@
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                <input class="form-check-input outer_checkbox_modifieritemmodal" id="modifieritem_main_checkbox"
+                @if (Model.Items != null && Model.Items.Any()){
+                    <input class="form-check-input outer_checkbox_modifieritemmodal" id="modifieritem_main_checkbox"
                     type="checkbox" value="" id="flexCheckIndeterminate" modifiergroup-id="@Model.ModifierGroupId">
+                }
+                
             </div> <span>Name</span>
         </th>
         <th>Unit</th>
@@ -17,9 +20,10 @@
         }
     </tr>
 
-
+@if (Model.Items != null && Model.Items.Any())
+{
     @foreach (var i in Model.Items)
-    {
+    { 
 
         <tr>
             <td>
@@ -60,12 +64,24 @@
     }
 
 
+}
+else
+    {
+        <tr>
+            <td colspan="5" class="text-center" style="font-weight: 400;">No Record Found !</td>
+        </tr>
+    }
+    
 </table>
-<div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+
+
+@if (Model.Items != null && Model.Items.Any())
+{
+    <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100"  id="modifieritem-pagination-section" data-page='@Html.Raw(Json.Serialize(Model.Page))'>
     <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
         <div>Items per page: </div>
         <select class="form-select" style="width:68px ;" aria-label="Default select example"
-            id="pageSizeDropdownformodal" onchange="ModifieritemsPaginationAjax(this.value,1,@Model.ModifierGroupId)">
+            id="pageSizeDropdownformodal" onchange="ModifieritemsPaginationAjax(this.value,1,@Model.ModifierGroupId)"> 
 
             <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
             <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
@@ -89,3 +105,5 @@
 
     </div>
 </div>
+}
+

@@ -3,7 +3,7 @@
     ViewData["Title"] = "Order Details Page";
     decimal? total=0;
     int ct=1;
-    decimal? totalAmount=0;
+    decimal? taxAmount=0;
 }
 
 <div class="body_content d-flex justify-content-center mt-2">
@@ -135,16 +135,18 @@
                     @if(i.TaxType=="Percentage")
                     {
                         <span>₹ @((total*i.TaxAmount/100)?.ToString("f2"))</span>
-                        totalAmount = totalAmount+ (total*i.TaxAmount/100);
+                        taxAmount = taxAmount+ (total*i.TaxAmount/100);
+    
                     }
                     else{
-                        totalAmount = total + i.TaxAmount;
+                        taxAmount = taxAmount + i.TaxAmount;
                         <span>₹ @(i.TaxAmount.ToString("f2"))</span>
+                        
                     }
 
                     </p>
                 }
-                <p class="d-flex justify-content-between"><span class="fw-bold">Total:</span>@totalAmount?.ToString("f2")</p>
+                <p class="d-flex justify-content-between"><span class="fw-bold">Total:</span>@((taxAmount+total)?.ToString("f2"))</p>
             </div>
             </div>
         </div>

@@ -175,8 +175,6 @@
             var timeframetext = $("#timeframe option:selected").text();
 
 
-
-
             if (!startDate && !endDate && timeframevalue) {
 
                 endDate = new Date().toISOString().slice(0, 10);
@@ -200,6 +198,9 @@
                         String(startDate.getDate()).padStart(2, '0');
                     console.log("hii", startDate)
                 }
+            }
+            else{
+                timeframetext=`${startDate} To ${endDate}`
             }
 
 

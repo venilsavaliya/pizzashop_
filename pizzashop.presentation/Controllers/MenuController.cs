@@ -71,6 +71,15 @@ public class MenuController : BaseController
         return Json(ModifierGroups);
     }
     
+    // Get : Category List Return Json
+
+    public IActionResult GetCategoryListData()
+    {
+       var categories = _menuservices.GetCategoryList();
+
+        return Json(categories);
+    }
+    
     // GET : Menu {Returns Partial View}
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult Menu(int cat, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")

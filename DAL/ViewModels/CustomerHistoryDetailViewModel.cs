@@ -2,7 +2,7 @@ namespace DAL.ViewModels;
 
 public class CustomerHistoryDetailViewModel
 {
-    public int CustomerId { get; set; }
+    public int CustomerId { get; set; } 
 
     public string Name { get; set; } = null!;
 

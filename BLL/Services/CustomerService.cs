@@ -145,41 +145,40 @@ public class CustomerService : ICustomerService
 
     public async Task<CustomerHistoryDetailViewModel> GetCustomerOrderHistory(int customerid)
     {
+        var customer = await _context.Customers
+            .Where(c => c.CustomerId == customerid)
+            .Select(c => new CustomerHistoryDetailViewModel
+            {
+                CustomerId = c.CustomerId,
+                Name = c.Name,
+                Mobile = c.Mobile,
+                MaxOrderAmount = _context.Orders
+                    .Where(i => i.CustomerId == c.CustomerId)
+                    .Max(i => (decimal?)i.TotalAmount) ?? 0, // Safe for empty results
+                AverageOrderAmount = _context.Orders
+                    .Where(i => i.CustomerId == c.CustomerId)
+                    .Average(i => (decimal?)i.TotalAmount) ?? 0,
+                TotalVisit = c.TotalVisit,
+                JoinDate = c.Createddate,
+                // Leave Items null for now
+            })
+            .FirstOrDefaultAsync();
 
-        var query = from o in _context.Orders
-                    where o.CustomerId == customerid
-                    select new CustomerHistoryDetailViewModel
-                    {
-                        CustomerId = o.CustomerId,
-                        Name = o.Customer.Name,
-                        Mobile = o.Customer.Mobile,
-                        MaxOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Max(i => i.TotalAmount),
-                        AverageOrderAmount = _context.Orders.Where(i => i.CustomerId == customerid).Average(i => i.TotalAmount),
-                        TotalVisit = _context.Customers.FirstOrDefault(i => i.CustomerId == customerid).TotalVisit,
-                        JoinDate = o.Customer.Createddate,
-                        Items = (from od in _context.Orders
-                                 where od.CustomerId == customerid
-                                 select new CustomerHistoryViewModel
-                                 {
-                                     Date = od.OrderDate,
-                                     OrderType = true,
-                                     PaymentType = od.PaymentMode,
-                                     Totalitems = _context.Dishritems.Where(i => i.Orderid == od.OrderId).Count(),
-                                     TotalAmount = od.TotalAmount
-                                 }).ToList()
-                    };
-        // var query = from o in _context.Orders
-        //             where o.CustomerId == customerid
-        //             select new CustomerHistoryViewModel
-        //             {
-        //                 Date = o.OrderDate,
-        //                 OrderType = true,
-        //                 PaymentType = o.PaymentMode,
-        //                 Totalitems = _context.Dishritems.Where(i => i.Orderid == o.OrderId).Count(),
-        //                 TotalAmount = o.TotalAmount
-        //             };
+        if (customer == null) return null;
 
-        return query.FirstOrDefault();
+        customer.Items = await _context.Orders
+            .Where(o => o.CustomerId == customerid)
+            .Select(i => new CustomerHistoryViewModel
+            {
+                Date = i.OrderDate,
+                PaymentType = i.PaymentMode,
+                OrderType = i.Ordertype == 1,
+                TotalAmount = i.TotalAmount,
+                Totalitems = _context.Dishritems.Count(j => j.Orderid == i.OrderId)
+            })
+            .ToListAsync();
+
+        return customer;
     }
 
 
@@ -221,7 +220,7 @@ public class CustomerService : ICustomerService
                 _context.Customers.Add(newCustomer);
                 await _context.SaveChangesAsync();
 
-                if(newCustomer.CustomerId != 0)
+                if (newCustomer.CustomerId != 0)
                 {
                     return newCustomer.CustomerId;
                 }
@@ -242,39 +241,39 @@ public class CustomerService : ICustomerService
         }
 
     }
-   
-   // Get Detail Of Customer From Email
 
-   public async Task<CustomerViewModel> GetCustomerDetail(string email)
-   {
-    try
+    // Get Detail Of Customer From Email
+
+    public async Task<CustomerViewModel> GetCustomerDetail(string email)
     {
-        if(email!=null)
+        try
         {
-            var customer =await _context.Customers.FirstOrDefaultAsync(c=> c.Email==email);
-
-            if(customer !=null)
+            if (email != null)
             {
-                return new CustomerViewModel
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == email);
+
+                if (customer != null)
                 {
-                    Name = customer.Name,
-                    Email = customer.Email,
-                    Mobile = customer.Mobile
-                };
+                    return new CustomerViewModel
+                    {
+                        Name = customer.Name,
+                        Email = customer.Email,
+                        Mobile = customer.Mobile
+                    };
+                }
+                else
+                {
+                    return new CustomerViewModel();
+                }
             }
-            else
-            {
-                return new CustomerViewModel();
-            }
-        }
 
-        return new CustomerViewModel();
+            return new CustomerViewModel();
+        }
+        catch (System.Exception)
+        {
+
+            return new CustomerViewModel();
+        }
     }
-    catch (System.Exception)
-    {
-        
-        return new CustomerViewModel();
-    }
-   }
 
 }

@@ -35,6 +35,8 @@ public partial class Order
 
     public DateTime? Placeon { get; set; }
 
+    public int? Ordertype { get; set; }
+
     public virtual User CreatedbyNavigation { get; set; } = null!;
 
     public virtual Customer Customer { get; set; } = null!;

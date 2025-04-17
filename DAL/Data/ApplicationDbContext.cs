@@ -53,6 +53,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Order> Orders { get; set; }
 
+    public virtual DbSet<OrderType> OrderTypes { get; set; }
+
     public virtual DbSet<Orderstatus> Orderstatuses { get; set; }
 
     public virtual DbSet<PaymentMode> PaymentModes { get; set; }
@@ -81,7 +83,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Sendrock@1");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -651,6 +653,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'Pending'::character varying")
                 .HasColumnName("order_status");
+            entity.Property(e => e.Ordertype)
+                .HasDefaultValueSql("1")
+                .HasColumnName("ordertype");
             entity.Property(e => e.PaymentMode)
                 .HasMaxLength(20)
                 .HasColumnName("payment_mode");
@@ -677,6 +682,17 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.Modifyiedby)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_modifyiedby");
+        });
+
+        modelBuilder.Entity<OrderType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("OrderType_pkey");
+
+            entity.ToTable("OrderType");
+
+            entity.Property(e => e.OrderType1)
+                .HasMaxLength(50)
+                .HasColumnName("OrderType");
         });
 
         modelBuilder.Entity<Orderstatus>(entity =>

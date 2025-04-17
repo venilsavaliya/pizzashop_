@@ -432,6 +432,14 @@ input[type="password"]::-ms-clear {
   display: block;
 }
 
+/* #modifierGroupSelectBox::-webkit-scrollbar {
+  display: none;
+} */
+/* #modifierGroupSelectBox,#modifierGroupSelectBoxForEdit {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;    
+} */
+
 /* Chrome, Safari, Edge, Opera */
 .no-spinner::-webkit-outer-spin-button,
 .no-spinner::-webkit-inner-spin-button {

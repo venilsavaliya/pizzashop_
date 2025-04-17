@@ -244,17 +244,13 @@ public class MenuServices : IMenuServices
         // Pagination
         int totalCount = query.Count();
 
-        // while(pageSize*pageNumber>totalCount)
-        // {
-        //     pageNumber--;
-        // }
+       // if pagenumber is exceed the limit page than .
+        var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
+        if (pageNumber > maxPageNumber && totalCount!=0)
+        {
+            pageNumber = maxPageNumber;
+        }
 
-        // for(int ct=totalCount;pageSize*pageNumber>totalCount;pageNumber--)
-        // {
-        //     ct-=pageSize;
-        // }
-
-        
         query = query.OrderBy(i => i.ItemName);
         var items = query.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize)
@@ -296,6 +292,14 @@ public class MenuServices : IMenuServices
 
         // Pagination
         int totalCount = query.Count();
+
+        // if pagenumber is exceed the limit page than.
+        
+        var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
+        if (pageNumber > maxPageNumber && totalCount!=0)
+        {
+            pageNumber = maxPageNumber;
+        }
         query = query.OrderBy(i => i.Name);
         var items = query.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize)
@@ -458,7 +462,7 @@ public class MenuServices : IMenuServices
 
             var existingitem = _context.Items.FirstOrDefault(i => i.ItemId == model.Id);
 
-            var existincategorywithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName.ToLower() == model.ItemName.ToLower() && i.Isdeleted!=true);
+            var existincategorywithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName.ToLower() == model.ItemName.ToLower() && i.Isdeleted != true);
 
             string img = "";
             if (model.Image != null)
@@ -480,7 +484,7 @@ public class MenuServices : IMenuServices
                 existingitem.ShortCode = model.ShortCode;
                 existingitem.Isavailable = model.Isavailable;
                 existingitem.Description = model.Description;
-                if(model.Image != null)
+                if (model.Image != null)
                 {
                     existingitem.Image = img;
                 }
@@ -666,7 +670,7 @@ public class MenuServices : IMenuServices
 
         // Check if a modifier group with the same name already exists (excluding the current one)
         bool isDuplicate = await _context.Modifiersgroups
-            .AnyAsync(mg => mg.Name.ToLower() == model.Name.ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted==false);
+            .AnyAsync(mg => mg.Name.ToLower() == model.Name.ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted == false);
 
         if (isDuplicate)
         {

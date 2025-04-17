@@ -151,57 +151,112 @@ public class OrderService : IOrderService
     }
 
     // Get Data For View Order Detail
+    // public async Task<OrderDetailViewModel> GetOrderDetailByOrderId(int id)
+    // {
+
+    //     var query = from o in _context.Orders where o.OrderId == id
+    //                 join c in _context.Customers on o.CustomerId equals c.CustomerId
+    //                 join i in _context.Invoices on id equals i.OrderId
+    //                 join t in _context.Tableorders on id equals t.OrderId
+    //                 join table in _context.Diningtables on t.TableId equals table.TableId
+    //                 join section in _context.Sections on table.SectionId equals section.SectionId
+    //                 // join oi in _context.Orders on o.OrderId equals oi.OrderId into orderItemsGroup
+    //                 // join ot in _context.Orders on o.OrderId equals ot.OrderId into orderTaxesGroup
+    //                 join dish in _context.Dishritems on id equals dish.Orderid
+
+    //                 select new OrderDetailViewModel
+    //                 {   
+    //                     OrderId = id,
+    //                     OrderStatus = o.OrderStatus,
+    //                     InvoiceId = i.InvoiceId,
+    //                     Paidon = i.Paidon,
+    //                     Placeon = o.Placeon,
+    //                     CompletedTime = o.CompletedTime,
+    //                     Modifieddate = o.Modifieddate,
+    //                     CustomerName = c.Name,
+    //                     CustomerMobile = c.Mobile,
+    //                     CustomerEmail = c.Email,
+    //                     TotalPerson = o.TotalPerson,
+    //                     TableName = table.Name,
+    //                     SectionName = section.SectionName,
+    //                     ItemList = _context.Dishritems.Where(i=> i.Orderid == o.OrderId).Select(i=> new OrderItemViewModel{
+    //                         ItemName = i.Itemname,
+    //                         ModifierList =_context.Dishrmodifiers.Where(i=> i.Dishid == dish.Dishid).Select(m=> new OrderModifierViewModel{
+    //                             ModifierItemName = m.Modifieritemname,
+    //                             ModifierItemPrice = m.Modifieritemprice,
+    //                             ModifierItemQuantity = m.Quantity
+    //                         }).ToList(),
+    //                         ItemQuantity = i.Quantity,
+    //                         ItemPrice = i.Itemprice
+
+    //                     }).ToList(),
+    //                     TaxList = _context.Invoicertaxes.Where(j=> j.InvoiceId == i.InvoiceId).Select(t => new OrderTaxViewModel
+    //                     {
+    //                         TaxAmount = t.TaxAmount,
+    //                         TaxName = t.TaxName,
+    //                         TaxType = t.Taxtype
+    //                     }).ToList()
+    //                 };
+
+    //     return await query.FirstOrDefaultAsync();
+
+    // }
+
     public async Task<OrderDetailViewModel> GetOrderDetailByOrderId(int id)
     {
+        var order = await _context.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.Invoice)
+            .Include(o => o.Tableorders)
+                .ThenInclude(to => to.Table)
+                    .ThenInclude(t => t.Section)
+            .Include(o => o.Dishritems)
+                .ThenInclude(d => d.Dishrmodifiers)
+            .FirstOrDefaultAsync(o => o.OrderId == id);
 
-        var query = from o in _context.Orders where o.OrderId == id
-                    join c in _context.Customers on o.CustomerId equals c.CustomerId
-                    join i in _context.Invoices on id equals i.OrderId
-                    join t in _context.Tableorders on id equals t.OrderId
-                    join table in _context.Diningtables on t.TableId equals table.TableId
-                    join section in _context.Sections on table.SectionId equals section.SectionId
-                    // join oi in _context.Orders on o.OrderId equals oi.OrderId into orderItemsGroup
-                    // join ot in _context.Orders on o.OrderId equals ot.OrderId into orderTaxesGroup
-                    join dish in _context.Dishritems on id equals dish.Orderid
+        if (order == null) return null;
 
-                    select new OrderDetailViewModel
-                    {   
-                        OrderId = id,
-                        OrderStatus = o.OrderStatus,
-                        InvoiceId = i.InvoiceId,
-                        Paidon = i.Paidon,
-                        Placeon = o.Placeon,
-                        CompletedTime = o.CompletedTime,
-                        Modifieddate = o.Modifieddate,
-                        CustomerName = c.Name,
-                        CustomerMobile = c.Mobile,
-                        CustomerEmail = c.Email,
-                        TotalPerson = o.TotalPerson,
-                        TableName = table.Name,
-                        SectionName = section.SectionName,
-                        ItemList = _context.Dishritems.Where(i=> i.Orderid == o.OrderId).Select(i=> new OrderItemViewModel{
-                            ItemName = i.Itemname,
-                            ModifierList =_context.Dishrmodifiers.Where(i=> i.Dishid == dish.Dishid).Select(m=> new OrderModifierViewModel{
-                                ModifierItemName = m.Modifieritemname,
-                                ModifierItemPrice = m.Modifieritemprice,
-                                ModifierItemQuantity = m.Quantity
-                            }).ToList(),
-                            ItemQuantity = i.Quantity,
-                            ItemPrice = i.Itemprice
+        var result = new OrderDetailViewModel
+        {
+            OrderId = order.OrderId,
+            OrderStatus = order.OrderStatus,
+            InvoiceId = order.Invoice?.InvoiceId ?? 0,
+            Paidon = order.Invoice?.Paidon,
+            Placeon = order.Placeon,
+            CompletedTime = order.CompletedTime,
+            Modifieddate = order.Modifieddate,
+            CustomerName = order.Customer?.Name ?? "Unknown",
+            CustomerMobile = order.Customer?.Mobile ?? "Unknown",
+            CustomerEmail = order.Customer?.Email ?? "Unknown",
+            TotalPerson = order.TotalPerson,
+            TableName = order.Tableorders.FirstOrDefault()?.Table?.Name ?? "Unknown",
+            SectionName = order.Tableorders.FirstOrDefault()?.Table?.Section?.SectionName ?? "Unknown",
+            ItemList = order.Dishritems.Select(i => new OrderItemViewModel
+            {
+                ItemName = i.Itemname,
+                ItemQuantity = i.Quantity,
+                ItemPrice = i.Itemprice,
+                ModifierList = i.Dishrmodifiers?.Select(m => new OrderModifierViewModel
+                {
+                    ModifierItemName = m.Modifieritemname,
+                    ModifierItemPrice = m.Modifieritemprice,
+                    ModifierItemQuantity = m.Quantity
+                }).ToList()
+            }).ToList(),
+            TaxList = order.Invoice != null
+    ? _context.Invoicertaxes
+        .Where(x => x.InvoiceId == order.Invoice.InvoiceId)
+        .Select(t => new OrderTaxViewModel
+        {
+            TaxAmount = t.TaxAmount,
+            TaxName = t.TaxName,
+            TaxType = t.Taxtype
+        }).ToList()
+    : new List<OrderTaxViewModel>()
+        };
 
-                        }).ToList(),
-                        TaxList = _context.Invoicertaxes.Where(j=> j.InvoiceId == i.InvoiceId).Select(t => new OrderTaxViewModel
-                        {
-                            TaxAmount = t.TaxAmount,
-                            TaxName = t.TaxName,
-                            TaxType = t.Taxtype
-                        }).ToList()
-                    };
-
-        return await query.FirstOrDefaultAsync();
-
+        return result;
     }
-
 
 
 }

@@ -75,7 +75,7 @@ function setDeleteItemId(element) {
   deleteBtn.setAttribute("category-id", cat_id);
   deleteBtn.setAttribute("item-id", Id);
 }
-
+// pwd123
 // Edit menu Item functionality
 let selectedModifierGroupsforedit = [];
 function setedititemdata(ele) {
@@ -84,6 +84,23 @@ function setedititemdata(ele) {
   var c = JSON.parse(ele.getAttribute("item-obj"));
   var catid = ele.getAttribute("category-id");
   console.log("edititem",c);
+
+  $.ajax({
+    type: "GET",
+    url: "/Menu/GetCategoryListData",
+    success: function (data) {
+      console.log(data)
+      // this will load modifier group list
+      $("#CategoryForEdit").html("");
+      data.forEach((m) => {
+        $("#CategoryForEdit").append(`
+          <option value=${m.id}>${m.name}</option>`);
+      });
+
+      $("#CategoryForEdit").val(catid);
+      
+    },
+  });
 
   var editmenuitem = document.getElementById("editmenuitem");
   editmenuitem.querySelector("#CategoryForEdit").value = catid;
@@ -267,8 +284,26 @@ function updateMaxValueForEdit() {
 function openAddMenuItemModal()
 {
   var catid = $("#category-list").find(".category-active-option").attr('category-id');
-  $("#Select-Category-option").val(catid);
-  $("#Select-Category-option-hidden").val(catid);
+
+  $.ajax({
+    type: "GET",
+    url: "/Menu/GetCategoryListData",
+    success: function (data) {
+      console.log(data)
+      // this will load modifier group list
+      $("#Select-Category-option").html("");
+      data.forEach((m) => {
+        $("#Select-Category-option").append(`
+          <option value=${m.id}>${m.name}</option>`);
+      });
+
+      $("#Select-Category-option").val(catid);
+      $("#Select-Category-option-hidden").val(catid);
+    },
+  });
+
+  
+ 
   var modal = new bootstrap.Modal(document.getElementById("addmenuitem"));
   modal.show();
 }
@@ -687,12 +722,18 @@ $(document).ready(function () {
         );
         deleteModal.hide();
 
+         //clear the search field after delete
+         $("#menuitem-search-field").val('');
+
+         var page = $("#menuitem-pagination-section").data('page');
+
         if (response.success) {
           //get the active category id
-          let cat_id = $("#category-list .category-active-option").attr(
+          let catid = $("#category-list .category-active-option").attr(
             "category-id"
           );
-          loadMenuItem(cat_id);
+          loadMenuItem(catid,page.pageSize,page.currentPage);
+
           toastr.success(response.message);
         } else {
           toastr.error(response.message);
@@ -731,8 +772,6 @@ $(document).ready(function () {
         $("#menuitem-search-field").val('');
 
         var page = $("#menuitem-pagination-section").data('page');
-
-        console.log(page);
 
         if (response.success) {
           loadMenuItem(catid,page.pageSize,page.currentPage);
