@@ -563,7 +563,7 @@ $(document).ready(function () {
         // reset form after item added succesfully
         $("#addItemForm")[0].reset();
         $("#modifieritemspartialview").html("");
-
+ 
         // clear the list of selected modifier items for add item
         selectedModifierGroups = [];
 
@@ -710,6 +710,8 @@ $(document).ready(function () {
     var catid = $(this).attr("category-id");
     var itemid = $(this).attr("item-id");
 
+    
+
     $.ajax({
       url: "/Menu/DeleteSingleItem",
       method: "POST",
@@ -725,8 +727,15 @@ $(document).ready(function () {
         );
         deleteModal.hide();
 
+        //clear the search field after delete
+        $("#menuitem-search-field").val('');
+
+        var page = $("#menuitem-pagination-section").data('page');
+
+        console.log(page);
+
         if (response.success) {
-          loadMenuItem(catid);
+          loadMenuItem(catid,page.pageSize,page.currentPage);
           toastr.success("Item Deleted Successfully!");
         } else {
           toastr.error("Error In Deleting Item!");

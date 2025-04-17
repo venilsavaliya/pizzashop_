@@ -67,7 +67,7 @@ public class MenuController : BaseController
 
     public IActionResult GetModifierGroupListData()
     {
-        var ModifierGroups = _menuservices.GetModifiersGroupList();
+        var ModifierGroups = _menuservices.GetModifiersGroupList(); 
         return Json(ModifierGroups);
     }
     

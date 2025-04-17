@@ -32,11 +32,11 @@ function loadcategories(id) {
 
 //load menu item partial view
 
-function loadMenuItem(id) {
+function loadMenuItem(id,pagesize,pagenumber) {
   $.ajax({
     url: "/Menu/Menu",
     type: "GET",
-    data: { cat: id },
+    data: { cat: id,pageNumber:pagenumber,pageSize:pagesize },
     success: function (data) {
       $("#menuTableContainer").html(data);
       attachMassDeleteForMenuItem(); // This Function is Inside MenuItem.js

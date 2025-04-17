@@ -77,7 +77,7 @@
 
 
 </table>
-<div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
+<div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100" id="menuitem-pagination-section" data-page='@Html.Raw(Json.Serialize(Model.Page))'>
     <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
         <div>Items per page: </div>
         <select class="form-select" style="width:68px ;" aria-label="Default select example"

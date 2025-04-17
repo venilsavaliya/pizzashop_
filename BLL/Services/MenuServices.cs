@@ -243,6 +243,18 @@ public class MenuServices : IMenuServices
 
         // Pagination
         int totalCount = query.Count();
+
+        // while(pageSize*pageNumber>totalCount)
+        // {
+        //     pageNumber--;
+        // }
+
+        // for(int ct=totalCount;pageSize*pageNumber>totalCount;pageNumber--)
+        // {
+        //     ct-=pageSize;
+        // }
+
+        
         query = query.OrderBy(i => i.ItemName);
         var items = query.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize)

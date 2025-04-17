@@ -40,7 +40,7 @@
 
             <td>@i.Capacity</td>
             <td>
-                <span class="bg-secondary p-1 px-2 border rounded-pill text-white">@i.Status</span>
+                <span class=" p-1 px-2 border rounded-pill"  style="@(i.Status == Constants.Available ? "background-color:var(--table-available-bg)" : i.Status == Constants.Assigned ? "background-color: var(--table-assigned-bg)" : i.Status == Constants.Running ? "background-color: var(--table-running-bg)" : "")">@i.Status</span>
             </td>
             <td>
                 <div class="d-flex justify-content-start gap-5">
