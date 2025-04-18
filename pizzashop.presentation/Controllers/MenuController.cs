@@ -62,24 +62,55 @@ public class MenuController : BaseController
         return View(model);
 
     }
-    
+
+    // Get AddEdit Tax Form Partial View
+
+    public IActionResult GetAddEditCategoryForm(int id = 0)
+    {
+        if (id == 0)
+        {
+            return PartialView("~/Views/Menu/_CategoryAddEditForm.cshtml", new CategoryNameViewModel());
+        }
+        else
+        {
+            var model = _menuservices.GetCategoryDetailById(id);
+            return PartialView("~/Views/Menu/_CategoryAddEditForm.cshtml", model);
+        }
+    }
+
+[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+  public async Task<IActionResult> AddEditCategory(CategoryNameViewModel model)
+  {
+    if(model.Id ==0)
+    {
+       var response = await _menuservices.AddCategory(model);
+       return Json(new {message=response.Message,success=response.Success});
+    }
+    else
+    {
+      var response =await _menuservices.EditCategory(model);
+      return Json(new {message=response.Message,success=response.Success});
+    }
+   
+  }
+
     // Get : Modifier Group List Return Json
 
     public IActionResult GetModifierGroupListData()
     {
-        var ModifierGroups = _menuservices.GetModifiersGroupList(); 
+        var ModifierGroups = _menuservices.GetModifiersGroupList();
         return Json(ModifierGroups);
     }
-    
+
     // Get : Category List Return Json
 
     public IActionResult GetCategoryListData()
     {
-       var categories = _menuservices.GetCategoryList();
+        var categories = _menuservices.GetCategoryList();
 
         return Json(categories);
     }
-    
+
     // GET : Menu {Returns Partial View}
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
     public IActionResult Menu(int cat, int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
@@ -180,25 +211,25 @@ public class MenuController : BaseController
         return PartialView("~/Views/Menu/_ModifieritemListForAdd.cshtml", modifiersmodel);
     }
 
-    // POST : Menu
-    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
-    [HttpPost]
-    public IActionResult Category(MenuViewModel model)
-    {
-        if (model.Category.Id != null)
-        {
+    // // POST : Menu
+    // [AuthorizePermission(PermissionName.Menu, ActionPermission.CanView)]
+    // [HttpPost]
+    // public IActionResult Category(MenuViewModel model)
+    // {
+    //     if (model.Category.Id != null)
+    //     {
 
-            var res = _menuservices.EditCategory(model.Category).Result;
+    //         var res = _menuservices.EditCategory(model.Category).Result;
 
-            return Json(new { Success = res.Success, message = res.Message });
-        }
-        else
-        {
-            var AuthResponse = _menuservices.AddCategory(model.Category).Result;
-             return Json(new { Success = AuthResponse.Success, message = AuthResponse.Message });
-        }
+    //         return Json(new { Success = res.Success, message = res.Message });
+    //     }
+    //     else
+    //     {
+    //         var AuthResponse = _menuservices.AddCategory(model.Category).Result;
+    //         return Json(new { Success = AuthResponse.Success, message = AuthResponse.Message });
+    //     }
 
-    }
+    // }
 
 
 
@@ -214,27 +245,27 @@ public class MenuController : BaseController
 
     #region Category
 
-    // POST : Edit Category
-    [HttpPost]
-    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
-    public IActionResult EditCategoryById(MenuViewModel model)
-    {
-        var AuthResponse = _menuservices.EditCategory(model.Category).Result;
+    // // POST : Edit Category
+    // [HttpPost]
+    // [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    // public IActionResult EditCategoryById(MenuViewModel model)
+    // {
+    //     var AuthResponse = _menuservices.EditCategory(model.Category).Result;
 
-        if (!AuthResponse.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
+    //     if (!AuthResponse.Success)
+    //     {
+    //         TempData["ToastrType"] = "error";
+    //         TempData["ToastrMessage"] = AuthResponse.Message;
 
-            return Json(new { Success = false, message = AuthResponse.Message });
-        }
-        else
-        {
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            return Json(new { Success = true, message = AuthResponse.Message });
-        }
-    }
+    //         return Json(new { Success = false, message = AuthResponse.Message });
+    //     }
+    //     else
+    //     {
+    //         TempData["ToastrType"] = "success";
+    //         TempData["ToastrMessage"] = AuthResponse.Message;
+    //         return Json(new { Success = true, message = AuthResponse.Message });
+    //     }
+    // }
 
 
     // POST : Delete category 
@@ -584,7 +615,7 @@ public class MenuController : BaseController
 
         var response = _menuservices.DeleteModifierItemById(modifierid, modifiergroupid).Result;
 
-       return Json(new { success = response.Success, message = response.Message });
+        return Json(new { success = response.Success, message = response.Message });
 
     }
 

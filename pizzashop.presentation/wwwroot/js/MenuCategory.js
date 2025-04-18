@@ -1,5 +1,23 @@
 // Make the function global
 
+// Open Modal For Add Edit CAtegory Form
+
+function openAddEditCategoryModal(id)
+{
+  $.ajax({
+    type: "GET",
+    url: "/Menu/GetAddEditCategoryForm",
+    data: { id: id },
+    success: function (data) {
+      $("#categoryAddEditFormContent").html(data);
+      var modal = new bootstrap.Modal(
+        document.getElementById("categoryAddEditModal")
+      );
+      modal.show();
+    },
+  });
+}
+
 // load category list partial view
 
 function loadcategories(id) {
@@ -231,6 +249,45 @@ $(document).ready(function () {
       return true;
     }
   }
+
+  // Add Edit Category Form Submission
+
+  $(document).on("submit", "#categoryAddEditForm", function (e) {
+    e.preventDefault();
+    var form = $(this);
+    if (!form.valid()) {
+      return;
+    }
+
+    var formData = new FormData(form[0]);
+    $.ajax({
+      url: form.attr("action"),
+      type: "POST",
+      data: formData,
+      processData: false, 
+      contentType: false, 
+      success: function (response) {
+        if(response.success)
+        {
+            toastr.success(response.message);
+            let cat_id = $("#category-list .category-active-option").attr(
+              "category-id"
+            );
+            loadcategories(cat_id);
+            var modal = bootstrap.Modal.getInstance(document.getElementById('categoryAddEditModal'))
+            modal.hide();
+        }
+        else{
+            toastr.error(response.message);
+        }
+        
+       
+      },
+      error: function (err) {
+        alert("Something went wrong");
+      },
+    });
+  });
 
   // Delete Category
 

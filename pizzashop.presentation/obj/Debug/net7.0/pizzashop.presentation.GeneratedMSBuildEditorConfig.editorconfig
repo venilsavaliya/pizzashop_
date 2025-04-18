@@ -72,6 +72,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Menu/_CategoryAddEditForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxfQ2F0ZWdvcnlBZGRFZGl0Rm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Menu/_CategoryList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxfQ2F0ZWdvcnlMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -222,6 +226,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Tax/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGF4XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Tax/_AddEditTaxForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGF4XF9BZGRFZGl0VGF4Rm9ybS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/pizzashop_main/pizzashop_/pizzashop.presentation/Views/Tax/_TableList.cshtml]

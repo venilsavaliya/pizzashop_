@@ -13,7 +13,7 @@
                 </div>
 
                 <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block"
-                    data-bs-toggle="modal" data-bs-target="#AddTaxmodal"><span class="fs-5 fw-semibold">+</span> New Tax
+                    onclick="openAddEditTaxForm()"><span class="fs-5 fw-semibold">+</span> New Tax
                 </button>
                 <button type="button" class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
             </div>
@@ -192,10 +192,21 @@
     </div>
 </div>
 
+<!-- Edit Tax modal -->
+<div class="modal fade" id="AddEditTaxmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered" id="addEditTaxFormContent">
+        @* partial view of add edit modal *@
+    </div>
+
+</div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/js/Tax/Tax.js"></script>

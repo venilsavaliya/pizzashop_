@@ -15,8 +15,8 @@
         <div class="d-flex justify-content-between gap-3 d-none" id="categoryoption_actionbtn">
             @if (ViewBag.CanMenuAddEdit)
             {
-                <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editcategory"
-                    onclick="setEditCategoryData(this)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description"
+                <img src="~/images/icons/pen.svg" alt="" 
+                    onclick="openAddEditCategoryModal(@c.Id)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description"
                     obj="@c" item-obj='@Html.Raw(Json.Serialize(c))'>
             }
 

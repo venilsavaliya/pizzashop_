@@ -43,8 +43,8 @@
                 <div class="d-flex justify-content-start gap-5">
                     @if( ViewBag.CanTaxAndFeesAddEdit)
                     {
-                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTaxmodal"
-                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditTaxData(this)">
+                        <img src="~/images/icons/pen.svg" alt="" 
+                        item-obj='@Html.Raw(Json.Serialize(i))' onclick="openAddEditTaxForm(@i.TaxId)">
                     }
                     @if( ViewBag.CanTaxAndFeesDelete)
                     {

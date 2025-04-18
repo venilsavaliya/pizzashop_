@@ -1,169 +1,221 @@
 // pagination function
 
 function TableListPaginationAjax(pageSize, pageNumber) {
+  let id = $("#section-list .category-active-option").attr("section-id");
 
-    let id = $("#section-list .category-active-option").attr("section-id");
+  let searchkeyword = $("#taxitem-search-field").val();
 
-    let searchkeyword = $("#taxitem-search-field").val();
+  console.log("inside item", searchkeyword);
+  console.log("get id", id);
 
-    console.log("inside item", searchkeyword)
-    console.log("get id", id)
-
-    $.ajax({
-        url: "/Tax/GetTaxList",
-        data: { 'pageSize': pageSize, 'pageNumber': pageNumber, 'searchKeyword': searchkeyword },
-        type: "GET",
-        dataType: "html",
-        success: function (data) {
-            $("#taxlistcontainer").html(data);
-        },
-        error: function () {
-            $("#taxlistcontainer").html('An error has occurred');
-        }
-    });
+  $.ajax({
+    url: "/Tax/GetTaxList",
+    data: {
+      pageSize: pageSize,
+      pageNumber: pageNumber,
+      searchKeyword: searchkeyword,
+    },
+    type: "GET",
+    dataType: "html",
+    success: function (data) {
+      $("#taxlistcontainer").html(data);
+    },
+    error: function () {
+      $("#taxlistcontainer").html("An error has occurred");
+    },
+  });
 }
 
-//set data for edit tax 
-function setEditTaxData(ele) {
+//set data for edit tax
+// function setEditTaxData(ele) {
+//   var c = JSON.parse(ele.getAttribute("item-obj"));
+//   console.log(c);
 
-    var c = JSON.parse(ele.getAttribute("item-obj"));
-    console.log(c);
-
-    var editsectionitem = document.getElementById("EditTaxmodal");
-    editsectionitem.querySelector("#taxIdForEdit").value = c.taxId;
-    editsectionitem.querySelector("#taxNameForEdit").value = c.taxName;
-    editsectionitem.querySelector("#typeOfTaxForEdit").value = c.type;
-    editsectionitem.querySelector("#taxAmountForEdit").value = c.taxAmount;
-    editsectionitem.querySelector("#isEnabledForEdit").checked = c.isenable;
-    editsectionitem.querySelector("#isDefaultForEdit").checked = c.isdefault;
-
-}
+//   var editsectionitem = document.getElementById("EditTaxmodal");
+//   editsectionitem.querySelector("#taxIdForEdit").value = c.taxId;
+//   editsectionitem.querySelector("#taxNameForEdit").value = c.taxName;
+//   editsectionitem.querySelector("#typeOfTaxForEdit").value = c.type;
+//   editsectionitem.querySelector("#taxAmountForEdit").value = c.taxAmount;
+//   editsectionitem.querySelector("#isEnabledForEdit").checked = c.isenable;
+//   editsectionitem.querySelector("#isDefaultForEdit").checked = c.isdefault;
+// }
 
 //delete tax
 function setDeleteTaxData(element) {
+  var Id = element.getAttribute("tax-id");
+  var deleteBtn = document.getElementById("deleteTaxBtn");
+  deleteBtn.href = "/Tax/DeleteTax" + "?id=" + Id;
+}
 
-    var Id = element.getAttribute("tax-id");
-    var deleteBtn = document.getElementById("deleteTaxBtn");
-    deleteBtn.href = '/Tax/DeleteTax' + '?id=' + Id;
+// open add edit tax form
 
+function openAddEditTaxForm(id) {
+  $.ajax({
+    type: "GET",
+    url: "/Tax/GetAddEditTaxForm", 
+    data: { id: id },
+    success: function (data) {
+      $("#addEditTaxFormContent").html(data);
+      var modal = new bootstrap.Modal(
+        document.getElementById("AddEditTaxmodal")
+      );
+      modal.show();
+    },
+  });
 }
 
 $(document).ready(function () {
+  TableListPaginationAjax();
 
-    TableListPaginationAjax();
-
-    //keyup search
-    document.getElementById("taxitem-search-field").addEventListener('keyup', () => {
-        TableListPaginationAjax();
-    })
-
-    // add tax valiadtion rule
-    $("#AddTaxForm").validate({
-        rules: {
-            "Taxes.TaxName": {
-                required: true,
-            },
-            "Taxes.Type": {
-                required: true,
-            },
-            "Taxes.TaxAmount": {
-                required: true,
-                number:true,
-                min:0
-            },
-        },
-        messages: {
-            "Taxes.TaxName": {
-                required: "Please enter a Tax name",
-            },
-            "Taxes.Type": {
-                required: "Please select Tax Type",
-            },
-            "Taxes.TaxAmount": {
-                required: "Please select Tax Amount",
-                number:"Tax Amount Must be Number",
-                min:"Tax Amount can not be negative"
-            },
-        },
-        errorElement: "span",
-        errorClass: "text-danger",
-        highlight: function (element) {
-            $(element).addClass("is-invalid");
-        },
-        unhighlight: function (element) {
-            $(element).removeClass("is-invalid");
-        },
-    });
-    // edit tax valiadtion rule
-    $("#EditTaxForm").validate({
-        rules: {
-            "Taxes.TaxName": {
-                required: true,
-            },
-            "Taxes.Type": {
-                required: true,
-            },
-            "Taxes.TaxAmount": {
-                required: true,
-                number:true,
-                min:0
-            },
-        },
-        messages: {
-            "Taxes.TaxName": {
-                required: "Please enter a Tax name",
-            },
-            "Taxes.Type": {
-                required: "Please select Tax Type",
-            },
-            "Taxes.TaxAmount": {
-                required: "Please select Tax Amount",
-                number:"Tax Amount Must be Number",
-                min:"Tax Amount can not be negative"
-            },
-        },
-        errorElement: "span",
-        errorClass: "text-danger",
-        highlight: function (element) {
-            $(element).addClass("is-invalid");
-        },
-        unhighlight: function (element) {
-            $(element).removeClass("is-invalid");
-        },
+  //keyup search
+  document
+    .getElementById("taxitem-search-field")
+    .addEventListener("keyup", () => {
+      TableListPaginationAjax();
     });
 
-    // Reset Add Form When Modal Close
-    $('#AddTaxmodal').on('hidden.bs.modal', function () {
-        console.log("Modal hidden!");
+  // // add tax valiadtion rule
+  // $("#AddTaxForm").validate({
+  //   rules: {
+  //     "Taxes.TaxName": {
+  //       required: true,
+  //     },
+  //     "Taxes.Type": {
+  //       required: true,
+  //     },
+  //     "Taxes.TaxAmount": {
+  //       required: true,
+  //       number: true,
+  //       min: 0,
+  //     },
+  //   },
+  //   messages: {
+  //     "Taxes.TaxName": {
+  //       required: "Please enter a Tax name",
+  //     },
+  //     "Taxes.Type": {
+  //       required: "Please select Tax Type",
+  //     },
+  //     "Taxes.TaxAmount": {
+  //       required: "Please select Tax Amount",
+  //       number: "Tax Amount Must be Number",
+  //       min: "Tax Amount can not be negative",
+  //     },
+  //   },
+  //   errorElement: "span",
+  //   errorClass: "text-danger",
+  //   highlight: function (element) {
+  //     $(element).addClass("is-invalid");
+  //   },
+  //   unhighlight: function (element) {
+  //     $(element).removeClass("is-invalid");
+  //   },
+  // });
+  // // edit tax valiadtion rule
+  // $("#EditTaxForm").validate({
+  //   rules: {
+  //     "Taxes.TaxName": {
+  //       required: true,
+  //     },
+  //     "Taxes.Type": {
+  //       required: true,
+  //     },
+  //     "Taxes.TaxAmount": {
+  //       required: true,
+  //       number: true,
+  //       min: 0,
+  //     },
+  //   },
+  //   messages: {
+  //     "Taxes.TaxName": {
+  //       required: "Please enter a Tax name",
+  //     },
+  //     "Taxes.Type": {
+  //       required: "Please select Tax Type",
+  //     },
+  //     "Taxes.TaxAmount": {
+  //       required: "Please select Tax Amount",
+  //       number: "Tax Amount Must be Number",
+  //       min: "Tax Amount can not be negative",
+  //     },
+  //   },
+  //   errorElement: "span",
+  //   errorClass: "text-danger",
+  //   highlight: function (element) {
+  //     $(element).addClass("is-invalid");
+  //   },
+  //   unhighlight: function (element) {
+  //     $(element).removeClass("is-invalid");
+  //   },
+  // });
 
-        // Reset the form inside the modal
-        $(this).find('form')[0].reset();
+  // Reset Add Form When Modal Close
+  // $("#AddTaxmodal").on("hidden.bs.modal", function () {
+  //   console.log("Modal hidden!");
 
-        // Reset ASP.NET Core validation
-        var validator = $(this).find('form').validate();
-        validator.resetForm();
+  //   // Reset the form inside the modal
+  //   $(this).find("form")[0].reset();
 
-        // Remove invalid classes
-        $(this).find('.is-invalid').removeClass('is-invalid');
+  //   // Reset ASP.NET Core validation
+  //   var validator = $(this).find("form").validate();
+  //   validator.resetForm();
 
-        // Optional: Clear validation summary if you're using one
-        $(this).find('.validation-summary-errors').html('');
+  //   // Remove invalid classes
+  //   $(this).find(".is-invalid").removeClass("is-invalid");
+
+  //   // Optional: Clear validation summary if you're using one
+  //   $(this).find(".validation-summary-errors").html("");
+  // });
+  // Reset Edit Form When Modal Close
+  // $("#EditTaxmodal").on("hidden.bs.modal", function () {
+  //   console.log("Modal hidden!");
+
+  //   // Reset the form inside the modal
+  //   $(this).find("form")[0].reset();
+
+  //   // Reset ASP.NET Core validation
+  //   var validator = $(this).find("form").validate();
+  //   validator.resetForm();
+
+  //   // Remove invalid classes
+  //   $(this).find(".is-invalid").removeClass("is-invalid");
+
+  //   // Optional: Clear validation summary if you're using one
+  //   $(this).find(".validation-summary-errors").html("");
+  // });
+
+  // submit add edit form
+  $(document).on("submit", "#AddEditTaxForm", function (e) {
+    e.preventDefault();
+    var form = $(this);
+    if (!form.valid()) {
+      return;
+    }
+
+    var formData = new FormData(form[0]);
+    $.ajax({
+      url: form.attr("action"),
+      type: "POST",
+      data: formData,
+      processData: false, 
+      contentType: false, 
+      success: function (response) {
+        if(response.success)
+        {
+            toastr.success(response.message);
+            TableListPaginationAjax();
+            var modal = bootstrap.Modal.getInstance(document.getElementById('AddEditTaxmodal'))
+            modal.hide();
+        }
+        else{
+            toastr.error(response.message);
+        }
+        
+       
+      },
+      error: function (err) {
+        alert("Something went wrong");
+      },
     });
-    // Reset Edit Form When Modal Close
-    $('#EditTaxmodal').on('hidden.bs.modal', function () {
-        console.log("Modal hidden!");
-
-        // Reset the form inside the modal
-        $(this).find('form')[0].reset();
-
-        // Reset ASP.NET Core validation
-        var validator = $(this).find('form').validate();
-        validator.resetForm();
-
-        // Remove invalid classes
-        $(this).find('.is-invalid').removeClass('is-invalid');
-
-        // Optional: Clear validation summary if you're using one
-        $(this).find('.validation-summary-errors').html('');
-    });
-})
+  });
+});
