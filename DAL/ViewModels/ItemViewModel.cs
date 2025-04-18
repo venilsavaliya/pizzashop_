@@ -12,7 +12,7 @@ public class ItemViewModel
 
     public short Quantity { get; set; }
 
-    public string Unit { get; set; } = null!;
+    public int Unit { get; set; } 
 
     public bool Isavailable { get; set; }
 

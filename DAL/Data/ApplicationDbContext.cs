@@ -75,6 +75,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Taxis> Taxes { get; set; }
 
+    public virtual DbSet<Unit> Units { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Userdetail> Userdetails { get; set; }
@@ -427,9 +429,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(20)
                 .HasColumnName("type");
-            entity.Property(e => e.Unit)
-                .HasColumnType("character varying")
-                .HasColumnName("unit");
+            entity.Property(e => e.Unit).HasColumnName("unit");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Items)
                 .HasForeignKey(d => d.CategoryId)
@@ -925,6 +925,18 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.ModifyiedbyNavigation).WithMany(p => p.TaxisModifyiedbyNavigations)
                 .HasForeignKey(d => d.Modifyiedby)
                 .HasConstraintName("fk_modifyiedby");
+        });
+
+        modelBuilder.Entity<Unit>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("units_pkey");
+
+            entity.ToTable("units");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<User>(entity =>

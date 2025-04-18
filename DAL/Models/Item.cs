@@ -17,8 +17,6 @@ public partial class Item
 
     public short Quantity { get; set; }
 
-    public string Unit { get; set; } = null!;
-
     public bool DefaultTax { get; set; }
 
     public double TaxPercentage { get; set; }
@@ -42,6 +40,8 @@ public partial class Item
     public bool? Isdeleted { get; set; }
 
     public bool? Isfavourite { get; set; }
+
+    public int? Unit { get; set; }
 
     public virtual Category? Category { get; set; }
 

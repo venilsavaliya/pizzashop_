@@ -38,7 +38,7 @@ public class WaitingTokenService:IWaitingTokenService
                         TaxName = i.TaxName,
                         Type = i.Type,
                         TaxAmount = i.TaxAmount,
-                        Isenable = i.Isenable,
+                        Isenable = i.Isenable ?? false,
                         Isdefault = i.Isdefault
                     };
 

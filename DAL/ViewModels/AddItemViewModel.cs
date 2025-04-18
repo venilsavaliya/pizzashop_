@@ -1,12 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using DAL.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace DAL.ViewModels;
 
+
 public class AddItemViewModel
 {
-    public int? Id {get;set;}
-    public int? CategoryId { get; set; }
+    public int Id {get;set;} 
+    public int CategoryId { get; set; }
 
     [Required(ErrorMessage = "Item Name is required")]
     public string ItemName { get; set; } 
@@ -21,7 +23,7 @@ public class AddItemViewModel
     public short Quantity { get; set; }
 
     [Required(ErrorMessage = "Please Select The Unit")]
-    public string Unit { get; set; } 
+    public int Unit { get; set; } 
 
     public bool DefaultTax { get; set; }
 
@@ -40,8 +42,12 @@ public class AddItemViewModel
 
     public List<ModifierGroup>? ModifierGroups { get; set; }
 
-    // public DateTime Createddate { get; set; } = DateTime.Now;
+    public List<CategoryNameViewModel> Categories {get;set;}
+    public List<ModifierGroupNameViewModel> ModifierGroupNames {get;set;}
 
+    public List<Unit> UnitsList {get;set;}
+
+    // public DateTime Createddate { get; set; } = DateTime.Now;
 }
 
 

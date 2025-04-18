@@ -7,9 +7,12 @@ public interface ITaxService
 {
     public TaxListPaginationViewModel GetTaxList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
 
-    public Task<AuthResponse> AddTax(AddTaxViewModel model);
+    public TaxViewModel GetTaxDetailById(int id);
 
-    public  Task<AuthResponse> EditTax(AddTaxViewModel model);
+    public Task<AuthResponse> AddTax(TaxViewModel model);
+
+
+    public  Task<AuthResponse> EditTax(TaxViewModel model);
 
     public Task<AuthResponse> DeleteTax(int id);
 

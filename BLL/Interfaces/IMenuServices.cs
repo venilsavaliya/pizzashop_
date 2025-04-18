@@ -8,8 +8,13 @@ public interface IMenuServices
 
 
     public IEnumerable<CategoryNameViewModel> GetCategoryList();
-    public Task<AuthResponse> AddCategory(AddCategoryViewModel model);
-    public Task<AuthResponse> EditCategory(AddCategoryViewModel model);
+
+    public CategoryNameViewModel GetCategoryDetailById(int id);
+    public List<Unit> GetAllUnitsList();
+    public AddItemViewModel GetMenuItemDetailById(int id);
+    
+    public Task<AuthResponse> AddCategory(CategoryNameViewModel model);
+    public Task<AuthResponse> EditCategory(CategoryNameViewModel model);
     public Task<AuthResponse> DeleteCategory(string id);
     public Task<AuthResponse> DeleteSingleItem(int id);
     public MenuItemsPaginationViewModel GetItemsListByCategoryId(int categoryid,int pageNumber = 1, int pageSize = 2, string searchKeyword = "");

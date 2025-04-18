@@ -63,9 +63,9 @@
                     <div class="d-flex justify-content-start gap-5">
                         @if (ViewBag.CanMenuAddEdit)
                         {
-                            <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmenuitem"
+                            <img src="~/images/icons/pen.svg" alt="" 
                                 item-obj='@Html.Raw(Json.Serialize(i))' category-id="@Model.CategoryId"
-                                onclick="setedititemdata(this)">
+                                onclick="openAddEditMenuItemModal(@i.ItemId)">
                         }
                         @if (ViewBag.CanMenuDelete)
                         {

@@ -16,8 +16,7 @@
             @if (ViewBag.CanMenuAddEdit)
             {
                 <img src="~/images/icons/pen.svg" alt="" 
-                    onclick="openAddEditCategoryModal(@c.Id)" data-id="@c.Id" data-name="@c.Name" data-description="@c.Description"
-                    obj="@c" item-obj='@Html.Raw(Json.Serialize(c))'>
+                    onclick="openAddEditCategoryModal(@c.Id)">
             }
 
             @if (ViewBag.CanMenuDelete)

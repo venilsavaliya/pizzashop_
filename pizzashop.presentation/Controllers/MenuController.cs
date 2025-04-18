@@ -63,8 +63,8 @@ public class MenuController : BaseController
 
     }
 
-    // Get AddEdit Tax Form Partial View
-
+    // Get AddEdit Category Form Partial View
+[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult GetAddEditCategoryForm(int id = 0)
     {
         if (id == 0)
@@ -78,7 +78,53 @@ public class MenuController : BaseController
         }
     }
 
+ // Get AddEdit Menuitem Form Partial View
 [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    public IActionResult GetAddEditMenuItemForm(int id = 0)
+    {
+        if (id == 0)
+        {
+            var model = new AddItemViewModel();
+            model.ModifierGroupNames = _menuservices.GetModifiersGroupList().ToList();
+            model.Categories = _menuservices.GetCategoryList().ToList();
+            model.UnitsList = _menuservices.GetAllUnitsList();
+
+            return PartialView("~/Views/Menu/_MenuitemAddEditForm.cshtml", model);
+        }
+        else
+        {   
+            var model = _menuservices.GetMenuItemDetailById(id);
+            return PartialView("~/Views/Menu/_MenuitemAddEditForm.cshtml", model);
+        }
+    }
+
+[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+[HttpPost]
+  public async Task<IActionResult> AddEditMenuItem(AddItemViewModel model)
+  {
+    if(model.Id ==0)
+    {
+        string modifiersJson = Request.Form["ModifierGroups"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersJson))
+        {
+            model.ModifierGroups = JsonConvert.DeserializeObject<List<ModifierGroup>>(modifiersJson);
+        }
+
+       var response = await _menuservices.AddNewItem(model);
+       return Json(new {message=response.Message,success=response.Success});
+    }
+    else
+    {
+      var response =await _menuservices.EditItem(model);
+      return Json(new {message=response.Message,success=response.Success});
+    }
+   
+  }
+
+[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+[HttpPost]
   public async Task<IActionResult> AddEditCategory(CategoryNameViewModel model)
   {
     if(model.Id ==0)

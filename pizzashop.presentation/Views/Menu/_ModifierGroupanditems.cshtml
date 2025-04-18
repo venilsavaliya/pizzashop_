@@ -17,7 +17,7 @@
         </select>
         <select class="form-select mb-3 border rounded-pill max-select" aria-label="Max select" id="MaxSelect">
             
-            @* <option selected value="@(Model.Maxvalue ?? Model.items.Count)">@(Model.Maxvalue!=null?Model.Maxvalue:"Max" )</option> *@
+            <option selected value="@(Model.Maxvalue ?? Model.items.Count)">@(Model.Maxvalue!=null?Model.Maxvalue:"Max" )</option>
             @for(int i=1;i<=Model.items.Count;i++)
             {
                 if(Model.Maxvalue == i)

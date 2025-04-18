@@ -7,8 +7,8 @@ using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 
-public class TaxService:ITaxService
-{   
+public class TaxService : ITaxService
+{
     private readonly ApplicationDbContext _context;
 
     private readonly IHttpContextAccessor _httpContext;
@@ -22,7 +22,7 @@ public class TaxService:ITaxService
         _context = dbcontext;
         _httpContext = httpContext;
         _userservices = userService;
-        _jwtservices = jwtservices; 
+        _jwtservices = jwtservices;
     }
 
     public TaxListPaginationViewModel GetTaxList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
@@ -33,12 +33,12 @@ public class TaxService:ITaxService
         var query = from i in _context.Taxes
                     where i.Isdeleted != true
                     select new TaxViewModel
-                    {   
+                    {
                         TaxId = i.TaxId,
                         TaxName = i.TaxName,
                         Type = i.Type,
                         TaxAmount = i.TaxAmount,
-                        Isenable = i.Isenable,
+                        Isenable = i.Isenable ?? false,
                         Isdefault = i.Isdefault
                     };
 
@@ -60,33 +60,67 @@ public class TaxService:ITaxService
     }
 
 
-    // Add Tax
-    public async Task<AuthResponse> AddTax(AddTaxViewModel model)
-    {   
-        try{
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-        var userid = _userservices.GetUserIdfromToken(token);
-
-        var tax = new Taxis
+    // Get Tax Detail By Id
+    public TaxViewModel GetTaxDetailById(int id)
+    {
+        try
         {
-            TaxName = model.TaxName,
-            Type = model.Type,
-            Isenable = model.Isenable,
-            Isdefault = model.Isdefault,
-            TaxAmount = model.TaxAmount,
-            Createdby = userid
-        };
+            var data = _context.Taxes.FirstOrDefault(i => i.TaxId == id);
+            return new TaxViewModel
+            {
+                TaxId = data.TaxId,
+                TaxAmount = data.TaxAmount,
+                TaxName = data.TaxName,
+                Isdefault = data.Isdefault,
+                Isenable = data.Isenable ?? false
+            };
+        }
+        catch (System.Exception)
+        {
 
-        _context.Taxes.Add(tax);
-        await _context.SaveChangesAsync();
+            throw;
+        }
+    }
 
-        return new AuthResponse
+    // Add Tax
+    public async Task<AuthResponse> AddTax(TaxViewModel model)
+    {
+        try
+        {
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
+
+            var existingtax = _context.Taxes.FirstOrDefault(i => i.TaxName.ToLower() == model.TaxName.ToLower() && i.Isdeleted == false);
+
+            if (existingtax != null)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Tax Name Already Existed!"
+                };
+            }
+
+            var tax = new Taxis
+            {
+                TaxName = model.TaxName,
+                Type = model.Type,
+                Isenable = model.Isenable,
+                Isdefault = model.Isdefault,
+                TaxAmount = model.TaxAmount,
+                Createdby = userid
+            };
+
+            _context.Taxes.Add(tax);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
             {
                 Success = true,
                 Message = "Tax Added Succesfully!"
             };
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine($"Error in Add Tax: {e.Message}");
 
@@ -100,33 +134,46 @@ public class TaxService:ITaxService
 
 
     // Edit Tax
-    public async Task<AuthResponse> EditTax(AddTaxViewModel model)
-    {   
-        try{
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-        var userid = _userservices.GetUserIdfromToken(token);
+    public async Task<AuthResponse> EditTax(TaxViewModel model)
+    {
+        try
+        {
 
-        var existingtax = _context.Taxes.FirstOrDefault(i=> i.TaxId==model.TaxId);
+            var existingtaxname = _context.Taxes.FirstOrDefault(i => i.TaxName.ToLower() == model.TaxName.ToLower()&& i.TaxId != model.TaxId && i.Isdeleted == false);
 
-        
+            if (existingtaxname != null)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Tax Name Already Existed!"
+                };
+            }
+
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
+
+            var existingtax = _context.Taxes.FirstOrDefault(i => i.TaxId == model.TaxId);
+
+
             existingtax.TaxName = model.TaxName;
             existingtax.Type = model.Type;
             existingtax.Isenable = model.Isenable;
             existingtax.Isdefault = model.Isdefault;
             existingtax.TaxAmount = model.TaxAmount;
             existingtax.Modifyiedby = userid;
-        
 
-        _context.Taxes.Update(existingtax);
-        await _context.SaveChangesAsync();
 
-        return new AuthResponse
+            _context.Taxes.Update(existingtax);
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
             {
                 Success = true,
                 Message = "Tax Edited Succesfully!"
             };
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine($"Error in Edit Tax: {e.Message}");
 
@@ -137,7 +184,6 @@ public class TaxService:ITaxService
             };
         }
     }
-
 
     // Delete single Tax
     public async Task<AuthResponse> DeleteTax(int id)
@@ -167,7 +213,7 @@ public class TaxService:ITaxService
         }
     }
 
- 
 
- 
+
+
 }

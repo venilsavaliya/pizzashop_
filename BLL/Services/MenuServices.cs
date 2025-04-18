@@ -63,7 +63,85 @@ public class MenuServices : IMenuServices
         return ModifierGroups;
     }
 
-    public async Task<AuthResponse> AddCategory(AddCategoryViewModel model)
+    // Get All Units List
+
+    public List<Unit> GetAllUnitsList()
+    {
+        return _context.Units.ToList();
+    }
+
+    // Get Menu Item Detail By Id 
+
+    public AddItemViewModel GetMenuItemDetailById(int id)
+    {
+        try
+        {
+            var data = _context.Items.FirstOrDefault(i => i.ItemId == id && i.Isdeleted != true);
+            if (data != null)
+            {
+                var model = new AddItemViewModel
+                {
+                    Id = data.ItemId,
+                    CategoryId = data.CategoryId ?? 0,
+                    ItemName = data.ItemName,
+                    Quantity = data.Quantity,
+                    Rate = data.Rate,
+                    Unit = data.Unit ?? 0,
+                    DefaultTax = data.DefaultTax,
+                    Isavailable = data.Isavailable,
+                    Description = data.Description,
+                    ModifierGroupNames = GetModifiersGroupList().ToList(),
+                    Categories = GetCategoryList().ToList(),
+                    UnitsList = GetAllUnitsList(),
+                    ShortCode = data.ShortCode,
+                    TaxPercentage = data.TaxPercentage,
+                    ModifierGroups = new List<ModifierGroup> { new ModifierGroup() },
+                    Type = data.Type,
+                    Modifiers = new List<int>()
+                };
+
+                return model;
+            }
+            else
+            {
+                return new AddItemViewModel
+                {
+                    ModifierGroupNames = GetModifiersGroupList().ToList(),
+                    Categories = GetCategoryList().ToList(),
+                    UnitsList = GetAllUnitsList()
+                };
+            }
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+
+    // Get Category DEtail By Id
+
+    public CategoryNameViewModel GetCategoryDetailById(int id)
+    {
+        try
+        {
+            var data = _context.Categories.FirstOrDefault(i => i.CategoryId == id);
+            return new CategoryNameViewModel
+            {
+                Name = data.Name,
+                Description = data.Description,
+                Id = data.CategoryId
+            };
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<AuthResponse> AddCategory(CategoryNameViewModel model)
     {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
 
@@ -113,7 +191,7 @@ public class MenuServices : IMenuServices
         };
     }
 
-    public async Task<AuthResponse> EditCategory(AddCategoryViewModel model)
+    public async Task<AuthResponse> EditCategory(CategoryNameViewModel model)
     {
         try
         {
@@ -121,10 +199,10 @@ public class MenuServices : IMenuServices
 
             var userid = _userservices.GetUserIdfromToken(token);
 
-            var ExistingCategory = _context.Categories.FirstOrDefault(c => c.CategoryId.ToString() == model.Id);
+            var ExistingCategory = _context.Categories.FirstOrDefault(c => c.CategoryId == model.Id);
 
             //finding existing name in the category list
-            var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower() && c.CategoryId.ToString() != model.Id);
+            var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower() && c.CategoryId != model.Id);
 
             if (existingcategoryname != null)
             {
@@ -227,7 +305,7 @@ public class MenuServices : IMenuServices
                         Type = i.Type,
                         Rate = i.Rate,
                         Quantity = i.Quantity,
-                        Unit = i.Unit,
+                        Unit = i.Unit ?? 0,
                         Isavailable = i.Isavailable,
                         Image = i.Image,
                         DefaultTax = i.DefaultTax,
@@ -244,9 +322,9 @@ public class MenuServices : IMenuServices
         // Pagination
         int totalCount = query.Count();
 
-       // if pagenumber is exceed the limit page than .
+        // if pagenumber is exceed the limit page than .
         var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
-        if (pageNumber > maxPageNumber && totalCount!=0)
+        if (pageNumber > maxPageNumber && totalCount != 0)
         {
             pageNumber = maxPageNumber;
         }
@@ -282,7 +360,8 @@ public class MenuServices : IMenuServices
                         Rate = i.Rate,
                         Quantity = i.Quantity,
                         Unit = i.Unit,
-                        Description = i.Description
+                        Description = i.Description,
+
                     };
 
         if (!string.IsNullOrEmpty(searchKeyword))
@@ -294,9 +373,9 @@ public class MenuServices : IMenuServices
         int totalCount = query.Count();
 
         // if pagenumber is exceed the limit page than.
-        
+
         var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
-        if (pageNumber > maxPageNumber && totalCount!=0)
+        if (pageNumber > maxPageNumber && totalCount != 0)
         {
             pageNumber = maxPageNumber;
         }

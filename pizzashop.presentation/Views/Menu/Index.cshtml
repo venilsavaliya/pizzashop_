@@ -103,7 +103,7 @@
                             
                             @if(ViewBag.CanMenuAddEdit)
                             {
-                                <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block"  onclick="openAddMenuItemModal()"><span
+                                <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block"  onclick="openAddEditMenuItemModal()"><span
                                     class="fs-5 fw-semibold" >+</span> New Item</button> 
                             <button type="button"
                                 class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
@@ -448,49 +448,19 @@
             </div>
         </div>
     </div>
-
-    @* -------------------------------------------------------------- *@
-
-
-    @* edit category modal *@
-
-     <div class="modal fade" id="editcategory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">edit Category</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form  method="post" id="editcategoryform">
-                    <div class="modal-body">
-                        <div class="d-flex flex-column">
-                            <input type="text" id="editcategoryid" name="Category.Id" hidden>
-
-                            <div class="mb-3">
-
-                                <input type="text" class="form-control p-3" id="editcategoryformname" name="Category.Name"
-                                    placeholder="Name">
-                                    @* <span class="text-danger" asp-validation-for="Category.Name"></span> *@
-                            </div>
-                            <div class="mb-3">
-
-                                <textarea class="form-control" id="editcategoryformdescription" rows="3"
-                                    placeholder="Description" asp-for="Category.Description"></textarea>
-                            </div>
-                        </div>
-                         <div class="d-flex justify-content-end gap-2 p-2">
-                        <button type="submit" class="btn custom-btn-bg text-white fw-medium">Edit</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                       
-                </form>
-            </div>
-        </div>
-    </div>
+    
 </div>
 
+ @* AddEdit Menu Item modal *@
+
+     <div class="modal fade " id="AddEditMenuItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
+            <div class="modal-content w-100" id="AddEditMenuItemContent">
+                
+            </div>
+        </div> 
+    </div>
  @* Add Menu Item modal *@
 
      <div class="modal fade " id="addmenuitem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
