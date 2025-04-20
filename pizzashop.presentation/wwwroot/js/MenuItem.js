@@ -1,5 +1,7 @@
 let selectedModifierGroups = [];
 function openAddEditMenuItemModal(id) {
+  // clear the list when modal open
+  selectedModifierGroups=[]
   $.ajax({
     type: "GET",
     url: "/Menu/GetAddEditMenuItemForm",
@@ -16,12 +18,15 @@ function openAddEditMenuItemModal(id) {
       );
       $("#Select-Category-option").val(activecategory);
       $("#Select-Category-option-hidden").val(activecategory);
+      
+      // this is for adding new pv of modgroup as user select option
+      attachPartialViewAppendEvent();
 
+      // this is for loading pv which are already with items (for edit item)
       if (id) {
         attachPartialViewForEdit(id);
-      } else {
-        attachPartialViewAppendEvent();
-      }
+      } 
+      
     },
   });
 }
@@ -129,9 +134,9 @@ function attachPartialViewForEdit(id) {
               max: maxValue,
             };
 
-            selectedModifierGroupsforedit.push(newModifierGroup);
+            selectedModifierGroups.push(newModifierGroup);
 
-            console.log("response", response);
+        
 
             // Modify select dropdowns to track changes
             $partialView
@@ -144,18 +149,18 @@ function attachPartialViewForEdit(id) {
             // Attach event listeners to dropdowns inside the newly added partial view
             $partialView
               .find("select.min-select")
-              .change(updateMinValueForEdit);
+              .change(updateMinValue);
             $partialView
               .find("select.max-select")
-              .change(updateMaxValueForEdit);
+              .change(updateMaxValue);
 
             // Trigger updateMaxValue once after rendering the partial view
             let maxSelect = $partialView.find("select.max-select");
-            updateMaxValueForEdit.call(maxSelect);
+            updateMaxValue.call(maxSelect);
 
             // Trigger updateMaxValue once after rendering the partial view
             let minSelect = $partialView.find("select.min-select");
-            updateMinValueForEdit.call(minSelect);
+            updateMinValue.call(minSelect);
 
             // Attach delete event listener for the trash icon
             $partialView
@@ -167,19 +172,19 @@ function attachPartialViewForEdit(id) {
                 $partialView.remove();
 
                 // Remove the object from selectedModifierGroupsforedit
-                selectedModifierGroupsforedit =
-                  selectedModifierGroupsforedit.filter(
+                selectedModifierGroups =
+                selectedModifierGroups.filter(
                     (obj) => obj.modifierGroupId != groupId
                   );
 
                 console.log(
-                  "Updated list after deletion:",
-                  selectedModifierGroupsforedit
+                  "Updated list after deletion:", 
+                  selectedModifierGroups
                 );
               });
-
+            
             // Append Partial View and show container
-            $("#modifieritemspartialviewforedit")
+            $("#modifieritemspartialview")
               .append($partialView)
               .removeClass("d-none");
           },
@@ -188,67 +193,69 @@ function attachPartialViewForEdit(id) {
           },
         });
       });
+
+      console.log('edit item mod group',selectedModifierGroups)
     },
     error: function () {
       alert("Error loading modifier group IDs!");
     },
   });
 
-  function updateMinValueForEdit() {
-    let groupId = $(this).attr("data-group-id");
-    let newValue = $(this).val();
+  // function updateMinValueForEdit() {
+  //   let groupId = $(this).attr("data-group-id");
+  //   let newValue = $(this).val();
 
-    // Find and update the object in the list
-    let modifierGroup = selectedModifierGroupsforedit.find(
-      (obj) => obj.modifierGroupId == groupId
-    );
-    if (modifierGroup) {
-      modifierGroup.min = newValue;
-    }
+  //   // Find and update the object in the list
+  //   let modifierGroup = selectedModifierGroups.find(
+  //     (obj) => obj.modifierGroupId == groupId
+  //   );
+  //   if (modifierGroup) {
+  //     modifierGroup.min = newValue;
+  //   }
 
-    // this will ensure that if user select min option than all the option whose value is less than the selected min option will be removed from max select options
-    let minVal = parseInt($(this).val());
-    let modgroup = $(this).closest(".modifiergroupminmaxsection");
-    let maxSelect = modgroup.find(".max-select");
-    console.log("minval", minVal);
-    maxSelect.find("option").each(function () {
-      console.log("hii", parseInt($(this).val()));
-      if (parseInt($(this).val()) < minVal) {
-        $(this).css("display", "none"); // Hide the option
-      } else {
-        $(this).css("display", "block"); // Show the option
-      }
-    });
-  }
+  //   // this will ensure that if user select min option than all the option whose value is less than the selected min option will be removed from max select options
+  //   let minVal = parseInt($(this).val());
+  //   let modgroup = $(this).closest(".modifiergroupminmaxsection");
+  //   let maxSelect = modgroup.find(".max-select");
+  //   console.log("minval", minVal);
+  //   maxSelect.find("option").each(function () {
+ 
+  //     if (parseInt($(this).val()) < minVal) {
+  //       $(this).css("display", "none"); // Hide the option
+  //     } else {
+  //       $(this).css("display", "block"); // Show the option
+  //     }
+  //   });
+  // }
 
-  // Function to update max value in the list
-  function updateMaxValueForEdit() {
-    let groupId = $(this).attr("data-group-id");
-    let newValue = $(this).val();
+  // // Function to update max value in the list
+  // function updateMaxValueForEdit() {
+  //   let groupId = $(this).attr("data-group-id");
+  //   let newValue = $(this).val();
 
-    // Find and update the object in the list
-    let modifierGroup = selectedModifierGroupsforedit.find(
-      (obj) => obj.modifierGroupId == groupId
-    );
-    if (modifierGroup) {
-      modifierGroup.max = newValue;
-    }
+  //   // Find and update the object in the list
+  //   let modifierGroup = selectedModifierGroups.find(
+  //     (obj) => obj.modifierGroupId == groupId
+  //   );
+  //   if (modifierGroup) {
+  //     modifierGroup.max = newValue;
+  //   }
 
-    // this will ensure that if user select max option than all the option whose value is greater than the selected max option will be removed from min select options
-    let maxVal = parseInt($(this).val());
-    let modgroup = $(this).closest(".modifiergroupminmaxsection");
-    let minSelect = modgroup.find(".min-select");
+  //   // this will ensure that if user select max option than all the option whose value is greater than the selected max option will be removed from min select options
+  //   let maxVal = parseInt($(this).val());
+  //   let modgroup = $(this).closest(".modifiergroupminmaxsection");
+  //   let minSelect = modgroup.find(".min-select");
 
-    minSelect.find("option").each(function () {
-      if (parseInt($(this).val()) > maxVal) {
-        $(this).css("display", "none"); // Hide the option
-      } else {
-        $(this).css("display", "block"); // Show the option
-      }
-    });
+  //   minSelect.find("option").each(function () {
+  //     if (parseInt($(this).val()) > maxVal) {
+  //       $(this).css("display", "none"); // Hide the option
+  //     } else {
+  //       $(this).css("display", "block"); // Show the option
+  //     }
+  //   });
 
-    console.log(selectedModifierGroupsforedit);
-  }
+  //   console.log(selectedModifierGroups);
+  // }
 }
 
 // Function to update min value in the list
@@ -583,280 +590,223 @@ $(document).ready(function () {
     });
   });
 
-  // Function to update min value in the list
-  function updateMinValue() {
-    let groupId = $(this).attr("data-group-id");
-    let newValue = $(this).val();
-
-    // Find and update the object in the list
-    let modifierGroup = selectedModifierGroups.find(
-      (obj) => obj.modifierGroupId == groupId
-    );
-    if (modifierGroup) {
-      modifierGroup.min = newValue;
-    }
-
-    // this will ensure that if user select min option than all the option whose value is less than the selected min option will be removed from max select options
-    let minVal = parseInt($(this).val());
-    let modgroup = $(this).closest(".modifiergroupminmaxsection");
-    let maxSelect = modgroup.find(".max-select");
-    console.log("minval", minVal);
-    maxSelect.find("option").each(function () {
-      console.log("hii", parseInt($(this).val()));
-      if (parseInt($(this).val()) < minVal) {
-        $(this).css("display", "none"); // Hide the option
-      } else {
-        $(this).css("display", "block"); // Show the option
-      }
-    });
-
-    console.log("hi", selectedModifierGroups);
-  }
-
-  // Function to update max value in the list
-  function updateMaxValue() {
-    let groupId = $(this).attr("data-group-id");
-    let newValue = $(this).val();
-
-    // Find and update the object in the list
-    let modifierGroup = selectedModifierGroups.find(
-      (obj) => obj.modifierGroupId == groupId
-    );
-    if (modifierGroup) {
-      modifierGroup.max = newValue;
-    }
-
-    // this will ensure that if user select max option than all the option whose value is greater than the selected max option will be removed from min select options
-    let maxVal = parseInt($(this).val());
-    let modgroup = $(this).closest(".modifiergroupminmaxsection");
-    let minSelect = modgroup.find(".min-select");
-
-    minSelect.find("option").each(function () {
-      if (parseInt($(this).val()) > maxVal) {
-        $(this).css("display", "none"); // Hide the option
-      } else {
-        $(this).css("display", "block"); // Show the option
-      }
-    });
-
-    console.log(selectedModifierGroups);
-  }
+  
 
   // Add New Menu Item Validation
-  $("#addItemForm").validate({
-    rules: {
-      "Menuitem.ItemName": {
-        required: true,
-        minlength: 2,
-      },
-      "Menuitem.Type": {
-        required: true,
-      },
-      "Menuitem.Rate": {
-        required: true,
-        number: true,
-        min: 0,
-      },
-      "Menuitem.Quantity": {
-        required: true,
-        number: true,
-        min: 1,
-      },
-      "Menuitem.Unit": {
-        required: true,
-      },
-      "Menuitem.TaxPercentage": {
-        required: true,
-        number: true,
-        min: 0,
-        max: 100,
-      },
-    },
-    messages: {
-      "Menuitem.ItemName": {
-        required: "Please enter the item name.",
-        minlength: "Name should be at least 2 characters.",
-      },
-      "Menuitem.Type": {
-        required: "Please select the item type.",
-      },
-      "Menuitem.Rate": {
-        required: "Please enter the rate.",
-        number: "Please enter a valid number.",
-        min: "Rate must be at least 0.",
-      },
-      "Menuitem.Quantity": {
-        required: "Please enter the quantity.",
-        number: "Please enter a valid number.",
-        min: "Quantity must be at least 1.",
-      },
-      "Menuitem.Unit": {
-        required: "Please select the unit.",
-      },
-      "Menuitem.TaxPercentage": {
-        required: "Please enter the tax percentage.",
-        number: "Please enter a valid number.",
-        min: "Minimum value is 0.",
-        max: "Maximum value is 100.",
-      },
-    },
-    errorElement: "span",
-    errorClass: "text-danger",
-    highlight: function (element) {
-      $(element).addClass("is-invalid");
-    },
-    unhighlight: function (element) {
-      $(element).removeClass("is-invalid");
-    },
-  });
+  // $("#addItemForm").validate({
+  //   rules: {
+  //     "Menuitem.ItemName": {
+  //       required: true,
+  //       minlength: 2,
+  //     },
+  //     "Menuitem.Type": {
+  //       required: true,
+  //     },
+  //     "Menuitem.Rate": {
+  //       required: true,
+  //       number: true,
+  //       min: 0,
+  //     },
+  //     "Menuitem.Quantity": {
+  //       required: true,
+  //       number: true,
+  //       min: 1,
+  //     },
+  //     "Menuitem.Unit": {
+  //       required: true,
+  //     },
+  //     "Menuitem.TaxPercentage": {
+  //       required: true,
+  //       number: true,
+  //       min: 0,
+  //       max: 100,
+  //     },
+  //   },
+  //   messages: {
+  //     "Menuitem.ItemName": {
+  //       required: "Please enter the item name.",
+  //       minlength: "Name should be at least 2 characters.",
+  //     },
+  //     "Menuitem.Type": {
+  //       required: "Please select the item type.",
+  //     },
+  //     "Menuitem.Rate": {
+  //       required: "Please enter the rate.",
+  //       number: "Please enter a valid number.",
+  //       min: "Rate must be at least 0.",
+  //     },
+  //     "Menuitem.Quantity": {
+  //       required: "Please enter the quantity.",
+  //       number: "Please enter a valid number.",
+  //       min: "Quantity must be at least 1.",
+  //     },
+  //     "Menuitem.Unit": {
+  //       required: "Please select the unit.",
+  //     },
+  //     "Menuitem.TaxPercentage": {
+  //       required: "Please enter the tax percentage.",
+  //       number: "Please enter a valid number.",
+  //       min: "Minimum value is 0.",
+  //       max: "Maximum value is 100.",
+  //     },
+  //   },
+  //   errorElement: "span",
+  //   errorClass: "text-danger",
+  //   highlight: function (element) {
+  //     $(element).addClass("is-invalid");
+  //   },
+  //   unhighlight: function (element) {
+  //     $(element).removeClass("is-invalid");
+  //   },
+  // });
 
   // Reset Add Form When Modal Close
-  $("#addmenuitem").on("hidden.bs.modal", function () {
-    // Reset the form inside the modal
-    $(this).find("form")[0].reset();
+  // $("#addmenuitem").on("hidden.bs.modal", function () {
+  //   // Reset the form inside the modal
+  //   $(this).find("form")[0].reset();
 
-    // Reset ASP.NET Core validation
-    var validator = $(this).find("form").validate();
-    validator.resetForm();
-    $("#imageFileValidation").text("");
+  //   // Reset ASP.NET Core validation
+  //   var validator = $(this).find("form").validate();
+  //   validator.resetForm();
+  //   $("#imageFileValidation").text("");
 
-    // Remove invalid classes
-    $(this).find(".is-invalid").removeClass("is-invalid");
-  });
+  //   // Remove invalid classes
+  //   $(this).find(".is-invalid").removeClass("is-invalid");
+  // });
 
   // Add New Menu Item Form Submition
 
-  $("#addItemForm").on("submit", function (e) {
-    e.preventDefault();
+  // $("#addItemForm").on("submit", function (e) {
+  //   e.preventDefault();
 
-    if (!$(this).valid()) {
-      return;
-    }
-    var formData = new FormData(this);
+  //   if (!$(this).valid()) {
+  //     return;
+  //   }
+  //   var formData = new FormData(this);
 
-    console.log("venil", selectedModifierGroups);
+  //   console.log("venil", selectedModifierGroups);
 
-    formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups));
+  //   formData.append("ModifierGroups", JSON.stringify(selectedModifierGroups));
 
-    $.ajax({
-      url: "/Menu/AddNewItem",
-      type: "POST",
-      processData: false,
-      contentType: false,
-      data: formData,
-      success: function (response) {
-        // close the opened delete modal
+  //   $.ajax({
+  //     url: "/Menu/AddNewItem",
+  //     type: "POST",
+  //     processData: false,
+  //     contentType: false,
+  //     data: formData,
+  //     success: function (response) {
+  //       // close the opened delete modal
 
-        var Modal = bootstrap.Modal.getInstance(
-          document.getElementById("addmenuitem")
-        );
-        Modal.hide();
+  //       var Modal = bootstrap.Modal.getInstance(
+  //         document.getElementById("addmenuitem")
+  //       );
+  //       Modal.hide();
 
-        // reset form after item added succesfully
-        $("#addItemForm")[0].reset();
-        $("#modifieritemspartialview").html("");
+  //       // reset form after item added succesfully
+  //       $("#addItemForm")[0].reset();
+  //       $("#modifieritemspartialview").html("");
 
-        // clear the list of selected modifier items for add item
-        selectedModifierGroups = [];
+  //       // clear the list of selected modifier items for add item
+  //       selectedModifierGroups = [];
 
-        if (response.success) {
-          //get the active category id
-          let cat_id = $("#category-list .category-active-option").attr(
-            "category-id"
-          );
-          loadMenuItem(cat_id);
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (err) {
-        console.error("Error adding item:", err);
-      },
-    });
-  });
+  //       if (response.success) {
+  //         //get the active category id
+  //         let cat_id = $("#category-list .category-active-option").attr(
+  //           "category-id"
+  //         );
+  //         loadMenuItem(cat_id);
+  //         toastr.success(response.message);
+  //       } else {
+  //         toastr.error(response.message);
+  //       }
+  //     },
+  //     error: function (err) {
+  //       console.error("Error adding item:", err);
+  //     },
+  //   });
+  // });
 
   // Edit Menu Item Validation
-  $("#editItemForm").validate({
-    rules: {
-      "Menuitem.ItemName": {
-        required: true,
-        minlength: 2,
-      },
-      "Menuitem.Type": {
-        required: true,
-      },
-      "Menuitem.Rate": {
-        required: true,
-        number: true,
-        min: 0,
-      },
-      "Menuitem.Quantity": {
-        required: true,
-        number: true,
-        min: 1,
-      },
-      "Menuitem.Unit": {
-        required: true,
-      },
-      "Menuitem.TaxPercentage": {
-        required: true,
-        number: true,
-        min: 0,
-        max: 100,
-      },
-    },
-    messages: {
-      "Menuitem.ItemName": {
-        required: "Please enter the item name.",
-        minlength: "Name should be at least 2 characters.",
-      },
-      "Menuitem.Type": {
-        required: "Please select the item type.",
-      },
-      "Menuitem.Rate": {
-        required: "Please enter the rate.",
-        number: "Please enter a valid number.",
-        min: "Rate must be at least 0.",
-      },
-      "Menuitem.Quantity": {
-        required: "Please enter the quantity.",
-        number: "Please enter a valid number.",
-        min: "Quantity must be at least 1.",
-      },
-      "Menuitem.Unit": {
-        required: "Please select the unit.",
-      },
-      "Menuitem.TaxPercentage": {
-        required: "Please enter the tax percentage.",
-        number: "Please enter a valid number.",
-        min: "Minimum value is 0.",
-        max: "Maximum value is 100.",
-      },
-    },
-    errorElement: "span",
-    errorClass: "text-danger",
-    highlight: function (element) {
-      $(element).addClass("is-invalid");
-    },
-    unhighlight: function (element) {
-      $(element).removeClass("is-invalid");
-    },
-  });
+  // $("#editItemForm").validate({
+  //   rules: {
+  //     "Menuitem.ItemName": {
+  //       required: true,
+  //       minlength: 2,
+  //     },
+  //     "Menuitem.Type": {
+  //       required: true,
+  //     },
+  //     "Menuitem.Rate": {
+  //       required: true,
+  //       number: true,
+  //       min: 0,
+  //     },
+  //     "Menuitem.Quantity": {
+  //       required: true,
+  //       number: true,
+  //       min: 1,
+  //     },
+  //     "Menuitem.Unit": {
+  //       required: true,
+  //     },
+  //     "Menuitem.TaxPercentage": {
+  //       required: true,
+  //       number: true,
+  //       min: 0,
+  //       max: 100,
+  //     },
+  //   },
+  //   messages: {
+  //     "Menuitem.ItemName": {
+  //       required: "Please enter the item name.",
+  //       minlength: "Name should be at least 2 characters.",
+  //     },
+  //     "Menuitem.Type": {
+  //       required: "Please select the item type.",
+  //     },
+  //     "Menuitem.Rate": {
+  //       required: "Please enter the rate.",
+  //       number: "Please enter a valid number.",
+  //       min: "Rate must be at least 0.",
+  //     },
+  //     "Menuitem.Quantity": {
+  //       required: "Please enter the quantity.",
+  //       number: "Please enter a valid number.",
+  //       min: "Quantity must be at least 1.",
+  //     },
+  //     "Menuitem.Unit": {
+  //       required: "Please select the unit.",
+  //     },
+  //     "Menuitem.TaxPercentage": {
+  //       required: "Please enter the tax percentage.",
+  //       number: "Please enter a valid number.",
+  //       min: "Minimum value is 0.",
+  //       max: "Maximum value is 100.",
+  //     },
+  //   },
+  //   errorElement: "span",
+  //   errorClass: "text-danger",
+  //   highlight: function (element) {
+  //     $(element).addClass("is-invalid");
+  //   },
+  //   unhighlight: function (element) {
+  //     $(element).removeClass("is-invalid");
+  //   },
+  // });
 
   // Reset Edit Menu Item Form When Modal Close
-  $("#editmenuitem").on("hidden.bs.modal", function () {
-    // Reset the form inside the modal
-    $(this).find("form")[0].reset();
+  // $("#editmenuitem").on("hidden.bs.modal", function () {
+  //   // Reset the form inside the modal
+  //   $(this).find("form")[0].reset();
 
-    // Reset ASP.NET Core validation
-    var validator = $(this).find("form").validate();
-    validator.resetForm();
-    $("#imageFileValidationForEdit").text("");
+  //   // Reset ASP.NET Core validation
+  //   var validator = $(this).find("form").validate();
+  //   validator.resetForm();
+  //   $("#imageFileValidationForEdit").text("");
 
-    // Remove invalid classes
-    $(this).find(".is-invalid").removeClass("is-invalid");
-  });
+  //   // Remove invalid classes
+  //   $(this).find(".is-invalid").removeClass("is-invalid");
+  // });
 
   // mass delete of menu item
 
@@ -919,6 +869,9 @@ $(document).ready(function () {
         );
         deleteModal.hide();
 
+        // remove id from the list of selected menu item if item is checked and deleted
+        selectedMenuItems = selectedMenuItems.filter((i)=>i != itemid);
+
         //clear the search field after delete
         $("#menuitem-search-field").val("");
 
@@ -939,156 +892,156 @@ $(document).ready(function () {
 
   //submit edit item form
 
-  $("#editItemForm").submit(function (e) {
-    e.preventDefault();
+  // $("#editItemForm").submit(function (e) {
+  //   e.preventDefault();
 
-    // if (!validateFormEditMenuItem()) {
-    //   return;
-    // }
-    if (!$(this).valid()) {
-      return;
-    }
-    var formData = new FormData(this);
+  //   // if (!validateFormEditMenuItem()) {
+  //   //   return;
+  //   // }
+  //   if (!$(this).valid()) {
+  //     return;
+  //   }
+  //   var formData = new FormData(this);
 
-    console.log("venil", selectedModifierGroupsforedit);
+  //   console.log("venil", selectedModifierGroupsforedit);
 
-    formData.append(
-      "ModifierGroups",
-      JSON.stringify(selectedModifierGroupsforedit)
-    );
+  //   formData.append(
+  //     "ModifierGroups",
+  //     JSON.stringify(selectedModifierGroupsforedit)
+  //   );
 
-    $.ajax({
-      url: "/Menu/EditItem",
-      type: "POST",
-      processData: false,
-      contentType: false,
-      data: formData,
-      success: function (response) {
-        // close the opened delete modal
+  //   $.ajax({
+  //     url: "/Menu/EditItem",
+  //     type: "POST",
+  //     processData: false,
+  //     contentType: false,
+  //     data: formData,
+  //     success: function (response) {
+  //       // close the opened delete modal
 
-        var Modal = bootstrap.Modal.getInstance(
-          document.getElementById("editmenuitem")
-        );
-        Modal.hide();
+  //       var Modal = bootstrap.Modal.getInstance(
+  //         document.getElementById("editmenuitem")
+  //       );
+  //       Modal.hide();
 
-        if (response.success) {
-          //get the active category id
-          let cat_id = $("#category-list .category-active-option").attr(
-            "category-id"
-          );
-          loadMenuItem(cat_id);
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (err) {
-        console.error("Error adding item:", err);
-      },
-    });
-  });
+  //       if (response.success) {
+  //         //get the active category id
+  //         let cat_id = $("#category-list .category-active-option").attr(
+  //           "category-id"
+  //         );
+  //         loadMenuItem(cat_id);
+  //         toastr.success(response.message);
+  //       } else {
+  //         toastr.error(response.message);
+  //       }
+  //     },
+  //     error: function (err) {
+  //       console.error("Error adding item:", err);
+  //     },
+  //   });
+  // });
 
   // Form Validation Of Edit Menu Item
-  function validateFormEditMenuItem() {
-    let isValid = true;
-    let errorMessage = "";
+  // function validateFormEditMenuItem() {
+  //   let isValid = true;
+  //   let errorMessage = "";
 
-    const itemName = $("#itemnameforedit").val();
-    const type = $("#itemtypeforedit").val();
-    const unit = $("#ItemUnitForEdit").val();
-    const rate = $("#ItemRateForEdit").val();
-    const quantity = $("#ItemQuantityForEdit").val();
-    const tax = $("#itemTaxPercentageForEdit").val();
+  //   const itemName = $("#itemnameforedit").val();
+  //   const type = $("#itemtypeforedit").val();
+  //   const unit = $("#ItemUnitForEdit").val();
+  //   const rate = $("#ItemRateForEdit").val();
+  //   const quantity = $("#ItemQuantityForEdit").val();
+  //   const tax = $("#itemTaxPercentageForEdit").val();
 
-    if (!itemName) {
-      isValid = false;
-    }
+  //   if (!itemName) {
+  //     isValid = false;
+  //   }
 
-    if (!type) {
-      isValid = false;
-    }
+  //   if (!type) {
+  //     isValid = false;
+  //   }
 
-    if (!unit) {
-      isValid = false;
-    }
+  //   if (!unit) {
+  //     isValid = false;
+  //   }
 
-    if (!rate || isNaN(rate) || rate < 0) {
-      isValid = false;
-    }
+  //   if (!rate || isNaN(rate) || rate < 0) {
+  //     isValid = false;
+  //   }
 
-    if (!quantity || isNaN(quantity) || quantity < 0) {
-      isValid = false;
-    }
-    if (!tax || isNaN(tax) || tax < 0 || tax > 100) {
-      isValid = false;
-    }
+  //   if (!quantity || isNaN(quantity) || quantity < 0) {
+  //     isValid = false;
+  //   }
+  //   if (!tax || isNaN(tax) || tax < 0 || tax > 100) {
+  //     isValid = false;
+  //   }
 
-    return isValid;
-  }
+  //   return isValid;
+  // }
 
   // render new partial view for edit item modal
 
-  $("#modifierGroupSelectforedit").change(function () {
-    let selectedValue = $(this).val();
-    let selectedText = $("#modifierGroupSelect option:selected").text();
+  // $("#modifierGroupSelectforedit").change(function () {
+  //   let selectedValue = $(this).val();
+  //   let selectedText = $("#modifierGroupSelect option:selected").text();
 
-    if (
-      selectedValue === "Select Modifier Group" ||
-      selectedModifierGroupsforedit.some(
-        (obj) => obj.modifierGroupId == selectedValue
-      )
-    ) {
-      return;
-    }
+  //   if (
+  //     selectedValue === "Select Modifier Group" ||
+  //     selectedModifierGroupsforedit.some(
+  //       (obj) => obj.modifierGroupId == selectedValue
+  //     )
+  //   ) {
+  //     return;
+  //   }
 
-    let newModifierGroup = {
-      modifierGroupId: selectedValue,
-      min: "0",
-      max: "10",
-    };
-    selectedModifierGroupsforedit.push(newModifierGroup);
+  //   let newModifierGroup = {
+  //     modifierGroupId: selectedValue,
+  //     min: "0",
+  //     max: "10",
+  //   };
+  //   selectedModifierGroupsforedit.push(newModifierGroup);
 
-    $.ajax({
-      url: "/Menu/GetModifierItems",
-      type: "GET",
-      data: { modifierGroupId: selectedValue },
-      success: function (response) {
-        let $partialView = $(response);
+  //   $.ajax({
+  //     url: "/Menu/GetModifierItems",
+  //     type: "GET",
+  //     data: { modifierGroupId: selectedValue },
+  //     success: function (response) {
+  //       let $partialView = $(response);
 
-        $partialView
-          .find("select.min-select")
-          .attr("data-group-id", selectedValue);
-        $partialView
-          .find("select.max-select")
-          .attr("data-group-id", selectedValue);
+  //       $partialView
+  //         .find("select.min-select")
+  //         .attr("data-group-id", selectedValue);
+  //       $partialView
+  //         .find("select.max-select")
+  //         .attr("data-group-id", selectedValue);
 
-        $partialView.find("select.min-select").change(updateMinValue);
-        $partialView.find("select.max-select").change(updateMaxValue);
+  //       $partialView.find("select.min-select").change(updateMinValue);
+  //       $partialView.find("select.max-select").change(updateMaxValue);
 
-        let maxSelect = $partialView.find("select.max-select");
-        updateMaxValueForEdit.call(maxSelect);
+  //       let maxSelect = $partialView.find("select.max-select");
+  //       updateMaxValueForEdit.call(maxSelect);
 
-        $partialView.find(".delete-modifier-group").on("click", function () {
-          let groupId = $(this).attr("modifiergroup-id");
-          $partialView.remove();
-          selectedModifierGroupsforedit = selectedModifierGroupsforedit.filter(
-            (obj) => obj.modifierGroupId != groupId
-          );
-          console.log(
-            "Updated list after deletion:",
-            selectedModifierGroupsforedit
-          );
-        });
+  //       $partialView.find(".delete-modifier-group").on("click", function () {
+  //         let groupId = $(this).attr("modifiergroup-id");
+  //         $partialView.remove();
+  //         selectedModifierGroupsforedit = selectedModifierGroupsforedit.filter(
+  //           (obj) => obj.modifierGroupId != groupId
+  //         );
+  //         console.log(
+  //           "Updated list after deletion:",
+  //           selectedModifierGroupsforedit
+  //         );
+  //       });
 
-        $("#modifieritemspartialviewforedit")
-          .append($partialView)
-          .removeClass("d-none");
-      },
-      error: function () {
-        alert("Error loading modifier items!");
-      },
-    });
-  });
+  //       $("#modifieritemspartialviewforedit")
+  //         .append($partialView)
+  //         .removeClass("d-none");
+  //     },
+  //     error: function () {
+  //       alert("Error loading modifier items!");
+  //     },
+  //   });
+  // });
 
   $(document).on("submit", "#AddEditItemForm", function (e) {
     e.preventDefault();
@@ -1114,6 +1067,11 @@ $(document).ready(function () {
             document.getElementById("AddEditMenuItemModal")
           );
           modal.hide();
+          var page = $("#menuitem-pagination-section").data("page");
+          let catid = $("#category-list .category-active-option").attr(
+            "category-id"
+          );
+          loadMenuItem(catid, page?.pageSize, page?.currentPage);
         } else {
           toastr.error(response.message);
         }

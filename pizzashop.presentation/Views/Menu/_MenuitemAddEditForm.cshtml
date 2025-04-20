@@ -100,7 +100,7 @@
                             <div class="form-floating col-6">
                                 <div class="form-floating col">
                                     <select class="form-select" asp-for="Unit" id="ItemUnitForAdd">
-                                        <option selected >Select a Unit</option>
+                                        <option selected value="" >Select a Unit</option>
                                         @foreach (var c in Model.UnitsList)
                                         {
                                             <option value=@c.Id>@c.Name</option>
@@ -168,7 +168,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
 
             <div class="col-4" style="background-color: #fff5d7;">
                 <div class="form col-12">

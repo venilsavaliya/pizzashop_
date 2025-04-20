@@ -4,7 +4,7 @@
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                <input class="form-check-input outer_checkbox" id="modifieritem_main_checkbox_addmodal" type="checkbox" value=""
+                <input class="form-check-input outer_checkbox" id="modifieritemlist_main_checkbox" type="checkbox" value=""
                     id="flexCheckIndeterminate">
             </div> <span>Name</span>
         </th>
@@ -22,7 +22,7 @@
             <td>
                 <div class="d-flex justify-content-start gap-2 align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input modifieritemcheckboxofaddmodal" type="checkbox" value="@i.ModifierId" m-name="@i.Name">
+                        <input class="form-check-input modifierItemListInnerCheckbox" type="checkbox" value="@i.ModifierId" m-name="@i.Name">
                     </div>
                     <span>@i.Name</span>
                 </div>
@@ -39,7 +39,7 @@
     <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
         <div>Items per page: </div>
         <select class="form-select" style="width:68px ;" aria-label="Default select example"
-            id="pageSizeDropdownformodal" onchange="ModifieritemListForAddPaginationAjax(this.value,1)">
+            id="pageSizeDropdownformodal" onchange="ModifieritemListForAddExistingPaginationAjax(this.value,1)">
 
             <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
             <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
@@ -48,14 +48,14 @@
         <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
         @* @if (Model.Page.CurrentPage > 1) *@
 
-        <div onclick="ModifieritemListForAddPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1)"
+        <div onclick="ModifieritemListForAddExistingPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1)"
             class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
             <div class="border p-2 px-3"> &lt; </div>
         </div>
 
         @* @if (Model.Page.CurrentPage < Model.Page.TotalPages) *@
 
-        <div onclick="ModifieritemListForAddPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1)"
+        <div onclick="ModifieritemListForAddExistingPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1)"
             class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
             style="text-decoration: none;">
             <div class="border p-2 px-3">&gt;</div>
@@ -65,7 +65,3 @@
 </div>
 
 
-<script>
-    
-
-</script>

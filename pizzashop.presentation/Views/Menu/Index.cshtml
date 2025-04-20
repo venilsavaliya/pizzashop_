@@ -127,7 +127,7 @@
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Modifier Groups</h5>
                         <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
-                            data-bs-toggle="modal" data-bs-target="#addmodifiergroupmodal" onclick="ClearListOfModifierItems()">+
+                             onclick="openAddEditModifierGroupModal()">+
                         </div>
                     </div>
                     <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="modifier-list">
@@ -181,35 +181,7 @@
     <div class="modal fade" id="categoryAddEditModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true" >
         <div class="modal-dialog modal-dialog-centered">
-            @* <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Category</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="categoryForm" method="post">
-                    <div class="modal-body">
-                        <div class="d-flex flex-column">
-
-                            <div class="mb-3">
-
-                                <input type="text" class="form-control p-3" id="addCategoryName" name="Category.Name"
-                                    placeholder="Name">
-                                <span class="text-danger" asp-validation-for="Category.Name"></span>
-                            </div>
-                            <div class="mb-3">
-
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                    placeholder="Description" name="Category.Description"></textarea>
-                                 <span class="text-danger" asp-validation-for="Category.Description"></span>
-                            </div>
-                        </div>
-                         <div class="d-flex justify-content-end gap-2 p-2">
-                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                         </div>
-                    </div>
-                </form>
-            </div> *@
+           
             <div class="modal-content" id="categoryAddEditFormContent">
 
                 @* Partial View Of Add Edit Category form *@
@@ -268,51 +240,12 @@
     </div>
 
      <!-- Edit modifierGroup modal -->
-    <div class="modal fade" id="editmodifiergroupmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="addEditModifierGroupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit ModifierGroup</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form  method="post" id="editmodifierForm">
-                    <div class="modal-body">
-                        <div class="d-flex flex-column"> 
-                                 <input type="text" class="form-control p-3" asp-for="ModifierGroup.ModifierId"
-                                    id="editmodifiergroupid" hidden>
-                            <div class="mb-3">
-                                <input type="text" class="form-control p-3" asp-for="ModifierGroup.Name"
-                                    placeholder="Name" id="editmodifiergroupname">
-                                <span class="text-danger" asp-validation-for="ModifierGroup.Name"></span>
-                            </div>
-                            <div class="mb-3">
+            <div class="modal-content w-100" id="addEditModifierGroupFormContent">
 
-                                <textarea class="form-control" rows="3"
-                                    placeholder="Description" asp-for="ModifierGroup.Description" id="editmodifiergroupdescription"></textarea>
-                                <span class="text-danger" asp-validation-for="ModifierGroup.Description"></span>
-                            </div>
-
-                            <div class="custom-blue mb-2 fs-sm cursor-pointer" id="addexistingmodifierbtnforedit">
-                                Add Existing Modifiers +
-                            </div>
-
-                            <div class="d-flex gap-2 flex-wrap" id="selectedModifieritemcontainerforedit">
-                            
-                            @* ---- selected and existing modifier name here ---- *@
-                           
-                            </div>
-                           
-                        </div>
-                         <div class="d-flex justify-content-end gap-2 p-2">
-                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="ClearSection()">Cancel</button>
-                         </div>
-                    </div>
-
-                    
-
-                </form>
+                @* Partial View Of Add Edit Modifier Group Form *@
             </div>
         </div>
     </div>
@@ -341,7 +274,7 @@
         </div>
     </div>
     <!-- show modifieritemslist modal for add modifier group modal--> 
-    <div class="modal fade" id="modifieritemslistforaddgroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    @* <div class="modal fade" id="modifieritemslistforaddgroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content w-100">
@@ -359,6 +292,29 @@
                 <div class="d-flex justify-content-end gap-2 p-2">
                     <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClickForAdd()">Add</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>  
+        </div>
+    </div> *@
+    <!-- show modifieritemslist modal for add edit existing modifier item modal--> 
+    <div class="modal fade" id="modifierItemLIstForAddExistingModifierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-secondary" id="staticBackdropLabel">Select Existing Modifier</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="position-relative m-2" style="width: 280px;">
+                    <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritemsforaddmodal-search-field">
+                    <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
+                </div>
+                <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifierItemTableContainerForModal">
+                       
+                </div> 
+                <div class="d-flex justify-content-end gap-2 p-2">
+                    <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClickForAdd()">Add</button>
+                    <button type="button" class="btn btn-secondary"  onclick="closeAddExistingModifierItemModal()">Cancel</button>
                 </div>
             </div>  
         </div>
@@ -461,406 +417,7 @@
             </div>
         </div> 
     </div>
- @* Add Menu Item modal *@
 
-     <div class="modal fade " id="addmenuitem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Menu Item</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> 
-                </div>
-                <form id="addItemForm" enctype="multipart/form-data" >
-                    <div class="modal-body">
-                         <div class="add-menu-item row">
-                                <div class="col-8">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="form-floating col">
-                                    <div class="form-floating col">
-                                         <input type="hidden" class="form-select" id="Select-Category-option-hidden" name="Menuitem.CategoryId" >
-                                        <select  class="form-select" id="Select-Category-option" disabled >
-                                            @* <option selected>Select Categories</option> *@
-                                            @* @foreach(var c in Model.Categories){
-                                                if(c.Id == Model.SelectedCategory){
-                                                    <option value=@c.Id selected>@c.Name</option>
-                                                }else{
-
-                                                <option value=@c.Id>@c.Name</option>
-                                                }
-                                            } *@
-                                        </select>
-                                        <label for="floatingSelect">Categories</label>
-                                         <span class="text-danger" asp-validation-for="Menuitem.CategoryId"></span>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="form-floating col-6">
-                                    <div class="form-floating col">
-                                        <select  class="form-select" name="Menuitem.Type" id="ItemTypeForAdd">
-                                            <option selected value="" >Select a Type</option>
-                                            <option value="Veg">Veg</option>
-                                            <option value="Non-Veg">Non-Veg</option>
-                                        </select>
-                                        <label for="floatingSelect">Item Type</label>
-                                        <span class="text-danger" asp-validation-for="Menuitem.Type"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-6">
-                                    <div class="form-floating">
-                                        <input type="number" class="form-control" id="ItemRateForAdd" value="" name="Menuitem.Rate" placeholder="Rate">
-                                        <label for="ItemRateForAdd">Rate</label>
-                                        <span class="text-danger" asp-validation-for="Menuitem.Rate"></span>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-6">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.Isavailable" value="true">
-                                        <span class="ms-3">Available</span>
-                                        <span class="text-danger" asp-validation-for="Menuitem.Isavailable"></span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.DefaultTax" value="true">
-                                        <span class="ms-3">Default Tax</span>
-                                        <span class="text-danger" asp-validation-for="Menuitem.DefaultTax"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row position-relative ">
-                                <div class="col">
-                              
-                                         <div class="form-floating">
-                                        <input type="text" class="form-control"   name="Menuitem.ItemName" placeholder="Name">
-                                        <label >Name</label>
-                           
-                                    </div>
-                                </div>
-                                <span class="text-danger position-absolute" style="bottom: -25px;" asp-validation-for="Menuitem.ItemName"></span>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-6">
-                                    <div class="form-floating">
-                                        <input type="number" class="form-control" id="ItemQuantityForAdd" value="" name="Menuitem.Quantity" placeholder="Quantity">
-                                        <label for="ItemQuantityForAdd">Quantity</label>
-                                        <span class="text-danger" asp-validation-for="Menuitem.Quantity"></span>
-                                    </div>
-                                </div>
-                                <div class="form-floating col-6">
-                                    <div class="form-floating col">
-                                        <select  class="form-select" name="Menuitem.Unit" id="ItemUnitForAdd">
-                                            <option selected value="">Select a Unit</option>
-
-                                            <option value="Pcs">Piece</option>
-                                            <option value="Kg">Kilogram</option>
-                                            <option value="In">Inches</option>
-                                            <option value="Ltr">Liter</option>
-                                        </select>
-                                        <label for="floatingSelect">Unit</label>
-                                        <span class="text-danger" asp-validation-for="Menuitem.Unit"></span>
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-6 form-floating">
-                            
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="TaxPercentageForAdd" name="Menuitem.TaxPercentage" placeholder="Tax Percentage">
-                                        <label for="TaxPercentageForAdd">Tax Percentage</label>
-                                        <span class="text-danger" asp-validation-for="Menuitem.TaxPercentage"></span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" name="Menuitem.ShortCode">
-                                   
-                                    <span class="text-danger" asp-validation-for="Menuitem.ShortCode"></span>
-
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-4">
-                        <div class="form-floating">
-                             <textarea type="text" class="form-control" style="height: 100px;" id="floatingTextarea" name="Menuitem.Description" placeholder="Description"></textarea>
-                            <label for="floatingTextarea">Description</label>
-                            <span class="text-danger" asp-validation-for="Menuitem.Description"></span>
-                        </div>
-
-
-                       
-                    </div>
-
-                    <div class="row mt-4">
-                      
-                        <div class="">
-                                <div class="col-12">
-                                    <div class="position-relative border" style="height: 120px;">
-                                        <input type="file" id="myFile" 
-                                            class="inputfiletag bg-primary position-absolute" name="Menuitem.Image"  onchange="updateFileName('myFile','fileNameSpan','imageFileValidation')">
-                                        <button type="button"
-                                            class="btn  h-100 w-100 d-flex gap-1 justify-content-center align-items-center">
-                                            <div><i class="bi bi-cloud-arrow-up fw-bold fs-3"></i></div>
-                                            <div><span id="fileNameSpan">Drag and Drop or browse
-                                                    file</span></div>
-                                        </button>
-                                        <div class="text-danger" id="imageFileValidation"></div>
-                                    </div>
-                                </div>
-                            </div>
-                    </div> 
-                                </div>
-        
-                                 <div class="col-4" style="background-color: #fff5d7;">
-                                <div class="form col-12">
-                                    <div class="row mt-2">
-                                        <div class="form col multiselect">
-                                        <select  class="form-select selectBox" id="modifierGroupSelect">
-                                                <option selected>Select Modifier Group</option>
-
-                                                @* showing options for all modifiergroup name *@
-                                                @foreach(var m in @Model.ModifierGroups)
-                                                {
-                                                    <option value=@m.ModifiergroupId>@m.Name</option>
-                                                }
-                                        </select>
-
-                                        <div id="modifieritemspartialview" class="d-flex flex-column rounded d-none p-3 overflow-auto" style="height: 400px;">
-
-                                         </div>
- 
-                                    </div>
-                                    </div> 
-
-                                </div>
-                                 </div>
-                         </div>
-                         <div class="d-flex justify-content-end gap-2 p-2">
-                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="editmodalbtn">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                       
-                </form>
-            </div>
-        </div>
-    </div>
-
-@* Edit Menu Item Modal *@
-       
-    <div class="modal fade " id="editmenuitem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Menu Item</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="editItemForm" enctype="multipart/form-data"  method="post" >
-                    <div class="modal-body">
-                        <div class="add-menu-item row">
-
-                            <input name="Menuitem.Id" id ="itemId"  hidden>
-
-                    <div class="col-8">
-
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="form-floating col">
-                                    <div class="form-floating col">
-                                        <select  class="form-select" id="CategoryForEdit" name="Menuitem.CategoryId">
-                                            @* <option selected>Select Categories</option> *@
-                                            @* @foreach(var c in Model.Categories){
-                                                if(c.Id == Model.SelectedCategory){
-                                                    <option value=@c.Id selected>@c.Name</option>
-                                                }else{
-
-                                                <option value=@c.Id>@c.Name</option>
-                                                }
-                                            } *@
-                                        </select>
-                                        <label for="floatingSelect">Categories</label>
-                                        <span class="text-danger" asp-validation-for="Menuitem.CategoryId"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="form-floating col-6">
-                                    <div class="form-floating col"> 
-                                        <select  class="form-select" name="Menuitem.Type" id="itemtypeforedit">
-                                            <option selected value="">Select a Type</option>
-                                            <option value="Veg">Veg</option>
-                                            <option value="Non-Veg">Non-Veg</option>
-                                        </select>
-                                        <label for="floatingSelect">Item Type</label>
-                                         <span class="text-danger" asp-validation-for="Menuitem.Type"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-6">
-                                    <div class="form-floating">
-                                        <input type="number" class="form-control" id="ItemRateForEdit" value="0" name="Menuitem.Rate" placeholder="Rate">
-                                        <label for="floatingInput">Rate</label>
-                                         <span class="text-danger" asp-validation-for="Menuitem.Rate"></span>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-6">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.Isavailable" id="Isavailableforedit" value="true">
-                                        <span class="ms-3">Available</span>
-                                         <span class="text-danger" asp-validation-for="Menuitem.Isavailable"></span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input toggle-btn" type="checkbox" role="switch" name="Menuitem.DefaultTax" id="DefaultTaxforedit" value="true">
-                                        <span class="ms-3">Default Tax</span>
-                                         <span class="text-danger" asp-validation-for="Menuitem.DefaultTax"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row position-relative ">
-                                <div class="col">
-                                    <div class="form-floating">
-                                    <input class="form-control form-control p-3" type="text"  name="Menuitem.ItemName" id="itemnameforedit" placeholder="Name">
-                                    <label for="floatingInput">Name</label>
-                                    <span class="text-danger position-absolute" style="bottom: -25px;" asp-validation-for="Menuitem.ItemName"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-6">
-                                    <div class="form-floating">
-                                        <input type="number" class="form-control"  value="0" name="Menuitem.Quantity" id="ItemQuantityForEdit" placeholder="Quantity">
-                                        <label for="floatingInput">Quantity</label>
-                                         <span class="text-danger" asp-validation-for="Menuitem.Quantity"></span>
-                                    </div>
-                                </div>
-                                <div class="form-floating col-6">
-                                    <div class="form-floating col">
-                                        <select  class="form-select" name="Menuitem.Unit" id ="ItemUnitForEdit">
-                                            <option selected value="">Select a Unit</option>
-                                            <option value="Pcs">Piece</option>
-                                            <option value="Kg">Kilogram</option>
-                                            <option value="In">Inches</option>
-                                            <option value="Ltr">Liter</option>
-                                        </select>
-                                        <label for="floatingSelect">Unit</label>
-                                         <span class="text-danger" asp-validation-for="Menuitem.Unit"></span>
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-
-                            <div class="row mt-4">
-                                <div class="col-6">
-                                   
-                                     <div class="form-floating">
-                           <input class="form-control form-control p-3" type="text" placeholder="Tax Percentage" name="Menuitem.TaxPercentage" id="itemTaxPercentageForEdit">
-                            <label for="floatingTextarea">Tax Percentage</label>
-                            
-                          </div>
-                                </div>
-                                <div class="col-6">
-                                    <input class="form-control form-control p-3" type="text" placeholder="Short Code" name="Menuitem.ShortCode" id="ShortCodeforedit">
-                                     <span class="text-danger" asp-validation-for="Menuitem.ShortCode"></span>
-                                     
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-4">
-                        <div class="form-floating">
-                            <textarea class="form-control"  style="height: 100px" name="Menuitem.Description" id="Descriptionforedit"></textarea>
-                            <label for="floatingTextarea">Description</label>
-                             <span class="text-danger" asp-validation-for="Menuitem.Description"></span>
-                          </div>
-                    </div>
-
-                    <div class="row mt-4">
-                         <div class="">
-                                <div class="col-12">
-                                    <div class="position-relative border" style="height: 120px;">
-                                        <input type="file" id="myFileEdit" 
-                                            class="inputfiletag bg-primary position-absolute" name="Menuitem.Image"  onchange="updateFileName('myFileEdit','fileNameSpanForEdit','imageFileValidationForEdit')">
-                                        <button type="button"
-                                            class="btn  h-100 w-100 d-flex gap-1 justify-content-center align-items-center">
-                                            <div><i class="bi bi-cloud-arrow-up fw-bold fs-3"></i></div>
-                                            <div><span id="fileNameSpanForEdit">Drag and Drop or browse
-                                                    file</span></div>
-                                        </button>
-                                        <div class="text-danger" id="imageFileValidationForEdit"></div>
-                                    </div>
-                                </div>
-                            </div>
-                    </div> 
-                    </div>
-        
-                    <div class="col-4" style="background-color: #fff5d7;">
-                    <div class="form col-12">
-                                    <div class="row mt-2">
-                                        <div class="form col multiselect">
-                                        <select  class="form-select selectBox" id="modifierGroupSelectforedit">
-                                                <option selected>Select Modifier Group</option>
-
-                                                @* showing options for all modifiergroup name *@
-                                                @foreach(var m in @Model.ModifierGroups)
-                                                {
-                                                    <option value=@m.ModifiergroupId>@m.Name</option>
-                                                }
-                                        </select>
-                                     
-                                        
-                                        <div id="modifieritemspartialviewforedit" class="d-flex flex-column rounded d-none p-3 overflow-auto" style="height: 400px;">
-                                           
-                                         </div>
-                                    </div>
-                                    </div>
-
-                    </div>
-                    </div>
-                         </div>
-                         <div class="d-flex justify-content-end gap-2 p-2">
-                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="editmodalbtn">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                       
-                </form>
-            </div>
-        </div>
-    </div>
 
 
       @* ---------------- Delete item modal body------------------- *@
@@ -1378,7 +935,6 @@ function showCheckboxes() {
 
 
 @* -----Pagination For Menu Items List------- *@
-
 function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
 
     let cat_id= $("#category-list .category-active-option").attr("category-id");
@@ -1436,7 +992,7 @@ function PaginationAjax(pageSize,pageNumber) {
     }
 
 @* -----Pagination For Modifier Items List add modifier group Modal------- *@
-function ModifieritemListForAddPaginationAjax(pageSize,pageNumber) {
+@* function ModifieritemListForAddPaginationAjax(pageSize,pageNumber) {
 
      // Get the dropdown element
     let pageSizeDropdown = document.getElementById("pageSizeDropdownformodal");
@@ -1461,7 +1017,7 @@ function ModifieritemListForAddPaginationAjax(pageSize,pageNumber) {
                 $("#modifieritemstablecontainerofaddmodal").html('An error has occurred');
             }
         });
-    }
+    } *@
 
 @* -----Pagination For Modifier Items List------- *@
 
@@ -1510,7 +1066,6 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
 
         PaginationAjax();
         ModifieritemsPaginationAjax();
-        ModifieritemListForAddPaginationAjax();
         MenuitemsPaginationAjax();
        
     });
@@ -1554,9 +1109,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
     document.getElementById("modifieritemsmodal-search-field").addEventListener('keyup',()=>{
         PaginationAjax();
     })
-    document.getElementById("modifieritemsforaddmodal-search-field").addEventListener('keyup',()=>{
-        ModifieritemListForAddPaginationAjax();
-    })
+   
     document.getElementById("modifieritems-search-field").addEventListener('keyup',()=>{
         ModifieritemsPaginationAjax();
     })

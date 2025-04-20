@@ -16,7 +16,7 @@
             @if (ViewBag.CanMenuAddEdit)
             {
                 <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifiergroupmodal"
-                    onclick="GetModifierItemListByGroupid(this)" data-id="@c.ModifiergroupId" data-name="@c.Name"
+                    onclick="openAddEditModifierGroupModal(@c.ModifiergroupId)" data-id="@c.ModifiergroupId" data-name="@c.Name"
                     data-description="@c.Description" data-obj='@Html.Raw(Json.Serialize(c))'>
             }
 

@@ -141,6 +141,27 @@ public class MenuServices : IMenuServices
         }
     }
 
+    // Get Modifier Group Detail By Id
+    public AddModifierGroupViewModel GetModifierGroupDetailById(int id)
+    {
+        try
+        {
+            var data = _context.Modifiersgroups.FirstOrDefault(i => i.ModifiergroupId == id);
+            return new AddModifierGroupViewModel
+            {
+                Name = data!.Name,
+                Description = data.Description,
+                ModifierId = data.ModifiergroupId,
+                ModifierItems = _context.Modifieritemsmodifiersgroups.Where(i=>i.ModifiergroupId == id).Select(i=> i.ModifierId ?? 0).ToList()
+            };
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
     public async Task<AuthResponse> AddCategory(CategoryNameViewModel model)
     {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
@@ -541,7 +562,7 @@ public class MenuServices : IMenuServices
 
             var existingitem = _context.Items.FirstOrDefault(i => i.ItemId == model.Id);
 
-            var existincategorywithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName.ToLower() == model.ItemName.ToLower() && i.Isdeleted != true);
+            var existinitemwithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName.ToLower() == model.ItemName.ToLower() && i.Isdeleted != true);
 
             string img = "";
             if (model.Image != null)
@@ -550,7 +571,7 @@ public class MenuServices : IMenuServices
 
             }
 
-            if (existingitem != null && existincategorywithsamename == null)
+            if (existingitem != null && existinitemwithsamename == null)
             {
                 existingitem.CategoryId = model.CategoryId;
                 existingitem.ItemName = model.ItemName;
@@ -573,23 +594,28 @@ public class MenuServices : IMenuServices
                 await _context.SaveChangesAsync();
 
             }
-            else if (existincategorywithsamename != null && existingitem != null)
+            else if (existinitemwithsamename != null && existingitem != null)
             {
-                if (existincategorywithsamename.Isdeleted == true)
-                {
-                    existincategorywithsamename.CategoryId = model.CategoryId;
-                    existincategorywithsamename.ItemName = model.ItemName;
-                    existincategorywithsamename.Type = model.Type;
-                    existincategorywithsamename.Rate = model.Rate;
-                    existincategorywithsamename.Quantity = model.Quantity;
-                    existincategorywithsamename.Unit = model.Unit;
-                    existincategorywithsamename.DefaultTax = model.DefaultTax;
-                    existincategorywithsamename.TaxPercentage = model.TaxPercentage;
-                    existincategorywithsamename.ShortCode = model.ShortCode;
-                    existincategorywithsamename.Isavailable = model.Isavailable;
-                    existincategorywithsamename.Description = model.Description;
-                    existincategorywithsamename.Image = model.Image != null ? "sfd" : null;
-                    existincategorywithsamename.Modifyiedby = userid;
+                if (existinitemwithsamename.Isdeleted == true)
+                {   
+                    existingitem.Isdeleted =false;
+
+                    existinitemwithsamename.CategoryId = model.CategoryId;
+                    existinitemwithsamename.ItemName = model.ItemName;
+                    existinitemwithsamename.Type = model.Type;
+                    existinitemwithsamename.Rate = model.Rate;
+                    existinitemwithsamename.Quantity = model.Quantity;
+                    existinitemwithsamename.Unit = model.Unit;
+                    existinitemwithsamename.DefaultTax = model.DefaultTax;
+                    existinitemwithsamename.TaxPercentage = model.TaxPercentage;
+                    existinitemwithsamename.ShortCode = model.ShortCode;
+                    existinitemwithsamename.Isavailable = model.Isavailable;
+                    existinitemwithsamename.Description = model.Description;
+                    if (model.Image != null)
+                    {
+                        existinitemwithsamename.Image = img;
+                    }
+
                 }
                 else
                 {
@@ -609,7 +635,7 @@ public class MenuServices : IMenuServices
                 };
             }
 
-            if (model.ModifierGroups != null && model.ModifierGroups.Any())
+            // if (model.ModifierGroups != null)
             {
                 // Remove existing mappings for the item
                 var existingMappings = _context.Itemsmodifiergroupminmaxmappings

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using BLL.Models;
 
 namespace pizzashop.presentation.Controllers;
 
@@ -64,7 +66,7 @@ public class MenuController : BaseController
     }
 
     // Get AddEdit Category Form Partial View
-[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult GetAddEditCategoryForm(int id = 0)
     {
         if (id == 0)
@@ -77,9 +79,22 @@ public class MenuController : BaseController
             return PartialView("~/Views/Menu/_CategoryAddEditForm.cshtml", model);
         }
     }
-
- // Get AddEdit Menuitem Form Partial View
-[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    // Get AddEdit Modifier Group Form Partial View
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    public IActionResult GetAddEditModifierGroupForm(int id = 0)
+    {
+        if (id == 0)
+        {
+            return PartialView("~/Views/Menu/_ModifierGroupAddEditForm.cshtml", new AddModifierGroupViewModel());
+        }
+        else
+        {
+            var model = _menuservices.GetModifierGroupDetailById(id);
+            return PartialView("~/Views/Menu/_ModifierGroupAddEditForm.cshtml", model);
+        }
+    }
+    // Get AddEdit Menuitem Form Partial View
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult GetAddEditMenuItemForm(int id = 0)
     {
         if (id == 0)
@@ -92,17 +107,15 @@ public class MenuController : BaseController
             return PartialView("~/Views/Menu/_MenuitemAddEditForm.cshtml", model);
         }
         else
-        {   
+        {
             var model = _menuservices.GetMenuItemDetailById(id);
             return PartialView("~/Views/Menu/_MenuitemAddEditForm.cshtml", model);
         }
     }
 
-[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
-[HttpPost]
-  public async Task<IActionResult> AddEditMenuItem(AddItemViewModel model)
-  {
-    if(model.Id ==0)
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    [HttpPost]
+    public async Task<IActionResult> AddEditMenuItem(AddItemViewModel model)
     {
         string modifiersJson = Request.Form["ModifierGroups"];
 
@@ -112,33 +125,35 @@ public class MenuController : BaseController
             model.ModifierGroups = JsonConvert.DeserializeObject<List<ModifierGroup>>(modifiersJson);
         }
 
-       var response = await _menuservices.AddNewItem(model);
-       return Json(new {message=response.Message,success=response.Success});
-    }
-    else
-    {
-      var response =await _menuservices.EditItem(model);
-      return Json(new {message=response.Message,success=response.Success});
-    }
-   
-  }
+        if (model.Id == 0)
+        {
+            var response = await _menuservices.AddNewItem(model);
+            return Json(new { message = response.Message, success = response.Success });
+        }
+        else
+        {
+            var response = await _menuservices.EditItem(model);
+            return Json(new { message = response.Message, success = response.Success });
+        }
 
-[AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
-[HttpPost]
-  public async Task<IActionResult> AddEditCategory(CategoryNameViewModel model)
-  {
-    if(model.Id ==0)
-    {
-       var response = await _menuservices.AddCategory(model);
-       return Json(new {message=response.Message,success=response.Success});
     }
-    else
+
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    [HttpPost]
+    public async Task<IActionResult> AddEditCategory(CategoryNameViewModel model)
     {
-      var response =await _menuservices.EditCategory(model);
-      return Json(new {message=response.Message,success=response.Success});
+        if (model.Id == 0)
+        {
+            var response = await _menuservices.AddCategory(model);
+            return Json(new { message = response.Message, success = response.Success });
+        }
+        else
+        {
+            var response = await _menuservices.EditCategory(model);
+            return Json(new { message = response.Message, success = response.Success });
+        }
+
     }
-   
-  }
 
     // Get : Modifier Group List Return Json
 
@@ -572,6 +587,30 @@ public class MenuController : BaseController
         {
             return Json(new { success = response.Success, message = response.Message });
         }
+
+    }
+    [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    public async Task<IActionResult> AddEditModifierGroup(AddModifierGroupViewModel model)
+    {
+        string modifiersitemsJson = Request.Form["ModifierItems"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersitemsJson))
+        {
+            model.ModifierItems = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+        }
+        AuthResponse response;
+        if (model.ModifierId != null)
+        {
+            response = await _menuservices.EditModifierGroup(model);
+        }
+        else
+        {
+            response = await _menuservices.AddModifierGroup(model);
+        }
+        return Json(new { success = response.Success, message = response.Message });
+
 
     }
     [HttpPost]

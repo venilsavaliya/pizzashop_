@@ -8,24 +8,23 @@
     </div>
 
     <div class="d-flex gap-4 justify-content-between modifiergroupminmaxsection" style="background-color: transparent;">
-        <select class="form-select mb-3 border rounded-pill min-select" aria-label="Min select" id="MinSelect">
-            <option value="@(Model.Minvalue ?? 0)" selected>@(Model.Minvalue!=null ? Model.Minvalue: "Min")</option>
-            @for(int i=1;i<=Model.items.Count;i++)
+        <select class="form-select mb-3 border rounded-pill min-select" aria-label="Min select" id="MinSelect" asp-for="Minvalue">
+            @* <option value="@(Model.Minvalue ?? 0)" selected>@(Model.Minvalue!=null ? Model.Minvalue: "Min")</option> *@
+            @for(int i=0;i<=Model.items.Count;i++)
             {
                 <option value=@i>@i</option>
             }
         </select>
-        <select class="form-select mb-3 border rounded-pill max-select" aria-label="Max select" id="MaxSelect">
+        <select class="form-select mb-3 border rounded-pill max-select" aria-label="Max select" id="MaxSelect" asp-for="Maxvalue">
             
-            <option selected value="@(Model.Maxvalue ?? Model.items.Count)">@(Model.Maxvalue!=null?Model.Maxvalue:"Max" )</option>
-            @for(int i=1;i<=Model.items.Count;i++)
+            @* <option selected value="@(Model.Maxvalue ?? Model.items.Count)">@(Model.Maxvalue!=null?Model.Maxvalue:"Max" )</option> *@
+            @for(int i=0;i<=Model.items.Count;i++)
             {
                 if(Model.Maxvalue == i)
                 {
                     <option value=@i selected>@i</option>
                 }
                 else{
-
                 <option value=@i>@i</option>
                 }
             }

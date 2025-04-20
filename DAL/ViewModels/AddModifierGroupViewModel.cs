@@ -7,5 +7,5 @@ public class AddModifierGroupViewModel
 
     public string? Description { get; set; }
 
-    public List<int> ModifierItems {get;set;}
+    public List<int> ModifierItems {get;set;} = new List<int>();
 }
