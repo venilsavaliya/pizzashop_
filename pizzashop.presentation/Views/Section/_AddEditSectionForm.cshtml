@@ -1,0 +1,28 @@
+@model DAL.ViewModels.SectionNameViewModel
+<div class="modal-header">
+    <h1 class="modal-title fs-5" id="staticBackdropLabel">@(Model.SectionId !=0 ?"Edit":"Add") Section</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form method="post" id="AddEditSectionForm" asp-action="AddEditSectionForm">
+    <div class="modal-body">
+        <div class="d-flex flex-column">
+            <input type="text" id="Sectionid" asp-for="SectionId" hidden>
+            <div class="mb-3">
+
+                <input type="text" class="form-control p-3" id="SectionNameforedit" asp-for="SectionName"
+                    placeholder="Name">
+            </div>
+            <span class="text-danger" asp-validation-for="SectionName"></span>
+            <div class="mb-3">
+
+                <textarea class="form-control" id="Description" rows="3" placeholder="Description"
+                    asp-for="Description"></textarea>
+            </div>
+            <span class="text-danger" asp-validation-for="Description"></span>
+        </div>
+        <div class="d-flex justify-content-end gap-2 p-2">
+            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+</form>

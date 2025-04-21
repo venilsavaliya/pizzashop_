@@ -10,8 +10,7 @@
        
         <div class="d-flex justify-content-between align-items-center p-1">
             <h5 class="custom-blue">Section</h5>
-            <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;" data-bs-toggle="modal"
-                data-bs-target="#Addsectionmodal">+
+            <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;" onclick="openAddEditSectionForm()">+
             </div>
         </div>
         <div class="d-flex flex-column p-2 gap-4 fw-medium overflow-auto h-100" id="section-list-for-smallscreen">
@@ -32,7 +31,7 @@
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Section</h5>
                         <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
-                            data-bs-toggle="modal" data-bs-target="#Addsectionmodal">+
+                            onclick="openAddEditSectionForm()">+
                         </div>
                     </div>
                     <div class="d-flex flex-column p-2 mt-5 gap-4 fw-medium overflow-auto h-75" id="section-list">
@@ -61,10 +60,10 @@
                             </div>
                             }
                            
-                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" onclick="openAddTableModal()"><span
+                            <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" onclick="openAddEditTableForm()"><span
                                     class="fs-5 fw-semibold" >+</span> New Table</button>
                             <button type="button"
-                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none" onclick="openAddTableModal()">+</button>
+                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none" onclick="openAddEditTableForm()">+</button>
                         </div>
                     </div>
                     <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="diningtablelistcontainer">
@@ -153,6 +152,15 @@
                          </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+<!--ADD EDIT Section modal -->
+    <div class="modal fade" id="AddEditSectionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100" id="AddEditSectionModalContent">
+                
             </div>
         </div>
     </div>
@@ -253,6 +261,15 @@
                          </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+<!--Add Edit Table modal -->
+    <div class="modal fade" id="AddEditTableModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100" id="AddEditTableModalContent">
+                @* Partial View Of Add Edit Form *@
             </div>
         </div>
     </div>

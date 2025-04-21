@@ -6,9 +6,12 @@ using DAL.ViewModels;
 
 public interface ISectionServices
 {
-    public Task<AuthResponse> AddSection(AddSectionViewModel model);
+    public Task<AuthResponse> AddSection(SectionNameViewModel model);
 
     public IEnumerable<SectionNameViewModel> GetSectionList();
+
+    public Task<AddTableViewmodel> GetTableDetailById(int id);
+    public  Task<SectionNameViewModel> GetSectionDetailById(int id);
 
     public IEnumerable<Tablestatus> GetTableStatusList();
 
@@ -17,7 +20,7 @@ public interface ISectionServices
 
     public Task<AuthResponse> EditTable(AddTableViewmodel model);
 
-    public Task<AuthResponse> EditSection(AddSectionViewModel model);
+    public Task<AuthResponse> EditSection(SectionNameViewModel model);
 
     public  Task<AuthResponse> DeleteSection(int id);
 
@@ -26,4 +29,5 @@ public interface ISectionServices
     public Task<AuthResponse> DeleteTables(List<int> ids);
 
     public int GetTableStatusIdByName(string name);
+    public Task<int> GetBusyTableCountOfSection(int sectionid = 0);
 }

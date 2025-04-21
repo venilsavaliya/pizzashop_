@@ -4,6 +4,7 @@ using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services;
 
@@ -74,7 +75,7 @@ public class SectionServices : ISectionServices
                         SectionId = i.SectionId,
                         Name = i.Name,
                         Capacity = i.Capacity,
-                        Status = _context.Tablestatuses.FirstOrDefault(s=>s.Id == i.Status).Statusname
+                        Status = _context.Tablestatuses.FirstOrDefault(s => s.Id == i.Status).Statusname
                     };
 
         if (!string.IsNullOrEmpty(searchKeyword))
@@ -84,7 +85,7 @@ public class SectionServices : ISectionServices
 
         // Pagination
         int totalCount = query.Count();
-        query = query.OrderBy(i => i.Name);
+        query = query.OrderBy(i => i.TableId);
         var items = query.Skip((pageNumber - 1) * pageSize)
                              .Take(pageSize)
                              .ToList();
@@ -98,23 +99,23 @@ public class SectionServices : ISectionServices
 
 
     // Add new Section
-    public async Task<AuthResponse> AddSection(AddSectionViewModel model)
+    public async Task<AuthResponse> AddSection(SectionNameViewModel model)
     {
         try
         {
             var token = _httpContext.HttpContext.Request.Cookies["jwt"];
             var userid = _userservices.GetUserIdfromToken(token);
 
-            var existingtable = _context.Sections.FirstOrDefault(s => s.SectionName == model.SectionName);
+            var existingsection = _context.Sections.FirstOrDefault(s => s.SectionName.ToLower() == model.SectionName.ToLower() && s.Isdeleted != true);
 
-            if (existingtable != null)
+            if (existingsection != null)
             {
-                if (existingtable.Isdeleted == true)
+                if (existingsection.Isdeleted == true)
                 {
-                    existingtable.Isdeleted = false;
-                    existingtable.Description = model.Description;
-                    existingtable.Createdby = userid;
-                    _context.Sections.Update(existingtable);
+                    existingsection.Isdeleted = false;
+                    existingsection.Description = model.Description;
+                    existingsection.Createdby = userid;
+                    _context.Sections.Update(existingsection);
                     await _context.SaveChangesAsync();
                     return new AuthResponse
                     {
@@ -158,15 +159,26 @@ public class SectionServices : ISectionServices
     }
 
     // Edit Section
-    public async Task<AuthResponse> EditSection(AddSectionViewModel model)
+    public async Task<AuthResponse> EditSection(SectionNameViewModel model)
     {
         try
         {
             var token = _httpContext.HttpContext.Request.Cookies["jwt"];
             var userid = _userservices.GetUserIdfromToken(token);
 
+            var existingsectionname = _context.Sections.FirstOrDefault(s => s.SectionName.ToLower() == model.SectionName.ToLower() && s.SectionId != model.SectionId && s.Isdeleted != true);
 
-            var existingsection = _context.Sections.FirstOrDefault(s => s.SectionId == model.Sectionid);
+            if (existingsectionname != null)
+            {
+
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Section Already Existed!"
+                };
+            }
+
+            var existingsection = _context.Sections.FirstOrDefault(s => s.SectionId == model.SectionId);
 
             if (existingsection == null)
             {
@@ -177,9 +189,12 @@ public class SectionServices : ISectionServices
                 };
             }
 
+
+
             existingsection.SectionName = model.SectionName;
             existingsection.Description = model.Description;
             existingsection.Modifyiedby = userid;
+            existingsection.Modifieddate = DateTime.Now;
 
 
             _context.Sections.Update(existingsection);
@@ -270,7 +285,8 @@ public class SectionServices : ISectionServices
                         Message = "Table Added Succesfully!"
                     };
                 }
-                else{
+                else
+                {
                     return new AuthResponse
                     {
                         Success = false,
@@ -338,7 +354,8 @@ public class SectionServices : ISectionServices
                         Message = "Table edited Succesfully!"
                     };
                 }
-                else{
+                else
+                {
                     return new AuthResponse
                     {
                         Success = false,
@@ -448,4 +465,69 @@ public class SectionServices : ISectionServices
         return 0;
     }
 
+    public async Task<AddTableViewmodel> GetTableDetailById(int id)
+    {
+        try
+        {
+            var Tablestatuslist = _context.Tablestatuses.ToList();
+            var sectionlist = GetSectionList().ToList();
+            if (id == 0)
+            {
+                var model = new AddTableViewmodel();
+                model.Tablestatuses = Tablestatuslist;
+                model.Sections = sectionlist;
+                return model;
+            }
+            else
+            {
+                var data = await _context.Diningtables.FirstOrDefaultAsync(t => t.TableId == id && t.Isdeleted != true);
+                return new AddTableViewmodel
+                {
+                    TableId = id,
+                    Capacity = data.Capacity,
+                    Name = data.Name,
+                    SectionId = data.SectionId ?? 0,
+                    Status = data.Status,
+                    Tablestatuses = Tablestatuslist,
+                    Sections = sectionlist
+                };
+            }
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+    public async Task<SectionNameViewModel> GetSectionDetailById(int id)
+    {
+        try
+        {
+            if (id == 0)
+            {
+                return new SectionNameViewModel();
+            }
+            else
+            {
+                var data = await _context.Sections.FirstOrDefaultAsync(i => i.SectionId == id && i.Isdeleted != true);
+                return new SectionNameViewModel
+                {
+                    SectionId = id,
+                    SectionName = data.SectionName,
+                    Description = data.Description
+                };
+            }
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<int> GetBusyTableCountOfSection(int sectionid = 0)
+    {
+        int ct = await _context.Diningtables.Where(t => t.Status != 1 && t.SectionId == sectionid && t.Isdeleted != true).CountAsync();
+        return ct;
+    }
 }

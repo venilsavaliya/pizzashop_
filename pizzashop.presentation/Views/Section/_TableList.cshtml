@@ -5,11 +5,12 @@
     <tr>
         <th class="d-flex">
             <div class="form-check">
-                @if(Model.Items!=null && Model.Items.Any()){
-                     <input class="form-check-input outer_checkbox" id="main_table_checkbox" type="checkbox" value=""
-                    id="flexCheckIndeterminate">
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    <input class="form-check-input outer_checkbox" id="main_table_checkbox" type="checkbox" value=""
+                        id="flexCheckIndeterminate">
                 }
-               
+
             </div> <span>Name</span>
         </th>
 
@@ -22,84 +23,86 @@
         }
     </tr>
 
-    @if(Model.Items !=null && Model.Items.Any())
+    @if (Model.Items != null && Model.Items.Any())
     {
-         @foreach (var i in Model.Items)
-    {
-        <tr>
-            <td>
-                <div class="d-flex justify-content-start gap-2 align-items-center">
-                    <div class="form-check">
-                        <input class="form-check-input tablelist_inner_checkbox" type="checkbox" value="@i.TableId">
+        @foreach (var i in Model.Items)
+        {
+            <tr>
+                <td>
+                    <div class="d-flex justify-content-start gap-2 align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input tablelist_inner_checkbox" type="checkbox" value="@i.TableId"  data-status=@i.Status>
+                        </div>
+
+
+                        <span>@i.Name</span>
+                    </div>
+                </td>
+
+                <td>@i.Capacity</td>
+                <td>
+                    <span class=" p-1 px-2 border rounded-pill"
+                        style="@(i.Status == Constants.Available ? "background-color:var(--table-available-bg)" : i.Status == Constants.Assigned ? "background-color: var(--table-assigned-bg)" : i.Status == Constants.Running ? "background-color: var(--table-running-bg)" : "")">@i.Status</span>
+                </td>
+                <td>
+                    <div class="d-flex justify-content-start gap-5">
+                        @if (ViewBag.CanTableAndSectionAddEdit)
+                        {
+                            <img src="~/images/icons/pen.svg" alt="" item-obj='@Html.Raw(Json.Serialize(i))'
+                                onclick="openAddEditTableForm(@i.TableId)">
+                        }
+                        @if (ViewBag.CanTableAndSectionDelete)
+                        {
+                            <img src="~/images/icons/trash.svg" alt="" onclick="setDeleteTableData(this)" table-id="@i.TableId"
+                                section-id="@i.SectionId" table-status data-obj='@Html.Raw(Json.Serialize(i))'>
+                        }
+
                     </div>
 
+                </td>
+            </tr>
 
-                    <span>@i.Name</span>
-                </div>
-            </td>
-
-            <td>@i.Capacity</td>
-            <td>
-                <span class=" p-1 px-2 border rounded-pill"  style="@(i.Status == Constants.Available ? "background-color:var(--table-available-bg)" : i.Status == Constants.Assigned ? "background-color: var(--table-assigned-bg)" : i.Status == Constants.Running ? "background-color: var(--table-running-bg)" : "")">@i.Status</span>
-            </td>
-            <td>
-                <div class="d-flex justify-content-start gap-5">
-                    @if (ViewBag.CanTableAndSectionAddEdit)
-                    {
-                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#EditTablemodal"
-                            item-obj='@Html.Raw(Json.Serialize(i))' onclick="setEditTabledata(this)">
-                    }
-                    @if (ViewBag.CanTableAndSectionDelete)
-                    {
-                        <img src="~/images/icons/trash.svg" data-bs-toggle="modal" data-bs-target="#deletetablemodal" alt=""
-                            onclick="setDeleteTableData(this)" table-id="@i.TableId" section-id="@i.SectionId">
-                    }
-
-                </div>
-
-            </td>
-        </tr>
+        }
 
     }
-
-    }
-    else{
+    else
+    {
         <tr>
             <td colspan="5" class="text-center" style="font-weight: 400;">No Record Found !</td>
         </tr>
     }
-    
+
 </table>
 
-@if(Model.Items!=null && Model.Items.Any())
+@if (Model.Items != null && Model.Items.Any())
 {
-    <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100">
-    <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
-        <div>Items per page: </div>
-        <select class="form-select" style="width:68px ;" aria-label="Default select example"
-            id="pageSizeDropdownforMenuitems" onchange="TableListPaginationAjax(this.value,1,@Model.Sectionid)">
+    <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100"
+        data-page='@Html.Raw(Json.Serialize(Model.Page))' id="TableAndSectionPagination">
+        <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
+            <div>Items per page: </div>
+            <select class="form-select" style="width:68px ;" aria-label="Default select example"
+                id="pageSizeDropdownforMenuitems" onchange="TableListPaginationAjax(this.value,1,@Model.Sectionid)">
 
-            <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
-            <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
-            <option value=10 selected="@(Model.Page.PageSize == 10 ? true : false)">10</option>
-        </select>
-        <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
-        @* @if (Model.Page.CurrentPage > 1) *@
+                <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
+                <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
+                <option value=10 selected="@(Model.Page.PageSize == 10 ? true : false)">10</option>
+            </select>
+            <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
+            @* @if (Model.Page.CurrentPage > 1) *@
 
-        <div onclick="TableListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1,@Model.Sectionid)"
-            class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
-            <div class="border p-2 px-3"> &lt; </div>
+            <div onclick="TableListPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1,@Model.Sectionid)"
+                class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
+                <div class="border p-2 px-3"> &lt; </div>
+            </div>
+
+            @* @if (Model.Page.CurrentPage < Model.Page.TotalPages) *@
+
+            <div onclick="TableListPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1,@Model.Sectionid)"
+                class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
+                style="text-decoration: none;">
+                <div class="border p-2 px-3">&gt;</div>
+            </div>
+
         </div>
-
-        @* @if (Model.Page.CurrentPage < Model.Page.TotalPages) *@
-
-        <div onclick="TableListPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1,@Model.Sectionid)"
-            class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
-            style="text-decoration: none;">
-            <div class="border p-2 px-3">&gt;</div>
-        </div>
-
-    </div>
     </div>
 }
-

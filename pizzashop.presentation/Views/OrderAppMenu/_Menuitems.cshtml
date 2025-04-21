@@ -2,7 +2,7 @@
 
 @foreach(var i in Model)
 {
-     <div class="card position-relative" style="width: 300px; border-radius: 10px; overflow: hidden; min-height: 80px;" item-id="@i.ItemId" onclick="openSelectModifierItemModal(this)">
+     <div class="card position-relative" style="width: 300px; border-radius: 10px; overflow: hidden; min-height: 78px !important;" item-id="@i.ItemId" onclick="openSelectModifierItemModal(this)">
             <!-- Stripe -->
             <div class="top-right-stripe" style="background-color: @(i.Type == "Veg" ? "var(--veg)" : "var(--nonveg)");"></div>
             <!-- Card Content -->

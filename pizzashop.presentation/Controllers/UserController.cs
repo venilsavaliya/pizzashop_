@@ -126,53 +126,10 @@ public class UserController : BaseController
 
         return PartialView("~/Views/User/_UserList.cshtml", userListViewModel);
     }
+    #endregion
 
-    // GET : User/AddUser
-    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
-    public IActionResult AddUser()
-    {
-        return View();
-    }
-
-
-    // POST : User/AddUser
-    // [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
-    // [HttpPost]
-
-    // public IActionResult AddUser(AddUserViewModel model)
-    // {
-
-    //     if (!ModelState.IsValid)
-    //     {
-    //         return View(model);
-    //     }
-
-    //     var AuthResponse = _userService.AddUser(model).Result;
-
-    //     if (!AuthResponse.Success)
-    //     {
-    //         TempData["ToastrType"] = "error";
-    //         TempData["ToastrMessage"] = AuthResponse.Message;
-    //         return View(model);
-    //     }
-    //     else
-    //     {
-    //         TempData["ToastrType"] = "success";
-    //         TempData["ToastrMessage"] = AuthResponse.Message;
-    //         return RedirectToAction("GetUserList", "user");
-    //     }
-
-    // }
-
-
-    // GET : User/EditUser
-    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
-    public IActionResult EditUser(string id)
-    {
-        var edituser = _userService.GetEditUserById(id);
-        return View(edituser);
-    }
-
+     #region  User CRUD
+    // Get : Add Edit User Form
     [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
     public IActionResult UserAddEditForm(string id)
     {
@@ -190,6 +147,9 @@ public class UserController : BaseController
 
 
     }
+
+
+    //Post : Add Edit User Form Submission
     [HttpPost]
     [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
     public async Task<IActionResult> AddEditUser(EditUserViewModel model)
@@ -198,48 +158,18 @@ public class UserController : BaseController
         if (model.Id != null)
         {
             response = await _userService.EditUser(model);
-            
+
         }
         else
         {
             response = await _userService.AddUser(model);
-            
+
         }
 
-        return Json(new {message=response.Message,success=response.Success});
+        return Json(new { message = response.Message, success = response.Success });
 
 
     }
-
-    // POST : User/EditUser
-    // [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
-    // [HttpPost]
-    // public IActionResult EditUser(EditUserViewModel model)
-    // {
-    //     if (!ModelState.IsValid)
-    //     {
-    //         return View(model);
-    //     }
-
-    //     var AuthResponse = _userService.EditUser(model).Result;
-
-    //     if (!AuthResponse.Success)
-    //     {
-    //         TempData["ToastrType"] = "error";
-    //         TempData["ToastrMessage"] = AuthResponse.Message;
-    //         return View(model);
-    //     }
-    //     else
-    //     {
-    //         TempData["ToastrType"] = "success";
-    //         TempData["ToastrMessage"] = AuthResponse.Message;
-    //         return RedirectToAction("GetUserList", "user");
-    //     }
-    // }
-
-
-
-
 
     // Get : User/DeleteUser
     [AuthorizePermission(PermissionName.Users, ActionPermission.CanDelete)]

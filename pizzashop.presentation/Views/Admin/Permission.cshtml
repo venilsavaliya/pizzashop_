@@ -84,16 +84,12 @@
                     }
                 </table>
                 <div class="d-flex justify-content-end gap-2 mat-3">
-                    @if(ViewBag.Role == ViewBag.RoleName)
-                    {
-                        <div class="custom-btn-bg text-white p-2 border rounded"  onclick="canNotChangeToastr()" >Save</div>
-                    }
-                    else
+                    @if(ViewBag.Role != ViewBag.RoleName)
                     {
                         <button class="custom-btn-bg text-white p-2 border rounded" type="submit">Save</button>
+                         <button class="bg-white border border-primary rounded p-2 custom-blue" type="reset">Cancel</button>
                     }
                     
-                    <button class="bg-white border border-primary rounded p-2 custom-blue" type="reset">Cancel</button>
                 </div>
             </div>
         </form>

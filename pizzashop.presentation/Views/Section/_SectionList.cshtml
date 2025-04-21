@@ -16,13 +16,13 @@
                 
                 @if(ViewBag.CanTableAndSectionAddEdit)
                 {
-                    <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#Editsectionmodal" onclick="setEditSectionData(this)" item-obj='@Html.Raw(Json.Serialize(c))'>
+                    <img src="~/images/icons/pen.svg" alt="" onclick="openAddEditSectionForm(@c.SectionId)" item-obj='@Html.Raw(Json.Serialize(c))'>
                 }
 
                 @if(ViewBag.CanTableAndSectionDelete)
                 {
-                    <img src="~/images/icons/trash.svg" data-bs-toggle="modal" id="deletesectionBtn"
-                    data-bs-target="#deletesectionmodal" onclick="setDeleteSectionId(this)"  section-id="@c.SectionId"
+                    <img src="~/images/icons/trash.svg"  id="deletesectionBtn"
+                     onclick="setDeleteSectionId(@c.SectionId)"  section-id="@c.SectionId"
                     alt="">
                 }
                        

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
+using BLL.Models;
 
 public class SectionController : BaseController
 {
@@ -33,7 +34,7 @@ public class SectionController : BaseController
     {
       SelectedSection = id,
       Sections = sections,
-      TableStatus =  _sectionservice.GetTableStatusList(),
+      TableStatus = _sectionservice.GetTableStatusList(),
       Table = new AddTableViewmodel()
     };
     return View(model);
@@ -70,7 +71,7 @@ public class SectionController : BaseController
     var model = new SectionNameListViewModel
     {
       Sections = sections,
-      SelectedSection = id 
+      SelectedSection = id
     };
 
     return PartialView("~/Views/Section/_SectionList.cshtml", model);
@@ -79,31 +80,31 @@ public class SectionController : BaseController
   // GET : Get Json Data Of SectionLIst
   public IActionResult GetSectionListData()
   {
-     var sections = _sectionservice.GetSectionList();
-     return Json(sections);
+    var sections = _sectionservice.GetSectionList();
+    return Json(sections);
   }
 
   // POST : Add New Section
-  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
-  [HttpPost]
-  public IActionResult AddSection(SectionAndTableViewModel model)
-  {
-    var response = _sectionservice.AddSection(model.Section).Result;
+  // [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  // [HttpPost]
+  // public IActionResult AddSection(SectionAndTableViewModel model)
+  // {
+  //   var response = _sectionservice.AddSection(model.Section).Result;
 
-    return Json(new { message = response.Message, success = response.Success }); 
+  //   return Json(new { message = response.Message, success = response.Success });
 
 
-  }
+  // }
   // POST : Edit New Section
-  [HttpPost]
-  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
-  public IActionResult EditSection(SectionAndTableViewModel model)
-  {
-    var response = _sectionservice.EditSection(model.Section).Result;
+  // [HttpPost]
+  // [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  // public IActionResult EditSection(SectionAndTableViewModel model)
+  // {
+  //   var response = _sectionservice.EditSection(model.Section).Result;
 
-    return Json(new { message = response.Message, success = response.Success });
+  //   return Json(new { message = response.Message, success = response.Success });
 
-  }
+  // }
 
   // Delete Section
 
@@ -166,5 +167,74 @@ public class SectionController : BaseController
   {
     var statusId = _sectionservice.GetTableStatusIdByName(name);
     return Json(new { statusId = statusId });
+  }
+
+
+  // Get AddEdit Table Form Partial View
+
+  public async Task<IActionResult> GetAddEditTableForm(int id = 0, int activesectionid = 0)
+  {
+
+    var model = await _sectionservice.GetTableDetailById(id);
+    if (id == 0)
+    {
+      model.SectionId = activesectionid;
+    }
+
+    return PartialView("~/Views/Section/_AddEditTableForm.cshtml", model);
+
+  }
+
+  // Get AddEdit section Form Partial View
+
+  public async Task<IActionResult> GetAddEditSectionForm(int id = 0)
+  {
+
+    var model = await _sectionservice.GetSectionDetailById(id);
+
+    return PartialView("~/Views/Section/_AddEditSectionForm.cshtml", model);
+
+  }
+
+  [HttpPost]
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  public async Task<IActionResult> AddEditTableForm(AddTableViewmodel model)
+  {
+    AuthResponse response;
+    if (model.TableId != 0)
+    {
+      response = await _sectionservice.EditTable(model);
+    }
+    else
+    {
+      response = await _sectionservice.AddTable(model);
+    }
+
+
+    return Json(new { message = response.Message, success = response.Success });
+
+  }
+  [HttpPost]
+  [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanAddEdit)]
+  public async Task<IActionResult> AddEditSectionForm(SectionNameViewModel model)
+  {
+    AuthResponse response;
+    if (model.SectionId != 0)
+    {
+      response = await _sectionservice.EditSection(model);
+    }
+    else
+    {
+      response = await _sectionservice.AddSection(model);
+    }
+
+
+    return Json(new { message = response.Message, success = response.Success });
+
+  }
+
+  public async Task<int> GetBusyTableCountOfSection(int sectionid = 0)
+  {
+    return await _sectionservice.GetBusyTableCountOfSection(sectionid);
   }
 }
