@@ -143,7 +143,7 @@ public class UserService : IUserService
         return user.Id;
     }
 
-    public async Task<AuthResponse> AddUser(AddUserViewModel user)
+    public async Task<AuthResponse> AddUser(EditUserViewModel user)
     {
 
         // logic for checking unique username

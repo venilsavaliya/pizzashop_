@@ -15,7 +15,8 @@
     </div>
 
     <div class="form-section mt-3 p-4 border rounded shadow-box ">
-        <Form asp-action="EditUser" asp-controller="User" method="post" enctype="multipart/form-data">
+        <Form asp-action="AddEditUser" asp-controller="User" method="post" enctype="multipart/form-data"
+            id="AddEditUserForm">
             @* ********************** hidden fields for passing to the view model*********************** *@
 
             <input type="hidden" asp-for="Id" value="@Model.Id" />
@@ -45,7 +46,10 @@
                 <div class="form-floating col">
                     <select asp-for="RoleName" class="form-select" id="floatingSelect"
                         aria-label="Floating label select example">
-                        <option selected value="@Model.RoleName"></option>
+                        @if (Model.Id == null)
+                        {
+                            <option value="">Select Role</option>
+                        }
                         <option value="Chef">Chef</option>
                         <option value="Account Manager">Account Manager</option>
                         <option value="Admin">Admin</option>
@@ -55,10 +59,19 @@
             </div>
             <div class="d-flex gap-4 flex-column flex-md-row mt-3 mt-md-0">
                 <div class="form-floating mb-3 col">
-                    <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email"
-                        disabled>
-                    <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email"
-                        hidden>
+                    @if (Model.Id != null)
+                    {
+                        <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email"
+                            disabled />
+
+                        <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email"
+                            hidden>
+                    }
+                    else
+                    {
+                        <input asp-for="Email" type="text" class="form-control" id="floatingInput" placeholder="Email" />
+                    }
+
                     <label asp-for="Email">Email</label>
                 </div>
                 @if (Model.Id != null)
@@ -66,7 +79,6 @@
                     <div class="form-floating mb-3 col">
                         <select asp-for="Status" class="form-select" id="floatingSelect"
                             aria-label="Floating label select example">
-                            <option selected value="@Model.Status"></option>
                             <option value="True">Active</option>
                             <option value="False">Inactive</option>
                         </select>
@@ -117,20 +129,22 @@
                 <div class="form-floating col">
                     <select asp-for="Country" class="form-select" id="Country"
                         aria-label="Floating label select example">
-                        <option selected>@(Model.Country != null ? Model.Country : "Select Country")</option>
+                        <option value="">Select Country</option>
                     </select>
                     <label for="floatingSelect">Country</label>
                 </div>
                 <div class="form-floating col">
                     <select asp-for="State" class="form-select" id="State" aria-label="Floating label select example">
-                        <option selected>@(Model.State)</option>
+
+                        <option value="">Select State</option>
                     </select>
                     <label for="floatingSelect">State</label>
                     <span asp-validation-for="State" class="text-danger"></span>
                 </div>
                 <div class="form-floating col">
                     <select asp-for="City" class="form-select" id="City" aria-label="Floating label select example">
-                        <option selected>@(Model.City)</option>
+
+                        <option value="">Select City</option>
 
                     </select>
                     <label for="floatingSelect">city</label>
@@ -154,7 +168,8 @@
                 </div>
             </div>
             <div class="d-flex gap-2 mt-3">
-                <button class="custom-btn-bg text-white p-2 border rounded">Edit User</button>
+                <button class="custom-btn-bg text-white p-2 border rounded" type="submit">@(Model.Id != null ? "Edit" : "Add")
+                    User</button>
                 <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset">cancel</button>
             </div>
         </Form>
@@ -172,18 +187,21 @@
         const selectedState = '@Model.State';
         const selectedCity = '@Model.City';
 
-        // Load all countries
         $.getJSON('/GetData/GetCountries', function (countries) {
-            $("#Country").html('<option value="">Select Country</option>'); // Default option
+
 
             $.each(countries, function (index, country) {
                 const isSelected = (country.countryName === selectedCountry) ? "selected" : "";
                 $("#Country").append(`<option value="${country.countryId}" ${isSelected}>${country.countryName}</option>`);
             });
 
-            // If editing and country is already selected, trigger state load
-            if (selectedCountry) {
+            // Check if we are in edit mode (country pre-selected)
+            if (selectedCountry && selectedCountry.trim() !== "") {
                 $("#Country").trigger('change');
+            } else {
+                // Add mode: Ensure State and City dropdowns are disabled
+                $("#State").prop("disabled", true);
+                $("#City").prop("disabled", true);
             }
         });
 
@@ -193,7 +211,7 @@
             $("#State").html('<option value="">Select State</option>').prop("disabled", true);
             $("#City").html('<option value="">Select City</option>').prop("disabled", true);
 
-            if (countryId) {
+            if (countryId && countryId.trim() !== "") {
                 $.getJSON(`/GetData/GetStates?countryId=${countryId}`, function (states) {
                     $("#State").prop("disabled", false);
                     $.each(states, function (index, state) {
@@ -202,7 +220,7 @@
                     });
 
                     // If editing and state is already selected, trigger city load
-                    if (selectedState) {
+                    if (selectedState && selectedState.trim() !== "") {
                         $("#State").trigger('change');
                     }
                 });
@@ -214,7 +232,7 @@
             const stateId = $(this).val();
             $("#City").html('<option value="">Select City</option>').prop("disabled", true);
 
-            if (stateId) {
+            if (stateId && stateId.trim() !== "") {
                 $.getJSON(`/GetData/GetCities?stateId=${stateId}`, function (cities) {
                     $("#City").prop("disabled", false);
                     $.each(cities, function (index, city) {
@@ -223,6 +241,38 @@
                     });
                 });
             }
+        });
+
+
+
+        $("#AddEditUserForm").on('submit',function (e){
+        console.log("in")
+        e.preventDefault();
+        var form = $(this);
+        if (!form.valid()) {
+            return;
+        }
+
+        var formData = new FormData(this);
+        $.ajax({
+            url: form.attr("action"),
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                }
+                else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (err) {
+                console.log('error occured!')
+            },
+        });
+        
         });
     });
 

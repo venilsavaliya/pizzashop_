@@ -651,7 +651,7 @@ function setDeleteModifierGroupId(ele) {
     document.getElementById("modifieritemslist")
   );
   itemlistmodal.hide();
-}
+
 
 // this will make sure list is clear before opening add modifier group modal
 function ClearListOfModifierItems() {

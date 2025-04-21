@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 public partial class EditUserViewModel 
 {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
     public string FirstName { get; set; } = null!;
 
@@ -19,16 +19,20 @@ public partial class EditUserViewModel
 
     public string? Email { get; set; }
 
+     [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", 
+        ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.")]
+    public string Password { get; set; } = null!;
+
     public bool Status { get; set; }
     
    
-    public string? Country { get; set; }
+    public string? Country { get; set; }="";
 
     [RequiredIfCountryPresent("Country")]
-    public string? State { get; set; }
+    public string? State { get; set; }="";
 
     [RequiredIfCountryPresent("Country")]
-    public string? City { get; set; }
+    public string? City { get; set; }="";
 
     public string? Address { get; set; }
 

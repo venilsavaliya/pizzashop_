@@ -42,7 +42,7 @@
                         <div class="d-flex justify-content-center gap-5">
                             @if( ViewBag.CanUserAddEdit)
                             {
-                                <a asp-action="edituser" asp-controller="User" asp-route-id="@u.Id"><img
+                                <a asp-action="UserAddEditForm" asp-controller="User" asp-route-id="@u.Id"><img
                                     src="~/images/icons/pen.svg" alt=""></a>
                             }
                             @if( ViewBag.CanUserDelete)

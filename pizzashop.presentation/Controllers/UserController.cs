@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Attributes;
 using BLL.Interfaces;
+using BLL.Models;
 using DAL.Constants;
 using DAL.Models;
 using DAL.ViewModels;
@@ -18,7 +19,7 @@ public class UserController : BaseController
     private readonly IUserService _userService;
 
     private readonly INotyfService _notyf;
-    public UserController(IJwtService jwtService, IAdminService adminservice, IUserService userService, INotyfService notyfy,BLL.Interfaces.IAuthorizationService authservice) : base(jwtService, userService, adminservice,authservice)
+    public UserController(IJwtService jwtService, IAdminService adminservice, IUserService userService, INotyfService notyfy, BLL.Interfaces.IAuthorizationService authservice) : base(jwtService, userService, adminservice, authservice)
     {
         _userService = userService;
         _notyf = notyfy;
@@ -114,16 +115,16 @@ public class UserController : BaseController
 
     // GET : User/userlist
     [AuthorizePermission(PermissionName.Users, ActionPermission.CanView)]
-    public async Task<IActionResult> GetUserList(string sortColumn="", string sortOrder="", int pageNumber = 1, int pageSize = 5, string searchKeyword = ""  )
+    public async Task<IActionResult> GetUserList(string sortColumn = "", string sortOrder = "", int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
         var userListViewModel = await _userService.GetUserList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword);
         return View(userListViewModel);
     }
-    public async Task<IActionResult> UserListPV(string sortColumn="", string sortOrder="", int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
+    public async Task<IActionResult> UserListPV(string sortColumn = "", string sortOrder = "", int pageNumber = 1, int pageSize = 5, string searchKeyword = "")
     {
         var userListViewModel = await _userService.GetUserList(sortColumn, sortOrder, pageNumber, pageSize, searchKeyword);
 
-        return PartialView("~/Views/User/_UserList.cshtml",userListViewModel);
+        return PartialView("~/Views/User/_UserList.cshtml", userListViewModel);
     }
 
     // GET : User/AddUser
@@ -135,33 +136,33 @@ public class UserController : BaseController
 
 
     // POST : User/AddUser
-    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
-    [HttpPost]
+    // [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
+    // [HttpPost]
 
-    public IActionResult AddUser(AddUserViewModel model)
-    {
+    // public IActionResult AddUser(AddUserViewModel model)
+    // {
 
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
+    //     if (!ModelState.IsValid)
+    //     {
+    //         return View(model);
+    //     }
 
-        var AuthResponse = _userService.AddUser(model).Result;
+    //     var AuthResponse = _userService.AddUser(model).Result;
 
-        if (!AuthResponse.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            return View(model);
-        }
-        else
-        {   
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            return RedirectToAction("GetUserList", "user");
-        }
+    //     if (!AuthResponse.Success)
+    //     {
+    //         TempData["ToastrType"] = "error";
+    //         TempData["ToastrMessage"] = AuthResponse.Message;
+    //         return View(model);
+    //     }
+    //     else
+    //     {
+    //         TempData["ToastrType"] = "success";
+    //         TempData["ToastrMessage"] = AuthResponse.Message;
+    //         return RedirectToAction("GetUserList", "user");
+    //     }
 
-    }
+    // }
 
 
     // GET : User/EditUser
@@ -172,31 +173,69 @@ public class UserController : BaseController
         return View(edituser);
     }
 
-    // POST : User/EditUser
     [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
-    [HttpPost]
-    public IActionResult EditUser(EditUserViewModel model)
+    public IActionResult UserAddEditForm(string id)
     {
-        if (!ModelState.IsValid)
+        if (id != null)
         {
-            return View(model);
-        }
-
-        var AuthResponse = _userService.EditUser(model).Result;
-
-        if (!AuthResponse.Success)
-        {
-            TempData["ToastrType"] = "error";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            return View(model);
+            var edituser = _userService.GetEditUserById(id);
+            return View(edituser);
         }
         else
         {
-            TempData["ToastrType"] = "success";
-            TempData["ToastrMessage"] = AuthResponse.Message;
-            return RedirectToAction("GetUserList", "user");
+            var model = new EditUserViewModel();
+            return View(model);
+
         }
+
+
     }
+    [HttpPost]
+    [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
+    public async Task<IActionResult> AddEditUser(EditUserViewModel model)
+    {
+        AuthResponse response;
+        if (model.Id != null)
+        {
+            response = await _userService.EditUser(model);
+            
+        }
+        else
+        {
+            response = await _userService.AddUser(model);
+            
+        }
+
+        return Json(new {message=response.Message,success=response.Success});
+
+
+    }
+
+    // POST : User/EditUser
+    // [AuthorizePermission(PermissionName.Users, ActionPermission.CanAddEdit)]
+    // [HttpPost]
+    // public IActionResult EditUser(EditUserViewModel model)
+    // {
+    //     if (!ModelState.IsValid)
+    //     {
+    //         return View(model);
+    //     }
+
+    //     var AuthResponse = _userService.EditUser(model).Result;
+
+    //     if (!AuthResponse.Success)
+    //     {
+    //         TempData["ToastrType"] = "error";
+    //         TempData["ToastrMessage"] = AuthResponse.Message;
+    //         return View(model);
+    //     }
+    //     else
+    //     {
+    //         TempData["ToastrType"] = "success";
+    //         TempData["ToastrMessage"] = AuthResponse.Message;
+    //         return RedirectToAction("GetUserList", "user");
+    //     }
+    // }
 
 
 
