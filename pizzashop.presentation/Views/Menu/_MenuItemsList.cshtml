@@ -1,7 +1,8 @@
 @* @model DAL.ViewModels.MenuViewModel; *@
 @model DAL.ViewModels.MenuItemsPaginationViewModel
 
-<table class="table">
+<div class="table-responsive">
+    <table class="table">
     <tr>
         <th class="d-flex">
             <div class="form-check">
@@ -63,9 +64,8 @@
                     <div class="d-flex justify-content-start gap-5">
                         @if (ViewBag.CanMenuAddEdit)
                         {
-                            <img src="~/images/icons/pen.svg" alt="" 
-                                item-obj='@Html.Raw(Json.Serialize(i))' category-id="@Model.CategoryId"
-                                onclick="openAddEditMenuItemModal(@i.ItemId)">
+                            <img src="~/images/icons/pen.svg" alt="" item-obj='@Html.Raw(Json.Serialize(i))'
+                                category-id="@Model.CategoryId" onclick="openAddEditMenuItemModal(@i.ItemId)">
                         }
                         @if (ViewBag.CanMenuDelete)
                         {
@@ -91,34 +91,42 @@
     }
 
 </table>
+</div>
+
 
 @if (Model.Items != null && Model.Items.Any())
 {
-    <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100"
+    <div class="pagination-section d-flex justify-content-end align-items-center gap-2 overflow-auto w-100 mt-2"
         id="menuitem-pagination-section" data-page='@Html.Raw(Json.Serialize(Model.Page))'>
-        <div class="d-flex justify-content-md-end align-items-center gap-2 w-100">
-            <div>Items per page: </div>
-            <select class="form-select" style="width:68px ;" aria-label="Default select example"
-                id="pageSizeDropdownforMenuitems" onchange="MenuitemsPaginationAjax(this.value,1,@Model.CategoryId)"> 
+        <div class="d-flex flex-column flex-sm-row  justify-content-md-end align-items-center gap-2 w-100">
+            <div class="d-flex align-items-center gap-2"><span>Items per page: </span>
+                 <select class="form-select" style="width:68px ;" aria-label="Default select example"
+                id="pageSizeDropdownforMenuitems" onchange="MenuitemsPaginationAjax(this.value,1,@Model.CategoryId)">
 
                 <option value=2 selected="@(Model.Page.PageSize == 2 ? true : false)">2</option>
                 <option value=5 selected="@(Model.Page.PageSize == 5 ? true : false)">5</option>
                 <option value=10 selected="@(Model.Page.PageSize == 10 ? true : false)">10</option>
             </select>
+            </div>
+           
             <div>Showing @Model.Page.FromRec - @Model.Page.ToRec of @Model.Page.TotalRecord</div>
             @* @if (Model.Page.CurrentPage > 1) *@
 
-            <div onclick="MenuitemsPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1,@Model.CategoryId)"
-                class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")" style="text-decoration: none;">
-                <div class="border p-2 px-3"> &lt; </div>
-            </div>
+            <div class="d-flex gap-2">
+                <div onclick="MenuitemsPaginationAjax(@Model.Page.PageSize,@Model.Page.CurrentPage-1,@Model.CategoryId)"
+                    class="text-black @( Model.Page.CurrentPage > 1? " " : "disabled-button")"
+                    style="text-decoration: none;">
+                    <div class="border p-2 px-3"> &lt; </div>
+                </div>
 
-            @* @if (Model.Page.CurrentPage < Model.Page.TotalPages) *@
+                @* @if (Model.Page.CurrentPage < Model.Page.TotalPages) *@
 
-            <div onclick="MenuitemsPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1,@Model.CategoryId)"
-                class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
-                style="text-decoration: none;">
-                <div class="border p-2 px-3">&gt;</div>
+                <div onclick="MenuitemsPaginationAjax(@Model.Page.PageSize, @Model.Page.CurrentPage+1,@Model.CategoryId)"
+                    class="text-black  @(Model.Page.CurrentPage < Model.Page.TotalPages ? " " : "disabled-button")"
+                    style="text-decoration: none;">
+                    <div class="border p-2 px-3">&gt;</div>
+                </div>
+
             </div>
 
         </div>

@@ -196,7 +196,7 @@
                     startDate = startDate.getFullYear() + "-" +
                         String(startDate.getMonth() + 1).padStart(2, '0') + "-" +
                         String(startDate.getDate()).padStart(2, '0');
-                    console.log("hii", startDate)
+                    
                 }
             }
             else{
@@ -221,8 +221,11 @@
                     link.click();
                     document.body.removeChild(link);
                 },
-                error: function () {
-                    alert("Error exporting the file.");
+                error: function (xhr) {
+                     if (xhr.status === 400) {
+                        toastr.warning("No Customer(s) Found!")
+                     }
+                   
                 }
             });
 

@@ -104,7 +104,7 @@ public class OrderService : IOrderService
     }
 
     // Get Order List For Export
-    public async Task<IEnumerable<OrderViewModel>> GetOrderListForExport(string searchKeyword = "", string status = "", DateTime? startDate = null, DateTime? endDate = null)
+    public async Task<List<OrderViewModel>> GetOrderListForExport(string searchKeyword = "", string status = "", DateTime? startDate = null, DateTime? endDate = null)
     {
         searchKeyword = searchKeyword.ToLower();
         OrderListPaginationViewModel model = new() { Page = new() };

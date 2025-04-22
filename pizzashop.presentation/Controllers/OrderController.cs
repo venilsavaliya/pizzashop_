@@ -35,7 +35,7 @@ public class OrderController : BaseController
     {
         ViewBag.active = "Order";
         var model = await _orderservice.GetOrderDetailByOrderId(id);
-        if(model == null)
+        if (model == null)
         {
             return View("Index");
         }
@@ -62,25 +62,26 @@ public class OrderController : BaseController
 
     // Export The List Of Orders
     [AuthorizePermission(PermissionName.Orders, ActionPermission.CanView)]
-    public async Task<IActionResult> ExportOrders(string searchKeyword = "", string status = "", string startDate = null, string endDate = null,string timeframe = "")
+    public async Task<IActionResult> ExportOrders(string searchKeyword = "", string status = "", string startDate = null, string endDate = null, string timeframe = "")
     {
-
+        List<OrderViewModel> orders;
         if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
         {
-            var orders = await _orderservice.GetOrderListForExport(searchKeyword, status, DateTime.Parse(startDate), DateTime.Parse(endDate));
-           
-            byte[] fileContents = _excelExportService.ExportOrdersToExcel(orders,searchKeyword,status,timeframe);
-
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Orders.xlsx");
+            orders = await _orderservice.GetOrderListForExport(searchKeyword, status, DateTime.Parse(startDate), DateTime.Parse(endDate));
         }
         else
         {
-            var orders = await _orderservice.GetOrderListForExport(searchKeyword, status);
-
-            byte[] fileContents = _excelExportService.ExportOrdersToExcel(orders,searchKeyword,status,timeframe);
-
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Orders.xlsx");
+            orders = await _orderservice.GetOrderListForExport(searchKeyword, status);
         }
+        
+        if(!orders.Any())
+        {
+            return BadRequest(new {Message = "No Orders Found",success = false});
+        }
+
+        byte[] fileContents = _excelExportService.ExportOrdersToExcel(orders, searchKeyword, status, timeframe);
+
+        return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Orders.xlsx");
 
     }
 
@@ -88,9 +89,9 @@ public class OrderController : BaseController
     {
         var model = await _orderservice.GetOrderDetailByOrderId(id);
 
-        return new ViewAsPdf("ExportView",model)
+        return new ViewAsPdf("ExportView", model)
         {
-            FileName = "Report"+model.OrderId+DateTime.Now+".pdf",
+            FileName = "Report" + model.OrderId + DateTime.Now + ".pdf",
             PageSize = Rotativa.AspNetCore.Options.Size.A4,
             PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
             PageMargins = new Rotativa.AspNetCore.Options.Margins(10, 10, 10, 10)

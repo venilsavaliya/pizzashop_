@@ -180,8 +180,8 @@ public class MenuServices : IMenuServices
                     ModifierId = id,
                     Description = data.Description,
                     ModifierName = data.ModifierName,
-                    Quantity = data.Quantity??0,
-                    Rate = data.Rate??0,
+                    Quantity = data.Quantity ?? 0,
+                    Rate = data.Rate ?? 0,
                     Unit = data.Unit,
                     UnitsList = _context.Units.ToList()
 
@@ -414,7 +414,7 @@ public class MenuServices : IMenuServices
                         Name = i.ModifierName,
                         Rate = i.Rate,
                         Quantity = i.Quantity,
-                        Unit = _context.Units.FirstOrDefault(u=>u.Id.ToString() == i.Unit).Name,
+                        Unit = _context.Units.FirstOrDefault(u => u.Id.ToString() == i.Unit).Name,
                         Description = i.Description,
 
                     };
@@ -811,7 +811,7 @@ public class MenuServices : IMenuServices
         var isDuplicate = await _context.Modifiersgroups
             .FirstOrDefaultAsync(mg => mg.Name.ToLower() == model.Name.ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted != true);
 
-        if (isDuplicate!=null)
+        if (isDuplicate != null)
         {
             return new AuthResponse { Success = false, Message = "A modifier group with the same name already exists." };
         }

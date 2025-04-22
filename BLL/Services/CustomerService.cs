@@ -69,7 +69,7 @@ public class CustomerService : ICustomerService
                 case "Date":
                     query = sortOrder == "asc" ? query.OrderBy(u => u.JoinDate) : query.OrderByDescending(u => u.JoinDate);
                     break;
-                case "TotalAmount":
+                case "TotalOrder":
                     query = sortOrder == "asc" ? query.OrderBy(u => u.TotalVisit) : query.OrderByDescending(u => u.TotalVisit);
                     break;
                 default:
@@ -97,7 +97,7 @@ public class CustomerService : ICustomerService
     }
 
     // Get Paginated Customer List
-    public async Task<IEnumerable<CustomerViewModel>> GetCustomerListForExport(string searchKeyword = "", DateTime? startDate = null, DateTime? endDate = null)
+    public async Task<List<CustomerViewModel>> GetCustomerListForExport(string searchKeyword = "", DateTime? startDate = null, DateTime? endDate = null)
     {
         searchKeyword = searchKeyword.ToLower();
 

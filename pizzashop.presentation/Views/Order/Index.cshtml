@@ -14,7 +14,8 @@
         <!-- Search Bar & Order Status -->
         <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1">
             <div class="mb-2 position-relative flex-grow-1">
-                <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search" id="orderitem-search-field">
+                <input type="text" class="p-2 py-3 w-100 border-0 rounded" placeholder="Search"
+                    id="orderitem-search-field">
                 <img src="~/images/icons/search.svg" alt="" class="position-absolute" style="right: 18px; top: 18px;">
             </div>
 
@@ -43,17 +44,15 @@
                 </select>
             </div>
 
- <div class="mb-2 d-flex justify-content-center">
-    <div type="button" 
-         class="custom-btn-bg text-white px-3 border rounded d-flex align-items-center" 
-         id="exportbtn"
-         style="width: fit-content; min-width: max-content;">
-        <span class="fs-5 fw-semibold m-2">
-            <img src="~/images/icons/export.png" alt="" height="25" width="25" style="filter: invert(1);">
-        </span>
-        <span>Export</span>
-    </div>
-</div>
+            <div class="mb-2 d-flex justify-content-center">
+                <div type="button" class="custom-btn-bg text-white px-3 border rounded d-flex align-items-center"
+                    id="exportbtn" style="width: fit-content; min-width: max-content;">
+                    <span class="fs-5 fw-semibold m-2">
+                        <img src="~/images/icons/export.png" alt="" height="25" width="25" style="filter: invert(1);">
+                    </span>
+                    <span>Export</span>
+                </div>
+            </div>
 
 
         </div>
@@ -66,7 +65,7 @@
 <div class="d-flex flex-column flex-md-row justify-content-md-end  gap-3  px-3 flex-wrap w-100">
 
     <!-- Date Filters -->
-    <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1 justify-content-md-end" >
+    <div class="d-flex flex-column flex-sm-row gap-2 flex-grow-1 justify-content-md-end">
         <div class="form-floating flex-grow-1 " style="max-width: 340px;">
             <input type="date" id="fromDate" class="form-control py-2 w-100">
             <label for="fromDate">From Date</label>
@@ -78,12 +77,11 @@
         </div>
     </div>
 
-    
+
 
     <!-- Buttons -->
     <div class="d-flex gap-2">
-        <button class="custom-btn-bg text-white px-4 py-2 border rounded text-center"
-            onclick="HandleSearch()">
+        <button class="custom-btn-bg text-white px-4 py-2 border rounded text-center" onclick="HandleSearch()">
             Search
         </button>
 
@@ -95,9 +93,9 @@
 </div>
 
 
-    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2 px-4 shadow " id="orderlistcontainer">
-        @* Tax Table List Partial View *@
-    </div>
+<div class="table-section bg-white table-responsive mt-5 ms-2 me-2 px-4 shadow " id="orderlistcontainer">
+    @* Tax Table List Partial View *@
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -246,12 +244,12 @@
             }
         }
 
-       
+
 
         $.ajax({
             url: "/order/ExportOrders",
             type: "GET",
-            data: {'searchKeyword': searchkeyword, 'status': selectedText, 'startDate': startDate, 'endDate': endDate,'timeframe':timeframetext },
+            data: { 'searchKeyword': searchkeyword, 'status': selectedText, 'startDate': startDate, 'endDate': endDate, 'timeframe': timeframetext },
             xhrFields: {
                 responseType: "blob" // Expect a binary file (blob) as the response
             },
@@ -264,8 +262,14 @@
                 link.click();
                 document.body.removeChild(link);
             },
-            error: function () {
-                alert("Error exporting the file.");
+            error: function (xhr) {
+                if (xhr.status == 400) {
+                    toastr.warning("No Order(s) Found!");
+                }
+                else {
+                    toastr.error("Error In Exporting File!")
+                }
+
             }
         });
 

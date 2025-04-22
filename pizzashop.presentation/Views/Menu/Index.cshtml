@@ -4,13 +4,6 @@
 
 @{
     ViewData["Category"] = Model.SelectedCategory;
-
-   @* var categorymodel = new CategoryListModel
-   {
-        Catagories = Model.Categories,
-        SelectedCategory = Model.SelectedCategory
-
-   }; *@
 }
 
 <div class="Menu-container p-3">
@@ -38,7 +31,7 @@
  
     @* category list for samll screen *@
 
-    <div class="CategoryForSmallScreen d-lg-none bg-white mt-2 p-2 ">
+    @* <div class="CategoryForSmallScreen d-lg-none bg-white mt-2 p-2 ">
 
        
         <div class="d-flex justify-content-between align-items-center p-1">
@@ -56,7 +49,7 @@
         }
             
         </div>
-    </div>
+    </div> *@
 
  
     <div class="tab-content bg-white mt-2 bg-white position-relative " id="nav-tabContent">
@@ -65,8 +58,8 @@
 
         <div class="tab-pane fade show active w-100" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"
             tabindex="0" style="max-height: 600px;overflow-y: scroll;">
-            <div class="d-flex w-100">
-                <div class=" category-menu border-0 pt-3 d-none d-lg-block" id="category-menu">
+            <div class="d-flex flex-column flex-md-row  w-100 gap-2 " id="menu_first_tab">
+                <div class=" category-menu border-0 pt-3" id="category-menu">
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Category</h5>
                         <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
@@ -106,12 +99,12 @@
                                 <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block"  onclick="openAddEditMenuItemModal()"><span
                                     class="fs-5 fw-semibold" >+</span> New Item</button> 
                             <button type="button"
-                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button>
+                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none" onclick="openAddEditMenuItemModal()">+</button>
                             }
                             
                         </div>
                     </div>
-                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="menuTableContainer">
+                    <div class="table-section bg-white mt-5 ms-2 me-2" id="menuTableContainer">
                        
                     </div> 
                    
@@ -122,8 +115,8 @@
         </div>
         @* -----------second tab------------ *@
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0" style="max-height: 600px; overflow-y: scroll;">
-                <div class="d-flex w-100">
-                <div class=" category-menu border-0 pt-3 d-none d-lg-block">
+                <div class="d-flex w-100 flex-column flex-md-row" id="Menu_second_tab">
+                <div class=" category-menu border-0 pt-3 " id="ModifierGroup_menu">
                     <div class="d-flex justify-content-between align-items-center p-1">
                         <h5 class="custom-blue">Modifier Groups</h5>
                         <div class="custom-blue-border custom-blue px-2 rounded" style="font-size: 20px;"
@@ -166,7 +159,7 @@
                             
                         </div>
                     </div>
-                    <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainer">
+                    <div class="table-section bg-white  mt-5 ms-2 me-2" id="modifieritemstablecontainer">
                        
                     </div> 
                    
@@ -185,58 +178,22 @@
             <div class="modal-content" id="categoryAddEditFormContent">
 
                 @* Partial View Of Add Edit Category form *@
+
             </div>
            
             
         </div>
     </div>
 
-     <!-- add modifierGroup modal -->
-    <div class="modal fade" id="addmodifiergroupmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      <!-- AddEdit Menu Item modal --> 
+
+     <div class="modal fade " id="AddEditMenuItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Modifier Group</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="post" id="addModifierGroupForm">
-                    <div class="modal-body">
-                        <div class="d-flex flex-column"> 
-
-                            <div class="mb-3">
-                                <input type="text" class="form-control p-3" asp-for="ModifierGroup.Name"
-                                    placeholder="Name" id="addmodifiergroupname">
-                                 <span class="text-danger" asp-validation-for="ModifierGroup.Name"></span>
-                            </div>
-                            <div class="mb-3">
-                                <textarea class="form-control" rows="3"
-                                    placeholder="Description"asp-for="ModifierGroup.Description"></textarea>
-                                <span class="text-danger" asp-validation-for="ModifierGroup.Description"></span>
-                            </div>
-
-                            <div class="custom-blue mb-2 fs-sm cursor-pointer" id="addexistingmodifierbtn"> 
-                                Add Existing Modifiers +
-                            </div>
-
-                            <div class="d-flex gap-2 flex-wrap" id="selectedModifieritemcontainer">
-                            
-                            @* ---- selected modifier name here ---- *@
-                           
-                            </div>
-                           
-                        </div>
-                         <div class="d-flex justify-content-end gap-2 p-2">
-                            <button type="submit" class="btn custom-btn-bg text-white fw-medium">Save</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                         </div>
-                    </div>
-
-                    
-
-                </form>
+        <div class="modal-dialog modal-dialog-centered modal-xl" >
+            <div class="modal-content w-100 h-100 overflow-x-auto" id="AddEditMenuItemContent" >
+                
             </div>
-        </div>
+        </div> 
     </div>
 
      <!-- Add Edit modifierGroup modal -->
@@ -249,53 +206,18 @@
             </div>
         </div>
     </div>
-@* pwd123 *@
-    <!-- show modifieritemslist modal for edit modifier group modal-->
-    <div class="modal fade" id="modifieritemslist" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+
+    <!-- Add Edit Modifier Item Modal -->
+
+<div class="modal fade " id="AddEditModifierItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5 text-secondary" id="staticBackdropLabel">Select Existing Modifier</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="position-relative m-2" style="width: 280px;">
-                    <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritemsmodal-search-field">
-                    <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
-                </div>
-                <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainerofmodal">
-                       
-                </div> 
-                <div class="d-flex justify-content-end gap-2 p-2">
-                    <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClick()">Add</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </div>  
+        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
+            <div class="modal-content w-100" id="AddEditModifierItemModalContent">
+                
+            </div>
         </div>
     </div>
-    <!-- show modifieritemslist modal for add modifier group modal--> 
-    @* <div class="modal fade" id="modifieritemslistforaddgroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5 text-secondary" id="staticBackdropLabel">Select Existing Modifier</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="position-relative m-2" style="width: 280px;">
-                    <input type="text" class="p-2 w-100" placeholder="Search" id="modifieritemsforaddmodal-search-field">
-                    <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
-                </div>
-                <div class="table-section bg-white table-responsive mt-5 ms-2 me-2" id="modifieritemstablecontainerofaddmodal">
-                       
-                </div> 
-                <div class="d-flex justify-content-end gap-2 p-2">
-                    <button  class="btn custom-btn-bg text-white fw-medium" onclick="handleAddButtonClickForAdd()">Add</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </div>  
-        </div>
-    </div> *@
+
     <!-- show modifieritemslist modal for add edit existing modifier item modal--> 
     <div class="modal fade" id="modifierItemLIstForAddExistingModifierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -407,19 +329,6 @@
     
 </div>
 
- @* AddEdit Menu Item modal *@
-
-     <div class="modal fade " id="AddEditMenuItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
-            <div class="modal-content w-100" id="AddEditMenuItemContent">
-                
-            </div>
-        </div> 
-    </div>
-
-
-
       @* ---------------- Delete item modal body------------------- *@
 
     <div class="modal" tabindex="-1" id="deleteitemmodal">
@@ -456,7 +365,7 @@
             </div>
         </div>
     </div>
-      @* ---------------- Delete item modal body fro mass delete------------------- *@
+      @* ---------------- Delete item modal body from mass delete------------------- *@
 
     <div class="modal" tabindex="-1" id="deletemassitemmodal">
         <div class="modal-dialog modal-dialog-centered">
@@ -477,206 +386,9 @@
     @* -------------------------------------------------------------- *@
 </div> 
 
-@* Add Modifier Item Modal *@
-
-<div class="modal fade " id="addmodifieritemmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Modifier Item</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-              
-                <form id="AddModifierItemForm" enctype="multipart/form-data"  >
-                    <div class="modal-body">
-
-                         
-                        <div class="row">
-                           
-                            <div class="col-6">
-                                @* <label>Select Modifier Group</label> *@
-                                <div class="position-relative">
-                                    <!-- Display Selected Names -->
-                                    <div class="form-control p-3"  id="modifierGroupSelectBox" style="cursor: pointer;">
-                                        Select Modifier Group
-                                    </div>
-                                     <p id="selectmodifiergroupvalidationforadd" class="text-danger d-none">please  select Modifier Group</p>
-                          
-                                  
-
-                                    <!-- Floating Checkbox List -->
-                                    <div id="modifierGroupDropdown" class="position-absolute bg-white border rounded p-2 shadow" 
-                                        style="display: none; z-index: 1000; width: 100%;">
-                                       @* Dropdown list populate here *@
-                                    </div>
-                                    @* <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span> *@
-                                </div>
-                            </div>
 
 
 
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="addmodifieritemname" placeholder="Name" name="ModifierItem.ModifierName">
-                                    <label for="addmodifieritemname">Name*</label>
-                                    @* <span class="text-danger" asp-validation-for="ModifierItem.ModifierName"></span> *@
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col"> 
-                                <div class="form-floating">
-                                        <input type="number" class="form-control" id="addmodifieritemrate" placeholder="Rate" name="ModifierItem.Rate">
-                                        <label for="addmodifieritemrate">Rate</label>
-                                        @* <span class="text-danger" asp-validation-for="ModifierItem.Rate"></span> *@
-                                    </div>
-                                </div>
-                            <div class="col">
-                                <div class="form-floating">
-                                        <input type="number" class="form-control" id="addmodifieritemquantity" placeholder="Quantity" name="ModifierItem.Quantity">
-                                        <label for="addmodifieritemquantity">Quantity</label>
-                                        @* <span class="text-danger" asp-validation-for="ModifierItem.Quantity"></span> *@
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-floating col">
-                                        <select  class="form-select" name="ModifierItem.Unit" id="addmodifieritemunit">
-                                            <option selected value="">Select a Unit</option>
-
-                                            <option value="Pcs">Piece</option>
-                                            <option value="Kg">Kilogram</option>
-                                            <option value="In">Inches</option>
-                                            <option value="Ltr">Liter</option>
-                                        </select>
-                                        <label for="floatingSelect">Unit</label>
-                                        @* <span class="text-danger" asp-validation-for="ModifierItem.Unit"></span> *@
-                                    </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="mt-3">
-
-                                <textarea class="form-control"  rows="3"
-                                    placeholder="Description" name="Description"></textarea>
-                            </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2 p-2">
-                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="addmodifieritemmodalbtn">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                       
-                </form>
-            </div>
-        </div>
-    </div>
-
-@* Edit Modifier Item Modal *@
-
-<div class="modal fade " id="editmodifieritemmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
-            <div class="modal-content w-100">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Modifier Item</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="EditModifierItemForm" enctype="multipart/form-data"  >
-                    <div class="modal-body">
-                        <input type="text" class="form-control" id="ModifierId" asp-for="ModifierItem.ModifierId" hidden>
-                        <div class="row">
-
-                            <div class="col-6">
-                                @* <label>Select Modifier Group</label> *@
-                                <div class="position-relative">
-                                    <!-- Display Selected Names -->
-                                    <div class="form-control p-3"  id="modifierGroupSelectBoxForEdit" style="cursor: pointer;">
-                                        Select Modifier Group
-                                    </div>
-                                    <p class="text-danger d-none" id="selectmodifiergroupvalidationforedit">Please select Modifier Group</p>
-
-                                    <!-- Floating Checkbox List -->
-                                    <div id="modifierGroupDropdownForEdit" class="position-absolute bg-white border rounded p-2 shadow" 
-                                        style="display: none; z-index: 1000; width: 100%;">
-                                       @* load modifier group list *@
-                                    </div>
-                                    <span class="text-danger" asp-validation-for="ModifierItem.ModifierGroupid"></span>
-                                </div>
-                            </div>
-
-
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="ModifierName" asp-for="ModifierItem.ModifierName">
-                                    <label for="ModifierName">Name*</label>
-                                    <span class="text-danger" asp-validation-for="ModifierItem.ModifierName"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col"> 
-                                <div class="form-floating">
-                                        <input type="number" class="form-control" id="Rate"  asp-for="ModifierItem.Rate">
-                                        <label for="floatingInput">Rate</label>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.Rate"></span>
-                                    </div>
-                                </div>
-                            <div class="col">
-                                <div class="form-floating">
-                                        <input type="number" class="form-control" id="Quantity" asp-for="ModifierItem.Quantity">
-                                        <label for="floatingInput">Quantity</label>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.Quantity"></span>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-floating col">
-                                        <select  class="form-select" asp-for="ModifierItem.Unit" id="Unit">
-                                            <option selected value="">Select a Unit</option>
-
-                                            <option value="Pcs">Piece</option>
-                                            <option value="Kg">Kilogram</option>
-                                            <option value="In">Inches</option>
-                                            <option value="Ltr">Liter</option>
-                                        </select>
-                                        <label for="floatingSelect">Unit</label>
-                                        <span class="text-danger" asp-validation-for="ModifierItem.Unit"></span>
-                                    </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="mt-3">
-
-                                <textarea class="form-control" id="Description" rows="3"
-                                    placeholder="Description" asp-for="ModifierItem.Description"></textarea>
-                            </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2 p-2">
-                        <button type="submit" class="btn custom-btn-bg text-white fw-medium" id="addmodifieritemmodalbtn">Save</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                       
-                </form>
-            </div>
-        </div>
-    </div>
-@* Add Edit Modifier Item Modal *@
-
-<div class="modal fade " id="AddEditModifierItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
-            <div class="modal-content w-100" id="AddEditModifierItemModalContent">
-                
-            </div>
-        </div>
-    </div>
 
 
 @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -694,218 +406,7 @@
 
 <script>
 
-/*
-    function setEditData(element){
-    
-
-        var userId = element.getAttribute("data-id");
-        var name =  element.getAttribute("data-name")
-        var description = element.getAttribute("data-description");
-        var editBtn = document.getElementById("editmodalbtn");
-        document.getElementById("editid").value=userId;
-        document.getElementById("editformname").value=name;
-        document.getElementById("editformdescription").value=description;
-        @* editBtn.href = '@Url.Action("Menu", "Menu")' + '?id=' + userId; *@
-    }
-
-    function setDeleteUserId(element) {
-        var Id = element.getAttribute("data-id");
-        var deleteBtn = document.getElementById("deleteCategoryBtn");
-        deleteBtn.href = '@Url.Action("DeleteCategory", "Menu")' + '?id=' + Id;
-    }
-*/
-   document.addEventListener("DOMContentLoaded", () => {
-
-
-
-    
-
-
-        @* const categories = document.querySelectorAll(".category-option");
-        const categoriesforsmall = document.querySelectorAll(".category-option-smallscreen");
-     *@
-
-        @* if (categories.length > 0) { *@
-            // Select the first category by default
-            @* categories[0].classList.add("category-active-option");
-            categoriesforsmall[0].classList.add("category-active-option"); *@
-        @* } *@
-
-        @* categories.forEach(category => {
-            category.addEventListener("click", () => {
-                // Remove the active class from all categories
-                categories.forEach(cat => cat.classList.remove("category-active-option"));
-
-                // Add active class to the clicked category
-                category.classList.add("category-active-option");
-            });
-        }); *@
-        @* categoriesforsmall.forEach(category => {
-            category.addEventListener("click", () => {
-                // Remove the active class from all categories
-                categoriesforsmall.forEach(cat => cat.classList.remove("category-active-option"));
-
-                // Add active class to the clicked category
-                category.classList.add("category-active-option");
-            });
-        }); *@
-    });
-
-    let currentPage = 1;
-
-    @* First Time Page Load  *@
-    $(document).ready(function () {
-
-        currentPage =1;
-         
-
-        @* $.ajax({
-            type:"GET",
-            url:"/Menu/GetCategories",
-            data:{cat : @Model.SelectedCategory},
-            success:function(data)
-            {
-                $('#category-list').html(data);
-
-                $.ajax({
-                url: "/Menu/Menu",
-                type: "GET",
-                data: { cat: id },
-                success: function (data) {
-                $("#menuTableContainer").html(data);
-                attachMassDeleteForMenuItem(); // This Function is Inside MenuItem.js
-                    },
-                });
-            }
-
-        }); *@
-
-        
-
-      /*  $.ajax({
-            type:"GET",
-            url:"/Menu/GetModifiers",
-            success:function(data)
-            {
-                $('#modifier-list').html(data);
-               
-            }
-
-        });
-
-        $.ajax({
-            url: '@Url.Action("GetModifierItemsList", "Menu")',
-            type: 'GET',
-            data: {modifiergroup_id:@Model.SelectedModifierGroup},
-            success: function (data) {
-                let $partialView = $(data);
-    
-                let maincb = $partialView.find("#menu-main-checkbox");
-                let checkboxes = $partialView.find(".modifieritemcheckbox");
-                console.log(maincb)
-                 // When main checkbox is clicked
-                maincb.on("change", function () {
-                    console.log("Main checkbox changed:", this.checked);
-                    checkboxes.prop("checked", this.checked); // Set all inner checkboxes same as main
-                });
-                  
-                // If any inner checkbox is unchecked, uncheck the main checkbox
-                checkboxes.on("change", function () {
-                    if (!this.checked) {
-                        maincb.prop("checked", false);
-                    } else if (checkboxes.length === checkboxes.filter(":checked").length) {
-                        maincb.prop("checked", true);
-                    }
-                });
-
-                $('#modifieritemstablecontainer').html($partialView);
-                
-            }
-        });
-
-
-
-        $.ajax({
-            url: '@Url.Action("Menu", "Menu")',
-            type: 'GET',
-            data: {cat:@Model.SelectedCategory},
-            success: function (data) {
-                let $partialView = $(data);
-    
-                let maincb = $partialView.find("#menu-main-checkbox");
-                let checkboxes = $partialView.find(".inner_checkbox");
-                console.log(maincb)
-                 // When main checkbox is clicked
-                maincb.on("change", function () {
-                    console.log("Main checkbox changed:", this.checked);
-                    checkboxes.prop("checked", this.checked); // Set all inner checkboxes same as main
-                });
-                  
-                // If any inner checkbox is unchecked, uncheck the main checkbox
-                checkboxes.on("change", function () {
-                    if (!this.checked) {
-                        maincb.prop("checked", false);
-                    } else if (checkboxes.length === checkboxes.filter(":checked").length) {
-                        maincb.prop("checked", true);
-                    }
-                });
-
-                $('#menuTableContainer').html($partialView);
-            }
-        });
-         */
-    });
-
-   
-    function setDeleteUserId(element) {
-        var userId = element.getAttribute("data-id");
-        var deleteBtn = document.getElementById("deleteUserBtn");
-        deleteBtn.href = '@Url.Action("DeleteUser", "Menu")' + '?id=' + userId;
-    }
-    
-    @* document.getElementById("search-field").addEventListener("keyup", function (event) {
-        search();
-    }); *@
-
-    @* for getting modifier group option list *@
-  /*  $.ajax({
-        type: "GET",
-        url: "/GetData/GetModifierGroupList",
-        dataType: "json",
-        success: function(result) {
-            console.log(result);
-            for(let i=0;i<result.length;i++)
-            {
-                @* $("#modifierGroupSelect").append(`<option value="${result[i].ModifiergroupId}">${result[i].name}</option>`); *@
-                $("#checkboxes").append(`<div class="form-check">
-                <input class="form-check-input" type="checkbox" name="Modifiers" value="${result[i].modifiergroupId}">
-                <label class="form-check-label" for="flexCheckDefault">
-                    ${result[i].name}
-                 </label>
-                </div>`);
-            }   
-         }
-    });
-    */
-    @* var expanded = false;
-
-function showCheckboxes() {
-    console.log("click")
-  var checkboxes = document.getElementById("checkboxes");
-  if (!expanded) {
-    checkboxes.classList.remove('d-none');
-    checkboxes.classList.add('d-block');
-    expanded = true;
-  } else {
-    checkboxes.classList.remove('d-block');
-    checkboxes.classList.add('d-none');
-    expanded = false;
-  }
-} *@
-
-
-
-@* -----Pagination For Menu Items List------- *@
+//-----Pagination For Menu Items List------- 
 function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
 
     let cat_id= $("#category-list .category-active-option").attr("category-id");
@@ -926,7 +427,7 @@ function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
         });
     }
 
-@* -----Pagination For Modifier Items List Modal------- *@
+// -----Pagination For Modifier Items List Modal------- 
 function PaginationAjax(pageSize,pageNumber) {
 
     // Get the dropdown element
@@ -960,7 +461,7 @@ function PaginationAjax(pageSize,pageNumber) {
         });
     }
 
-@* -----Pagination For Modifier Items List------- *@
+// -----Pagination For Modifier Items List------- 
 
 function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
      // Get the dropdown element
@@ -988,21 +489,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         });
     }
 
-   
-    @* function for getting modifier item name which is related to perticular modifier group *@
 
-    let  selectedModifierIdsforedit = [];
-    
-
-    @* clear the existing modifier section when closing modal *@
-
-    @* function ClearSection()
-    {
-        document.getElementById("selectedModifieritemcontainerforedit").innerHTML="";
-    } *@
-
-    @* function need to be called after document get load *@ 
-    @* pwd1 *@
     $(document).ready(function () {
 
          
@@ -1012,140 +499,5 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         MenuitemsPaginationAjax();
        
     });
-
-    let selectedModifiers = []; 
-    let  selectedModifierIds = [];
-    let selectedModifiersforedit = [];
-    
-
-
-    // Function to handle checkbox selection
-  /*  function handleCheckboxChange(event) {
-        let modifierId = event.target.value;
-
-        if (event.target.checked) {
-            if (!selectedModifierIdsforedit.some(modifier => modifier === parseInt(modifierId))) {
-                @* selectedModifiers.push(modifierId); *@
-                @* selectedModifiers.push({id:modifierId,name:event.target.getAttribute("m-name")}); *@
-                selectedModifierIdsforedit.push(parseInt(modifierId));
-
-                console.log("chbxchange",selectedModifierIdsforedit)
-            }
-        } else {
-            selectedModifierIdsforedit = selectedModifierIdsforedit.filter(id => id !== modifierId);
-        }
-    }
-   
-    function attachCheckboxListeners() {
-        document.querySelectorAll(".modifieritemcheckboxofmodal").forEach((checkbox) => {
-            checkbox.addEventListener("change", handleCheckboxChange);
-        });
-
-        @* updateCheckboxStates(); // Re-check checkboxes after reloading the partial view *@
-    }
-
-    function onPartialViewLoaded() {
-        attachCheckboxListeners();  // Rebind event listeners
-    }
-
-
-    document.getElementById("modifieritemsmodal-search-field").addEventListener('keyup',()=>{
-        PaginationAjax();
-    })
-   
-    document.getElementById("modifieritems-search-field").addEventListener('keyup',()=>{
-        ModifieritemsPaginationAjax();
-    })
-    document.getElementById("menuitem-search-field").addEventListener('keyup',()=>{
-        console.log("hello")
-        MenuitemsPaginationAjax();
-    })
-
-*/
-   /* $("#modifierForm").submit(function (e) {
-        e.preventDefault(); // Prevent default form submission
-
-        let formData = new FormData(this); 
-        @* let form = $("#modifierForm"); *@
-        // Append each selected modifier's id
-        selectedModifiers.forEach(modifier => {
-            formData.append("ModifieritemsId[]", modifier.id); 
-        });
-
-        $.ajax({
-            url: $(this).attr("action"), // Get form action URL
-            type: $(this).attr("method"), // Get form method (POST)
-            data: formData,
-            processData: false, // Prevent jQuery from processing the data
-            contentType: false, // Prevent jQuery from setting content type
-            success: function (response) {
-                console.log("Success:", response);
-                alert("Modifier group added successfully!");
-            },
-            error: function (error) {
-                console.error("Error:", error);
-                alert("Something went wrong!");
-            }
-        });
-    
-    });*/
-
-
-
-
-@* let  selectedModifierIdsforAdd= []; *@
-
-     @* function ClearSectionforAdd() 
-    { 
-        document.getElementById("selectedModifieritemcontainer").innerHTML="";
-    } *@
- @* $(document).ready(function () {
-
-        updateCheckboxStatesForAdd();
-    }); *@
-
-     // Function to check checkboxes based on selectedModifiers
-    @* function updateCheckboxStatesForAdd() {
-
-        console.log("inside add upch")
-        console.log(selectedModifierIdsforAdd)
-        document.querySelectorAll(".modifieritemcheckboxofaddmodal").forEach((checkbox) => {
-          
-            if (selectedModifierIdsforAdd.includes(parseInt(checkbox.value))) {
-                checkbox.checked = true;
-            } else {
-                checkbox.checked = false;
-                
-            }
-        });
-    } *@
-
-    @* function attachCheckboxListenersforAddModal() {
-        document.querySelectorAll(".modifieritemcheckboxofaddmodal").forEach((checkbox) => {
-            checkbox.addEventListener("change", handleCheckboxChangeforAdd);
-        });
-
-        updateCheckboxStatesForAdd(); // Re-check checkboxes after reloading the partial view
-    } *@
-
-    
-       
-
-    // Function to handle checkbox selections
-    @* function handleCheckboxChangeforAdd(event) {
-        let modifierId = event.target.value;
-
-        if (event.target.checked) {
-            if (!selectedModifierIdsforAdd.some(modifier => modifier === parseInt(modifierId))) {
-              
-                selectedModifierIdsforAdd.push(parseInt(modifierId));
-
-                console.log("chbxchange",selectedModifierIdsforAdd)
-            }
-        } else {
-            selectedModifierIdsforAdd = selectedModifierIdsforAdd.filter(id => id !== modifierId);
-        }
-    } *@
-   
 
 </script> 

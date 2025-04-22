@@ -48,30 +48,31 @@ public class CustomerController : BaseController
 
     // Export The List Of Orders
     [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
-    public async Task<IActionResult> ExportCustomers(string searchKeyword = "", string startDate = null, string endDate = null,string timeframe = "")
+    public async Task<IActionResult> ExportCustomers(string searchKeyword = "", string startDate = null, string endDate = null, string timeframe = "")
     {
+        List<CustomerViewModel> customers;
 
         if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
         {
-            var customers = await _customerservice.GetCustomerListForExport(searchKeyword, DateTime.Parse(startDate), DateTime.Parse(endDate));
-           
-            byte[] fileContents = _excelExportService.ExportCustomerToExcel(customers,searchKeyword,timeframe);
-
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
+            customers = await _customerservice.GetCustomerListForExport(searchKeyword, DateTime.Parse(startDate), DateTime.Parse(endDate));
         }
         else
         {
-            var customers = await _customerservice.GetCustomerListForExport(searchKeyword);
-
-            byte[] fileContents = _excelExportService.ExportCustomerToExcel(customers,searchKeyword,timeframe);
-
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
+            customers = await _customerservice.GetCustomerListForExport(searchKeyword);
         }
 
+        if (customers == null || !customers.Any())
+        {
+            return BadRequest(new {success=false,message="No customers found for export."});
+        }
+
+        byte[] fileContents = _excelExportService.ExportCustomerToExcel(customers, searchKeyword, timeframe);
+
+        return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
     }
 
     // Get Customer History Table Partial View 
-     [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
+    [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
     public async Task<IActionResult> GetCustomerHistory(int customerid)
     {
         var model = await _customerservice.GetCustomerOrderHistory(customerid);
@@ -81,6 +82,6 @@ public class CustomerController : BaseController
     public async Task<IActionResult> GetCustomerDetail(string email)
     {
         var model = await _customerservice.GetCustomerDetail(email);
-        return Json(new {success=true,customer=new {name=model.Name,mobile=model.Mobile}});
+        return Json(new { success = true, customer = new { name = model.Name, mobile = model.Mobile } });
     }
 }
