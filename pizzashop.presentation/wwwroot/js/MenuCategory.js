@@ -1,9 +1,6 @@
-// Make the function global
-
 // Open Modal For Add Edit CAtegory Form
 
-function openAddEditCategoryModal(id)
-{
+function openAddEditCategoryModal(id) {
   $.ajax({
     type: "GET",
     url: "/Menu/GetAddEditCategoryForm",
@@ -21,7 +18,7 @@ function openAddEditCategoryModal(id)
 // load category list partial view
 
 function loadcategories(id) {
-  // For Clearing the List of Previously Selected Category
+  // For Clearing the List of Previously Selected Category's MenuItem
   selectedMenuItems = [];
 
   //   id = ele?.getAttribute("category-id");
@@ -46,23 +43,19 @@ function loadcategories(id) {
   });
 }
 
-// opening modals
-
 //load menu item partial view
 
-function loadMenuItem(id,pagesize,pagenumber) {
+function loadMenuItem(id, pagesize, pagenumber) {
   $.ajax({
     url: "/Menu/Menu",
     type: "GET",
-    data: { cat: id,pageNumber:pagenumber,pageSize:pagesize },
+    data: { cat: id, pageNumber: pagenumber, pageSize: pagesize },
     success: function (data) {
       $("#menuTableContainer").html(data);
       attachMassDeleteForMenuItem(); // This Function is Inside MenuItem.js
     },
   });
 }
-
-
 
 //set delete category url to the delete category modal yes button
 
@@ -73,8 +66,6 @@ function setDeleteCategoryId(ele) {
 }
 
 $(document).ready(function () {
-  
-
   // Add Edit Category Form Submission
 
   $(document).on("submit", "#categoryAddEditForm", function (e) {
@@ -89,24 +80,22 @@ $(document).ready(function () {
       url: form.attr("action"),
       type: "POST",
       data: formData,
-      processData: false, 
-      contentType: false, 
+      processData: false,
+      contentType: false,
       success: function (response) {
-        if(response.success)
-        {
-            toastr.success(response.message);
-            let cat_id = $("#category-list .category-active-option").attr(
-              "category-id"
-            );
-            loadcategories(cat_id);
-            var modal = bootstrap.Modal.getInstance(document.getElementById('categoryAddEditModal'))
-            modal.hide();
+        if (response.success) {
+          toastr.success(response.message);
+          let cat_id = $("#category-list .category-active-option").attr(
+            "category-id"
+          );
+          loadcategories(cat_id);
+          var modal = bootstrap.Modal.getInstance(
+            document.getElementById("categoryAddEditModal")
+          );
+          modal.hide();
+        } else {
+          toastr.error(response.message);
         }
-        else{
-            toastr.error(response.message);
-        }
-        
-       
       },
       error: function (err) {
         alert("Something went wrong");
@@ -154,9 +143,9 @@ $(document).ready(function () {
 
   // Function to handle hover effect
   function attachHoverEffect() {
+    console.log("attach hover")
     document.querySelectorAll(".category-option").forEach((opt) => {
       opt.addEventListener("mouseover", function () {
-    
         let actionbtn = opt.querySelector("#categoryoption_actionbtn");
         if (actionbtn) {
           actionbtn.classList.add("d-block");

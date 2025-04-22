@@ -808,10 +808,10 @@ public class MenuServices : IMenuServices
         var userid = _userservices.GetUserIdfromToken(token);
 
         // Check if a modifier group with the same name already exists (excluding the current one)
-        bool isDuplicate = await _context.Modifiersgroups
-            .AnyAsync(mg => mg.Name.ToLower() == model.Name.ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted == false);
+        var isDuplicate = await _context.Modifiersgroups
+            .FirstOrDefaultAsync(mg => mg.Name.ToLower() == model.Name.ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted != true);
 
-        if (isDuplicate)
+        if (isDuplicate!=null)
         {
             return new AuthResponse { Success = false, Message = "A modifier group with the same name already exists." };
         }

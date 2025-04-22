@@ -694,7 +694,7 @@
 
 <script>
 
-
+/*
     function setEditData(element){
     
 
@@ -713,40 +713,25 @@
         var deleteBtn = document.getElementById("deleteCategoryBtn");
         deleteBtn.href = '@Url.Action("DeleteCategory", "Menu")' + '?id=' + Id;
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-
-    var categoryoption = document.querySelectorAll(".category-option");
-
-    categoryoption.forEach(opt => {
-        opt.addEventListener("mouseover", function() {
-            console.log("mouseleave enter")
-            var actionbtn = opt.querySelector("#categoryoption_actionbtn");
-            
-            actionbtn.classList.remove("d-none");
-            actionbtn.classList.add("d-block");
-        });
-        opt.addEventListener("mouseleave", function() {
-            var actionbtn = opt.querySelector("#categoryoption_actionbtn");
-            actionbtn.classList.remove("d-block");
-            actionbtn.classList.add("d-none");
-        });
-    });
+*/
+   document.addEventListener("DOMContentLoaded", () => {
 
 
 
-        const categories = document.querySelectorAll(".category-option");
-        const categoriesforsmall = document.querySelectorAll(".category-option-smallscreen");
     
 
-        if (categories.length > 0) {
+
+        @* const categories = document.querySelectorAll(".category-option");
+        const categoriesforsmall = document.querySelectorAll(".category-option-smallscreen");
+     *@
+
+        @* if (categories.length > 0) { *@
             // Select the first category by default
             @* categories[0].classList.add("category-active-option");
             categoriesforsmall[0].classList.add("category-active-option"); *@
-        }
+        @* } *@
 
-        categories.forEach(category => {
+        @* categories.forEach(category => {
             category.addEventListener("click", () => {
                 // Remove the active class from all categories
                 categories.forEach(cat => cat.classList.remove("category-active-option"));
@@ -754,8 +739,8 @@
                 // Add active class to the clicked category
                 category.classList.add("category-active-option");
             });
-        });
-        categoriesforsmall.forEach(category => {
+        }); *@
+        @* categoriesforsmall.forEach(category => {
             category.addEventListener("click", () => {
                 // Remove the active class from all categories
                 categoriesforsmall.forEach(cat => cat.classList.remove("category-active-option"));
@@ -763,7 +748,7 @@
                 // Add active class to the clicked category
                 category.classList.add("category-active-option");
             });
-        });
+        }); *@
     });
 
     let currentPage = 1;
@@ -771,57 +756,33 @@
     @* First Time Page Load  *@
     $(document).ready(function () {
 
-    
-        
         currentPage =1;
          
 
-        $.ajax({
+        @* $.ajax({
             type:"GET",
             url:"/Menu/GetCategories",
             data:{cat : @Model.SelectedCategory},
             success:function(data)
             {
                 $('#category-list').html(data);
-              
-
 
                 $.ajax({
-                url: '@Url.Action("Menu", "Menu")',
-                type: 'GET',
-                data: {cat:"@Model.SelectedCategory"},
+                url: "/Menu/Menu",
+                type: "GET",
+                data: { cat: id },
                 success: function (data) {
-                        let $partialView = $(data);
-    
-                        let maincb = $partialView.find("#menu-main-checkbox");
-                        let checkboxes = $partialView.find(".inner_checkbox");
-                        console.log(maincb)
-                         // When main checkbox is clicked
-                        maincb.on("change", function () {
-                            console.log("Main checkbox changed:", this.checked);
-                            checkboxes.prop("checked", this.checked); // Set all inner checkboxes same as main
-                        });
-
-                        // If any inner checkbox is unchecked, uncheck the main checkbox
-                        checkboxes.on("change", function () {
-                            if (!this.checked) {
-                                maincb.prop("checked", false);
-                            } else if (checkboxes.length === checkboxes.filter(":checked").length) {
-                                maincb.prop("checked", true);
-                            }
-                        });
-
-                        $('#menuTableContainer').html($partialView);
-                    
-                    }
+                $("#menuTableContainer").html(data);
+                attachMassDeleteForMenuItem(); // This Function is Inside MenuItem.js
+                    },
                 });
             }
 
-        });
+        }); *@
 
         
 
-        $.ajax({
+      /*  $.ajax({
             type:"GET",
             url:"/Menu/GetModifiers",
             success:function(data)
@@ -862,6 +823,8 @@
             }
         });
 
+
+
         $.ajax({
             url: '@Url.Action("Menu", "Menu")',
             type: 'GET',
@@ -890,24 +853,22 @@
                 $('#menuTableContainer').html($partialView);
             }
         });
-         
+         */
     });
 
    
-     
-
-
     function setDeleteUserId(element) {
         var userId = element.getAttribute("data-id");
         var deleteBtn = document.getElementById("deleteUserBtn");
         deleteBtn.href = '@Url.Action("DeleteUser", "Menu")' + '?id=' + userId;
     }
+    
     @* document.getElementById("search-field").addEventListener("keyup", function (event) {
         search();
     }); *@
 
     @* for getting modifier group option list *@
-    $.ajax({
+  /*  $.ajax({
         type: "GET",
         url: "/GetData/GetModifierGroupList",
         dataType: "json",
@@ -925,8 +886,8 @@
             }   
          }
     });
-    
-    var expanded = false;
+    */
+    @* var expanded = false;
 
 function showCheckboxes() {
     console.log("click")
@@ -940,7 +901,7 @@ function showCheckboxes() {
     checkboxes.classList.add('d-none');
     expanded = false;
   }
-}
+} *@
 
 
 
@@ -965,19 +926,17 @@ function MenuitemsPaginationAjax(pageSize,pageNumber,category_id) {
         });
     }
 
-
 @* -----Pagination For Modifier Items List Modal------- *@
 function PaginationAjax(pageSize,pageNumber) {
 
     // Get the dropdown element
     let pageSizeDropdown = document.getElementById("pageSizeDropdownformodal");
-    let searchkeyword = $("#modifieritemsmodal-search-field").val();
-    console.log(searchkeyword)
+    let searchkeyword = $("#modifieritemsforaddmodal-search-field").val();
     
     // Store the currently selected value
     let selectedPageSize = pageSizeDropdown?.value;
 
-    console.log("inside pag ajax",pageSize)
+    console.log("inside pag ajax",searchkeyword)
         @* if (pageNumber === 0) {
             pageNumber = @((Model?.Page?.CurrentPage ?? 1));
         } *@
@@ -987,7 +946,7 @@ function PaginationAjax(pageSize,pageNumber) {
             type: "GET",
             dataType: "html",
             success: function (data) {
-                $("#modifieritemstablecontainerofmodal").html(data);
+                $("#modifierItemTableContainerForModal").html(data);
                 @* onPartialViewLoaded(); // Ensure checkboxes update after reloading the partial *@
                 checkSelectedCheckboxes();
                 attachCheckboxListnerModifierItemForEditModal();
@@ -1000,34 +959,6 @@ function PaginationAjax(pageSize,pageNumber) {
             }
         });
     }
-
-@* -----Pagination For Modifier Items List add modifier group Modal------- *@
-@* function ModifieritemListForAddPaginationAjax(pageSize,pageNumber) {
-
-     // Get the dropdown element
-    let pageSizeDropdown = document.getElementById("pageSizeDropdownformodal");
-    let searchkeyword = $("#modifieritemsforaddmodal-search-field").val();
-    
-    // Store the currently selected value
-    let selectedPageSize = pageSizeDropdown?.value;
-       
-        $.ajax({
-            url: "/Menu/GetAllModifierItemsListForAdd",
-            data: { 'pageSize': pageSize, 'pageNumber': pageNumber,'searchKeyword':searchkeyword},
-            type: "GET",
-            dataType: "html",
-            success: function (data) {
-                $("#modifieritemstablecontainerofaddmodal").html(data);
-                checkSelectedCheckboxesforAdd();
-                attachCheckboxListnerModifierItemForAddModal();
-            },
-            error: function () {
-                alert("No Projects Found");
-                
-                $("#modifieritemstablecontainerofaddmodal").html('An error has occurred');
-            }
-        });
-    } *@
 
 @* -----Pagination For Modifier Items List------- *@
 
@@ -1065,16 +996,18 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
 
     @* clear the existing modifier section when closing modal *@
 
-    function ClearSection()
+    @* function ClearSection()
     {
         document.getElementById("selectedModifieritemcontainerforedit").innerHTML="";
-    }
+    } *@
 
     @* function need to be called after document get load *@ 
     @* pwd1 *@
     $(document).ready(function () {
 
-        PaginationAjax();
+         
+        loadcategories();
+        loadmodifiers();
         ModifieritemsPaginationAjax();
         MenuitemsPaginationAjax();
        
@@ -1087,7 +1020,7 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
 
 
     // Function to handle checkbox selection
-    function handleCheckboxChange(event) {
+  /*  function handleCheckboxChange(event) {
         let modifierId = event.target.value;
 
         if (event.target.checked) {
@@ -1128,8 +1061,8 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
         MenuitemsPaginationAjax();
     })
 
-
-    $("#modifierForm").submit(function (e) {
+*/
+   /* $("#modifierForm").submit(function (e) {
         e.preventDefault(); // Prevent default form submission
 
         let formData = new FormData(this); 
@@ -1155,24 +1088,24 @@ function ModifieritemsPaginationAjax(pageSize,pageNumber,modifiergroup_id) {
             }
         });
     
-    });
+    });*/
 
 
 
 
-let  selectedModifierIdsforAdd= [];
+@* let  selectedModifierIdsforAdd= []; *@
 
-     function ClearSectionforAdd() 
+     @* function ClearSectionforAdd() 
     { 
         document.getElementById("selectedModifieritemcontainer").innerHTML="";
-    }
- $(document).ready(function () {
+    } *@
+ @* $(document).ready(function () {
 
         updateCheckboxStatesForAdd();
-    });
+    }); *@
 
      // Function to check checkboxes based on selectedModifiers
-    function updateCheckboxStatesForAdd() {
+    @* function updateCheckboxStatesForAdd() {
 
         console.log("inside add upch")
         console.log(selectedModifierIdsforAdd)
@@ -1185,21 +1118,21 @@ let  selectedModifierIdsforAdd= [];
                 
             }
         });
-    }
+    } *@
 
-    function attachCheckboxListenersforAddModal() {
+    @* function attachCheckboxListenersforAddModal() {
         document.querySelectorAll(".modifieritemcheckboxofaddmodal").forEach((checkbox) => {
             checkbox.addEventListener("change", handleCheckboxChangeforAdd);
         });
 
         updateCheckboxStatesForAdd(); // Re-check checkboxes after reloading the partial view
-    }
+    } *@
 
     
        
 
-    // Function to handle checkbox selection
-    function handleCheckboxChangeforAdd(event) {
+    // Function to handle checkbox selections
+    @* function handleCheckboxChangeforAdd(event) {
         let modifierId = event.target.value;
 
         if (event.target.checked) {
@@ -1212,13 +1145,7 @@ let  selectedModifierIdsforAdd= [];
         } else {
             selectedModifierIdsforAdd = selectedModifierIdsforAdd.filter(id => id !== modifierId);
         }
-    }
+    } *@
    
-    
-
-
-@* Delete Modifier Group *@
-
-
 
 </script> 

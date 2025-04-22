@@ -201,6 +201,22 @@ $(document).on('submit',"#addEditModifierForm",function(e){
   });
 })
 
+// This should be called after the partial view is loaded
+function attachModifierHoverEvents() {
+  $(".modifier-option").hover(
+    function () {
+     
+      $(this).find("#modifieroption_actionbtn").removeClass("d-none");
+    },
+    function () {
+    
+      $(this).find("#modifieroption_actionbtn").addClass("d-none");
+    }
+  );
+}
+
+
+
 // ==========================================================================================
 
 // load partial views of selected item for add modifier group modal
@@ -416,6 +432,7 @@ function loadmodifiers(id) {
     data: { modifiergroup_id: id },
     success: function (data) {
       $("#modifier-list").html(data);
+      attachModifierHoverEvents();
     },
   });
 
@@ -609,6 +626,7 @@ function attachCheckboxListnerModifierItemForEditModal() {
 //set delete category url to the delete category modal yes button
 
 function setDeleteModifierGroupId(ele) {
+  console.log("inside")
   let id = ele.getAttribute("data-id");
   let deleteBtn = document.getElementById("deleteModifierGroupBtn");
   deleteBtn.setAttribute("modifiergroup-id", id);
@@ -647,10 +665,10 @@ function setDeleteModifierGroupId(ele) {
 //   }
 
   // Perform further actions like submitting selectedModifiers to the server
-  var itemlistmodal = bootstrap.Modal.getInstance(
-    document.getElementById("modifieritemslist")
-  );
-  itemlistmodal.hide();
+  // var itemlistmodal = bootstrap.Modal.getInstance(
+  //   document.getElementById("modifieritemslist")
+  // );
+  // itemlistmodal.hide();
 
 
 // this will make sure list is clear before opening add modifier group modal
@@ -663,14 +681,49 @@ function ClearListOfModifierItems() {
   $("#modifieritem_main_checkbox_addmodal").prop("checked", false);
 }
 
+  // Delete Modifier Group Modal
+
+  $(document).on('click','#deleteModifierGroupBtn',function(e){
+    console.log("hey")
+    var modgroupid = $(this).attr("modifiergroup-id").toString();
+    $.ajax({
+      url: "/Menu/DeleteModifierGroupById",
+      method: "POST",
+      data: {
+        id: modgroupid,
+      },
+      success: function (response) {
+        // close the opened delete modal
+
+        var deleteModal = bootstrap.Modal.getInstance(
+          document.getElementById("deleteModifierGroupmodal")
+        );
+        deleteModal.hide();
+
+        if (response.success) {
+          //get the active category id
+          let mod_id = $("#modifier-list .category-active-option").attr(
+            "modifiergroup-id"
+          );
+          mod_id == modgroupid ? loadmodifiers() : loadmodifiers(mod_id); // if current modgropup id is deleted than by default select first modgroup
+
+          toastr.success(response.message);
+        } else {
+          toastr.error(response.message);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error deleting items:", error);
+      },
+    });
+  });
+
 $(document).ready(function () {
 
   // search
   $("#modifieritemsforaddmodal-search-field").on('keyup',()=>{
     ModifieritemListForAddExistingPaginationAjax();
   })
-
-  attachHoverEffect();
 
   // Add Modifier Group Form Validation
 
@@ -871,32 +924,7 @@ $(document).ready(function () {
   //   Modal.show();
   // });
 
-  // Function to handle hover effect
-  function attachHoverEffect() {
-    document.querySelectorAll(".modifier-option").forEach((opt) => {
-      opt.addEventListener("mouseover", function () {
-   
-        let actionbtn = opt.querySelector("#categoryoption_actionbtn");
-        if (actionbtn) {
-          actionbtn.classList.add("d-block");
-          actionbtn.classList.remove("d-none");
-        }
-      });
-
-      opt.addEventListener("mouseleave", function () {
-        let actionbtn = opt.querySelector("#categoryoption_actionbtn");
-        if (actionbtn) {
-          actionbtn.classList.remove("d-block");
-          actionbtn.classList.add("d-none");
-        }
-      });
-    });
-  }
-
-  // If the partial view is loaded dynamically, reattach events
-  $(document).on("ajaxComplete", function () {
-    attachHoverEffect();
-  });
+  
 
   // clear the selected modifier item list when the add modifier group modal is closed
   //change1
@@ -940,39 +968,6 @@ $(document).ready(function () {
   //     itemlistmodal.show();
   //   });
 
-  // Delete Modifier Group Modal
 
-  $("#deleteModifierGroupBtn").click(function (e) {
-    var modgroupid = $(this).attr("modifiergroup-id").toString();
-    $.ajax({
-      url: "/Menu/DeleteModifierGroupById",
-      method: "POST",
-      data: {
-        id: modgroupid,
-      },
-      success: function (response) {
-        // close the opened delete modal
 
-        var deleteModal = bootstrap.Modal.getInstance(
-          document.getElementById("deleteModifierGroupmodal")
-        );
-        deleteModal.hide();
-
-        if (response.success) {
-          //get the active category id
-          let mod_id = $("#modifier-list .category-active-option").attr(
-            "modifiergroup-id"
-          );
-          mod_id == modgroupid ? loadmodifiers() : loadmodifiers(mod_id); // if current modgropup id is deleted than by default select first modgroup
-
-          toastr.success(response.message);
-        } else {
-          toastr.error(response.message);
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error deleting items:", error);
-      },
-    });
-  });
 });

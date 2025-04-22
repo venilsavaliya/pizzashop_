@@ -1,7 +1,7 @@
 let selectedModifierGroups = [];
 function openAddEditMenuItemModal(id) {
   // clear the list when modal open
-  selectedModifierGroups=[]
+  selectedModifierGroups = [];
   $.ajax({
     type: "GET",
     url: "/Menu/GetAddEditMenuItemForm",
@@ -18,15 +18,14 @@ function openAddEditMenuItemModal(id) {
       );
       $("#Select-Category-option").val(activecategory);
       $("#Select-Category-option-hidden").val(activecategory);
-      
+
       // this is for adding new pv of modgroup as user select option
       attachPartialViewAppendEvent();
 
       // this is for loading pv which are already with items (for edit item)
       if (id) {
         attachPartialViewForEdit(id);
-      } 
-      
+      }
     },
   });
 }
@@ -136,8 +135,6 @@ function attachPartialViewForEdit(id) {
 
             selectedModifierGroups.push(newModifierGroup);
 
-        
-
             // Modify select dropdowns to track changes
             $partialView
               .find("select.min-select")
@@ -147,12 +144,8 @@ function attachPartialViewForEdit(id) {
               .attr("data-group-id", groupId);
 
             // Attach event listeners to dropdowns inside the newly added partial view
-            $partialView
-              .find("select.min-select")
-              .change(updateMinValue);
-            $partialView
-              .find("select.max-select")
-              .change(updateMaxValue);
+            $partialView.find("select.min-select").change(updateMinValue);
+            $partialView.find("select.max-select").change(updateMaxValue);
 
             // Trigger updateMaxValue once after rendering the partial view
             let maxSelect = $partialView.find("select.max-select");
@@ -172,17 +165,16 @@ function attachPartialViewForEdit(id) {
                 $partialView.remove();
 
                 // Remove the object from selectedModifierGroupsforedit
-                selectedModifierGroups =
-                selectedModifierGroups.filter(
-                    (obj) => obj.modifierGroupId != groupId
-                  );
+                selectedModifierGroups = selectedModifierGroups.filter(
+                  (obj) => obj.modifierGroupId != groupId
+                );
 
                 console.log(
-                  "Updated list after deletion:", 
+                  "Updated list after deletion:",
                   selectedModifierGroups
                 );
               });
-            
+
             // Append Partial View and show container
             $("#modifieritemspartialview")
               .append($partialView)
@@ -194,7 +186,7 @@ function attachPartialViewForEdit(id) {
         });
       });
 
-      console.log('edit item mod group',selectedModifierGroups)
+      console.log("edit item mod group", selectedModifierGroups);
     },
     error: function () {
       alert("Error loading modifier group IDs!");
@@ -219,7 +211,7 @@ function attachPartialViewForEdit(id) {
   //   let maxSelect = modgroup.find(".max-select");
   //   console.log("minval", minVal);
   //   maxSelect.find("option").each(function () {
- 
+
   //     if (parseInt($(this).val()) < minVal) {
   //       $(this).css("display", "none"); // Hide the option
   //     } else {
@@ -398,7 +390,6 @@ function setDeleteItemId(element) {
 // Edit menu Item functionality
 let selectedModifierGroupsforedit = [];
 function setedititemdata(ele) {
-  
   selectedModifierGroupsforedit = [];
   var c = JSON.parse(ele.getAttribute("item-obj"));
   var catid = ele.getAttribute("category-id");
@@ -511,6 +502,12 @@ function updateFileName(myFile, fileNameSpan, imageFileValidation) {
 }
 
 $(document).ready(function () {
+  document
+    .getElementById("menuitem-search-field")
+    .addEventListener("keyup", () => {
+      console.log("hello");
+      MenuitemsPaginationAjax();
+    });
   // set active category at first
 
   // Store selected values as objects for showing partial view in add item
@@ -589,8 +586,6 @@ $(document).ready(function () {
       },
     });
   });
-
-  
 
   // Add New Menu Item Validation
   // $("#addItemForm").validate({
@@ -870,7 +865,7 @@ $(document).ready(function () {
         deleteModal.hide();
 
         // remove id from the list of selected menu item if item is checked and deleted
-        selectedMenuItems = selectedMenuItems.filter((i)=>i != itemid);
+        selectedMenuItems = selectedMenuItems.filter((i) => i != itemid);
 
         //clear the search field after delete
         $("#menuitem-search-field").val("");
