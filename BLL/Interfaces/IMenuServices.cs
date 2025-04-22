@@ -13,6 +13,8 @@ public interface IMenuServices
     public List<Unit> GetAllUnitsList();
     public AddItemViewModel GetMenuItemDetailById(int id);
     public AddModifierGroupViewModel GetModifierGroupDetailById(int id);
+
+    public AddModifierItemViewModel GetModifierItemDetailById(int id);
     
     public Task<AuthResponse> AddCategory(CategoryNameViewModel model);
     public Task<AuthResponse> EditCategory(CategoryNameViewModel model);

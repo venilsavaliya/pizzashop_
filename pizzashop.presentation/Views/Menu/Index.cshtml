@@ -157,11 +157,11 @@
                             }
                             @if(ViewBag.CanMenuAddEdit)
                             {
-                                <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" data-bs-toggle="modal" data-bs-target="#addmodifieritemmodal"><span
+                                <button type="button" class=" custom-btn-bg text-white p-2 border d-none d-md-block" onclick="openAddEditModifierItemModal()"><span
                                     class="fs-5 fw-semibold" >+</span> New
                                 Item</button>
                             <button type="button"
-                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none">+</button> 
+                                class=" custom-btn-bg text-white px-3 border fs-5 fw-bold d-md-none" onclick="openAddEditModifierItemModal()">+</button> 
                             }
                             
                         </div>
@@ -239,7 +239,7 @@
         </div>
     </div>
 
-     <!-- Edit modifierGroup modal -->
+     <!-- Add Edit modifierGroup modal -->
     <div class="modal fade" id="addEditModifierGroupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -664,6 +664,16 @@
                     </div>
                        
                 </form>
+            </div>
+        </div>
+    </div>
+@* Add Edit Modifier Item Modal *@
+
+<div class="modal fade " id="AddEditModifierItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered w-75 "  style="max-width: 100%">
+            <div class="modal-content w-100" id="AddEditModifierItemModalContent">
+                
             </div>
         </div>
     </div>

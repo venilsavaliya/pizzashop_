@@ -93,6 +93,17 @@ public class MenuController : BaseController
             return PartialView("~/Views/Menu/_ModifierGroupAddEditForm.cshtml", model);
         }
     }
+
+    // Get AddEdit Modifier Item Form Partial View
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
+    public IActionResult GetAddEditModifierItemForm(int id = 0)
+    {
+
+        var model = _menuservices.GetModifierItemDetailById(id);
+        return PartialView("~/Views/Menu/_AddEditModifierItemForm.cshtml", model);
+
+    }
+
     // Get AddEdit Menuitem Form Partial View
     [AuthorizePermission(PermissionName.Menu, ActionPermission.CanAddEdit)]
     public IActionResult GetAddEditMenuItemForm(int id = 0)
@@ -681,6 +692,30 @@ public class MenuController : BaseController
         }
 
         var response = _menuservices.EditModifierItem(model.ModifierItem).Result;
+
+        return Json(new { success = response.Success, message = response.Message });
+    }
+    [HttpPost]
+    [AuthorizePermission(PermissionName.Menu, ActionPermission.CanDelete)]
+    public async Task<IActionResult> AddEditModifierItem(AddModifierItemViewModel model)
+    {
+        string modifiersitemsJson = Request.Form["ModifierGroupid"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersitemsJson))
+        {
+            model.ModifierGroupid = JsonConvert.DeserializeObject<List<int>>(modifiersitemsJson);
+        }
+        
+        AuthResponse response;
+        if (model.ModifierId != 0)
+        {
+            response = await _menuservices.EditModifierItem(model);
+        }
+        else
+        {
+            response = await _menuservices.AddModifierItem(model);
+        }
 
         return Json(new { success = response.Success, message = response.Message });
     }

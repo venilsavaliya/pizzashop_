@@ -43,8 +43,8 @@
                 <div class="d-flex justify-content-start gap-5">
                     @if (ViewBag.CanMenuAddEdit)
                     {
-                        <img src="~/images/icons/pen.svg" alt="" data-bs-toggle="modal" data-bs-target="#editmodifieritemmodal"
-                            item-obj='@Html.Raw(Json.Serialize(i))' onclick="seteditmodifieritemdata(this)"
+                        <img src="~/images/icons/pen.svg" alt=""
+                            item-obj='@Html.Raw(Json.Serialize(i))' onclick="openAddEditModifierItemModal(@i.ModifierId)"
                             modifiergroup-id="@Model.ModifierGroupId">
                     }
 

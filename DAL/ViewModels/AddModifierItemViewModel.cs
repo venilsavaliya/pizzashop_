@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using DAL.Models;
 
 namespace DAL.ViewModels;
 
 public class AddModifierItemViewModel
 {
-    public int? ModifierId { get; set; }
+    public int ModifierId { get; set; }
 
     [Required(ErrorMessage = "Please Select Any Modifier Group")]
     public List<int> ModifierGroupid { get; set; }
@@ -23,4 +24,8 @@ public class AddModifierItemViewModel
     public int Quantity { get; set; }
 
     public string? Description { get; set; }
+
+    public List<Unit> UnitsList {get;set;}
+
+
 }

@@ -152,8 +152,42 @@ public class MenuServices : IMenuServices
                 Name = data!.Name,
                 Description = data.Description,
                 ModifierId = data.ModifiergroupId,
-                ModifierItems = _context.Modifieritemsmodifiersgroups.Where(i=>i.ModifiergroupId == id).Select(i=> i.ModifierId ?? 0).ToList()
+                ModifierItems = _context.Modifieritemsmodifiersgroups.Where(i => i.ModifiergroupId == id).Select(i => i.ModifierId ?? 0).ToList()
             };
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+    // Get Modifier Group Detail By Id
+    public AddModifierItemViewModel GetModifierItemDetailById(int id)
+    {
+        try
+        {
+            if (id == 0)
+            {
+                var model = new AddModifierItemViewModel();
+                model.UnitsList = _context.Units.ToList();
+                return model;
+            }
+            else
+            {
+                var data = _context.Modifieritems.FirstOrDefault(i => i.ModifierId == id);
+                return new AddModifierItemViewModel
+                {
+                    ModifierId = id,
+                    Description = data.Description,
+                    ModifierName = data.ModifierName,
+                    Quantity = data.Quantity??0,
+                    Rate = data.Rate??0,
+                    Unit = data.Unit,
+                    UnitsList = _context.Units.ToList()
+
+                };
+            }
+
         }
         catch (System.Exception)
         {
@@ -380,7 +414,7 @@ public class MenuServices : IMenuServices
                         Name = i.ModifierName,
                         Rate = i.Rate,
                         Quantity = i.Quantity,
-                        Unit = i.Unit,
+                        Unit = _context.Units.FirstOrDefault(u=>u.Id.ToString() == i.Unit).Name,
                         Description = i.Description,
 
                     };
@@ -597,8 +631,8 @@ public class MenuServices : IMenuServices
             else if (existinitemwithsamename != null && existingitem != null)
             {
                 if (existinitemwithsamename.Isdeleted == true)
-                {   
-                    existingitem.Isdeleted =false;
+                {
+                    existingitem.Isdeleted = false;
 
                     existinitemwithsamename.CategoryId = model.CategoryId;
                     existinitemwithsamename.ItemName = model.ItemName;
@@ -1182,7 +1216,7 @@ public class MenuServices : IMenuServices
         return new AuthResponse
         {
             Success = true,
-            Message = "ModifierItem Added Successfuuuly"
+            Message = "Modifier Item Edited Successfully!"
         };
     }
 
