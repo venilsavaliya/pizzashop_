@@ -1,5 +1,6 @@
 @{
     Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
+    ViewData["Title"] = "KOT";
     bool inProgress = true;
 }
 @model List<DAL.ViewModels.CategoryNameViewModel>
@@ -7,8 +8,8 @@
 <div class="p-3">
     <h2 class="custom-blue fw-bolder">KOT</h2>
 
-    <div class="switching-tabs-section d-flex justify-content-start bg-white px-3 nav shadow overflow-auto flex-nowrap"
-                " role="tablist">
+    <div class="switching-tabs-section d-flex justify-content-start bg-white px-3 nav shadow overflow-auto flex-nowrap" " role="
+        tablist">
 
         <div class="d-flex justify-content-center gap-2 nav-link  active p-3 " id="nav-profile-tab" data-bs-toggle="tab"
             data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"
@@ -19,9 +20,9 @@
         </div>
         @foreach (var c in Model)
         {
-            <div class="d-flex justify-content-center gap-2 nav-link p-3 text-nowrap" id='nav-tab-@c.Id' data-bs-toggle="tab"
-                data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-@c.Id" aria-selected="true"
-                category-id="@c.Id" category-name="@c.Name" onclick="LoadOrders(this)">
+            <div class="d-flex justify-content-center gap-2 nav-link p-3 text-nowrap" id='nav-tab-@c.Id'
+                data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-@c.Id"
+                aria-selected="true" category-id="@c.Id" category-name="@c.Name" onclick="LoadOrders(this)">
                 <div class="fw-bolder" category-id="@c.Id">@c.Name</div>
             </div>
         }
@@ -85,12 +86,14 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="./js/OrderAppKOT.js"></script>
+@* <script src="./js/OrderAppKOT.js"></script> *@
 <script>
 
     $(document).ready(function () {
         // Load all orders on page load
         LoadOrders();
+
+
 
         $('#QuantityForm').submit(function (e) {
             e.preventDefault(); // prevent default form submission
@@ -185,7 +188,7 @@
         return selectedItems;
     }
 
-       function incrementQuantity(btn) {
+    function incrementQuantity(btn) {
         const input = btn.parentElement.querySelector("input");
         const max = parseInt(input.max);
         let value = parseInt(input.value) || 0;
@@ -258,11 +261,11 @@
     // function to load all orders
 
     function LoadOrders(ele) {
-       
+
         var categoryid = ele?.getAttribute("category-id");
         var categoryname = ele?.getAttribute("category-name");
-       
-        $("#activecategoryName").text(categoryname?categoryname:"All");
+
+        $("#activecategoryName").text(categoryname ? categoryname : "All");
         var isPending = $("#InProgressBtn").hasClass("active");
         $.ajax({
             url: "/OrderAppKOT/GetOrderDetails",
@@ -270,6 +273,8 @@
             data: { isPending: isPending, categoryid: categoryid ? categoryid : 0 },
             success: function (data) {
                 $("#cardWrapper").html(data);
+                updateTimers();
+                setInterval(updateTimers, 1000);
             },
             error: function (error) {
                 console.log("Error loading in-progress orders:", error);

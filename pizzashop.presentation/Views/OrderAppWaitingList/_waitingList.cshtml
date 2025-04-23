@@ -13,30 +13,40 @@
         <th class="text-center">Action</th>
     </tr>
 
-
-    @foreach (var u in Model)
+    @if (!Model.Any())
     {
         <tr>
-            <td class="table-row text-center">#@u.Tokenid</td>
-            <td class="table-row text-center">@u.Createdat</td>
-            <td class="table-row text-center live-timer" data-createdat="@u.Createdat.ToString("yyyy-MM-ddTHH:mm:ss")"></td>
-            <td class="table-row text-center">@u.Name</td>
-            <td class="table-row text-center">@u.Totalperson</td>
-            <td class="table-row text-center">@u.Mobile</td>
-            <td class="table-row text-center">@u.Email</td>
-
-            <td class="table-row text-center">
-                <div class="d-flex justify-content-center gap-3">
-
-                    <span data-item='@Html.Raw(Json.Serialize(u))' onclick="setEditDataForWaitingToken(this)"><i
-                            class="bi bi-pencil-fill"></i></span>
-                    <span onclick="openDeleteTokenModal(@u.Tokenid)"><i class="bi bi-trash"></i></span>
-                    <span onclick="openAssignTableModal(this)"  token-id="@u.Tokenid" section-id="@u.sectionid" total-person="@u.Totalperson"><i class="bi bi-person-check"></i></span>
-
-                </div>
-            </td>
+            <td colspan="8" class="text-center">No Waiting Tokens!</td>
         </tr>
     }
+    else
+    {
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td class="table-row text-center">#@u.Tokenid</td>
+                <td class="table-row text-center">@u.Createdat</td>
+                <td class="table-row text-center live-timer" data-createdat="@u.Createdat.ToString("yyyy-MM-ddTHH:mm:ss")"></td>
+                <td class="table-row text-center">@u.Name</td>
+                <td class="table-row text-center">@u.Totalperson</td>
+                <td class="table-row text-center">@u.Mobile</td>
+                <td class="table-row text-center">@u.Email</td>
 
+                <td class="table-row text-center">
+                    <div class="d-flex justify-content-center gap-3">
+
+                        <span data-item='@Html.Raw(Json.Serialize(u))' onclick="openAddEditWaitingTokenModal(@u.Tokenid)"><i
+                                class="bi bi-pencil-fill"></i></span>
+                        <span onclick="openDeleteTokenModal(@u.Tokenid)"><i class="bi bi-trash"></i></span>
+                        <span onclick="openAssignTableModal(this)" token-id="@u.Tokenid" section-id="@u.sectionid"
+                            total-person="@u.Totalperson"><i class="bi bi-person-check"></i></span>
+
+                    </div>
+                </td>
+            </tr>
+        }
+
+
+    }
 
 </table>

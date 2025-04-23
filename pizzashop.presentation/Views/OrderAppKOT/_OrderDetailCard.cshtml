@@ -13,9 +13,7 @@
         <div class="custom-bg-grey flex-column" style="height: 70px;">
             <div class="d-flex justify-content-between m-2">
                 <div class="text-primary fw-bold orderid" order-id="@item.OrderId"># @item.OrderId</div>
-                <div class="d-flex gap-1 text-secondary fw-"><span><i class="bi bi-stopwatch"></i></span> <span>2 Hour 3 Min
-                        2
-                        sec</span></div>
+                <div class="d-flex gap-1 text-secondary fw-"><span><i class="bi bi-stopwatch"></i></span> <span class="live-timer" data-createdat="@item.OrderDate.ToString("yyyy-MM-ddTHH:mm:ss")"> </span></div>
             </div>
             <div class="m-2 fw-semibold">
 

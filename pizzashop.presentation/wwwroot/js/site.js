@@ -1,4 +1,5 @@
-﻿function updateFileName(myFile, fileNameSpan, imageFileValidation) {
+﻿// image validation function
+function updateFileName(myFile, fileNameSpan, imageFileValidation) {
   var input = document.getElementById(myFile);
   var fileNameSpan = document.getElementById(fileNameSpan);
   var validationSpan = document.getElementById(imageFileValidation);
@@ -32,6 +33,30 @@
     fileNameSpan.textContent = "Drag and Drop or browse file";
   }
 }
+
+//update live time function
+function updateTimers() {
+  $(".live-timer").each(function () {
+    const createdAt = new Date($(this).data("createdat"));
+    console.log('hii',createdAt)
+    const now = new Date();
+    const diffMs = now - createdAt;
+
+    if (isNaN(diffMs)) {
+      $(this).text("Invalid date");
+      return;
+    }
+
+    const diffSecs = Math.floor(diffMs / 1000);
+    const hours = Math.floor(diffSecs / 3600);
+    const minutes = Math.floor((diffSecs % 3600) / 60);
+    const seconds = diffSecs % 60;
+
+    const formatted = `${hours}h ${minutes}min ${seconds}s`;
+    $(this).text(formatted);
+  });
+}
+
 $(document).ready(function () {
   function loadPage(page) {
     var searchKeyword = $("#search").val();
@@ -54,13 +79,12 @@ $(document).ready(function () {
     loadPage(1);
   });
 
-  // This Function For Reinitialize Validation on Form because it is loaded dyanmically out of dom 
+  // This Function For Reinitialize Validation on Form because it is loaded dyanmically out of dom
   function reinitializeValidation() {
     $("form").each(function () {
       $.validator.unobtrusive.parse($(this));
     });
   }
-   
   $(document).ajaxComplete(function () {
     reinitializeValidation();
   });

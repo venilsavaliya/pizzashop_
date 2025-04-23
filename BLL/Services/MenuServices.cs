@@ -1231,6 +1231,26 @@ public class MenuServices : IMenuServices
                 _context.Modifieritemsmodifiersgroups.Remove(mapping);
                 await _context.SaveChangesAsync();
             }
+
+            // Logic for update minmax value in menu item and its related modifier group after deleting modifier item of perticular modifier group
+            int modifieritemcount = _context.Modifieritemsmodifiersgroups.Where(i => i.ModifiergroupId == modifiergroupid).Count();
+
+            var ItemModGroupMinMaxMapping = _context.Itemsmodifiergroupminmaxmappings.Where(i => i.ModifiergroupId == modifiergroupid).ToList();
+
+            foreach (var i in ItemModGroupMinMaxMapping)
+            {
+                if (i.MinValue > modifieritemcount)
+                {
+                    i.MinValue = modifieritemcount;
+                }
+                if (i.MaxValue > modifieritemcount)
+                {
+                    i.MaxValue = modifieritemcount;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
             return new AuthResponse { Success = true, Message = "Modifier Item deleted successfully." };
         }
         catch (Exception)
@@ -1267,8 +1287,27 @@ public class MenuServices : IMenuServices
 
                     _context.Modifieritemsmodifiersgroups.Remove(item);
                 }
-                await _context.SaveChangesAsync();
             }
+                await _context.SaveChangesAsync();
+            // Logic for update minmax value in menu item and its related modifier group after deleting modifier item of perticular modifier group
+
+            int modifieritemcount = _context.Modifieritemsmodifiersgroups.Where(i => i.ModifiergroupId == ModifierGroupid).Count();
+
+            var ItemModGroupMinMaxMapping = _context.Itemsmodifiergroupminmaxmappings.Where(i => i.ModifiergroupId == ModifierGroupid).ToList();
+
+            foreach (var i in ItemModGroupMinMaxMapping)
+            {
+                if (i.MinValue > modifieritemcount)
+                {
+                    i.MinValue = modifieritemcount;
+                }
+                if (i.MaxValue > modifieritemcount)
+                {
+                    i.MaxValue = modifieritemcount;
+                }
+            }
+
+            await _context.SaveChangesAsync();
 
             return new AuthResponse
             {

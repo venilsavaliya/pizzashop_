@@ -7,5 +7,5 @@ public class OrderAppMenuItemViewModel
     public string Image { get; set; }
     public short Rate { get; set; }
     public string ItemName { get; set; } = null!;
-    public bool? Isfavourite { get; set; }
+    public bool Isfavourite { get; set; }
 }

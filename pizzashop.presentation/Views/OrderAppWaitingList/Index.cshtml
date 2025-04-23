@@ -1,21 +1,23 @@
 @{
     Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
+    ViewData["Title"] = "Waiting List";
 }
 
 @model DAL.ViewModels.WaitingListMainViewModel
+
 <div>
     <div class="p-5">
         <div class="mb-4 d-flex justify-content-between">
             <h2 class="custom-blue fw-semibold ">Waiting List</h2>
             <div class="custom-blue-border custom-blue p-2 d-flex align-items-center rounded text-nowrap" type="button"
-                onclick="openWaitingTokenModal(1)">
+                onclick="openAddEditWaitingTokenModal()">
                 <span>+ Waiting Token</span>
             </div>
         </div>
 
 
         <div class="switching-tabs-section d-flex justify-content-start bg-white px-3 nav shadow overflow-auto flex-nowrap" " role="
-            tablist" id="section_list">
+            tablist" id="section_list" style="scrollbar-width: thin;">
             @* pv *@
         </div>
 
@@ -25,62 +27,12 @@
     </div>
 </div>
 
-
 @* ===== modal ======= *@
 
-<div class="modal fade" id="waitingtokenmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="AddEditWaitingTokenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Waiting Token Details</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addWaitingTokenForm" class="d-flex flex-column gap-3">
-                    <input type="text" class="form-control" name="TokenId" hidden>
-                    <div class="form-floating">
-                        <input type="email" class="form-control" name="Customer.Email" placeholder="name@example.com">
-                        <label>Email</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="Customer.Name" placeholder="Name">
-                        <label>Name</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="text" maxlength="10" class="form-control" name="Customer.Mobile"
-                            placeholder="Mobile No.">
-                        <label>Mobile</label>
-                    </div>
-
-                    <div class="d-flex justify-content-between gap-2 row">
-                        <div class="col">
-                            <div class="form-floating">
-                                <input type="number" class="form-control" name="Customer.TotalPerson"
-                                    placeholder="No. Of Person">
-                                <label>No. Of Person</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-floating">
-                                <select class="form-select" name="SectionId">
-                                    <option value="">Section</option>
-                                    @foreach (var c in Model.section)
-                                    {
-                                        <option value=@c.SectionId>@c.SectionName</option>
-                                    }
-                                </select>
-                                <label>Section</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn custom-btn-bg text-white">Save</button>
-                        <button type="button" class="btn custom-blue-border" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-
+        <div class="modal-content" id="AddEditWaitingTokenModalContent">
+           @* Partial View Of Add Edit Waiting Token Form *@
         </div>
     </div>
 </div>
@@ -92,7 +44,7 @@
         <div class="modal-content p-3" style="width: 420px !important;">
 
             <div class="modal-body">
-                <div class="d-flex justify-content-center"><img src="~/images/warning.png" alt="" width="40"></div>
+                <div class="d-flex justify-content-center"><img src="/images/warning.png" alt="" width="40"></div>
                 <div class="d-flex justify-content-center mt-3">Are You Sure You Want To Delete this?</div>
             </div>
             <div class="d-flex justify-content-center align-items-center gap-2">

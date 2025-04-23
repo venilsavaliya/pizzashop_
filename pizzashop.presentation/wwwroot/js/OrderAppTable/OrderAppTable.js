@@ -1,19 +1,138 @@
-let selectedTableList = [];
+const selectedTables = new Set();
+
+//open add edit waiting token modal
+function openAddEditWaitingTokenModal(ele, tableformid) {
+  var sectionid = $(ele).attr("section-id");
+
+  $.ajax({
+    type: "GET",
+    url: "/OrderAppWaitingList/GetAddEditWaitingTokenForm",
+    data: { activeSectionId: sectionid, formId: tableformid },
+    success: function (data) {
+      if (tableformid != null && tableformid != "") {
+        $("#TableAssignOffcanvasForm").html(data);
+        $("#TableAssignOffcanvasForm").find(".modal-header").addClass("d-none");
+        attachEventListnerForRadio();
+      } else {
+        $("#AddEditWaitingTokenModalContent").html(data);
+        var modal = new bootstrap.Modal(
+          document.getElementById("AddEditWaitingTokenModal")
+        );
+        modal.show();
+      }
+    },
+  });
+}
+
+//submit table assign form
+$("#TableAssignOffcanvasForm").on("submit", "#AssignTableForm", function (e) {
+  e.preventDefault();
+
+  var formdata = new FormData(this);
+  var capacity = 0;
+  console.log("selected", selectedTables);
+  if (selectedTables.size == 0) {
+    toastr.error("Please Select Table(s) For Assign!");
+    return;
+  }
+
+  selectedTables.forEach((i) => {
+    formdata.append("TableId", i.id);
+    capacity += parseInt(i.capacity);
+  });
+
+  if (capacity < formdata.get("Customer.TotalPerson")) {
+    toastr.error("Selected Capcity is Less Than Required!");
+    return;
+  }
+
+  $.ajax({
+    type: "POST",
+    url: "/OrderAppTable/AssignTable",
+    data: formdata,
+    contentType: false,
+    processData: false,
+    success: function (response) {
+      response.success
+        ? toastr.success(response.message)
+        : toastr.error(response.message);
+
+      var offcanvasElement = document.getElementById("offcanvasRight");
+
+      var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+      bsOffcanvas.hide();
+
+      LoadSectionList();
+
+      selectedTables.clear();
+    },
+    error: function (xhr, status, error) {
+      console.error("Error assigning table:", error);
+    },
+  });
+});
+
+//submit add waiting token form
+$(document).on("submit", "#AddEditWaitingTokenForm", function (e) {
+  e.preventDefault();
+
+  if (!$(this).valid()) {
+    return;
+  }
+
+  var formdata = new FormData(this);
+
+  $.ajax({
+    type: "POST",
+    url: "/OrderAppWaitingList/AddEditWaitingToken",
+    data: formdata,
+    contentType: false,
+    processData: false,
+    success: function (response) {
+      if (response.success) {
+        toastr.success(response.message);
+
+        // Close the Modal
+        var modal = document.getElementById("AddEditWaitingTokenModal");
+        bootstrap.Modal.getInstance(modal).hide();
+      } else {
+        toastr.error(response.message);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error assigning table:", error);
+    },
+  });
+});
+
 // Logic For Select Table to Add into Selected Table List
 function toggleBorder(ele) {
-  console.log(ele);
+
   if (ele.getAttribute("table-status") != 1) {
     toastr.warning("This table is not available");
     return;
   }
+
   $(ele).toggleClass("green_border");
 
   if ($(ele).hasClass("green_border")) {
-    selectedTableList.push($(ele).attr("table-id"));
+
+    var tableId = $(ele).attr("table-id");
+    var tableCapacity = $(ele).attr("table-capacity");
+
+    selectedTables.add({
+      id: tableId,
+      capacity: tableCapacity,
+    });
+
   } else {
-    selectedTableList = selectedTableList.filter(
-      (item) => item !== $(ele).attr("table-id")
-    );
+
+    const toRemove = [...selectedTables].find((item) => item.id == tableId);
+
+    if (toRemove) {
+      selectedTables.delete(toRemove);
+    }
+    
   }
 }
 
@@ -31,7 +150,7 @@ function LoadSectionList() {
         console.log("Accordion closed:");
 
         //empty the selected table list
-        selectedTableList = [];
+        selectedTables.clear();
 
         $(this).find(".green_border").removeClass("green_border");
       });
@@ -42,20 +161,11 @@ function LoadSectionList() {
   });
 }
 
-// open modal for waiting token
-
-function openWaitingTokenModal(ele) {
-  var modal = new bootstrap.Modal(document.getElementById("waitingtokenmodal"));
-  modal.show();
-
-  var sectionid = $(ele).attr("section-id");
-  var sectionElement = $('#addWaitingTokenForm [name="SectionId"]');
-  sectionElement.val(sectionid);
-}
-
 // open assign offcanvas
-
 function openAssignOffcanvas(ele) {
+  // Load form in offcanvas
+  openAddEditWaitingTokenModal(ele, "AssignTableForm");
+
   // Open the offcanvas manually
   var offcanvasElement = document.getElementById("offcanvasRight");
   var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
@@ -82,248 +192,23 @@ function openAssignOffcanvas(ele) {
   });
 }
 
-// function to attach event listner on radio buttons
-
-function attachEventListnerForRadio()
-{
-  $(".RadionBtn").on('change',function () {
-    var obj = $(this).data('obj');
+// function to attach event listner on radio buttons to copy waiting list customer data in form directly
+function attachEventListnerForRadio() {
+  $(".RadionBtn").on("change", function () {
+    var obj = $(this).data("obj");
     console.log(obj);
-    console.log('helo');
+    console.log("helo");
 
-    $("#TableAssignForm input[name='Customer.Email']").val(obj.email);
-    $("#TableAssignForm input[name='Customer.Name']").val(obj.name);
-    $("#TableAssignForm input[name='Customer.Mobile']").val(obj.mobile);
-    $("#TableAssignForm input[name='Customer.TotalPerson']").val(obj.totalperson);
-    $("#TableAssignForm input[name='TokenId']").val(obj.tokenid);
-
+    $("#AssignTableForm input[name='Customer.Email']").val(obj.email);
+    $("#AssignTableForm input[name='Customer.Name']").val(obj.name);
+    $("#AssignTableForm input[name='Customer.Mobile']").val(obj.mobile);
+    $("#AssignTableForm input[name='Customer.TotalPerson']").val(
+      obj.totalperson
+    );
+    $("#AssignTableForm input[name='Tokenid']").val(obj.tokenid);
   });
 }
 
 $(document).ready(function () {
-  // When an accordion item is about to be collapsed
-  $(".accordion-collapse").on("hidden.bs.collapse", function () {
-    // SelectedTableIds = [];
-    console.log("Accordion closed", SelectedTableIds);
-  });
   LoadSectionList();
-
-  // Add Waiting Token Validations
-   // Add Waiting Token Validations
-   $("#addWaitingTokenForm").validate({
-    rules: {
-      "Customer.Email": {
-        required: true,
-        email: true,
-      },
-      "Customer.Name": {
-        required: true,
-      },
-      "Customer.Mobile": {
-        required: true,
-        digits: true,
-        minlength: 10,
-        maxlength: 10,
-      },
-      "Customer.TotalPerson": {
-        required: true,
-        number: true,
-        min: 1,
-      },
-      SectionId: {
-        required: true,
-      },
-    },
-    messages: {
-      "Customer.Email": {
-        required: "Please enter the Email",
-        email: "Please enter a valid Email (e.g. name@example.com)",
-      },
-      "Customer.Name": {
-        required: "Please enter a Name",
-      },
-      "Customer.Mobile": {
-        required: "Please enter a Mobile Number",
-        digits: "Please enter digits only",
-        minlength: "Mobile number must be 10 digits",
-        maxlength: "Mobile number must be 10 digits",
-      },
-      "Customer.TotalPerson": {
-        required: "Please enter the No of People",
-        number: "Please enter a valid number",
-        min: "No of People must be at least 1",
-      },
-      SectionId: {
-        required: "Please select the Section",
-      },
-    },
-    errorElement: "span",
-    errorClass: "text-danger",
-    highlight: function (element) {
-      $(element).addClass("is-invalid");
-    },
-    unhighlight: function (element) {
-      $(element).removeClass("is-invalid"); 
-    },
-  });
-  // Assign Table Token Validations
-  $("#TableAssignForm").validate({
-    rules: {
-      "Customer.Email": {
-        required: true,
-        email: true,
-      },
-      "Customer.Name": {
-        required: true,
-      },
-      "Customer.Mobile": {
-        required: true,
-        digits: true,
-        minlength: 10,
-        maxlength: 10,
-      },
-      "Customer.TotalPerson": {
-        required: true,
-        number: true,
-        min: 1,
-      },
-      SectionId: {
-        required: true,
-      },
-    },
-    messages: {
-      "Customer.Email": {
-        required: "Please enter the Email",
-        email: "Please enter a valid Email (e.g. name@example.com)",
-      },
-      "Customer.Name": {
-        required: "Please enter a Name",
-      },
-      "Customer.Mobile": {
-        required: "Please enter a Mobile Number",
-        digits: "Please enter digits only",
-        minlength: "Mobile number must be 10 digits",
-        maxlength: "Mobile number must be 10 digits",
-      },
-      "Customer.TotalPerson": {
-        required: "Please enter the No of People",
-        number: "Please enter a valid number",
-        min: "No of People must be at least 1",
-      },
-      SectionId: {
-        required: "Please select the Section",
-      },
-    },
-    errorElement: "span",
-    errorClass: "text-danger",
-    highlight: function (element) {
-      $(element).addClass("is-invalid");
-    },
-    unhighlight: function (element) {
-      $(element).removeClass("is-invalid");
-    },
-  });
-
-
-
-  // reset validation after modal close
-
-  $("#waitingtokenmodal").on("hidden.bs.modal", function () {
-    // Reset form fields
-    $("#addWaitingTokenForm")[0].reset();
-
-    // Reset validation
-    var validator = $("#addWaitingTokenForm").validate();
-    validator.resetForm();
-
-    // Remove is-invalid classes
-    $("#addWaitingTokenForm ").find(".is-invalid").removeClass("is-invalid");
-  });
-
-  // reset validation after offcanvas close
-
-  $("#offcanvasRight").on("hidden.bs.offcanvas", function () { 
-    // Reset form fields
-    $("#TableAssignForm")[0].reset();
-
-    // Reset validation
-    var validator = $("#TableAssignForm").validate();
-    validator.resetForm();
-
-    // Remove is-invalid classes
-    $("#addWaitingTokenForm ").find(".is-invalid").removeClass("is-invalid");
-  });
-
-  // submit waiting token form
-
-  $("#addWaitingTokenForm").on("submit", function (e) {
-    e.preventDefault();
-
-    if (!$(this).valid()) {
-      return;
-    }
-
-    var formdata = new FormData(this);
-
-    $.ajax({
-      type: "POST",
-      url: "/OrderAppWaitingList/AddWaitingToken",
-      data: formdata,
-      contentType: false,
-      processData: false,
-      success: function (response) {
-        // Close the offcanvas
-        var modal = document.getElementById("waitingtokenmodal");
-        bootstrap.Modal.getInstance(modal).hide();
-
-        LoadSectionList();
-
-        response.success
-          ? toastr.success(response.message)
-          : toastr.error(response.message);
-      },
-      error: function (xhr, status, error) {
-        console.error("Error assigning table:", error);
-      },
-    });
-    
-    
-  });
-
-  // submit assign table form
-
-  $("#TableAssignForm").on("submit", function (e) {
-    e.preventDefault();
-
-    if (!$(this).valid()) {
-      return;
-    }
-
-    var formdata = new FormData(this);
-    selectedTableList.forEach(function (id) {
-      formdata.append("TableId", id);
-    });
-    console.log("Selected Table List:", selectedTableList);
-    $.ajax({
-      type: "POST",
-      url: "/OrderAppTable/AssignTable",
-      data: formdata,
-      contentType: false,
-      processData: false,
-      success: function (response) {
-        console.log("Table assigned successfully");
-        // Close the offcanvas
-        var offcanvasElement = document.getElementById("offcanvasRight");
-        var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
-        bsOffcanvas.hide();
-
-        selectedTableList = [];
-        console.log("done", selectedTableList);
-        LoadSectionList();
-      },
-      error: function (xhr, status, error) {
-        console.error("Error assigning table:", error);
-      },
-    });
-  });
 });

@@ -425,7 +425,7 @@ input[type="password"]::-ms-clear {
   overflow-y: hidden;
   display: block;
 }
-#modifierGroupSelectBoxForAddEdit {
+#modifierGroupSelectBoxForAddEdit,#tableSelectBox {
   white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;

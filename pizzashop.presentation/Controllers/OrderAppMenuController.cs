@@ -27,7 +27,7 @@ public class OrderAppMenuController : OrderAppBaseController
         return PartialView("~/Views/OrderAppMenu/_CategoryList.cshtml", model);
     }
 
-    public async Task<IActionResult> GetMenuitemListById(int catid, string searchkeyword,bool isfav)
+    public async Task<IActionResult> GetMenuitemListById(int catid, string searchkeyword,bool isfav = false)
     {
         var model =await _orderAppMenuservice.GetMenuItem(catid, searchkeyword,isfav);
 
@@ -38,5 +38,12 @@ public class OrderAppMenuController : OrderAppBaseController
         var model =await _orderAppMenuservice.GetModifierGroupsByItemId(itemid);
 
         return PartialView("~/Views/OrderAppMenu/_Menuitems.cshtml", model);
+    }
+
+    public async Task<IActionResult> ChangeStatusOfFavouriteItem(int itemid=0)
+    {
+        var response = await _orderAppMenuservice.ChangeStatusOfFavouriteItem(itemid);
+
+        return Json(new {message=response.Message,success = response.Success});
     }
 }

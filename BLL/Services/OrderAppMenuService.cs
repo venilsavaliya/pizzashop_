@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +60,7 @@ public class OrderAppMenuService : IOrderAppMenuService
 
                     // Add other fields as necessary
                 })
+                .OrderBy(i=>i.ItemId)
                 .ToListAsync();
 
             return items;
@@ -83,7 +85,7 @@ public class OrderAppMenuService : IOrderAppMenuService
              from mgm in _context.ItemModifiergroupMappings
              where mgm.ItemId == i.ItemId && mgm.Isdeleted != true
              join mgMinMax in _context.Itemsmodifiergroupminmaxmappings
-                 on new { mgm.ItemId, mgm.ModifierGroupId } equals new {  mgMinMax.ItemId, ModifierGroupId = mgMinMax.ModifiergroupId }
+                 on new { mgm.ItemId, mgm.ModifierGroupId } equals new { mgMinMax.ItemId, ModifierGroupId = mgMinMax.ModifiergroupId }
              join mg in _context.Modifiersgroups
                  on mgm.ModifierGroupId equals mg.ModifiergroupId
              select new OrderAppModifier
@@ -117,30 +119,41 @@ public class OrderAppMenuService : IOrderAppMenuService
 
     }
 
-//    public async Task<OrderAppModifierItemList> GetModifierGroupsByItemId(int itemId)
-//     {
-//         try
-//         {
-//            from i in _context.Items
-//            where i.ItemId == itemId && i.Isdeleted != true
-//            join mgminmax in _context.Itemsmodifiergroupminmaxmappings 
-//            on i.ItemId equals mgminmax.ItemId
-//            join mgm in _context.Modifieritemsmodifiersgroups 
-//            on mgminmax.ModifiergroupId equals mgm.ModifiergroupId
-//            join mg in _context.Modifiersgroups 
-//            on mgm.ModifiergroupId equals mg.ModifiergroupId
-//            join mgi in _context.Modifieritems
-//            on mgm.ModifierId equals mgi.ModifierId
-//         }
-//         catch (System.Exception)
-//         {
+    public async Task<AuthResponse> ChangeStatusOfFavouriteItem(int itemid)
+    {
+        try
+        {
+            if (itemid == 0)
+            {
+                return new AuthResponse
+                {
+                    Message = "Invalid ItemId!",
+                    Success = false
+                };
+            }
 
-//             throw;
-//         }
+            var item = _context.Items.FirstOrDefault(i => i.ItemId == itemid);
 
-//     }
+            if (item != null)
+            {
+                item.Isfavourite = !item.Isfavourite;
+            }
 
-   
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Message = "Favourite status Changed Succefully!",
+                Success = true
+            };
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
 
 
 

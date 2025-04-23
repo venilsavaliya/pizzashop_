@@ -1,5 +1,6 @@
 @{
   Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
+  ViewData["Title"] = "Table";
 }
 @model List<DAL.ViewModels.SectionNameViewModel>
 <div class="p-3">
@@ -34,64 +35,17 @@
 
 @* ===== modal ======= *@
 
-
- 
-<div class="modal fade" id="waitingtokenmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="AddEditWaitingTokenModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Waiting Token</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body"> 
-        <form id="addWaitingTokenForm" class="d-flex flex-column gap-3">
-                    <input type="text" class="form-control" name="TokenId" hidden>
-                    <div class="form-floating">
-                        <input type="email" class="form-control" name="Customer.Email" placeholder="name@example.com">
-                        <label>Email</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="text" class="form-control" name="Customer.Name" placeholder="Name">
-                        <label>Name</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="text" maxlength="10" class="form-control" name="Customer.Mobile"
-                            placeholder="Mobile No.">
-                        <label>Mobile</label>
-                    </div>
+    <div class="modal-content" id="AddEditWaitingTokenModalContent">
 
-                    <div class="d-flex justify-content-between gap-2 row">
-                        <div class="col">
-                            <div class="form-floating">
-                                <input type="number" class="form-control" name="Customer.TotalPerson"
-                                    placeholder="No. Of Person">
-                                <label>No. Of Person</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-floating">
-                                <select class="form-select disabled-toggle" name="SectionId">
-                                    <option value="">Section</option>
-                                    @foreach (var c in Model)
-                                    {
-                                        <option value=@c.SectionId>@c.SectionName</option>
-                                    }
-                                </select>
-                                <label>Section</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn custom-btn-bg text-white">Save</button>
-                        <button type="button" class="btn custom-blue-border" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-      </div>
+      @* Partial View Of Add Waiting Token Modal *@
 
     </div>
   </div>
 </div>
+
 @* ===== Off Canvas ====== *@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
@@ -104,48 +58,10 @@
       @* pv of waiting customer *@
     </div>
     <h5 class="custom-blue">Customer Detail</h5>
-    <form id="TableAssignForm" class="d-flex flex-column gap-3">
-      <input type="text" name="TokenId" hidden>
-      <div class="form-floating">
-        <input type="email" class="form-control" name="Customer.Email" placeholder="name@example.com">
-        <label>Email</label>
-      </div>
-      <div class="form-floating">
-        <input type="text" class="form-control" name="Customer.Name" placeholder="Name">
-        <label>Name</label>
-      </div>
-      <div class="form-floating">
-        <input type="text" maxlength="10" class="form-control" name="Customer.Mobile" placeholder="Mobile No.">
-        <label>Mobile</label>
-      </div>
 
-      <div class="d-flex justify-content-between gap-2 row">
-        <div class="col">
-          <div class="form-floating">
-            <input type="number" class="form-control" name="Customer.TotalPerson" placeholder="No. Of Person">
-            <label>No. Of Person</label>
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-floating">
-            <select class="form-select disabled-toggle" name="SectionId">
-              <option selected value="">Section</option>
-              @foreach (var c in Model)
-              {
-                <option value="@c.SectionId">@c.SectionName</option>
-              }
-            </select>
-            <label>Section</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-end gap-2">
-        <button type="submit" class="btn custom-btn-bg text-white">Assign</button>
-        <button type="button" class="btn custom-blue-border" data-bs-dismiss="offcanvas">Cancel</button>
-      </div>
-    </form>
-
+    <div id="TableAssignOffcanvasForm">
+        @* Partial View Of Table Assign Form *@
+    </div>
 
   </div>
 </div>

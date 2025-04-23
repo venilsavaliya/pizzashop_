@@ -37,7 +37,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             {
                 SectionId = s.SectionId,
                 SectionName = s.SectionName,
-                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Sectionid == s.SectionId && t.Completiontime ==null).Count()
+                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Sectionid == s.SectionId && t.Completiontime == null).Count()
 
             }).ToListAsync();
 
@@ -56,6 +56,43 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
         }
     }
 
+    // Get data For Add Edit Waiting Token
+
+    public async Task<AddEditWaitingTokenViewModel> GetAddEditWaitingTokenDetail(int id = 0)
+    {
+        var sectionlist = _context.Sections.Select(i => new SectionNameViewModel
+        {
+            SectionId = i.SectionId,
+            SectionName = i.SectionName,
+            Description = i.Description
+        }).ToList();
+
+        var model = new AddEditWaitingTokenViewModel();
+
+        model.Sections = sectionlist;
+
+        if (id != 0)
+        {
+            var waitingtoken = _context.Waitingtokens.FirstOrDefault(i => i.Tokenid == id);
+            if (waitingtoken != null)
+            {
+                model.Tokenid = id;
+                model.Sectionid = waitingtoken.Sectionid;
+                model.Customer = _context.Customers.Select(i => new AddCustomerViewModel
+                {
+                    CustomerId = i.CustomerId,
+                    Email = i.Email,
+                    Mobile = i.Mobile,
+                    Name = i.Name,
+                    TotalPerson = i.Totalperson ?? 0,
+                    TotalVisit = i.TotalVisit,
+                }).FirstOrDefault(j => j.CustomerId == waitingtoken.Customerid) ?? new AddCustomerViewModel();
+            }
+
+        }
+        return model;
+    }
+
     // Add waiting token 
 
     public async Task<AuthResponse> AddWaitingToken(AddEditWaitingTokenViewModel model)
@@ -65,7 +102,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             var customer = model.Customer;
 
             //this will return id of newly created customer or existing customer
-            var customerid = _customerservice.AddCustomer(customer).Result;
+            var customerid = await _customerservice.AddCustomer(customer);
 
             var token = _httpContext.HttpContext.Request.Cookies["jwt"];
             var userid = _userservices.GetUserIdfromToken(token);
@@ -73,14 +110,43 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             // if we get token id than we simply update the token
             if (model.Tokenid != null)
             {
+
+
                 var existingwaitingtoken = _context.Waitingtokens.FirstOrDefault(t => t.Tokenid == model.Tokenid);
                 existingwaitingtoken.Sectionid = model.Sectionid;
                 existingwaitingtoken.Customerid = customerid;
                 existingwaitingtoken.Totalperson = model.Customer.TotalPerson;
+                existingwaitingtoken.Modifiedby = userid;
             }
             // else we create new token
             else
             {
+                // first we check if there is already running token exist with same email
+                var existingtoken = _context.Waitingtokens.FirstOrDefault(t => t.Customerid == customerid && t.Completiontime == null);
+
+                if (existingtoken != null)
+                {
+                    return new AuthResponse
+                    {
+                        Success = false,
+                        Message = "Waiting Token Already Existed!",
+                    };
+                }
+                else
+                {
+
+                    var isCustomerInShop = _context.Diningtables.FirstOrDefault(t => t.Customerid == customerid);
+
+                    if (isCustomerInShop != null)
+                    {
+                        return new AuthResponse
+                        {
+                            Success = false,
+                            Message = "Customer is Already Assigned a Table!",
+                        };
+                    }
+                }
+
                 var waitingtoken = new Waitingtoken
                 {
                     Customerid = customerid,
@@ -121,7 +187,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             var waitingtokenlist = await (
                 from token in _context.Waitingtokens
                 join customer in _context.Customers on token.Customerid equals customer.CustomerId
-                where token.Isdeleted == false && (sectionid == 0 || token.Sectionid == sectionid) && token.Completiontime ==null
+                where token.Isdeleted == false && (sectionid == 0 || token.Sectionid == sectionid) && token.Completiontime == null
                 select new WaitingTokenViewModel
                 {
                     Tokenid = token.Tokenid,
@@ -188,8 +254,10 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
     public async Task<List<TableViewModel>> GetAvailableTableList(int SectionId)
     {
         try
-        {   var availablestatus = _context.Tablestatuses.FirstOrDefault(s=>s.Statusname==Constants.Available)!.Id;
-            var tables = await _context.Diningtables.Where(t=> t.SectionId==SectionId && t.Status==availablestatus && t.Isdeleted!=true).Select(i=> new TableViewModel{
+        {
+            var availablestatus = _context.Tablestatuses.FirstOrDefault(s => s.Statusname == Constants.Available)!.Id;
+            var tables = await _context.Diningtables.Where(t => t.SectionId == SectionId && t.Status == availablestatus && t.Isdeleted != true).Select(i => new TableViewModel
+            {
                 TableId = i.TableId,
                 Name = i.Name,
                 Capacity = i.Capacity
@@ -199,9 +267,9 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
         }
         catch (System.Exception)
         {
-            
+
             throw;
         }
     }
-}   
+}
 

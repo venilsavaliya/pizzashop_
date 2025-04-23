@@ -35,7 +35,7 @@
                         </div>
 
                         <div class="custom-blue-border custom-blue p-2 d-flex align-items-center rounded text-nowrap"
-                            type="button" onclick="openWaitingTokenModal(this)" section-id="@i.SectionId" >
+                            type="button" onclick="openAddEditWaitingTokenModal(this)" section-id="@i.SectionId" >
                             <span>+ Waiting Token</span>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                 <div class="accordion-body d-flex flex-wrap gap-3 justify-content-start align-items-center">
                     @foreach (var j in i.Tables)
                     {
-                        <div class="card p-3 d-flex flex-column gap-2" onclick="toggleBorder(this)" table-status="@j.Status" table-id="@j.TableId"
+                        <div class="card p-3 d-flex flex-column gap-2" onclick="toggleBorder(this)" table-status="@j.Status" table-id="@j.TableId" table-capacity="@j.Capacity"
                             style="width: 270px; @(j.Status == 1 ? "background-color:var(--table-available-bg)" : j.Status == 3 ? "background-color: var(--table-assigned-bg)" : j.Status == 2 ? "background-color: var(--table-running-bg)" : "")">
                             <div class="d-flex justify-content-between">
                                 <h4 class="fw-bolder">@j.Name</h4>

@@ -4,7 +4,7 @@
     data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"
     section-id="" onclick="LoadWaitingList(0)">
 
-    <div class="fw-bolder text-nowrap">All <span class="p-1 px-2 text-white bg-secondary border rounded-circle">@Model.TotalWaitingToken</span></div>
+    <div class="fw-bolder text-nowrap">All <span class="p-1 px-2 text-black custom-bg-grey border rounded-circle">@Model.TotalWaitingToken</span></div>
 
 </div>
 @foreach (var c in Model.section)
@@ -12,6 +12,6 @@
     <div class="d-flex justify-content-center gap-2 nav-link p-3 text-nowrap" id='nav-tab-@c.SectionId' data-bs-toggle="tab"
         data-bs-target="#nav-home" type="button" role="tab" aria-selected="true" section-id="@c.SectionId"
         section-name="@c.SectionName" onclick="LoadWaitingList(@c.SectionId)">
-        <div class="fw-bolder" section-id="@c.SectionId">@c.SectionName <span class="p-1 px-2 text-white bg-secondary border rounded-circle">@c.TotalWaitingToken</span></div>
+        <div class="fw-bolder" section-id="@c.SectionId">@c.SectionName <span class="p-1 px-2 text-black custom-bg-grey border rounded-circle">@c.TotalWaitingToken</span></div>
     </div>
 }

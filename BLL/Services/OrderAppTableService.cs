@@ -48,7 +48,7 @@ public class OrderAppTableService : IOrderAppTableService
     }
 
     public async Task<AuthResponse> AssignTableAsync(TableAssignViewModel model)
-    {
+    { 
         try
         {
             var customerid = 0;

@@ -410,9 +410,7 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Image).HasColumnName("image");
             entity.Property(e => e.Isavailable).HasColumnName("isavailable");
             entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
-            entity.Property(e => e.Isfavourite)
-                .HasDefaultValueSql("false")
-                .HasColumnName("isfavourite");
+            entity.Property(e => e.Isfavourite).HasColumnName("isfavourite");
             entity.Property(e => e.ItemName)
                 .HasMaxLength(50)
                 .HasColumnName("item_name");

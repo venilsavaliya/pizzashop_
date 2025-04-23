@@ -681,7 +681,7 @@ function ClearListOfModifierItems() {
   $("#modifieritem_main_checkbox_addmodal").prop("checked", false);
 }
 
-  // Delete Modifier Group Modal
+  // Delete Modifier Group Modal 
 
   $(document).on('click','#deleteModifierGroupBtn',function(e){
     console.log("hey")

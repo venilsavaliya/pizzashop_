@@ -39,7 +39,7 @@ public partial class Item
 
     public bool? Isdeleted { get; set; }
 
-    public bool? Isfavourite { get; set; }
+    public bool Isfavourite { get; set; }
 
     public int? Unit { get; set; }
 
