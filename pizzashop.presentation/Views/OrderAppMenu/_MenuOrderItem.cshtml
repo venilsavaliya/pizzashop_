@@ -1,0 +1,75 @@
+@model DAL.ViewModels.MenuOrderItemViewModel
+
+@{
+    decimal modifierItemTotalAmount = 0;
+}
+
+<tr>
+    <td class="align-middle">
+        <div class="accordian-header" style="border: none;">
+            <div class="d-flex justify-content-between align-items-center ">
+                <div class="MenuItem-accordian-button collapsed d-flex justify-content-between" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo">
+                    <div class="d-flex align-items-center  gap-4">
+                        <div style="background-color: transparent;"><img src="~/images/icons/drop-down-arrow.svg" alt=""
+                                height="20" class="accordion-arrow">
+                        </div>
+                        <div class="text-nowrap mt-1" style="font-weight: 500;">
+                            @Model.ItemName
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+        <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlush">
+            <div class="accordion-body d-flex flex-wrap gap-3 justify-content-start align-items-center"
+                style="border: none;padding-bottom: 0;">
+                <ul>
+
+                    @foreach (var i in Model.ModifierItems)
+                    {
+
+                        modifierItemTotalAmount+=i.Rate??0;
+
+                        <li>
+                            <div class="d-flex align-items-center gap-4 ">
+                                <span>@i?.ModifierName</span>
+                                <span>@i?.Rate</span>
+                            </div>
+
+                        </li>
+                    }
+
+                </ul>
+
+            </div>
+            <div class="d-flex justify-content-end p-2">
+
+            </div>
+        </div>
+    </td>
+    <td class="align-middle">
+        <div class="quantity-section d-flex rounded" style="border: 1px solid black;">
+            <div class="px-2 align-self-center "><i class="bi bi-dash text-black"></i>
+            </div>
+            <input type="text" value="2" class="quantityInput">
+            <div class="px-2 align-self-center "><i class="bi bi-plus text-black"></i>
+            </div>
+        </div>
+    </td>
+    <td class="align-middle">
+
+        <div class="d-flex flex-column">
+            <span>₹ @Model.Rate</span>
+            <span>₹ @modifierItemTotalAmount</span>
+        </div>
+    </td>
+    <td class="align-middle">
+        <i class="bi bi-trash3"></i>
+    </td>
+
+</tr>

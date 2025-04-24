@@ -425,7 +425,8 @@ input[type="password"]::-ms-clear {
   overflow-y: hidden;
   display: block;
 }
-#modifierGroupSelectBoxForAddEdit,#tableSelectBox {
+#modifierGroupSelectBoxForAddEdit,
+#tableSelectBox {
   white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
@@ -471,8 +472,16 @@ input[type="password"]::-ms-clear {
   transition: transform 0.3s ease;
   transform: rotate(270deg); /* default (right) */
 }
+.accordion-arrow
+{
+  transition: transform 0.3s ease;
+  transform: rotate(270deg); /* default (right) */
+}
 
 .accordion-button:not(.collapsed) .accordion-arrow {
+  transform: rotate(360deg); /* down */
+}
+.MenuItem-accordian-button:not(.collapsed) .accordion-arrow {
   transform: rotate(360deg); /* down */
 }
 
@@ -517,19 +526,57 @@ input[type="password"]::-ms-clear {
   z-index: 100;
 }
 
-
-@media only screen and (max-width:768px) {
-  #category-menu
-  {
+@media only screen and (max-width: 768px) {
+  #category-menu {
     width: 100%;
     height: 250px;
     margin-bottom: 50px;
   }
-  #ModifierGroup_menu
-  {
+  #ModifierGroup_menu {
     width: 100%;
     height: 250px;
     margin-bottom: 50px;
   }
- 
 }
+
+.orderTakingMenu {
+  min-height: 600px;
+  max-height: 800px;
+}
+
+.orderTakingMenuIcon {
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  align-items: center;
+}
+
+.accordion-button:not(.collapsed) {
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125) !important;
+  color: black;
+  background-color: white;
+}
+
+.quantityInput {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  outline: none;
+  border: none;
+}
+
+#OrderTable{
+  border-collapse: separate;
+  border-spacing: 10px;
+}
+#OrderTable tbody tr{
+  outline: thin solid #ced4da;
+  border-radius: 5px;
+}
+
+.skyblue_bg
+{
+  background-color: rgb(200, 232, 245);
+}
+ 

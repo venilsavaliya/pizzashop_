@@ -60,7 +60,7 @@ public class OrderAppMenuService : IOrderAppMenuService
 
                     // Add other fields as necessary
                 })
-                .OrderBy(i=>i.ItemId)
+                .OrderBy(i => i.ItemId)
                 .ToListAsync();
 
             return items;
@@ -154,7 +154,53 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
     }
 
+    public async Task<MenuItemModifierGroupMappiingViewModel> GetModifierItemsOfMenuItem(int id)
+    {
+        try
+        {
+            if (id == 0)
+            {
+                return new MenuItemModifierGroupMappiingViewModel();
+            }
 
+            var data = new MenuItemModifierGroupMappiingViewModel();
+            var item = _context.Items.FirstOrDefault(i => i.ItemId == id);
+            data.ItemId = id;
+            data.ItemName = item?.ItemName ?? "";
+            data.Rate = item?.Rate??0;
+            data.TaxPercentage = item?.TaxPercentage??0;
+            
+
+            var modgroupdata = _context.Itemsmodifiergroupminmaxmappings
+                                .Include(i => i.Modifiergroup)
+                                    .ThenInclude(i => i.Modifieritemsmodifiersgroups)
+                                        .ThenInclude(i => i.Modifier);
+
+            data.ModifierGroups = modgroupdata.Where(i => i.ItemId == id).Select(i => new ModifierGroupMinMaxMapping
+            {
+                ModifiergroupId = i.ModifiergroupId,
+                MaxValue = i.MaxValue,
+                MinValue = i.MinValue,
+                Name = i.Modifiergroup.Name,
+                ModifierItems = i.Modifiergroup.Modifieritemsmodifiersgroups
+                                .Where(mg => mg.Modifier != null)
+                                .Select(mg => new ModifierItemNamePriceViewModel
+                                {
+                                    ModifierId = mg.Modifier!.ModifierId,
+                                    ModifierName = mg.Modifier.ModifierName,
+                                    Rate = mg.Modifier.Rate
+                                }).ToList()
+
+            }).ToList();
+
+            return data;
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
 
 
 }

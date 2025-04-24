@@ -12,4 +12,6 @@ public interface IOrderAppMenuService
 
     public Task<AuthResponse> ChangeStatusOfFavouriteItem(int itemid);
 
+    public Task<MenuItemModifierGroupMappiingViewModel> GetModifierItemsOfMenuItem(int id);
+
 }

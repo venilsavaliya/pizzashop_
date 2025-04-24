@@ -1,5 +1,7 @@
 using BLL.Interfaces;
+using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace pizzashop.presentation.Controllers;
 
@@ -45,5 +47,26 @@ public class OrderAppMenuController : OrderAppBaseController
         var response = await _orderAppMenuservice.ChangeStatusOfFavouriteItem(itemid);
 
         return Json(new {message=response.Message,success = response.Success});
+    }
+
+    public async Task<IActionResult> GetModifierItemsOfMenuItem(int id = 0)
+    {
+        var response =  await _orderAppMenuservice.GetModifierItemsOfMenuItem(id);
+
+        return PartialView("~/Views/OrderAppMenu/_ModifierItemsList.cshtml", response);
+    }
+
+    [HttpPost]
+    public IActionResult GetMenuOrderItemPartialView(MenuOrderItemViewModel model)
+    {
+        string modifiersJson = Request.Form["ModifierItems"];
+
+        // deserialize the modifiersjson 
+        if (!string.IsNullOrEmpty(modifiersJson))
+        {
+            model.ModifierItems = JsonConvert.DeserializeObject<List<ModifierItemNamePriceViewModel>>(modifiersJson);
+        }
+
+        return PartialView("~/Views/OrderAppMenu/_MenuOrderItem.cshtml", model);
     }
 }

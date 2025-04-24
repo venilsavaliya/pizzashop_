@@ -1,0 +1,53 @@
+@model DAL.ViewModels.MenuItemModifierGroupMappiingViewModel
+
+
+
+<div class="modal-header">
+    <h1 class="modal-title fs-5" id="exampleModalLabel">@Model.ItemName</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body overflow-auto" style="max-height: 500px;">
+    <div class="d-flex flex-column gap-3">
+
+
+   
+    @foreach(var i in Model.ModifierGroups)
+    {   
+        <div class="d-flex align-items-center gap-2" >
+            <span class="text-secondary fw-bold">@i.Name </span> <span>(You Can Choose Minimun - @i.MinValue & Maximum - @i.MaxValue options)</span>
+        </div>
+        <div class="d-flex flex-wrap gap-3">
+
+            @foreach(var j in i.ModifierItems)
+            {
+                <div class="card position-relative" style="width: 200px; border-radius: 10px; overflow: hidden; min-height: 78px !important;" onclick="toggleSelectedModifier(this)" item-id="@j.ModifierId" data-obj='@Html.Raw(Json.Serialize(i))'>
+                    <!-- Stripe -->
+                    <div class="top-right-stripe" style="background-color:orange;"></div>
+                    <!-- Card Content -->
+                    <div class="d-flex">
+        
+                    <div class="d-flex flex-column flex-grow-1 py-1 px-2 justify-content-between">
+                        <div style="font-weight: 500;">@j.ModifierName</div>
+                        <div class="d-flex justify-content-between">
+                            <span>₹ @j.Rate</span>
+                            
+                        </div>
+                            </div>
+                    </div>
+                </div>
+            }
+
+       
+
+        </div>
+        
+    }
+     </div>
+</div>    
+
+ <div class="modal-footer">
+
+    <button class="custom-btn-bg text-white p-2 px-4 border rounded" onclick="handleAddOrder(this)" data-obj='@Html.Raw(Json.Serialize(Model))'>Add</button>
+    <button class="bg-white custom-blue-border rounded p-2 px-4 custom-blue" data-bs-dismiss="modal">close</button>
+       
+</div>

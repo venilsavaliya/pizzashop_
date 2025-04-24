@@ -1,4 +1,4 @@
-const selectedTables = new Set();
+const selectedTables = new Set(); 
 
 //open add edit waiting token modal
 function openAddEditWaitingTokenModal(ele, tableformid) {
