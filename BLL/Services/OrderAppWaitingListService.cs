@@ -271,5 +271,25 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             throw;
         }
     }
+
+    // Get order Id Od Table 
+
+    public int GetOrderIdOfTable (int tableid)
+    {
+        try
+        {
+            if(tableid==0)
+            {
+                return 0;
+            }
+
+            return _context.Tableorders.First(i=>i.TableId==tableid).OrderId??0;
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+    }
 }
 

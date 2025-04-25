@@ -27,6 +27,8 @@ public partial class Dishritem
 
     public string? Instructions { get; set; }
 
+    public double? Itemtax { get; set; }
+
     public virtual Category? Category { get; set; }
 
     public virtual ICollection<Dishrmodifier> Dishrmodifiers { get; } = new List<Dishrmodifier>();

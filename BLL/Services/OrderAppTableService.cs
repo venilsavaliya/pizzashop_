@@ -3,6 +3,7 @@ using BLL.Models;
 using BLL.Services;
 using DAL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -10,15 +11,17 @@ public class OrderAppTableService : IOrderAppTableService
 {
     private readonly ApplicationDbContext _context;
     private readonly ICustomerService _customerservice;
+    private readonly IHttpContextAccessor _httpContext;
+    private readonly IUserService _userservices;
 
 
-    public OrderAppTableService(ApplicationDbContext context, ICustomerService customerservice)
+    public OrderAppTableService(ApplicationDbContext context, ICustomerService customerservice,IHttpContextAccessor httpContext,IUserService userService)
     {
         _context = context;
         _customerservice = customerservice;
+        _httpContext = httpContext;
+        _userservices = userService;
     }
-
-
 
     public async Task<List<OrderAppTableViewModel>> GetOrderAppTableAndSectionList()
     {
@@ -48,9 +51,12 @@ public class OrderAppTableService : IOrderAppTableService
     }
 
     public async Task<AuthResponse> AssignTableAsync(TableAssignViewModel model)
-    { 
+    {
         try
         {
+            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var userid = _userservices.GetUserIdfromToken(token);
+
             var customerid = 0;
             // if token id present then it mean existing waiting token would be assigned a table
             if (model.Tokenid != null)
@@ -64,17 +70,35 @@ public class OrderAppTableService : IOrderAppTableService
             {
                 var customer = model.Customer;
                 //this will return id of newly created customer or existing customer
-                 customerid = await _customerservice.AddCustomer(customer);
+                customerid = await _customerservice.AddCustomer(customer);
             }
 
+            // this will create new order for the customer 
+            var order = new Order();
+            order.CustomerId = customerid;
+            order.OrderStatus = "Pending";
+            order.TotalPerson = model.Customer.TotalPerson;
+            order.PaymentMode = "Pending";
+            order.Createdby = userid;
+
+            _context.Orders.Add(order);
+
+            await _context.SaveChangesAsync();
 
             var currenttables = await _context.Diningtables.Where(dt => dt.Isdeleted == false && model.TableId.Contains(dt.TableId)).ToListAsync();
             foreach (var table in currenttables)
             {
-                table.Status =  _context.Tablestatuses.FirstOrDefault(s => s.Statusname == Constants.Assigned).Id;
+                table.Status = _context.Tablestatuses.FirstOrDefault(s => s.Statusname == Constants.Assigned).Id;
                 table.Customerid = customerid;
                 table.AssignTime = DateTime.Now;
                 table.CurrentOrderId = null;
+
+                //this will create table order mapping entry
+                var tableOrderMapping = new Tableorder();
+                tableOrderMapping.TableId = table.TableId;
+                tableOrderMapping.OrderId = order.OrderId;
+
+                _context.Tableorders.Add(tableOrderMapping);
 
                 _context.Diningtables.Update(table);
             }
@@ -92,5 +116,11 @@ public class OrderAppTableService : IOrderAppTableService
             throw new Exception(ex.Message);
         }
     }
+
+    public int GetOrderIdOfTable (int tableid)
+    {
+        return _context.Tableorders.First(i=>i.TableId==tableid).OrderId??0;
+    }
+
 }
 

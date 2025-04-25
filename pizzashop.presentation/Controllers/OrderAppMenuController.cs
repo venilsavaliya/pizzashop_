@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using BLL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,10 +17,11 @@ public class OrderAppMenuController : OrderAppBaseController
         _orderAppMenuservice = orderAppMenuservice;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(int orderid)
     {
+        var model = await _orderAppMenuservice.GetOrderDetailByOrderId(orderid);
         ViewBag.active = "Menu";
-        return View();
+        return View(model);
     }
 
     public IActionResult GetCategoryList()
@@ -29,29 +31,29 @@ public class OrderAppMenuController : OrderAppBaseController
         return PartialView("~/Views/OrderAppMenu/_CategoryList.cshtml", model);
     }
 
-    public async Task<IActionResult> GetMenuitemListById(int catid, string searchkeyword,bool isfav = false)
+    public async Task<IActionResult> GetMenuitemListById(int catid, string searchkeyword, bool isfav = false)
     {
-        var model =await _orderAppMenuservice.GetMenuItem(catid, searchkeyword,isfav);
+        var model = await _orderAppMenuservice.GetMenuItem(catid, searchkeyword, isfav);
 
         return PartialView("~/Views/OrderAppMenu/_Menuitems.cshtml", model);
     }
     public async Task<IActionResult> GetModifierGroupListById(int itemid)
     {
-        var model =await _orderAppMenuservice.GetModifierGroupsByItemId(itemid);
+        var model = await _orderAppMenuservice.GetModifierGroupsByItemId(itemid);
 
         return PartialView("~/Views/OrderAppMenu/_Menuitems.cshtml", model);
     }
 
-    public async Task<IActionResult> ChangeStatusOfFavouriteItem(int itemid=0)
+    public async Task<IActionResult> ChangeStatusOfFavouriteItem(int itemid = 0)
     {
         var response = await _orderAppMenuservice.ChangeStatusOfFavouriteItem(itemid);
 
-        return Json(new {message=response.Message,success = response.Success});
+        return Json(new { message = response.Message, success = response.Success });
     }
 
     public async Task<IActionResult> GetModifierItemsOfMenuItem(int id = 0)
     {
-        var response =  await _orderAppMenuservice.GetModifierItemsOfMenuItem(id);
+        var response = await _orderAppMenuservice.GetModifierItemsOfMenuItem(id);
 
         return PartialView("~/Views/OrderAppMenu/_ModifierItemsList.cshtml", response);
     }
@@ -68,5 +70,23 @@ public class OrderAppMenuController : OrderAppBaseController
         }
 
         return PartialView("~/Views/OrderAppMenu/_MenuOrderItem.cshtml", model);
+    }
+
+    public async Task<IActionResult> SaveOrder(string model)
+    {
+       
+        // deserialize the model to get viewmodel
+        if (!string.IsNullOrEmpty(model))
+        {
+            SaveOrderItemsViewModel Model = JsonConvert.DeserializeObject<SaveOrderItemsViewModel>(model);
+
+            var response = await _orderAppMenuservice.SaveOrderAsync(Model);
+
+            return Json(new { success = response.Success, message = response.Message });
+        }
+
+        return Json(new {success=false,message="Error Occured!"});
+
+
     }
 }

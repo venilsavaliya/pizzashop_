@@ -15,7 +15,7 @@ public class OrderAppTableController : BaseController
 
     private readonly IOrderAppWaitingListService _waitingservice;
 
-    public OrderAppTableController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IOrderAppTableService OrderAppTableService, IAuthorizationService authservice, ISectionServices sectioService,IOrderAppWaitingListService waitingservice) : base(jwtService, userService, adminservice, authservice)
+    public OrderAppTableController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IOrderAppTableService OrderAppTableService, IAuthorizationService authservice, ISectionServices sectioService, IOrderAppWaitingListService waitingservice) : base(jwtService, userService, adminservice, authservice)
     {
         _OrderAppTableService = OrderAppTableService;
         _sectioService = sectioService;
@@ -54,6 +54,14 @@ public class OrderAppTableController : BaseController
         var model = await _waitingservice.GetWaitingTokenList(sectionid);
 
         return PartialView("~/Views/OrderAppTable/_WaitingList.cshtml", model);
+    }
+
+    // Get Order Id Of Table
+
+    public int GetOrderIdOfTable(int tableid = 0)
+    {
+        var result = _OrderAppTableService.GetOrderIdOfTable(tableid);
+        return result;
     }
 
 

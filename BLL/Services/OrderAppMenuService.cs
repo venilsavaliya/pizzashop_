@@ -167,9 +167,9 @@ public class OrderAppMenuService : IOrderAppMenuService
             var item = _context.Items.FirstOrDefault(i => i.ItemId == id);
             data.ItemId = id;
             data.ItemName = item?.ItemName ?? "";
-            data.Rate = item?.Rate??0;
-            data.TaxPercentage = item?.TaxPercentage??0;
-            
+            data.Rate = item?.Rate ?? 0;
+            data.TaxPercentage = item?.TaxPercentage ?? 0;
+
 
             var modgroupdata = _context.Itemsmodifiergroupminmaxmappings
                                 .Include(i => i.Modifiergroup)
@@ -203,4 +203,120 @@ public class OrderAppMenuService : IOrderAppMenuService
     }
 
 
+    public async Task<OrderAppMenuMainViewModel> GetOrderDetailByOrderId(int orderid)
+    {
+
+        try
+        {
+            if (orderid == 0)
+            {
+                return new OrderAppMenuMainViewModel();
+            }
+
+            var order = _context.Orders
+                        .Include(o => o.Tableorders)
+                            .ThenInclude(to => to.Table)
+                                .ThenInclude(t => t.Section)
+                        .Include(o => o.Dishritems)
+                            .ThenInclude(m => m.Dishrmodifiers)
+                        .FirstOrDefault(o => o.OrderId == orderid && o.Isdeleted != true);
+
+            OrderAppMenuMainViewModel data = new OrderAppMenuMainViewModel
+            {
+                OrderId = order.OrderId,
+                CustomerId = order.CustomerId,
+                OrderComment = order.Instruction,
+                TableList = order.Tableorders.Select(i => new TableCapacityList
+                {
+                    TableId = i.TableId ?? 0,
+                    Capacity = i.Table.Capacity,
+                    Name = i.Table.Name,
+                }).ToList(),
+                OrderItems = order.Dishritems.Select(di => new MenuOrderItemViewModel
+                {
+                    ItemId = di.Itemid,
+                    ItemName = di.Itemname,
+                    ItemComment = di.Instructions,
+                    Rate = di.Itemprice ?? 0,
+                    Quantity = di.Quantity ?? 0,
+                    TaxPercentage = di.Itemtax ?? 0,
+                    ModifierItems = di.Dishrmodifiers.Select(i => new ModifierItemNamePriceViewModel
+                    {
+                        ModifierId = i.Modifieritemid,
+                        ModifierName = i.Modifieritemname ?? "",
+                        Rate = i.Modifieritemprice
+                    }).ToList()
+                }).ToList(),
+                SectionId = order.Tableorders.Select(i => i.Table?.SectionId).FirstOrDefault() ?? 0,
+                SectionName = order.Tableorders.Select(i => i.Table?.Section?.SectionName).FirstOrDefault() ?? "",
+                TaxList = _context.Taxes.Where(t => t.Isenable == true && t.Isdeleted != true).Select(i => new TaxViewModel
+                {
+                    TaxId = i.TaxId,
+                    Isdefault = i.Isdefault,
+                    Isenable = i.Isenable ?? false,
+                    TaxAmount = i.TaxAmount,
+                    TaxName = i.TaxName,
+                    Type = i.Type
+                }).ToList()
+            };
+
+            return data;
+
+
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+
+    }
+
+
+    public async Task<AuthResponse> SaveOrderAsync(SaveOrderItemsViewModel model)
+    {
+        try
+        {
+            foreach (var i in model.OrderItems)
+            {
+                Dishritem orderitem = new Dishritem();
+
+                orderitem.Itemid = i.ItemId;
+                orderitem.Orderid = model.OrderId;
+                orderitem.Quantity = i.Quantity;
+                orderitem.Itemprice = i.Rate;
+                orderitem.CategoryId = _context.Items.FirstOrDefault(j => j.ItemId == i.ItemId)?.CategoryId;
+                orderitem.Itemtax = i.TaxPercentage;
+                orderitem.Instructions = i.ItemComment;
+                orderitem.Itemname = i.ItemName;
+
+                await _context.Dishritems.AddAsync(orderitem);
+                await _context.SaveChangesAsync();
+
+                foreach(var j in i.ModifierItems)
+                {
+                    Dishrmodifier modifierItems = new Dishrmodifier();
+
+                    modifierItems.Dishid = orderitem.Dishid;
+                    modifierItems.Modifieritemname =  j.ModifierName;
+                    modifierItems.Modifieritemprice = (short)j.Rate;
+                    modifierItems.Modifieritemid = j.ModifierId;
+
+                    await _context.Dishrmodifiers.AddAsync(modifierItems);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return new AuthResponse{
+                Success=true,
+                Message = "Order Saved Succesfully!"
+            };
+
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
 }

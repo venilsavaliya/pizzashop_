@@ -85,7 +85,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main;Username=postgres;Password=Tatva@123");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=pizzashop_main1;Username=postgres;Password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -280,6 +280,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("itemname");
             entity.Property(e => e.Itemprice).HasColumnName("itemprice");
+            entity.Property(e => e.Itemtax)
+                .HasDefaultValueSql("0.0")
+                .HasColumnName("itemtax");
             entity.Property(e => e.Orderid).HasColumnName("orderid");
             entity.Property(e => e.Pendingquantity).HasColumnName("pendingquantity");
             entity.Property(e => e.Quantity).HasColumnName("quantity");

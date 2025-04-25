@@ -97,4 +97,6 @@ public class OrderController : BaseController
             PageMargins = new Rotativa.AspNetCore.Options.Margins(10, 10, 10, 10)
         };
     }
+
+ 
 }

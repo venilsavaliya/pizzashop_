@@ -109,7 +109,20 @@ $(document).on("submit", "#AddEditWaitingTokenForm", function (e) {
 function toggleBorder(ele) {
 
   if (ele.getAttribute("table-status") != 1) {
-    toastr.warning("This table is not available");
+    
+    //ajax call to get order id of the table
+
+    var tableid = $(ele).attr('table-id');
+
+    $.ajax({
+      type:"Get",
+      url:"/OrderAppTable/GetOrderIdOfTable",
+      data:{tableid :tableid },
+      success : function(data)
+      {
+        window.location.href= "/OrderAppMenu/index?orderid="+data;
+      }
+    })
     return;
   }
 
@@ -138,11 +151,16 @@ function toggleBorder(ele) {
 
 // Load Section List
 function LoadSectionList() {
+  
   $.ajax({
     type: "GET",
     url: "/OrderAppTable/GetSectionList",
     success: function (data) {
       $("#dining_table_container").html(data);
+
+      //update time 
+      updateTimers();
+      setInterval(updateTimers, 1000);
 
       // handle logic whic execute during any accordian get collapsed
 

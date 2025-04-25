@@ -38,7 +38,7 @@ function updateFileName(myFile, fileNameSpan, imageFileValidation) {
 function updateTimers() {
   $(".live-timer").each(function () {
     const createdAt = new Date($(this).data("createdat"));
-    console.log('hii',createdAt)
+
     const now = new Date();
     const diffMs = now - createdAt;
 

@@ -8,7 +8,7 @@ public partial class Item
     public int ItemId { get; set; }
 
     public int? CategoryId { get; set; }
- 
+
     public string ItemName { get; set; } = null!;
 
     public string Type { get; set; } = null!;

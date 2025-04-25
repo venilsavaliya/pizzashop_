@@ -14,4 +14,8 @@ public interface IOrderAppMenuService
 
     public Task<MenuItemModifierGroupMappiingViewModel> GetModifierItemsOfMenuItem(int id);
 
+    public Task<OrderAppMenuMainViewModel> GetOrderDetailByOrderId(int orderid);
+
+    public  Task<AuthResponse> SaveOrderAsync(SaveOrderItemsViewModel model);
+
 }

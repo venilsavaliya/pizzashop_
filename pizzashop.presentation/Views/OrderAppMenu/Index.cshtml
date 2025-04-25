@@ -1,6 +1,12 @@
+@model DAL.ViewModels.OrderAppMenuMainViewModel;
+
 @{
     Layout = "~/Views/Shared/_OrderAppLayout.cshtml";
     ViewData["Title"] = "Menu";
+    int index = 0;
+    decimal subtotal = 0;
+    decimal total = 0;
+
 }
 
 <div class="p-0">
@@ -35,180 +41,244 @@
             <div id="menuitems_card" class="d-flex gap-3 flex-wrap w-50">
                 @* pv of menuitems *@
             </div>
-            <div class="orderTakingMenu w-50 bg-white p-4">
+            @if (Model.OrderId != 0)
+            {
+                <div class="orderTakingMenu w-50 bg-white p-4">
 
+                    <div class="first-section d-flex justify-content-between">
+                        <div class="first d-flex align-items-center gap-2">
+                            <div class="p-1" style="background-color: rgb(215, 223, 250);"><img
+                                    src="~/images/icons/diningtable.png" height="30" alt=""></div>
+                            <div class="d-flex flex-column">
+                                <div>@Model.SectionName</div>
+                                <div> <span class="fw-bolder">Tables: </span>@foreach(var i in Model.TableList)
+                                    {
+                                        <span>@i.Name </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="first-section d-flex justify-content-between">
-                    <div class="first d-flex align-items-center gap-2">
-                        <div class="p-1" style="background-color: rgb(215, 223, 250);"><img
-                                src="~/images/icons/diningtable.png" height="30" alt=""></div>
-                        <div class="d-flex flex-column">
-                            <div>First Floor</div>
-                            <div> <span class="fw-bolder">Tables: </span>T1 T2</div>
+                        <div class="second d-flex gap-3 align-items-center">
+                            <div class="custom-blue-border orderTakingMenuIcon rounded"><i
+                                    class="bi bi-qr-code-scan custom-blue fs-4"></i></div>
+                            <div class="custom-blue-border orderTakingMenuIcon rounded"><i
+                                    class="bi bi-person-lines-fill fs-4 custom-blue"></i></div>
+                            <div class="custom-blue-border orderTakingMenuIcon rounded"><i
+                                    class="bi bi-chat-left-text fs-4 custom-blue"></i></div>
                         </div>
                     </div>
 
-                    <div class="second d-flex gap-3 align-items-center">
-                        <div class="custom-blue-border orderTakingMenuIcon rounded"><i
-                                class="bi bi-qr-code-scan custom-blue fs-4"></i></div>
-                        <div class="custom-blue-border orderTakingMenuIcon rounded"><i
-                                class="bi bi-person-lines-fill fs-4 custom-blue"></i></i></div>
-                        <div class="custom-blue-border orderTakingMenuIcon rounded"><i
-                                class="bi bi-chat-left-text fs-4 custom-blue"></i></div>
+                    <div class="second-section">
+                        <div class="table-responsive ">
+                            <table class="table table-borderless" id="OrderTable">
+                                <thead>
+
+                                    <tr>
+                                        <th style="width: 400px;">Items</th>
+                                        <th style="width: 100px;">Quantity</th>
+                                        <th style="width: 100px;">Amount</th>
+                                        <th></th>
+                                    </tr>
+
+                                </thead>
+                                <tbody id="MenuOrderItemTable">
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="third-section">
+                        <div class="d-flex w-100 align-ites-center justify-content-between">
+                            <span class="fs-5" style="font-weight: 500;">Sub Total</span>
+                            <span class="fs-5">₹@subtotal</span>
+                        </div>
+                        @foreach (var i in Model.TaxList)
+                        {
+                            <div class="d-flex w-100 align-ites-center justify-content-between">
+                                <span>@i.TaxName</span>
+                                <span>₹ @(i.Type == "Percentage" ? (subtotal * i.TaxAmount) / 100 : i.TaxAmount)</span>
+                                @{
+                                    if (i.Type == "Percentage")
+                                    {
+                                        total += (subtotal * i.TaxAmount) / 100;
+                                    }
+                                    else
+                                    {
+                                        total += i.TaxAmount;
+                                    }
+                                }
+                            </div>
+                        }
+
+                        <div class="d-flex w-100 align-ites-center justify-content-between">
+                            <span class="fs-5" style="font-weight: 500;">Total</span>
+                            <span class="fs-5">₹@total</span>
+                        </div>
+                    </div>
+
+                    <div class="fourth-section d-flex flex-column gap-2 mt-3">
+                        <div class=" d-flex justify-content-end gap-2">
+                            <button class="custom-btn-bg text-white p-2 border rounded" style="width: 200px;"
+                                onclick="SaveOrder()">
+                                Save</button>
+                            <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
+                                style="width: 200px;">Complete</button>
+                            <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
+                                style="width: 200px;">Generate Invoice</button>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
+                                style="width: 200px;">Cancel</button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="second-section">
-                    <div class="table-responsive ">
-                        <table class="table table-borderless" id="OrderTable">
-                            <thead>
+            }
+            </>
 
-                                <tr>
-                                    <th style="width: 400px;">Items</th>
-                                    <th style="width: 100px;">Quantity</th>
-                                    <th style="width: 100px;">Amount</th>
-                                    <th></th>
-                                </tr>
-
-                            </thead>
-                            <tbody id="MenuOrderItemTable">
-                                <tr>
-                                    <td class="align-middle">
-                                        <div class="accordian-header" style="border: none;">
-                                            <div class="d-flex justify-content-between align-items-center ">
-                                                <div class="MenuItem-accordian-button collapsed d-flex justify-content-between"
-                                                    type="button" data-bs-toggle="collapse"
-                                                    data-bs-target="#flush-collapseTwo">
-                                                    <div class="d-flex align-items-center  gap-4">
-                                                        <div style="background-color: transparent;"><img
-                                                                src="~/images/icons/drop-down-arrow.svg" alt=""
-                                                                height="20" class="accordion-arrow">
-                                                        </div>
-                                                        <div class="text-nowrap mt-1" style="font-weight: 500;">
-                                                            Panner Tikka Sandwich
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-
-
-
-                                            </div>
-                                        </div>
-                                        <div id="flush-collapseTwo" class="accordion-collapse collapse"
-                                            data-bs-parent="#accordionFlush">
-                                            <div class="accordion-body d-flex flex-wrap gap-3 justify-content-start align-items-center"
-                                                style="border: none;padding-bottom: 0;">
-                                                <ul>
-                                                    <li>
-                                                        <div class="d-flex align-items-center gap-4 ">
-                                                            <span>Onion</span>
-                                                            <span>₹20.00</span>
-                                                        </div>
-
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center gap-4 ">
-                                                            <span>capsicum</span>
-                                                            <span>₹30.00</span>
-                                                        </div>
-                                                    </li>
-
-                                                </ul>
-
-                                            </div>
-                                            <div class="d-flex justify-content-end p-2">
-
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="quantity-section d-flex rounded" style="border: 1px solid black;">
-                                            <div class="px-2 align-self-center "><i class="bi bi-dash text-black"></i>
-                                            </div>
-                                            <input type="text" value="2" class="quantityInput">
-                                            <div class="px-2 align-self-center "><i class="bi bi-plus text-black"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">
-
-                                        <div class="d-flex flex-column">
-                                            <span>₹ 200.00</span>
-                                            <span>₹ 50.00</span>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle">
-                                        <i class="bi bi-trash3"></i>
-                                    </td>
-
-                                </tr>
-                            </tbody>
-                        </table>
-
-
-
-
-
-
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="third-section">
-                    <div class="d-flex w-100 align-ites-center justify-content-between">
-                        <span class="fs-5" style="font-weight: 500;">Sub Total</span>
-                        <span class="fs-5">₹1780.00</span>
-                    </div>
-                    <div class="d-flex w-100 align-ites-center justify-content-between">
-                        <span>CGST</span>
-                        <span>₹213.00</span>
-                    </div>
-                    <div class="d-flex w-100 align-ites-center justify-content-between">
-                        <span>GST</span>
-                        <span>₹130.00</span>
-                    </div>
-                    <div class="d-flex w-100 align-ites-center justify-content-between">
-                        <span class="fs-5" style="font-weight: 500;">Total</span>
-                        <span class="fs-5">₹1780.00</span>
-                    </div>
-                </div>
-
-                <div class="fourth-section d-flex flex-column gap-2 mt-3">
-                    <div class=" d-flex justify-content-end gap-2">
-                    <button class="custom-btn-bg text-white p-2 border rounded" style="width: 200px;">
-                        Save</button>
-                    <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
-                        style="width: 200px;">Complete</button>
-                    <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
-                        style="width: 200px;">Generate Invoice</button>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
-                        style="width: 200px;">Cancel</button>
-                </div>
-                </div>
-                
-            </div>
         </div>
-
     </div>
-</div>
 
 
 @* ===== modal ======= *@
 
 
-<div class="modal fade z-3" id="selectmodifieritemmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" id="selectmodifieritemmodalContent">
-            
+    <div class="modal fade z-3" id="selectmodifieritemmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" id="selectmodifieritemmodalContent">
 
+
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/OrderAppMenu/OrderAppMenu.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/OrderAppMenu/OrderAppMenu.js"></script>
+
+    <script>
+
+
+        @* var TempOrderItemList = []; *@
+        var index = 0;
+
+        $(document).ready(function () {
+            var orderItems = @Html.Raw(Json.Serialize(Model.OrderItems));
+
+            // for getting existing order items
+            for (let i of orderItems) {
+                TempOrderItemList.push({
+                    Index: index,
+                    ItemId: i.itemId,
+                    ItemName: i.itemName,
+                    Rate: i.rate,
+                    Quantity: i.quantity,
+                    TaxPercentage: i.taxPercentage,
+                    ItemComment: i.itemComment,
+                    ModifierItems: i.modifierItems,
+                });
+                index++;
+            }
+
+            console.log("hello",TempOrderItemList);
+
+            // for appending existing order item to view
+            for (var i of TempOrderItemList) {
+
+                $.ajax({
+                    type: "Post",
+                    url: "/OrderAppMenu/GetMenuOrderItemPartialView",
+                    // contentType: "application/json",
+                    data: i,
+                    success: function (data) {
+                        $("#MenuOrderItemTable").append(data);
+                    },
+                });
+            }
+        
+        });
+
+            // handle add order
+            function handleAddOrder(ele) {
+                var alldata = $(ele).data("obj");
+                console.log(alldata);
+
+                const modifierItems = Array.from(selectedModifierItems).map(
+                    (item) => item.modifierItem
+                );
+
+                for (i of alldata.modifierGroups) {
+                    console.log(i.modifiergroupId);
+                    if (
+                        Array.from(selectedModifierItems).filter(
+                            (j) => j.modifierGroupId == i.modifiergroupId
+                        ) < i.minValue
+                    ) {
+                        toastr.warning("Select Minimum Number Of Modifier!");
+                        return;
+                    }
+                }
+
+                TempOrderItemList.push({
+                    Index: index,
+                    ItemId: alldata.itemId,
+                    ItemName: alldata.itemName,
+                    Rate: alldata.rate,
+                    Quantity: 1,
+                    TaxPercentage: alldata.taxPercentage,
+                    ItemComment: "",
+                    ModifierItems: modifierItems.flat(),
+                });
+                index++;
+
+                $.ajax({
+                    type: "Post",
+                    url: "/OrderAppMenu/GetMenuOrderItemPartialView",
+                    // contentType: "application/json",
+                    data: {
+                    @* ItemId: alldata.itemId,
+                    ItemName: alldata.itemName,
+                    Rate: alldata.rate,
+                    Quantity: 1,
+                    TaxPercentage: alldata.taxPercentage,
+                    ItemComment: "",
+                    ModifierItems: JSON.stringify(modifierItems.flat()), *@
+                    ...TempOrderItemList[0]
+                },
+            success: function (data) {
+                $("#MenuOrderItemTable").append(data);
+                var modal = bootstrap.Modal.getInstance($("#selectmodifieritemmodal"));
+
+                modal.hide();
+            },
+            });
+        }
+
+        //handle save order
+        function SaveOrder() {
+            var SaveOrder = JSON.stringify({
+                OrderId:@Model.OrderId,
+                OrderInstruction: "",
+                OrderItems: TempOrderItemList
+            });
+                console.log("hii",TempOrderItemList);
+            $.ajax({
+                type: "Post",
+                url: "/OrderAppMenu/SaveOrder",
+                @* contentType: false,
+                processData:false, *@
+                data: {
+                    model:SaveOrder
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+
+    </script>

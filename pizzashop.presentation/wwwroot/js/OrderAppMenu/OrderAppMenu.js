@@ -1,5 +1,7 @@
 const selectedModifierItems = new Set();
 
+const TempOrderItemList = [];
+
 // function to toggle active class between category
 function ToggleActiveClass() {
   $(".orderApp-category-item").on("click", function () {
@@ -101,7 +103,7 @@ function openSelectModifierItemModal(id) {
     data: { id: id },
     success: function (data) {
       $("#selectmodifieritemmodalContent").html(data);
-      console.log("hell",data);
+     
       ToggleActiveClass();
     },
   });
@@ -136,12 +138,10 @@ function AddModifierItemToOrder(ele) {
 // toggle selected modifier for item
 
 function toggleSelectedModifier(ele) {
-
   var itemid = $(ele).attr("item-id");
   let data = $(ele).data("obj");
 
-  console.log("hello",data)
-
+  console.log("hello", data);
 
   const count = Array.from(selectedModifierItems).filter(
     (i) => i.modifierGroupId == data.modifiergroupId
@@ -155,12 +155,11 @@ function toggleSelectedModifier(ele) {
   $(ele).toggleClass("skyblue_bg");
 
   if ($(ele).hasClass("skyblue_bg")) {
-  
     selectedModifierItems.add({
       id: itemid,
       modifierGroupId: data.modifiergroupId,
-      itemRate : data.rate,
-      itemName : data.name,
+      itemRate: data.rate,
+      itemName: data.name,
       modifierItem: data.modifierItems?.filter((i) => i.modifierId == itemid),
     });
   } else {
@@ -174,48 +173,9 @@ function toggleSelectedModifier(ele) {
   }
 
   console.log(selectedModifierItems);
-
 }
 
-function handleAddOrder(ele)
-{
-  var alldata = $(ele).data('obj');
-  console.log(alldata)
 
-  const modifierItems = Array.from(selectedModifierItems).map(item => item.modifierItem);
-
-
-
-
-
-  for(i of alldata.modifierGroups)
-  {
-    console.log(i.modifiergroupId)
-    if(Array.from(selectedModifierItems).filter(j=>j.modifierGroupId==i.modifiergroupId)<i.minValue)
-    {
-      toastr.warning("Select Minimum Number Of Modifier!")
-      return;
-    }
-  }
-  $.ajax({
-    type:"Post",
-    url:"/OrderAppMenu/GetMenuOrderItemPartialView",
-    // contentType: "application/json",
-    data: {
-      ItemId : alldata.itemId,
-      ItemName: alldata.itemName,
-      Rate:alldata.rate,
-      Quantity :1,
-      TaxPercentage:alldata.taxPercentage,
-      ItemComment : "",
-      ModifierItems:JSON.stringify(modifierItems.flat())
-    },
-    success:function(data)
-    {
-      $("#MenuOrderItemTable").append(data);
-    }
-  })
-}
 
 $(document).ready(function () {
   loadcategories();
@@ -231,7 +191,7 @@ $(document).ready(function () {
     }
   });
 
-  $("#selectmodifieritemmodal").on('hidden.bs.modal',function(){
+  $("#selectmodifieritemmodal").on("hidden.bs.modal", function () {
     selectedModifierItems.clear();
-  })
+  });
 });
