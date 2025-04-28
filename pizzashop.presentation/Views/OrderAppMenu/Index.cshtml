@@ -60,16 +60,16 @@
                         </div>
 
                         <div class="second d-flex gap-3 align-items-center">
-                            <div class="custom-blue-border orderTakingMenuIcon rounded"><i
+                            <div class="custom-blue-border orderTakingMenuIcon rounded" data-bs-toggle="modal" data-bs-target="#QrCodeModal"><i
                                     class="bi bi-qr-code-scan custom-blue fs-4"></i></div>
-                            <div class="custom-blue-border orderTakingMenuIcon rounded"><i
+                            <div class="custom-blue-border orderTakingMenuIcon rounded" id="CustomerDetailButton" order-id="@Model.OrderId"><i
                                     class="bi bi-person-lines-fill fs-4 custom-blue"></i></div>
-                            <div class="custom-blue-border orderTakingMenuIcon rounded"><i
+                            <div class="custom-blue-border orderTakingMenuIcon rounded InstructionBtn"  order-id="@Model.OrderId"><i
                                     class="bi bi-chat-left-text fs-4 custom-blue"></i></div>
                         </div>
                     </div>
 
-                    <div class="second-section">
+                    <div class="second-section overflow-auto" style="height: 400px;">
                         <div class="table-responsive ">
                             <table class="table table-borderless" id="OrderTable">
                                 <thead>
@@ -169,6 +169,22 @@
 
 @* ===== modal ======= *@
 
+    <div class="modal fade" id="QrCodeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Menu</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <img src="~/images/qrcode.jpg" alt="" height="200">
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <div class="modal fade z-3" id="selectmodifieritemmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -178,6 +194,23 @@
 
             </div>
         </div>
+    </div>
+
+
+    <div class="modal fade" id="CustomerDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="customerDetailModalContent">
+           @* Partial View For Edit Customer Detail  *@
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="InstructionsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="InstructionModalContent">
+           @* Partial View For Edit Customer Detail  *@
+        </div>
+    </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -196,9 +229,11 @@
 
             // for getting existing order items
             for (let i of orderItems) {
+                console.log("hello",i)
                 TempOrderItemList.push({
                     Index: index,
                     ItemId: i.itemId,
+                    DishId : i.dishId,
                     ItemName: i.itemName,
                     Rate: i.rate,
                     Quantity: i.quantity,
@@ -226,6 +261,7 @@
                     // contentType: "application/json",
                     data: i,
                     success: function (data) {
+                       
                         $("#MenuOrderItemTable").append(data);
                     },
                 });
@@ -266,6 +302,7 @@
                         Index: index,
                         ItemId: alldata.itemId,
                         ItemName: alldata.itemName,
+                        DishId:alldata.DishId,
                         Rate: alldata.rate,
                         Quantity: 1,
                         TaxPercentage: alldata.taxPercentage,
@@ -277,15 +314,7 @@
                     $.ajax({
                         type: "Post",
                         url: "/OrderAppMenu/GetMenuOrderItemPartialView",
-                        // contentType: "application/json",
                         data: {
-                            @* ItemId: alldata.itemId,
-                            ItemName: alldata.itemName,
-                            Rate: alldata.rate,
-                            Quantity: 1,
-                            TaxPercentage: alldata.taxPercentage,
-                            ItemComment: "",
-                            ModifierItems: JSON.stringify(modifierItems.flat()), *@
                             ...TempOrderItemList[TempOrderItemList.length - 1]
                         },
                         success: function (data) {
@@ -296,7 +325,6 @@
 
                             //Re-calculate Tax For added Item
                             calculateAllTaxes(TaxList, TempOrderItemList)
-
 
                         },
                     });
@@ -310,7 +338,7 @@
                 OrderInstruction: "",
                 OrderItems: TempOrderItemList
             });
-            console.log("hii", TempOrderItemList);
+        
             $.ajax({
                 type: "Post",
                 url: "/OrderAppMenu/SaveOrder",

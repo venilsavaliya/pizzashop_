@@ -17,5 +17,13 @@ public interface IOrderAppMenuService
     public Task<OrderAppMenuMainViewModel> GetOrderDetailByOrderId(int orderid);
 
     public  Task<AuthResponse> SaveOrderAsync(SaveOrderItemsViewModel model);
+    public int GetReadyQuantityOfItem(int id);
 
+    public Task<OrderCustomerDetailViewModel> GetCustomerDetailsByOrderId(int orderid);
+
+    public Task<AuthResponse> SaveCustomerDetail(OrderCustomerDetailViewModel model);
+
+    public Task<AuthResponse> SaveOrderInstruction(InstructionViewModel model);
+
+    public Task<InstructionViewModel> GetInstruction(int dishid = 0, int orderid = 0,int index=0,string Instruction="");
 }

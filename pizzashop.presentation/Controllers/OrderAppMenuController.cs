@@ -74,7 +74,7 @@ public class OrderAppMenuController : OrderAppBaseController
 
     public async Task<IActionResult> SaveOrder(string model)
     {
-       
+
         // deserialize the model to get viewmodel
         if (!string.IsNullOrEmpty(model))
         {
@@ -85,8 +85,52 @@ public class OrderAppMenuController : OrderAppBaseController
             return Json(new { success = response.Success, message = response.Message });
         }
 
-        return Json(new {success=false,message="Error Occured!"});
+        return Json(new { success = false, message = "Error Occured!" });
 
+    }
 
+    //Get Ready Quantiy Of Item 
+    public int GetReadyQuantityOfItem(int id = 0)
+    {
+        return _orderAppMenuservice.GetReadyQuantityOfItem(id);
+    }
+
+    public async Task<IActionResult> GetOrderCustomerDetail(int orderid)
+    {
+        var model = await _orderAppMenuservice.GetCustomerDetailsByOrderId(orderid);
+        return PartialView("~/Views/OrderAppMenu/_CustomerDetailForm.cshtml", model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SaveCustomerDetail(OrderCustomerDetailViewModel model)
+    {
+        var response = await _orderAppMenuservice.SaveCustomerDetail(model);
+        return Json(new { message = response.Message, success = response.Success });
+    }
+
+    public async Task<IActionResult> SaveOrderInstruction(InstructionViewModel model)
+    {
+        var response = await _orderAppMenuservice.SaveOrderInstruction(model);
+        return Json(new { message = response.Message, success = response.Success });
+    }
+
+    // Get Instruction Detail For Order Or Item
+    public async Task<IActionResult> GetInstruction(int orderid = 0, int dishid = 0,int index=0, string Instruction = "")
+    {
+        InstructionViewModel model = new InstructionViewModel();
+
+        model = await _orderAppMenuservice.GetInstruction(dishid, orderid,index, Instruction);
+
+        return PartialView("~/Views/OrderAppMenu/_OrderInstructionForm.cshtml", model);
+    }
+
+    // Save Instruction For Order Or Item
+    [HttpPost]
+
+    public async Task<IActionResult> SaveInstruction(InstructionViewModel model)
+    {
+        var response = await _orderAppMenuservice.SaveOrderInstruction(model);
+
+        return Json(new { message = response.Message, success = response.Success });
     }
 }

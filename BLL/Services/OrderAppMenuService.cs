@@ -237,6 +237,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 {
                     ItemId = di.Itemid,
                     ItemName = di.Itemname,
+                    DishId = di.Dishid,
                     ItemComment = di.Instructions,
                     Rate = di.Itemprice ?? 0,
                     Quantity = di.Quantity ?? 0,
@@ -301,6 +302,21 @@ public class OrderAppMenuService : IOrderAppMenuService
             var existingOrders = _context.Dishritems.Where(d => d.Orderid == model.OrderId)
                                     .Include(d => d.Dishrmodifiers);
 
+            var tables = _context.Tableorders.Where(i => i.OrderId == model.OrderId).ToList();
+
+            var runningStatusId = _context.Tablestatuses.FirstOrDefault(i => i.Statusname == Constants.Running)?.Id ?? 0;
+
+            foreach (var t in tables)
+            {
+                var table = _context.Diningtables.FirstOrDefault(i => i.TableId == t.TableId);
+
+                if (table.Status != runningStatusId)
+                {
+                    table.Status = runningStatusId;
+                    _context.SaveChangesAsync();
+                }
+            }
+
 
             List<MenuOrderItemViewModel> existingitems = existingOrders.Select(i => new MenuOrderItemViewModel
             {
@@ -320,7 +336,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             // 1. Delete items which are present in DB but not in incoming model
             foreach (var dbItem in existingitems)
             {
-                var isPresentinList = model.OrderItems.FirstOrDefault(x => dbItem.ItemId==x.ItemId && AreModifiersSame(x.ModifierItems , dbItem.ModifierItems));
+                var isPresentinList = model.OrderItems.FirstOrDefault(x => dbItem.ItemId == x.ItemId && AreModifiersSame(x.ModifierItems, dbItem.ModifierItems));
 
                 if (isPresentinList == null)
                 {
@@ -329,9 +345,11 @@ public class OrderAppMenuService : IOrderAppMenuService
                                     .Include(d => d.Dishrmodifiers)
                                     .FirstOrDefaultAsync(d => d.Orderid == model.OrderId && d.Dishid == dbItem.DishId);
 
-                    if(dishItem.Readyquantity>0){
-                        return new AuthResponse{
-                            Message=dishItem.Itemname+" Already Prepared Can't Delete!",
+                    if (dishItem.Readyquantity > 0)
+                    {
+                        return new AuthResponse
+                        {
+                            Message = dishItem.Itemname + " Already Prepared Can't Delete!",
                             Success = false
                         };
                     }
@@ -347,7 +365,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             // 2. Add or Update items from incoming model
             foreach (var item in model.OrderItems)
             {
-                var isPesentIndbItem = existingitems.FirstOrDefault(x => item.ItemId==x.ItemId && AreModifiersSame(x.ModifierItems , item.ModifierItems));
+                var isPesentIndbItem = existingitems.FirstOrDefault(x => item.ItemId == x.ItemId && AreModifiersSame(x.ModifierItems, item.ModifierItems));
 
                 if (isPesentIndbItem == null)
                 {
@@ -395,7 +413,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                         if (item.Quantity >= readyQty)
                         {
                             dbDishItem.Quantity = item.Quantity;
-                            dbDishItem.Pendingquantity = item.Quantity-dbDishItem.Readyquantity;
+                            dbDishItem.Pendingquantity = item.Quantity - dbDishItem.Readyquantity;
                             dbDishItem.Itemprice = item.Rate;
                             dbDishItem.Instructions = item.ItemComment;
                             dbDishItem.Itemtax = item.TaxPercentage;
@@ -458,4 +476,237 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
     }
 
+
+    public int GetReadyQuantityOfItem(int id)
+    {
+        try
+        {
+            if (id == 0)
+            {
+                return 0;
+            }
+
+            var orderitem = _context.Dishritems.FirstOrDefault(i => i.Dishid == id);
+
+            return orderitem.Readyquantity ?? 0;
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<OrderCustomerDetailViewModel> GetCustomerDetailsByOrderId(int orderid)
+    {
+        try
+        {
+            var customerId = _context.Orders
+                .FirstOrDefault(i => i.OrderId == orderid)?.CustomerId;
+
+            var customer = await _context.Customers.FirstOrDefaultAsync(i => i.CustomerId == customerId);
+
+            if (customer == null)
+            {
+                return new OrderCustomerDetailViewModel();
+            }
+
+            OrderCustomerDetailViewModel model = new OrderCustomerDetailViewModel
+            {
+                OrderId = orderid,
+                CustomerId = customer.CustomerId,
+                Name = customer.Name,
+                Email = customer.Email,
+                Mobile = customer.Mobile,
+                TotalPerson = customer.Totalperson ?? 1
+            };
+
+
+            return model;
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<AuthResponse> SaveCustomerDetail(OrderCustomerDetailViewModel model)
+    {
+        try
+        {
+            if (model.CustomerId == 0)
+            {
+                return new AuthResponse
+                {
+                    Message = "Invalid Customer Id!",
+                    Success = false
+                };
+            }
+
+            var customer = await _context.Customers.FirstOrDefaultAsync(i => i.CustomerId == model.CustomerId);
+
+            if (customer != null)
+            {
+                // Checking For Maximum Capacity Of Customer Table
+                var tables = _context.Diningtables.Where(i => i.Customerid == model.CustomerId).ToList();
+                int maxCapacity = 0;
+                foreach (var t in tables)
+                {
+                    maxCapacity += t.Capacity;
+                }
+                if (maxCapacity < model.TotalPerson)
+                {
+                    return new AuthResponse
+                    {
+                        Message = "Table(s) Capacity Is Only " + maxCapacity + " Person!",
+                        Success = false
+                    };
+                }
+                customer.Totalperson = model.TotalPerson;
+                customer.Name = model.Name;
+                customer.Mobile = model.Mobile;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Message = "Customer Details Saved Successfully!",
+                Success = true
+            };
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<AuthResponse> SaveOrderInstruction(InstructionViewModel model)
+    {
+        try
+        {
+
+            if(model.DishId != 0)
+            {
+                var dish = await _context.Dishritems.FirstOrDefaultAsync(i => i.Dishid == model.DishId);
+
+                if (dish != null)
+                {
+                    dish.Instructions = model.Instruction;
+
+                    await _context.SaveChangesAsync();
+
+                    return new AuthResponse
+                    {
+                        Message = "Instruction Saved Successfully!",
+                        Success = true
+                    };
+                }
+                else
+                {
+                    return new AuthResponse
+                    {
+                        Message = "Dish Not Found!",
+                        Success = false
+                    };
+                }
+            }
+            else if(model.OrderId !=0)
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId);
+
+                if (order != null)
+                {
+                    order.Instruction = model.Instruction;
+
+                    await _context.SaveChangesAsync();
+
+                    return new AuthResponse
+                    {
+                        Message = "Instruction Saved Successfully!",
+                        Success = true
+                    };
+                }
+                else
+                {
+                    return new AuthResponse
+                    {
+                        Message = "Order Not Found!",
+                        Success = false
+                    };
+                }
+            }
+            else
+            {
+                return new AuthResponse
+                {
+                    Message = "Order Not Found!",
+                    Success = false
+                };
+            }
+
+
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<InstructionViewModel> GetInstruction(int dishid = 0, int orderid = 0, int index=0,string GetInstruction = "")
+    {
+        try
+        {
+            if (dishid != 0)
+            {
+                var dish = await _context.Dishritems.FirstOrDefaultAsync(i => i.Dishid == dishid);
+
+                if (dish != null)
+                {
+                    var model = new InstructionViewModel();
+                    model.DishId = dish.Dishid;
+                    model.Instruction = dish.Instructions;
+
+                    return model;
+                }
+                else
+                {
+                    return new InstructionViewModel();
+                }
+            }
+            else if (orderid != 0)
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == orderid);
+
+                if (order != null)
+                {
+                    var model = new InstructionViewModel();
+                    model.OrderId = order.OrderId;
+                    model.Instruction = order.Instruction;
+
+                    return model;
+                }
+                else
+                {
+                    return new InstructionViewModel();
+                }
+            }
+            else
+            {
+                var model = new InstructionViewModel();
+                model.Instruction = GetInstruction;
+                model.Index = index;
+                return model;
+            }
+
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
 }

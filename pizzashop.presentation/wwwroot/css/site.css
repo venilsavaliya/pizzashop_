@@ -580,3 +580,12 @@ input[type="password"]::-ms-clear {
   background-color: rgb(200, 232, 245);
 }
  
+.invisible-scrollbar {
+  display: block;
+  overflow: auto;
+}
+
+.invisible-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+

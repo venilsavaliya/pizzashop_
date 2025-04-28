@@ -6,8 +6,6 @@ public class OrderAppMenuMainViewModel
 
     public int CustomerId {get;set;}
 
-    
-
     public int SectionId {get;set;}
 
     public string SectionName {get;set;} = "Unknown";

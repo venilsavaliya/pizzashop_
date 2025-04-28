@@ -147,7 +147,6 @@ function openAssignTableModal(ele) {
 
 // function to load  Waiting List
 function LoadWaitingList(sectionid) {
-  console.log("ok in");
 
   $.ajax({
     url: "/OrderAppWaitingList/GetWaitingList",

@@ -25,7 +25,7 @@ public class OrderAppWaitingListController : OrderAppBaseController
     public async Task<IActionResult> AddWaitingToken(AddEditWaitingTokenViewModel model)
     {
         var response = await _waitingservice.AddWaitingToken(model);
-        return Json(new { success = response.Success, message = response.Message });
+        return Json(new { success = response.Success, message = response.Message }); 
     }
     public async Task<IActionResult> AddEditWaitingToken(AddEditWaitingTokenViewModel model)
     {
@@ -50,17 +50,17 @@ public class OrderAppWaitingListController : OrderAppBaseController
 
     // Get List of Waiting Token 
 
-    public IActionResult GetWaitingList(int sectionid = 0)
+    public async Task<IActionResult> GetWaitingList(int sectionid = 0)
     {
-        var model = _waitingservice.GetWaitingTokenList(sectionid).Result;
+        var model = await _waitingservice.GetWaitingTokenList(sectionid);
 
         return PartialView("~/Views/OrderAppWaitingList/_waitingList.cshtml", model);
     }
     // Get List of Waiting Token 
 
-    public IActionResult GetSectionList()
+    public async Task<IActionResult> GetSectionList()
     {
-        var model = _waitingservice.GetSectionList().Result;
+        var model = await _waitingservice.GetSectionList();
 
         return PartialView("~/Views/OrderAppWaitingList/_sectionList.cshtml", model);
     }
@@ -69,7 +69,7 @@ public class OrderAppWaitingListController : OrderAppBaseController
     [HttpPost]
     public async Task<IActionResult> DeleteWaitingToken(int TokenId)
     {
-        var response = _waitingservice.DeleteWaitingToken(TokenId).Result;
+        var response = await _waitingservice.DeleteWaitingToken(TokenId);
 
         return Json(new { message = response.Message, success = response.Success });
     }

@@ -1,0 +1,29 @@
+@model DAL.ViewModels.InstructionViewModel;
+@{
+    string title = Model.DishId == 0 && Model.OrderId!=0 ? "Order Wise Instruction" : "Special Instruction";
+}
+
+
+<div class="modal-header">
+    <h1 class="modal-title fs-5" id="exampleModalLabel">@title</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <form action="" id="InstructionForm">
+        <input type="text" class="form-control" asp-for="OrderId" hidden>
+        <input type="text" class="form-control" asp-for="DishId" hidden>
+        <input type="text" class="form-control" asp-for="Index" hidden>
+
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="Instruction" asp-for="Instruction"
+                style="height: 100px"></textarea>
+            <label for="floatingTextarea2">Instruction</label>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <button type="submit" class="btn custom-btn-bg text-white">Save</button>
+            <button type="button" class="btn custom-blue-border" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    </form>
+
+</div>
