@@ -54,10 +54,10 @@
     </td>
     <td class="align-middle">
         <div class="quantity-section d-flex rounded" style="border: 1px solid black;">
-            <div class="px-2 align-self-center "><i class="bi bi-dash text-black"></i>
+            <div class="px-2 align-self-center " id="DecreaseQuantity"><i class="bi bi-dash text-black"></i>
             </div>
-            <input type="text" value="2" class="quantityInput">
-            <div class="px-2 align-self-center "><i class="bi bi-plus text-black"></i>
+            <input type="text" value="@Model.Quantity" class="quantityInput">
+            <div class="px-2 align-self-center " id="IncreaseQuantity" ><i class="bi bi-plus text-black"></i>
             </div>
         </div>
     </td>
@@ -69,7 +69,7 @@
         </div>
     </td>
     <td class="align-middle">
-        <i class="bi bi-trash3"></i>
+        <i class="bi bi-trash3 delete-item"></i>
     </td>
 
 </tr>

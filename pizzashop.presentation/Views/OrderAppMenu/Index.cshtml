@@ -95,29 +95,51 @@
                     <div class="third-section">
                         <div class="d-flex w-100 align-ites-center justify-content-between">
                             <span class="fs-5" style="font-weight: 500;">Sub Total</span>
-                            <span class="fs-5">₹@subtotal</span>
+                            <span id="subTotal">₹ 0.00</span>
                         </div>
                         @foreach (var i in Model.TaxList)
                         {
-                            <div class="d-flex w-100 align-ites-center justify-content-between">
-                                <span>@i.TaxName</span>
-                                <span>₹ @(i.Type == "Percentage" ? (subtotal * i.TaxAmount) / 100 : i.TaxAmount)</span>
-                                @{
-                                    if (i.Type == "Percentage")
-                                    {
-                                        total += (subtotal * i.TaxAmount) / 100;
+                            if (!i.Isdefault)
+                            {
+                                <div class="d-flex w-100 align-ites-center justify-content-between">
+                                    <div class="form-check">
+                                        <input class="form-check-input tax-checkbox" type="checkbox" data-taxid="@i.TaxId"
+                                            id="check_@i.TaxId">
+                                        <label class="form-check-label" for="check_@i.TaxId">
+                                            @i.TaxName
+                                        </label>
+                                    </div>
+                                    <span class="tax-value" data-taxid="@i.TaxId">₹ 0.00</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex w-100 align-ites-center justify-content-between">
+                                    <span>@i.TaxName</span>
+                                    <span class="tax-value" data-taxid="@i.TaxId">₹ @(i.Type == "Percentage" ? (subtotal * i.TaxAmount)
+                                                                    / 100 : i.TaxAmount)</span>
+                                    @{
+                                        if (i.Type == "Percentage")
+                                        {
+                                            total += (subtotal * i.TaxAmount) / 100;
+                                        }
+                                        else
+                                        {
+                                            total += i.TaxAmount;
+                                        }
                                     }
-                                    else
-                                    {
-                                        total += i.TaxAmount;
-                                    }
-                                }
-                            </div>
+                                </div>
+                            }
                         }
 
+
+                        <div class="d-flex w-100 align-ites-center justify-content-between">
+                            <span class="">Other Tax</span>
+                            <span id="otherTaxAmount">₹ 0.00</span>
+                        </div>
                         <div class="d-flex w-100 align-ites-center justify-content-between">
                             <span class="fs-5" style="font-weight: 500;">Total</span>
-                            <span class="fs-5">₹@total</span>
+                            <span id="grandTotal">₹ 0.00</span>
                         </div>
                     </div>
 
@@ -166,9 +188,11 @@
 
         @* var TempOrderItemList = []; *@
         var index = 0;
+        var TaxList = @Html.Raw(Json.Serialize(Model.TaxList))
 
         $(document).ready(function () {
             var orderItems = @Html.Raw(Json.Serialize(Model.OrderItems));
+            
 
             // for getting existing order items
             for (let i of orderItems) {
@@ -185,7 +209,13 @@
                 index++;
             }
 
-            console.log("hello",TempOrderItemList);
+            // event listener on every tax checkbox to recaculate tax
+            $(".tax-checkbox").on("change", function () {
+                calculateAllTaxes(TaxList, TempOrderItemList);
+            });
+
+            //calculate Tax For the First Time
+            calculateAllTaxes(TaxList, TempOrderItemList)
 
             // for appending existing order item to view
             for (var i of TempOrderItemList) {
@@ -200,63 +230,77 @@
                     },
                 });
             }
-        
+
         });
 
-            // handle add order
-            function handleAddOrder(ele) {
-                var alldata = $(ele).data("obj");
-                console.log(alldata);
+        // handle add order
+        function handleAddOrder(ele) {
+            var alldata = $(ele).data("obj");
 
-                const modifierItems = Array.from(selectedModifierItems).map(
-                    (item) => item.modifierItem
-                );
+            const modifierItems = Array.from(selectedModifierItems).map(
+                (item) => item.modifierItem
+            );
 
-                for (i of alldata.modifierGroups) {
-                    console.log(i.modifiergroupId);
-                    if (
-                        Array.from(selectedModifierItems).filter(
-                            (j) => j.modifierGroupId == i.modifiergroupId
-                        ) < i.minValue
-                    ) {
-                        toastr.warning("Select Minimum Number Of Modifier!");
-                        return;
-                    }
+            for (i of alldata.modifierGroups) {
+                console.log(i.modifiergroupId);
+                if (
+                    Array.from(selectedModifierItems).filter(
+                        (j) => j.modifierGroupId == i.modifiergroupId
+                    ) < i.minValue
+                ) {
+                    toastr.warning("Select Minimum Number Of Modifier!");
+                    return;
                 }
+            }
+            
+            const existing = TempOrderItemList.find(x =>
+                x.ItemId === alldata.itemId &&
+                JSON.stringify(x.ModifierItems) === JSON.stringify(modifierItems.flat())
+            );
 
-                TempOrderItemList.push({
-                    Index: index,
-                    ItemId: alldata.itemId,
-                    ItemName: alldata.itemName,
-                    Rate: alldata.rate,
-                    Quantity: 1,
-                    TaxPercentage: alldata.taxPercentage,
-                    ItemComment: "",
-                    ModifierItems: modifierItems.flat(),
-                });
-                index++;
+            if (existing) {
+                increaseQuantity(existing.Index);
+            } else {
 
-                $.ajax({
-                    type: "Post",
-                    url: "/OrderAppMenu/GetMenuOrderItemPartialView",
-                    // contentType: "application/json",
-                    data: {
-                    @* ItemId: alldata.itemId,
-                    ItemName: alldata.itemName,
-                    Rate: alldata.rate,
-                    Quantity: 1,
-                    TaxPercentage: alldata.taxPercentage,
-                    ItemComment: "",
-                    ModifierItems: JSON.stringify(modifierItems.flat()), *@
-                    ...TempOrderItemList[0]
-                },
-            success: function (data) {
-                $("#MenuOrderItemTable").append(data);
-                var modal = bootstrap.Modal.getInstance($("#selectmodifieritemmodal"));
+                    TempOrderItemList.push({
+                        Index: index,
+                        ItemId: alldata.itemId,
+                        ItemName: alldata.itemName,
+                        Rate: alldata.rate,
+                        Quantity: 1,
+                        TaxPercentage: alldata.taxPercentage,
+                        ItemComment: "",
+                        ModifierItems: modifierItems.flat(),
+                    });
+                    index++;
 
-                modal.hide();
-            },
-            });
+                    $.ajax({
+                        type: "Post",
+                        url: "/OrderAppMenu/GetMenuOrderItemPartialView",
+                        // contentType: "application/json",
+                        data: {
+                            @* ItemId: alldata.itemId,
+                            ItemName: alldata.itemName,
+                            Rate: alldata.rate,
+                            Quantity: 1,
+                            TaxPercentage: alldata.taxPercentage,
+                            ItemComment: "",
+                            ModifierItems: JSON.stringify(modifierItems.flat()), *@
+                            ...TempOrderItemList[TempOrderItemList.length - 1]
+                        },
+                        success: function (data) {
+                            $("#MenuOrderItemTable").append(data);
+                            var modal = bootstrap.Modal.getInstance($("#selectmodifieritemmodal"));
+
+                            modal.hide();
+
+                            //Re-calculate Tax For added Item
+                            calculateAllTaxes(TaxList, TempOrderItemList)
+
+
+                        },
+                    });
+                }
         }
 
         //handle save order
@@ -266,17 +310,24 @@
                 OrderInstruction: "",
                 OrderItems: TempOrderItemList
             });
-                console.log("hii",TempOrderItemList);
+            console.log("hii", TempOrderItemList);
             $.ajax({
                 type: "Post",
                 url: "/OrderAppMenu/SaveOrder",
                 @* contentType: false,
                 processData:false, *@
                 data: {
-                    model:SaveOrder
-                },
-                success: function (data) {
-                    console.log(data);
+                model: SaveOrder
+            },
+                success: function (response) {
+                    if(response.success)
+                    {
+                        toastr.success(response.message);
+                    }
+                    else
+                    {
+                        toastr.error(response.message);
+                    }
                 }
             })
         }

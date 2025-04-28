@@ -6,7 +6,7 @@ public class MenuOrderItemViewModel
 
     public int Index {get;set;}
 
-    // public int DishId {get;set;}
+    public int DishId {get;set;}
     public string ItemName { get; set; } = null!;
 
     public short Rate { get; set; }

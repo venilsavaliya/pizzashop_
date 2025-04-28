@@ -1,6 +1,6 @@
 const selectedModifierItems = new Set();
 
-const TempOrderItemList = [];
+let TempOrderItemList = [];
 
 // function to toggle active class between category
 function ToggleActiveClass() {
@@ -174,6 +174,167 @@ function toggleSelectedModifier(ele) {
 
   console.log(selectedModifierItems);
 }
+
+
+//======== Order Taking Menu ===========
+
+// Calculating The Tax 
+function calculateAllTaxes(taxList, TempOrderItemList) {
+  let subtotal = 0;
+  let otherTax = 0;
+  let total = 0;
+
+  // 1. Calculate subtotal and item-wise tax
+  TempOrderItemList.forEach(item => {
+      const baseRate = item.Rate;
+      const quantity = item.Quantity;
+      console.log(item)
+      // Sum modifier item rates
+      const modifierTotal = item.ModifierItems?.reduce((sum, mod) => {
+          return sum + (mod.rate || 0);
+      }, 0) || 0;
+
+      console.log(modifierTotal)
+
+      const itemTotal = (baseRate + modifierTotal) * quantity;
+      subtotal += itemTotal;
+
+      // Item tax
+      const itemTax = (itemTotal * item.TaxPercentage) / 100;
+      otherTax += itemTax;
+
+      console.log("itemtotal",itemTotal);
+  });
+
+  // 2. Show Subtotal
+  const subtotalSpan = document.getElementById("subTotal");
+  if (subtotalSpan) {
+      subtotalSpan.textContent = `₹ ${subtotal.toFixed(2)}`;
+  }
+
+  // 3. Show Other Tax
+  const otherTaxSpan = document.getElementById("otherTaxAmount");
+  if (otherTaxSpan) {
+      otherTaxSpan.textContent = `₹ ${otherTax.toFixed(2)}`;
+  }
+
+  total = subtotal + otherTax;
+
+  // 4. Apply additional taxes
+  taxList.forEach(tax => {
+   
+    const taxId = tax.taxId;
+      const taxType = tax.type;
+      const taxAmount = tax.taxAmount;
+      const isDefault = tax.isdefault;
+
+      let applyTax = isDefault;
+
+      if (!isDefault) {
+          const checkbox = document.querySelector(`.tax-checkbox[data-taxid="${taxId}"]`);
+          applyTax = checkbox && checkbox.checked;
+      }
+
+      let taxValue = 0;
+
+      if (applyTax) {
+          taxValue = taxType === "Percentage"
+              ? (subtotal * taxAmount) / 100
+              : taxAmount;
+
+          const taxValueSpan = document.querySelector(`.tax-value[data-taxid="${taxId}"]`);
+          if (taxValueSpan) {
+              taxValueSpan.textContent = `₹ ${taxValue.toFixed(2)}`;
+          }
+
+          total += taxValue;
+      } else {
+          const taxValueSpan = document.querySelector(`.tax-value[data-taxid="${taxId}"]`);
+          if (taxValueSpan) {
+              taxValueSpan.textContent = `₹ 0.00`;
+          }
+      }
+  });
+
+  // 5. Show grand total
+  const totalSpan = document.getElementById("grandTotal");
+  if (totalSpan) {
+      totalSpan.textContent = `₹ ${total.toFixed(2)}`;
+  }
+}
+
+// Function To Increase Quantity
+function increaseQuantity(index) {
+  const item = TempOrderItemList.find(x => x.Index == index);
+  if (item) {
+      item.Quantity += 1;
+
+      // Update Quantity In Row
+      const row = $(`#${index}`);
+      if (row) {
+        row.find(".quantityInput").val(item.Quantity);
+      }
+
+      // Recalculate tax and Total
+      calculateAllTaxes(TaxList, TempOrderItemList);
+  }
+}
+
+// Function To Decrease Quantity
+function decreaseQuantity(index) {
+  const item = TempOrderItemList.find(x => x.Index === index);
+  if (item && item.Quantity > 1) {
+      item.Quantity -= 1;
+
+      // Update Quantity In Row
+      const row = $(`#${index}`);
+      if (row) {
+        row.find(".quantityInput").val(item.Quantity);
+      }
+
+      // Recalculate totals
+      calculateAllTaxes(taxList, TempOrderItemList);
+  } 
+}
+
+// Function For Delete Order Item 
+function removeItem(index) {
+  // Remove item from the list
+  TempOrderItemList = TempOrderItemList.filter(item => item.Index != index);
+
+  // Remove the row from the DOM
+  $(`#${index}`).remove();
+
+  // Recalculate totals
+  calculateAllTaxes(TaxList, TempOrderItemList);
+}
+
+// Event Lisner For Delete Order Item
+$(document).on('click', '.delete-item', function () {
+  const index = $(this).closest("tr").attr("id");
+  if (index !== undefined) {
+      removeItem(parseInt(index));
+  }
+});
+
+// Event Lisner For Increasing Quantity Of Order Item
+$(document).on('click', '#IncreaseQuantity', function () {
+  const index = $(this).closest("tr").attr("id");
+  if (index !== undefined) {
+      increaseQuantity(parseInt(index));
+  }
+});
+
+// Event Lisner For Decreasing Quantity Of Order Item
+$(document).on('click', '#DecreaseQuantity', function () {
+  const index = $(this).closest("tr").attr("id");
+  if (index !== undefined) {
+      decreaseQuantity(parseInt(index));
+  }
+});
+
+
+
 
 
 

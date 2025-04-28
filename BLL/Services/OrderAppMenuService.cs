@@ -3,6 +3,7 @@ using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace BLL.Services;
 
@@ -272,51 +273,189 @@ public class OrderAppMenuService : IOrderAppMenuService
 
     }
 
-
-    public async Task<AuthResponse> SaveOrderAsync(SaveOrderItemsViewModel model)
+    public bool AreModifiersSame(List<ModifierItemNamePriceViewModel> list1, List<ModifierItemNamePriceViewModel> list2)
     {
         try
         {
-            foreach (var i in model.OrderItems)
-            {
-                Dishritem orderitem = new Dishritem();
+            var orderedList1 = list1.Where(x => x != null).OrderBy(x => x.ModifierId).ToList();
 
-                orderitem.Itemid = i.ItemId;
-                orderitem.Orderid = model.OrderId;
-                orderitem.Quantity = i.Quantity;
-                orderitem.Itemprice = i.Rate;
-                orderitem.CategoryId = _context.Items.FirstOrDefault(j => j.ItemId == i.ItemId)?.CategoryId;
-                orderitem.Itemtax = i.TaxPercentage;
-                orderitem.Instructions = i.ItemComment;
-                orderitem.Itemname = i.ItemName;
+            var orderedList2 = list2.Where(x => x != null).OrderBy(x => x.ModifierId).ToList();
 
-                await _context.Dishritems.AddAsync(orderitem);
-                await _context.SaveChangesAsync();
 
-                foreach(var j in i.ModifierItems)
-                {
-                    Dishrmodifier modifierItems = new Dishrmodifier();
+            var json1 = JsonConvert.SerializeObject(orderedList1);
+            var json2 = JsonConvert.SerializeObject(orderedList2);
 
-                    modifierItems.Dishid = orderitem.Dishid;
-                    modifierItems.Modifieritemname =  j.ModifierName;
-                    modifierItems.Modifieritemprice = (short)j.Rate;
-                    modifierItems.Modifieritemid = j.ModifierId;
-
-                    await _context.Dishrmodifiers.AddAsync(modifierItems);
-                    await _context.SaveChangesAsync();
-                }
-            }
-
-            return new AuthResponse{
-                Success=true,
-                Message = "Order Saved Succesfully!"
-            };
-
+            return json1 == json2;
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
 
             throw;
         }
+
     }
+    public async Task<AuthResponse> SaveOrderAsync(SaveOrderItemsViewModel model)
+    {
+        try
+        {
+            var existingOrders = _context.Dishritems.Where(d => d.Orderid == model.OrderId)
+                                    .Include(d => d.Dishrmodifiers);
+
+
+            List<MenuOrderItemViewModel> existingitems = existingOrders.Select(i => new MenuOrderItemViewModel
+            {
+                DishId = i.Dishid,
+                ItemId = i.Itemid,
+                ItemComment = i.Instructions,
+                ItemName = i.Itemname,
+                Quantity = i.Quantity ?? 1,
+                ModifierItems = i.Dishrmodifiers.Select(m => new ModifierItemNamePriceViewModel
+                {
+                    ModifierId = m.Modifieritemid,
+                    Rate = m.Modifieritemprice,
+                    ModifierName = m.Modifieritemname
+                }).ToList(),
+            }).ToList();
+
+            // 1. Delete items which are present in DB but not in incoming model
+            foreach (var dbItem in existingitems)
+            {
+                var isPresentinList = model.OrderItems.FirstOrDefault(x => dbItem.ItemId==x.ItemId && AreModifiersSame(x.ModifierItems , dbItem.ModifierItems));
+
+                if (isPresentinList == null)
+                {
+                    // No matching item found so Delete db item
+                    var dishItem = await _context.Dishritems
+                                    .Include(d => d.Dishrmodifiers)
+                                    .FirstOrDefaultAsync(d => d.Orderid == model.OrderId && d.Dishid == dbItem.DishId);
+
+                    if(dishItem.Readyquantity>0){
+                        return new AuthResponse{
+                            Message=dishItem.Itemname+" Already Prepared Can't Delete!",
+                            Success = false
+                        };
+                    }
+
+                    if (dishItem != null)
+                    {
+                        _context.Dishrmodifiers.RemoveRange(dishItem.Dishrmodifiers);
+                        _context.Dishritems.Remove(dishItem);
+                    }
+                }
+            }
+
+            // 2. Add or Update items from incoming model
+            foreach (var item in model.OrderItems)
+            {
+                var isPesentIndbItem = existingitems.FirstOrDefault(x => item.ItemId==x.ItemId && AreModifiersSame(x.ModifierItems , item.ModifierItems));
+
+                if (isPesentIndbItem == null)
+                {
+                    // Not present 
+                    Dishritem orderItem = new Dishritem
+                    {
+                        Itemid = item.ItemId,
+                        Orderid = model.OrderId,
+                        Quantity = item.Quantity,
+                        Pendingquantity = item.Quantity,
+                        Itemprice = item.Rate,
+                        CategoryId = _context.Items.FirstOrDefault(j => j.ItemId == item.ItemId)?.CategoryId,
+                        Itemtax = item.TaxPercentage,
+                        Instructions = item.ItemComment,
+                        Itemname = item.ItemName
+                    };
+
+                    await _context.Dishritems.AddAsync(orderItem);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var mod in item.ModifierItems)
+                    {
+                        Dishrmodifier modifier = new Dishrmodifier
+                        {
+                            Dishid = orderItem.Dishid,
+                            Modifieritemid = mod.ModifierId,
+                            Modifieritemprice = (short)mod.Rate,
+                            Modifieritemname = mod.ModifierName
+                        };
+
+                        await _context.Dishrmodifiers.AddAsync(modifier);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    // Present 
+                    var dbDishItem = await _context.Dishritems.FirstOrDefaultAsync(d => d.Orderid == model.OrderId && d.Itemid == item.ItemId && d.Dishid == isPesentIndbItem.DishId);
+
+                    if (dbDishItem != null)
+                    {
+                        var readyQty = dbDishItem.Readyquantity;
+
+                        // only update if item quantity is greater than ready quantity of the item
+                        if (item.Quantity >= readyQty)
+                        {
+                            dbDishItem.Quantity = item.Quantity;
+                            dbDishItem.Pendingquantity = item.Quantity-dbDishItem.Readyquantity;
+                            dbDishItem.Itemprice = item.Rate;
+                            dbDishItem.Instructions = item.ItemComment;
+                            dbDishItem.Itemtax = item.TaxPercentage;
+                            dbDishItem.Itemname = item.ItemName;
+                        }
+                        else
+                        {
+                            return new AuthResponse
+                            {
+                                Message = dbDishItem.Readyquantity + " Items Already Prepared Of " + dbDishItem.Itemname,
+                                Success = false
+                            };
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            // foreach (var i in model.OrderItems)
+            // {
+            //     Dishritem orderitem = new Dishritem();
+
+            //     orderitem.Itemid = i.ItemId;
+            //     orderitem.Orderid = model.OrderId;
+            //     orderitem.Quantity = i.Quantity;
+            //     orderitem.Itemprice = i.Rate;
+            //     orderitem.CategoryId = _context.Items.FirstOrDefault(j => j.ItemId == i.ItemId)?.CategoryId;
+            //     orderitem.Itemtax = i.TaxPercentage;
+            //     orderitem.Instructions = i.ItemComment;
+            //     orderitem.Itemname = i.ItemName;
+
+            //     await _context.Dishritems.AddAsync(orderitem);
+            //     await _context.SaveChangesAsync();
+
+            //     foreach (var j in i.ModifierItems)
+            //     {
+            //         Dishrmodifier modifierItems = new Dishrmodifier();
+
+            //         modifierItems.Dishid = orderitem.Dishid;
+            //         modifierItems.Modifieritemname = j.ModifierName;
+            //         modifierItems.Modifieritemprice = (short)j.Rate;
+            //         modifierItems.Modifieritemid = j.ModifierId;
+
+            //         await _context.Dishrmodifiers.AddAsync(modifierItems);
+            //         await _context.SaveChangesAsync();
+            //     }
+            // }
+
+            return new AuthResponse
+            {
+                Success = true,
+                Message = "Order Saved Succesfully!"
+            };
+
+        }
+        catch (System.Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+    }
+
 }
