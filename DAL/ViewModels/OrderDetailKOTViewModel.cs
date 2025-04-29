@@ -40,4 +40,6 @@ public class OrderDishKOTViewModel
     public int? PendingQuantity { get; set; }
 
     public int? ReadyQuantity { get; set; }
+
+    public int TotalQuantity {get;set;}
 }

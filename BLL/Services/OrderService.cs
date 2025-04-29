@@ -3,7 +3,7 @@ using BLL.Helper;
 using BLL.Interfaces;
 using BLL.Models;
 using DAL.Models;
-using DAL.ViewModels;
+using DAL.ViewModels; 
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -207,6 +207,7 @@ public class OrderService : IOrderService
         var order = await _context.Orders
             .Include(o => o.Customer)
             .Include(o => o.Invoice)
+            .Include(o => o.Ordertaxes)
             .Include(o => o.Tableorders)
                 .ThenInclude(to => to.Table)
                     .ThenInclude(t => t.Section)
@@ -243,13 +244,13 @@ public class OrderService : IOrderService
                     ModifierItemQuantity = m.Quantity
                 }).ToList()
             }).ToList(),
-            TaxList = order.Invoice != null
-    ? _context.Invoicertaxes
-        .Where(x => x.InvoiceId == order.Invoice.InvoiceId)
+            TaxList = order.Ordertaxes != null
+    ? _context.Ordertaxes
+        .Where(x => x.OrderId == id)
         .Select(t => new OrderTaxViewModel
         {
-            TaxAmount = t.TaxAmount,
-            TaxName = t.TaxName,
+            TaxAmount = t.Taxamount??0,
+            TaxName = t.Taxname,
             TaxType = t.Taxtype
         }).ToList()
     : new List<OrderTaxViewModel>()

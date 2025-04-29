@@ -57,6 +57,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Orderstatus> Orderstatuses { get; set; }
 
+    public virtual DbSet<Ordertax> Ordertaxes { get; set; }
+
     public virtual DbSet<PaymentMode> PaymentModes { get; set; }
 
     public virtual DbSet<Permission> Permissions { get; set; }
@@ -708,6 +710,36 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<Ordertax>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("ordertax_pkey");
+
+            entity.ToTable("ordertax");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.Taxamount)
+                .HasDefaultValueSql("0")
+                .HasColumnName("taxamount");
+            entity.Property(e => e.Taxid).HasColumnName("taxid");
+            entity.Property(e => e.Taxname)
+                .HasMaxLength(255)
+                .HasColumnName("taxname");
+            entity.Property(e => e.Taxtype)
+                .HasMaxLength(255)
+                .HasColumnName("taxtype");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Ordertaxes)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("ordertax_order_id_fkey");
+
+            entity.HasOne(d => d.Tax).WithMany(p => p.Ordertaxes)
+                .HasForeignKey(d => d.Taxid)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("ordertax_taxid_fkey");
         });
 
         modelBuilder.Entity<PaymentMode>(entity =>

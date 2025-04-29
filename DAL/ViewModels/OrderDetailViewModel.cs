@@ -55,7 +55,8 @@ public class OrderModifierViewModel
 }
 
 public class OrderTaxViewModel
-{
+{   
+    public int TaxId { get; set; }
     public string TaxName { get; set; } = null!;
 
     public string TaxType { get; set; }

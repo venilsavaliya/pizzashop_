@@ -6,7 +6,7 @@
 
 <tr id=@Model.Index>
 
-    <td class="align-middle InstructionBtn" dish-id="@Model.DishId" index="@Model.Index">
+    <td class="align-middle InstructionBtn" dish-id="@Model.DishId" index="@Model.Index" order-id="0">
         <div class="accordian-header" style="border: none;">
             <div class="d-flex justify-content-between align-items-center ">
                 <div class="MenuItem-accordian-button collapsed d-flex justify-content-between" type="button"
@@ -26,27 +26,30 @@
 
             </div>
         </div>
-        @if (Model.ModifierItems != null)
-        {
+
+        
             <div id="collapse-@Model.Index" class="accordion-collapse collapse" data-bs-parent="#accordionFlush">
                 <div class="accordion-body d-flex flex-wrap gap-3 justify-content-start align-items-center"
                     style="border: none;padding-bottom: 0;">
                     <ul>
-
-                        @foreach (var i in Model.ModifierItems)
+                        @if (Model.ModifierItems != null)
                         {
+                            @foreach (var i in Model.ModifierItems)
+                            {
+                                @if (Model.ModifierItems != null)
+                                    modifierItemTotalAmount += i.Rate ?? 0;
 
-                            modifierItemTotalAmount += i.Rate ?? 0;
+                                <li>
+                                    <div class="d-flex align-items-center gap-4 ">
+                                        <span>@i?.ModifierName</span>
+                                        <span> ₹@i?.Rate</span>
+                                    </div>
 
-                            <li>
-                                <div class="d-flex align-items-center gap-4 ">
-                                    <span>@i?.ModifierName</span>
-                                    <span> ₹@i?.Rate</span>
-                                </div>
+                                </li>
+                            }
 
-                            </li>
+
                         }
-
                         @if (Model.ItemComment != null)
                         {
                             <li>
@@ -68,7 +71,7 @@
 
                 </div>
             </div>
-        }
+        
 
     </td>
     <td class="align-middle">
@@ -84,12 +87,12 @@
     <td class="align-middle">
 
         <div class="d-flex flex-column">
-            <span>₹ @Model.Rate</span>
+            <span class="OrderItemTotal">₹ @(Model.Rate)</span>
             <span>₹ @modifierItemTotalAmount</span>
         </div>
     </td>
-    <td class="align-middle">
-        <i class="bi bi-trash3 delete-item"></i>
+    <td class="align-middle" dish-id="@Model.DishId">
+        <i class="bi bi-trash3 delete-item" dish-id="@Model.DishId"></i>
     </td>
 
 </tr>

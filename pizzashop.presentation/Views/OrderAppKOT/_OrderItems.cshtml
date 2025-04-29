@@ -15,7 +15,8 @@
             <tr>
                 <td class="d-flex">
                     <div class="form-check">
-                        <input class="form-check-input inner_checkbox_orderitem" type="checkbox" value="@i.DishId">
+                        <input class="form-check-input inner_checkbox_orderitem" type="checkbox" value="@i.DishId" ready-quantity="@i.ReadyQuantity"
+                            total-quantity="@i.TotalQuantity" />
                     </div>
                     <div class="d-flex flex-column">
                         <span class="">@i.ItemName</span>
@@ -40,12 +41,12 @@
                         <!-- Input Field -->
                         @if (i.PendingQuantity != null)
                         {
-                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner"
+                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner current_quantity"
                                 style="width: 60px;" max="@i.PendingQuantity" min="0" value="@i.PendingQuantity" />
                         }
                         else
                         {
-                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner"
+                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner current_quantity"
                                 style="width: 60px;" max="@i.ReadyQuantity" min="0" value="@i.ReadyQuantity" />
                         }
 

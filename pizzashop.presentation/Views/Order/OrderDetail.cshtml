@@ -1,7 +1,7 @@
 @model DAL.ViewModels.OrderDetailViewModel
 @{
     ViewData["Title"] = "Order Details Page";
-    decimal? total=0;
+    decimal total=0;
     int ct=1;
     decimal? taxAmount=0;
 }
@@ -87,7 +87,7 @@
                             <tr class="text-center">
                                 <td>@ct @{ct++;}</td>
                                 <td class="text-nowrap">@i.ItemName
-                                    <ul class="d-flex align-items-center justify-content-center">
+                                    <ul class="d-flex align-items-center justify-content-start flex-column">
                                         @foreach (var j in i.ModifierList)
                                         {
                                             <li>@j.ModifierItemName</li>
@@ -109,14 +109,21 @@
                                     }
                                 </td>
                                 <td>
-                                    <p class="m-0">
-                                        @(i.ItemPrice*i.ItemQuantity)
-                                        @{total=total + i.ItemPrice*i.ItemQuantity;}
-                                    </p>
-                                    @foreach (var j in i.ModifierList)
+                                    @{ 
+                                    var itemPrice = i.ItemPrice ?? 0;
+                                    var itemQty = i.ItemQuantity ?? 1;
+                                    var itemTotal = itemPrice * itemQty;
+                                    total += itemTotal;
+                                    }
+                                    <p class="m-0">@itemTotal</p>
+
+                                  @foreach (var j in i.ModifierList)
                                     {
-                                        <p class="m-0">@(j.ModifierItemQuantity*j.ModifierItemPrice)</p>
-                                        { total=total + j.ModifierItemQuantity*j.ModifierItemPrice;}      
+                                        var modQty = i.ItemQuantity ?? 1;
+                                        var modPrice = j.ModifierItemPrice ?? 0;
+                                        var modTotal = modQty * modPrice;
+                                        total += modTotal;
+                                        
                                     }
                                 </td>
                             </tr>
@@ -134,14 +141,12 @@
                     
                     @if(i.TaxType=="Percentage")
                     {
-                        <span>₹ @((total*i.TaxAmount/100)?.ToString("f2"))</span>
+                        <span>₹ @((total*i.TaxAmount/100))</span>
                         taxAmount = taxAmount+ (total*i.TaxAmount/100);
-    
                     }
                     else{
                         taxAmount = taxAmount + i.TaxAmount;
                         <span>₹ @(i.TaxAmount.ToString("f2"))</span>
-                        
                     }
 
                     </p>

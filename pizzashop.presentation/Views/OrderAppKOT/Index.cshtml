@@ -67,7 +67,8 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fw-bolder fs-5" id="exampleModalLabel">Order Id: #2</h1>
+                <h1 class="modal-title fw-bolder fs-5" id="exampleModalLabel">Order Id: #<span id="OrderIdModal"></span>
+                </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="QuantityForm">
@@ -293,6 +294,8 @@
             data: { orderId: orderId, isPending: isPending },
             success: function (data) {
                 $("#OrderItemTableContainer").html(data);
+                $("#OrderIdModal").text(orderId);
+                openorderDetailStatusModal()
                 attachOrderItemCheckboxEventListner();
             },
             error: function (error) {
@@ -301,7 +304,29 @@
         });
     }
 
+    // function to open orderDetailStatus Modal 
 
+    function openorderDetailStatusModal() {
+
+        var modal = new bootstrap.Modal(document.getElementById('orderDetailStatusModal'));
+        modal.show();
+
+    }
+
+    // handel checkbox for mark as prepared
+
+    $(document).on('change', ".inner_checkbox_orderitem", function () {
+        const isChecked = $(this).is(':checked');
+        const dishId = $(this).val();
+        const quantity = $(this).closest('tr').find('.current_quantity').val();
+        const totalQuantity = $(this).attr('total-quantity');
+
+        if (isChecked) {
+            if (quantity == totalQuantity) {
+                console.log("Mark As Prepared!")
+            }
+        } 
+    });
 
 
     let currentSlide = 0;

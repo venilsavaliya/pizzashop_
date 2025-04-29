@@ -2,6 +2,8 @@ const selectedModifierItems = new Set();
 
 let TempOrderItemList = [];
 
+let TempTaxList = [];
+
 // function to toggle active class between category
 function ToggleActiveClass() {
   $(".orderApp-category-item").on("click", function () {
@@ -23,7 +25,6 @@ function loadcategories() {
 }
 
 function loadMenuItems(catid, searchkeyword, isfav) {
-  console.log("catid", catid);
   // if(!catid)
   // {
   //   catid = $(".OrderApp_menu_active_option").data("catid");
@@ -177,24 +178,86 @@ function toggleSelectedModifier(ele) {
 
 //======== Order Taking Menu ===========
 
+//For Filling The Frontened Order List
+
+function SetOrderItemList(orderItems) {
+  index = 0;
+  TempOrderItemList = [];
+
+  for (let i of orderItems) {
+    TempOrderItemList.push({
+      Index: index,
+      ItemId: i.itemId,
+      DishId: i.dishId,
+      ItemName: i.itemName,
+      Rate: i.rate,
+      Quantity: i.quantity,
+      TaxPercentage: i.taxPercentage,
+      ItemComment: i.itemComment,
+      ModifierItems: i.modifierItems,
+    });
+    index++;
+  }
+}
+
+// for getting list Of Saved Order Items
+
+function GetOrderItemList(orderid) {
+  $.ajax({
+    type: "GET",
+    url: "/OrderAppMenu/GetMenuOrderItemList",
+    data: { orderid: orderid },
+    success: function (data) {
+      SetOrderItemList(data);
+
+      appendOrderItemPartialView();
+    },
+  });
+}
+
+// for appending existing order item to view
+async function appendOrderItemPartialView() {
+  $("#MenuOrderItemTable").empty();
+  for (var i of TempOrderItemList) {
+    const data = await getPartialViewAsync(i);
+    $("#MenuOrderItemTable").append(data);
+  }
+}
+
+// for getting the partial view of order item by perticular order
+function getPartialViewAsync(i) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "POST",
+      url: "/OrderAppMenu/GetMenuOrderItemPartialView",
+      data: i,
+      success: function (data) {
+        resolve(data);
+      },
+      error: function (err) {
+        reject(err);
+      },
+    });
+  });
+}
+
 // Calculating The Tax
 function calculateAllTaxes(taxList, TempOrderItemList) {
   let subtotal = 0;
   let otherTax = 0;
   let total = 0;
+  TempTaxList = [];
 
   // 1. Calculate subtotal and item-wise tax
   TempOrderItemList.forEach((item) => {
     const baseRate = item.Rate;
     const quantity = item.Quantity;
-    console.log(item);
+
     // Sum modifier item rates
     const modifierTotal =
       item.ModifierItems?.reduce((sum, mod) => {
         return sum + (mod.rate || 0);
       }, 0) || 0;
-
-    console.log(modifierTotal);
 
     const itemTotal = (baseRate + modifierTotal) * quantity;
     subtotal += itemTotal;
@@ -202,8 +265,6 @@ function calculateAllTaxes(taxList, TempOrderItemList) {
     // Item tax
     const itemTax = (itemTotal * item.TaxPercentage) / 100;
     otherTax += itemTax;
-
-    console.log("itemtotal", itemTotal);
   });
 
   // 2. Show Subtotal
@@ -216,6 +277,12 @@ function calculateAllTaxes(taxList, TempOrderItemList) {
   const otherTaxSpan = document.getElementById("otherTaxAmount");
   if (otherTaxSpan) {
     otherTaxSpan.textContent = `₹ ${otherTax.toFixed(2)}`;
+    TempTaxList.push({
+      TaxId: 0,
+      Type: "Flat Amount",
+      TaxAmount: otherTax,
+      TaxName: "Item Tax",
+    });
   }
 
   total = subtotal + otherTax;
@@ -239,6 +306,14 @@ function calculateAllTaxes(taxList, TempOrderItemList) {
     let taxValue = 0;
 
     if (applyTax) {
+      // storing tax in list
+      TempTaxList.push({
+        TaxId: taxId,
+        Type: taxType,
+        TaxAmount: taxAmount,
+        TaxName: tax.taxName,
+      });
+
       taxValue =
         taxType === "Percentage" ? (subtotal * taxAmount) / 100 : taxAmount;
 
@@ -277,6 +352,9 @@ function increaseQuantity(index) {
     const row = $(`#${index}`);
     if (row) {
       row.find(".quantityInput").val(item.Quantity);
+      // row.find(".OrderItemTotal").text(
+      //   `₹ ${(item.Rate * item.Quantity).toFixed(2)}`
+      // );
     }
 
     // Recalculate tax and Total
@@ -287,7 +365,6 @@ function increaseQuantity(index) {
 // Function To Decrease Quantity
 function decreaseQuantity(index, id) {
   const item = TempOrderItemList.find((x) => x.Index === index);
-  console.log("item", id);
 
   // ajax call to get ready quantity
   $.ajax({
@@ -295,19 +372,25 @@ function decreaseQuantity(index, id) {
     url: "/OrderAppMenu/GetReadyQuantityOfItem",
     data: { id: id },
     success: function (readyQuantity) {
+
       if (item && item.Quantity > 1) {
+
         if (item.Quantity > readyQuantity) {
-          console.log("hisdijf", readyQuantity);
+ 
           item.Quantity -= 1;
 
           // Update Quantity In Row
           const row = $(`#${index}`);
           if (row) {
             row.find(".quantityInput").val(item.Quantity);
+            // row.find(".OrderItemTotal").text(
+            //   `₹ ${(item.Rate * item.Quantity).toFixed(2)}`
+            // );
           }
 
           // Recalculate totals
           calculateAllTaxes(TaxList, TempOrderItemList);
+
         } else {
           toastr.error(readyQuantity + " Items Already Prepared !");
         }
@@ -331,9 +414,24 @@ function removeItem(index) {
 // Event Lisner For Delete Order Item
 $(document).on("click", ".delete-item", function () {
   const index = $(this).closest("tr").attr("id");
-  if (index !== undefined) {
-    removeItem(parseInt(index));
-  }
+  const dishid = $(this).attr("dish-id");
+
+  $.ajax({
+    type: "Get",
+    url: "/OrderAppMenu/GetReadyQuantityOfItem",
+    data: { id: dishid },
+    success: function (readyQuantity) {
+      if (readyQuantity != 0) {
+        toastr.error("You can't Delete These Items(s) "+ readyQuantity + " Items Already Prepared !");
+      }
+      else{
+        if (index !== undefined) {
+          removeItem(parseInt(index));
+        }
+      }
+    },
+  });
+  
 });
 
 // Event Lisner For Increasing Quantity Of Order Item
@@ -395,28 +493,32 @@ $(document).on("click", "#CustomerDetailButton", function () {
     },
   });
 });
+
 // Event Lisner For Opening Order Wise Instruction Modal
 $(document).on("click", ".InstructionBtn", function () {
   const orderid = $(this).attr("order-id");
   const dishid = $(this).attr("dish-id");
-  
+
   const index = $(this).attr("index");
 
-  var Instruction="";
+  var Instruction = "";
 
-  if(dishid == "0" && orderid == "0")
-  {
-    Instruction = TempOrderItemList.find((x) => x.Index == index).ItemComment
-     
+  if (dishid == "0" && orderid == "0") {
+    Instruction = TempOrderItemList.find((x) => x.Index == index).ItemComment;
   }
 
   $.ajax({
     type: "GET",
     url: "/OrderAppMenu/GetInstruction",
-    data: { orderid: orderid, dishid: dishid ,index:index,instruction:Instruction},
+    data: {
+      orderid: orderid,
+      dishid: dishid,
+      index: index,
+      instruction: Instruction,
+    },
     success: function (data) {
       $("#InstructionModalContent").html(data);
-      
+
       var modal = new bootstrap.Modal(
         document.getElementById("InstructionsModal")
       );
@@ -425,6 +527,7 @@ $(document).on("click", ".InstructionBtn", function () {
   });
 });
 
+// Save Instruction Orderwise And ItemWise
 $(document).on("submit", "#InstructionForm", function (e) {
   e.preventDefault();
 
@@ -433,15 +536,31 @@ $(document).on("submit", "#InstructionForm", function (e) {
   var dishid = formdata.get("DishId");
   var orderid = formdata.get("OrderId");
 
-  if(dishid == "0" && orderid == "0")
-  { var index = formdata.get("Index");
-    console.log(index)
-    TempOrderItemList.find((x) => x.Index == index).ItemComment = formdata.get("Instruction");
+  if (dishid == "0" && orderid == "0") {
+    var index = formdata.get("Index");
 
-    console.log("TempOrderItemList", TempOrderItemList);
+    TempOrderItemList.find((x) => x.Index == index).ItemComment =
+      formdata.get("Instruction");
 
+    toastr.success("Instruction Saved Successfully!");
+
+    bootstrap.Modal.getInstance(
+      document.getElementById("InstructionsModal")
+    ).hide();
+
+    appendOrderItemPartialView();
     return;
+  } else if (dishid != "0" && orderid == "0") {
+    var index = formdata.get("Index");
+
+    TempOrderItemList.find((x) => x.Index == index).ItemComment =
+      formdata.get("Instruction");
+
+    bootstrap.Modal.getInstance(
+      document.getElementById("InstructionsModal")
+    ).hide();
   }
+
   $.ajax({
     type: "POST",
     url: "/OrderAppMenu/SaveInstruction",
@@ -451,9 +570,12 @@ $(document).on("submit", "#InstructionForm", function (e) {
     success: function (data) {
       if (data.success) {
         toastr.success(data.message);
+
         bootstrap.Modal.getInstance(
           document.getElementById("InstructionsModal")
         ).hide();
+
+        appendOrderItemPartialView();
       } else {
         toastr.error(data.message);
       }

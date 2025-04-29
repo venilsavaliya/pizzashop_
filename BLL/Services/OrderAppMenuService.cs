@@ -248,7 +248,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                         ModifierName = i.Modifieritemname ?? "",
                         Rate = i.Modifieritemprice
                     }).ToList()
-                }).ToList(),
+                }).OrderBy(d => d.DishId).ToList(),
                 SectionId = order.Tableorders.Select(i => i.Table?.SectionId).FirstOrDefault() ?? 0,
                 SectionName = order.Tableorders.Select(i => i.Table?.Section?.SectionName).FirstOrDefault() ?? "",
                 TaxList = _context.Taxes.Where(t => t.Isenable == true && t.Isdeleted != true).Select(i => new TaxViewModel
@@ -299,6 +299,89 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
+            #region temporary Tax
+            // storing tax in order tax table
+
+            var DbTaxList = await _context.Ordertaxes.ToListAsync();
+
+            // 1.Remove Tax Record which is not in Model tax list 
+
+            var modelTaxIds = new HashSet<int>(model.TaxList.Select(i => i.TaxId));
+
+            foreach (var tax in DbTaxList)
+            {
+                if (!modelTaxIds.Contains(tax.Taxid ?? 0))
+                {
+                    _context.Ordertaxes.Remove(tax);
+                }
+            }
+
+            // 2. Add or Update Tax Record from incoming model
+
+            var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Select(i => i.Taxid ?? 0));
+            foreach (var tax in model.TaxList)
+            {
+                if (!DbTaxIds.Contains(tax.TaxId))
+                {
+                    Ordertax ordertax = new Ordertax
+                    {
+                        OrderId = model.OrderId,
+                        Taxid = tax.TaxId,
+                        Taxname = tax.TaxName,
+                        Taxtype = tax.Type,
+                        Taxamount = tax.TaxAmount
+                    };
+
+                    await _context.Ordertaxes.AddAsync(ordertax);
+                }
+                else
+                {
+                    if (tax.TaxId == 0)
+                    {
+                        var existingtax = _context.Ordertaxes.FirstOrDefault(i => i.OrderId == model.OrderId && i.Taxid == null);
+
+                        if (existingtax != null)
+                        {
+                            existingtax.Taxtype = tax.Type;
+                            existingtax.Taxname = tax.TaxName;
+                            existingtax.Taxamount = tax.TaxAmount;
+                        }
+                        else
+                        {
+                            Ordertax ordertax = new Ordertax
+                            {
+                                OrderId = model.OrderId,
+                                Taxid = null,
+                                Taxname = tax.TaxName,
+                                Taxtype = tax.Type,
+                                Taxamount = tax.TaxAmount
+                            };
+
+                            await _context.Ordertaxes.AddAsync(ordertax);
+                        }
+
+                    }
+                    else
+                    {
+                        var ordertax = await _context.Ordertaxes.FirstOrDefaultAsync(i => i.OrderId == model.OrderId && i.Taxid == tax.TaxId);
+                        if (ordertax != null)
+                        {
+                            ordertax.Taxtype = tax.Type;
+                            ordertax.Taxname = tax.TaxName;
+                            ordertax.Taxamount = tax.TaxAmount;
+                        }
+                    }
+
+
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            #endregion
+
+            
+
+
             var existingOrders = _context.Dishritems.Where(d => d.Orderid == model.OrderId)
                                     .Include(d => d.Dishrmodifiers);
 
@@ -432,35 +515,16 @@ public class OrderAppMenuService : IOrderAppMenuService
                     }
                 }
             }
-            // foreach (var i in model.OrderItems)
-            // {
-            //     Dishritem orderitem = new Dishritem();
 
-            //     orderitem.Itemid = i.ItemId;
-            //     orderitem.Orderid = model.OrderId;
-            //     orderitem.Quantity = i.Quantity;
-            //     orderitem.Itemprice = i.Rate;
-            //     orderitem.CategoryId = _context.Items.FirstOrDefault(j => j.ItemId == i.ItemId)?.CategoryId;
-            //     orderitem.Itemtax = i.TaxPercentage;
-            //     orderitem.Instructions = i.ItemComment;
-            //     orderitem.Itemname = i.ItemName;
+            // Update Total Amount & Status Of Order
 
-            //     await _context.Dishritems.AddAsync(orderitem);
-            //     await _context.SaveChangesAsync();
-
-            //     foreach (var j in i.ModifierItems)
-            //     {
-            //         Dishrmodifier modifierItems = new Dishrmodifier();
-
-            //         modifierItems.Dishid = orderitem.Dishid;
-            //         modifierItems.Modifieritemname = j.ModifierName;
-            //         modifierItems.Modifieritemprice = (short)j.Rate;
-            //         modifierItems.Modifieritemid = j.ModifierId;
-
-            //         await _context.Dishrmodifiers.AddAsync(modifierItems);
-            //         await _context.SaveChangesAsync();
-            //     }
-            // }
+            var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId && model.OrderItems.Any() );
+            if (order != null)
+            {
+                order.TotalAmount = model.TotalAmount;
+                order.OrderStatus = Constants.OrderInProgress;
+                await _context.SaveChangesAsync();
+            }
 
             return new AuthResponse
             {
@@ -588,7 +652,7 @@ public class OrderAppMenuService : IOrderAppMenuService
         try
         {
 
-            if(model.DishId != 0)
+            if (model.DishId != 0)
             {
                 var dish = await _context.Dishritems.FirstOrDefaultAsync(i => i.Dishid == model.DishId);
 
@@ -613,7 +677,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                     };
                 }
             }
-            else if(model.OrderId !=0)
+            else if (model.OrderId != 0)
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId);
 
@@ -656,7 +720,7 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
     }
 
-    public async Task<InstructionViewModel> GetInstruction(int dishid = 0, int orderid = 0, int index=0,string GetInstruction = "")
+    public async Task<InstructionViewModel> GetInstruction(int dishid = 0, int orderid = 0, int index = 0, string Instruction = "")
     {
         try
         {
@@ -669,6 +733,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                     var model = new InstructionViewModel();
                     model.DishId = dish.Dishid;
                     model.Instruction = dish.Instructions;
+                    model.Index = index;
 
                     return model;
                 }
@@ -686,6 +751,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                     var model = new InstructionViewModel();
                     model.OrderId = order.OrderId;
                     model.Instruction = order.Instruction;
+                    model.Index = index;
 
                     return model;
                 }
@@ -697,7 +763,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             else
             {
                 var model = new InstructionViewModel();
-                model.Instruction = GetInstruction;
+                model.Instruction = Instruction;
                 model.Index = index;
                 return model;
             }

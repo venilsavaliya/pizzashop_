@@ -49,5 +49,7 @@ public partial class Order
 
     public virtual User? ModifyiedbyNavigation { get; set; }
 
+    public virtual ICollection<Ordertax> Ordertaxes { get; } = new List<Ordertax>();
+
     public virtual ICollection<Tableorder> Tableorders { get; } = new List<Tableorder>();
 }

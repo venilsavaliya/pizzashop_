@@ -86,6 +86,7 @@ public class OrderAppKOTService : IOrderAppKOTService
                 DishId = di.Dishid,
                 PendingQuantity = isPending ? di.Pendingquantity : null,
                 ReadyQuantity = !isPending ? di.Readyquantity : null,
+                TotalQuantity =di.Quantity??1,
                 ModifierList = di.Dishrmodifiers
                     .Select(mod => new OrderModifierViewModel
                     {

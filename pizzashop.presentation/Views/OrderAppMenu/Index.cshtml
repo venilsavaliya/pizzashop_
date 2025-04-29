@@ -6,7 +6,7 @@
     int index = 0;
     decimal subtotal = 0;
     decimal total = 0;
-
+    int orderid = ViewBag.orderid;
 }
 
 <div class="p-0">
@@ -19,6 +19,7 @@
 
         <div class="d-flex justify-content-between mb-3 ">
             <div class="d-flex justify-content-between">
+
                 <div class="position-relative " style="width: 380px;">
                     <input type="text" class="p-2 w-100 " placeholder="Search" id="menuitem-search-field">
                     <img src="~/images/icons/search.svg" alt="" class="searchicon-img">
@@ -38,7 +39,8 @@
         </div>
 
         <div class="d-flex">
-            <div id="menuitems_card" class="d-flex gap-3 flex-wrap w-50">
+            <div id="menuitems_card" class="d-flex gap-3 flex-wrap w-50 overflow-auto m-4 invisible-scrollbar"
+                style="max-height: 80vh; ">
                 @* pv of menuitems *@
             </div>
             @if (Model.OrderId != 0)
@@ -60,12 +62,14 @@
                         </div>
 
                         <div class="second d-flex gap-3 align-items-center">
-                            <div class="custom-blue-border orderTakingMenuIcon rounded" data-bs-toggle="modal" data-bs-target="#QrCodeModal"><i
-                                    class="bi bi-qr-code-scan custom-blue fs-4"></i></div>
-                            <div class="custom-blue-border orderTakingMenuIcon rounded" id="CustomerDetailButton" order-id="@Model.OrderId"><i
-                                    class="bi bi-person-lines-fill fs-4 custom-blue"></i></div>
-                            <div class="custom-blue-border orderTakingMenuIcon rounded InstructionBtn"  order-id="@Model.OrderId"><i
-                                    class="bi bi-chat-left-text fs-4 custom-blue"></i></div>
+                            <div class="custom-blue-border orderTakingMenuIcon rounded" data-bs-toggle="modal"
+                                data-bs-target="#QrCodeModal"><i class="bi bi-qr-code-scan custom-blue fs-4"></i></div>
+                            <div class="custom-blue-border orderTakingMenuIcon rounded" id="CustomerDetailButton"
+                                order-id="@Model.OrderId">
+                                <i class="bi bi-person-lines-fill fs-4 custom-blue"></i>
+                            </div>
+                            <div class="custom-blue-border orderTakingMenuIcon rounded InstructionBtn"
+                                order-id="@Model.OrderId"><i class="bi bi-chat-left-text fs-4 custom-blue"></i></div>
                         </div>
                     </div>
 
@@ -116,7 +120,8 @@
                             {
                                 <div class="d-flex w-100 align-ites-center justify-content-between">
                                     <span>@i.TaxName</span>
-                                    <span class="tax-value" data-taxid="@i.TaxId">₹ @(i.Type == "Percentage" ? (subtotal * i.TaxAmount)
+                                    <span class="tax-value" data-taxid="@i.TaxId">₹ @(i.Type == "Percentage" ? (subtotal *
+                                                                    i.TaxAmount)
                                                                     / 100 : i.TaxAmount)</span>
                                     @{
                                         if (i.Type == "Percentage")
@@ -151,13 +156,15 @@
                             <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
                                 style="width: 200px;">Complete</button>
                             <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
-                                style="width: 200px;">Generate Invoice</button>
+                                style="width: 200px;">Generate
+                                Invoice</button>
                         </div>
                         <div class="d-flex justify-content-end">
                             <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
                                 style="width: 200px;">Cancel</button>
                         </div>
                     </div>
+
                 </div>
 
             }
@@ -169,22 +176,23 @@
 
 @* ===== modal ======= *@
 
-    <div class="modal fade" id="QrCodeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Menu</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body d-flex justify-content-center">
-        <img src="~/images/qrcode.jpg" alt="" height="200">
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Done</button>
-      </div>
+    <div class="modal fade" id="QrCodeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Menu</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center">
+                    <img src="~/images/qrcode.jpg" alt="" height="200">
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Done</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
     <div class="modal fade z-3" id="selectmodifieritemmodal" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -197,20 +205,21 @@
     </div>
 
 
-    <div class="modal fade" id="CustomerDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" id="customerDetailModalContent">
-           @* Partial View For Edit Customer Detail  *@
+    <div class="modal fade" id="CustomerDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="customerDetailModalContent">
+                @* Partial View For Edit Customer Detail  *@
+            </div>
         </div>
-    </div>
     </div>
 
     <div class="modal fade" id="InstructionsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" id="InstructionModalContent">
-           @* Partial View For Edit Customer Detail  *@
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="InstructionModalContent">
+                @* Partial View For Edit Customer Detail  *@
+            </div>
         </div>
-    </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -218,56 +227,43 @@
 
     <script>
 
-
-        @* var TempOrderItemList = []; *@
         var index = 0;
         var TaxList = @Html.Raw(Json.Serialize(Model.TaxList))
 
-        $(document).ready(function () {
-            var orderItems = @Html.Raw(Json.Serialize(Model.OrderItems));
-            
 
-            // for getting existing order items
-            for (let i of orderItems) {
-                console.log("hello",i)
-                TempOrderItemList.push({
-                    Index: index,
-                    ItemId: i.itemId,
-                    DishId : i.dishId,
-                    ItemName: i.itemName,
-                    Rate: i.rate,
-                    Quantity: i.quantity,
-                    TaxPercentage: i.taxPercentage,
-                    ItemComment: i.itemComment,
-                    ModifierItems: i.modifierItems,
-                });
-                index++;
-            }
+            $(document).ready(function () {
+                var orderItems = @Html.Raw(Json.Serialize(Model.OrderItems));
 
-            // event listener on every tax checkbox to recaculate tax
-            $(".tax-checkbox").on("change", function () {
-                calculateAllTaxes(TaxList, TempOrderItemList);
+                // for getting existing order items
+                SetOrderItemList(orderItems);
+                @* for (let i of orderItems) {
+
+                    TempOrderItemList.push({
+                        Index: index,
+                        ItemId: i.itemId,
+                        DishId: i.dishId,
+                        ItemName: i.itemName,
+                        Rate: i.rate,
+                        Quantity: i.quantity,
+                        TaxPercentage: i.taxPercentage,
+                        ItemComment: i.itemComment,
+                        ModifierItems: i.modifierItems,
+                    });
+                    index++;
+                } *@
+
+                    // event listener on every tax checkbox to recaculate tax
+                    $(".tax-checkbox").on("change", function () {
+                        calculateAllTaxes(TaxList, TempOrderItemList);
+                    });
+
+                //calculate Tax For the First Time
+                calculateAllTaxes(TaxList, TempOrderItemList)
+
+                //adding order Item For First Time
+                appendOrderItemPartialView();
+
             });
-
-            //calculate Tax For the First Time
-            calculateAllTaxes(TaxList, TempOrderItemList)
-
-            // for appending existing order item to view
-            for (var i of TempOrderItemList) {
-
-                $.ajax({
-                    type: "Post",
-                    url: "/OrderAppMenu/GetMenuOrderItemPartialView",
-                    // contentType: "application/json",
-                    data: i,
-                    success: function (data) {
-                       
-                        $("#MenuOrderItemTable").append(data);
-                    },
-                });
-            }
-
-        });
 
         // handle add order
         function handleAddOrder(ele) {
@@ -288,7 +284,7 @@
                     return;
                 }
             }
-            
+
             const existing = TempOrderItemList.find(x =>
                 x.ItemId === alldata.itemId &&
                 JSON.stringify(x.ModifierItems) === JSON.stringify(modifierItems.flat())
@@ -298,37 +294,37 @@
                 increaseQuantity(existing.Index);
             } else {
 
-                    TempOrderItemList.push({
-                        Index: index,
-                        ItemId: alldata.itemId,
-                        ItemName: alldata.itemName,
-                        DishId:alldata.DishId,
-                        Rate: alldata.rate,
-                        Quantity: 1,
-                        TaxPercentage: alldata.taxPercentage,
-                        ItemComment: "",
-                        ModifierItems: modifierItems.flat(),
-                    });
-                    index++;
+                TempOrderItemList.push({
+                    Index: index,
+                    ItemId: alldata.itemId,
+                    ItemName: alldata.itemName,
+                    DishId: alldata.DishId,
+                    Rate: alldata.rate,
+                    Quantity: 1,
+                    TaxPercentage: alldata.taxPercentage,
+                    ItemComment: "",
+                    ModifierItems: modifierItems.flat(),
+                });
+                index++;
 
-                    $.ajax({
-                        type: "Post",
-                        url: "/OrderAppMenu/GetMenuOrderItemPartialView",
-                        data: {
-                            ...TempOrderItemList[TempOrderItemList.length - 1]
-                        },
-                        success: function (data) {
-                            $("#MenuOrderItemTable").append(data);
-                            var modal = bootstrap.Modal.getInstance($("#selectmodifieritemmodal"));
+                $.ajax({
+                    type: "Post",
+                    url: "/OrderAppMenu/GetMenuOrderItemPartialView",
+                    data: {
+                        ...TempOrderItemList[TempOrderItemList.length - 1]
+                    },
+                    success: function (data) {
+                        $("#MenuOrderItemTable").append(data);
+                        var modal = bootstrap.Modal.getInstance($("#selectmodifieritemmodal"));
 
-                            modal.hide();
+                        modal.hide();
 
-                            //Re-calculate Tax For added Item
-                            calculateAllTaxes(TaxList, TempOrderItemList)
+                        //Re-calculate Tax For added Item
+                        calculateAllTaxes(TaxList, TempOrderItemList)
 
-                        },
-                    });
-                }
+                    },
+                });
+            }
         }
 
         //handle save order
@@ -336,9 +332,11 @@
             var SaveOrder = JSON.stringify({
                 OrderId:@Model.OrderId,
                 OrderInstruction: "",
-                OrderItems: TempOrderItemList
+                OrderItems: TempOrderItemList,
+                TaxList: TempTaxList,
+                TotalAmount: $("#grandTotal").text().replace("₹", "").trim(),
             });
-        
+
             $.ajax({
                 type: "Post",
                 url: "/OrderAppMenu/SaveOrder",
@@ -348,12 +346,12 @@
                 model: SaveOrder
             },
                 success: function (response) {
-                    if(response.success)
-                    {
-                        toastr.success(response.message);
+                    if (response.success) {
+                        @* window.location.reload(); *@
+                            toastr.success(response.message);
+                        GetOrderItemList(@Model.OrderId);
                     }
-                    else
-                    {
+                    else {
                         toastr.error(response.message);
                     }
                 }

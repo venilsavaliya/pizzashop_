@@ -21,7 +21,15 @@ public class OrderAppMenuController : OrderAppBaseController
     {
         var model = await _orderAppMenuservice.GetOrderDetailByOrderId(orderid);
         ViewBag.active = "Menu";
+        ViewBag.orderid = orderid;
         return View(model);
+    }
+
+    public async Task<List<MenuOrderItemViewModel>> GetMenuOrderItemList(int orderid)
+    {
+        var model = await _orderAppMenuservice.GetOrderDetailByOrderId(orderid);
+
+        return model.OrderItems;
     }
 
     public IActionResult GetCategoryList()
@@ -81,7 +89,7 @@ public class OrderAppMenuController : OrderAppBaseController
             SaveOrderItemsViewModel Model = JsonConvert.DeserializeObject<SaveOrderItemsViewModel>(model);
 
             var response = await _orderAppMenuservice.SaveOrderAsync(Model);
-
+            
             return Json(new { success = response.Success, message = response.Message });
         }
 
@@ -115,12 +123,12 @@ public class OrderAppMenuController : OrderAppBaseController
     }
 
     // Get Instruction Detail For Order Or Item
-    public async Task<IActionResult> GetInstruction(int orderid = 0, int dishid = 0,int index=0, string Instruction = "")
+    public async Task<IActionResult> GetInstruction(int orderid = 0, int dishid = 0, int index = 0, string Instruction = "")
     {
-        InstructionViewModel model = new InstructionViewModel();
+        InstructionViewModel model;
 
-        model = await _orderAppMenuservice.GetInstruction(dishid, orderid,index, Instruction);
-
+        model = await _orderAppMenuservice.GetInstruction(dishid, orderid, index, Instruction);
+        ModelState.Clear();
         return PartialView("~/Views/OrderAppMenu/_OrderInstructionForm.cshtml", model);
     }
 
