@@ -50,7 +50,7 @@ public class OrderAppTableService : IOrderAppTableService
         return orderAppTableList;
     }
 
-    public async Task<AuthResponse> AssignTableAsync(TableAssignViewModel model)
+    public async Task<int> AssignTableAsync(TableAssignViewModel model)
     {
         try
         {
@@ -91,7 +91,7 @@ public class OrderAppTableService : IOrderAppTableService
                 table.Status = _context.Tablestatuses.FirstOrDefault(s => s.Statusname == Constants.Assigned).Id;
                 table.Customerid = customerid;
                 table.AssignTime = DateTime.Now;
-                table.CurrentOrderId = null;
+                table.CurrentOrderId = order.OrderId;
 
                 //this will create table order mapping entry
                 var tableOrderMapping = new Tableorder();
@@ -105,11 +105,7 @@ public class OrderAppTableService : IOrderAppTableService
 
             await _context.SaveChangesAsync();
 
-            return new AuthResponse
-            {
-                Message = "Table Assigned Successfully",
-                Success = true
-            };
+            return order.OrderId;
         }
         catch (Exception ex)
         {
@@ -119,7 +115,7 @@ public class OrderAppTableService : IOrderAppTableService
 
     public int GetOrderIdOfTable (int tableid)
     {
-        return _context.Tableorders.First(i=>i.TableId==tableid).OrderId??0;
+        return _context.Diningtables.First(i=>i.TableId==tableid).CurrentOrderId??0;
     }
 
 }

@@ -43,7 +43,7 @@ function updateTimers() {
     const diffMs = now - createdAt;
 
     if (isNaN(diffMs)) {
-      $(this).text("Invalid date");
+      $(this).text("0 min");
       return;
     }
 

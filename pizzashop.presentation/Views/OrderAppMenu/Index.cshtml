@@ -123,7 +123,7 @@
                                     <span class="tax-value" data-taxid="@i.TaxId">₹ @(i.Type == "Percentage" ? (subtotal *
                                                                     i.TaxAmount)
                                                                     / 100 : i.TaxAmount)</span>
-                                    @{
+                        @{
                                         if (i.Type == "Percentage")
                                         {
                                             total += (subtotal * i.TaxAmount) / 100;
@@ -153,10 +153,12 @@
                             <button class="custom-btn-bg text-white p-2 border rounded" style="width: 200px;"
                                 onclick="SaveOrder()">
                                 Save</button>
-                            <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
-                                style="width: 200px;">Complete</button>
-                            <button class="bg-white custom-blue-border rounded p-2 custom-blue" type="reset"
-                                style="width: 200px;">Generate
+                            <button
+                                class="bg-white custom-blue-border rounded p-2 custom-blue @(Model.OrderStatus != "Served" ? "disabled-button" : "")"
+                                type="reset" style="width: 200px;" id="CompleteBtn" onclick="CompleteOrder()">Complete</button>
+                            <button
+                                class="bg-white custom-blue-border rounded p-2 custom-blue @(Model.OrderStatus != "Completed" ? "disabled-button" : "")"
+                                type="reset" style="width: 200px;" id="GenerateInvoiceBtn">Generate
                                 Invoice</button>
                         </div>
                         <div class="d-flex justify-content-end">
@@ -340,22 +342,96 @@
             $.ajax({
                 type: "Post",
                 url: "/OrderAppMenu/SaveOrder",
-                @* contentType: false,
-                processData:false, *@
                 data: {
-                model: SaveOrder
-            },
+                    model: SaveOrder
+                },
                 success: function (response) {
                     if (response.success) {
-                        @* window.location.reload(); *@
-                            toastr.success(response.message);
+
+                        toastr.success(response.message);
                         GetOrderItemList(@Model.OrderId);
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/OrderAppMenu/GetOrderStatus",
+                            data: {
+                                orderId:@Model.OrderId
+                            },
+                            success: function (status) {
+                                console.log("hwelloo",status)
+                                if (status != "Served") {
+
+                                    if (!$("#CompleteBtn").hasClass("disabled-button")) {
+
+                                        $("#CompleteBtn").addClass("disabled-button");
+                                    }
+                                }
+                                else if (status == "Served") {
+                                    if ($("#CompleteBtn").hasClass("disabled-button")) {
+                                        $("#CompleteBtn").removeClass("disabled-button");
+                                    }
+                                }
+                            }
+                        })
                     }
                     else {
                         toastr.error(response.message);
                     }
                 }
             })
+
+        }
+
+        //handle Complete Order
+        function CompleteOrder() {
+            var completeOrder = JSON.stringify({
+                OrderId:@Model.OrderId,
+                TaxList: TempTaxList,
+                TotalAmount: $("#grandTotal").text().replace("₹", "").trim(),
+            });
+
+            $.ajax({
+                type: "Post",
+                url: "/OrderAppMenu/CompleteOrder",
+                data: {
+                    model: completeOrder
+                },
+                success: function (response) {
+                    if (response.success) {
+
+                        toastr.success(response.message);
+                        GetOrderItemList(@Model.OrderId);
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/OrderAppMenu/GetOrderStatus",
+                            data: {
+                                orderId:@Model.OrderId
+                            },
+                            success: function (status) {
+
+                                if (status != "Completed") {
+
+                                    if (!$("#GenerateInvoiceBtn").hasClass("disabled-button")) {
+
+                                        $("#GenerateInvoiceBtn").addClass("disabled-button");
+                                    }
+                                }
+                                else if (status == "Completed") {
+                                    if ($("#GenerateInvoiceBtn").hasClass("disabled-button")) {
+                                        $("#GenerateInvoiceBtn").removeClass("disabled-button");
+                                    }
+                                }
+                            }
+                        })
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }
+            })
+
+
         }
 
     </script>

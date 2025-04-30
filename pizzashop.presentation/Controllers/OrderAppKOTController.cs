@@ -1,6 +1,8 @@
 using BLL.Interfaces;
 using BLL.Services;
+using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace pizzashop.presentation.Controllers;
 
@@ -46,5 +48,12 @@ public class OrderAppKOTController:OrderAppBaseController
     {
         var response = await _orderAppKOTService.UpdateOrderQuantityAsync(request.Items, request.MarkasPrepared);
         return Json(new { success = response.Success , message = response.Message });
+    }
+    [HttpPost]
+    public async Task<IActionResult> UpdateServedQuantity(List<DishItemServeQuantityViewModel> items)
+    {  
+        var response = await _orderAppKOTService.UpdateServedQuantityAsync(items);
+
+        return Json(new { success = response.Success, message = response.Message });
     }
 }

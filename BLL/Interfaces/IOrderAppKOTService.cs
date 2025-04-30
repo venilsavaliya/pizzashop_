@@ -12,4 +12,6 @@ public interface IOrderAppKOTService
     public Task<List<OrderDishKOTViewModel>> GetOrderitemListAsync(int orderid,bool isPending = false);
 
     public  Task<AuthResponse> UpdateOrderQuantityAsync(List<OrderItemQuantityViewModel> items,bool MarkasPrepared = true);
+
+    public Task<AuthResponse> UpdateServedQuantityAsync(List<DishItemServeQuantityViewModel> items);
 }

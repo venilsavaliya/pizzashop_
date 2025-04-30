@@ -86,7 +86,7 @@ public class OrderAppKOTService : IOrderAppKOTService
                 DishId = di.Dishid,
                 PendingQuantity = isPending ? di.Pendingquantity : null,
                 ReadyQuantity = !isPending ? di.Readyquantity : null,
-                TotalQuantity =di.Quantity??1,
+                TotalQuantity = di.Quantity ?? 1,
                 ModifierList = di.Dishrmodifiers
                     .Select(mod => new OrderModifierViewModel
                     {
@@ -100,7 +100,7 @@ public class OrderAppKOTService : IOrderAppKOTService
         return orderitems;
     }
 
-    public async Task<AuthResponse> UpdateOrderQuantityAsync(List<OrderItemQuantityViewModel> items,bool MarkasPrepared = true)
+    public async Task<AuthResponse> UpdateOrderQuantityAsync(List<OrderItemQuantityViewModel> items, bool MarkasPrepared = true)
     {
 
         foreach (var i in items)
@@ -125,6 +125,75 @@ public class OrderAppKOTService : IOrderAppKOTService
         {
             Success = true,
             Message = "Order quantity updated successfully."
+        };
+    }
+
+    public async Task<AuthResponse> UpdateServedQuantityAsync(List<DishItemServeQuantityViewModel> items)
+    {
+        foreach (var i in items)
+        {
+            var orderitem = _context.Dishritems.FirstOrDefault(o => o.Dishid == i.DishId);
+
+            if (orderitem != null)
+            {
+                orderitem.Servedquantity = orderitem.Servedquantity + i.ServeQuantity;
+                orderitem.Readyquantity = orderitem.Readyquantity - i.ServeQuantity;
+                orderitem.Servingcount = orderitem.Servingcount + 1;
+
+                var orderstarttime = _context.Orders.FirstOrDefault(o => o.OrderId == orderitem.Orderid);
+                if (orderstarttime != null)
+                {
+                    orderitem.Averageservingtime = (int)((orderitem.Averageservingtime + (DateTime.Now - orderstarttime.OrderDate).TotalSeconds) / orderitem.Servingcount);
+                }
+                else
+                {
+                    orderitem.Averageservingtime = 0;
+                }
+
+            }
+        }
+        await _context.SaveChangesAsync();
+
+        // check if all item is served or not
+
+        var dishid = items.FirstOrDefault().DishId;
+
+        if (dishid != 0)
+        {
+            var orderid = _context.Dishritems.FirstOrDefault(d => d.Dishid == dishid).Orderid;
+
+            if (orderid != 0)
+            {
+                var order = _context.Orders.FirstOrDefault(o => o.OrderId == orderid);
+
+                var OrderItems = _context.Dishritems
+                    .Where(d => d.Orderid == orderid)
+                    .ToList();
+
+
+                bool isOrderServed = true;
+                foreach (var item in OrderItems)
+                {
+                    var dishitem = _context.Dishritems.FirstOrDefault(d => d.Dishid == item.Dishid);
+                    if (dishitem != null && dishitem.Pendingquantity > 0)
+                    {
+                        isOrderServed = false;
+                        break;
+                    }
+                }
+
+                if (isOrderServed)
+                {
+                    order.OrderStatus = Constants.OrderServed;
+                }
+            }
+            
+            await _context.SaveChangesAsync();
+        }
+        return new AuthResponse
+        {
+            Success = true,
+            Message = "Item(s) Served successfully."
         };
     }
 }

@@ -53,18 +53,19 @@ $("#TableAssignOffcanvasForm").on("submit", "#AssignTableForm", function (e) {
     contentType: false,
     processData: false,
     success: function (response) {
-      response.success
-        ? toastr.success(response.message)
-        : toastr.error(response.message);
+      // response.success
+      //   ? toastr.success(response.message)
+      //   : toastr.error(response.message);
 
-      var offcanvasElement = document.getElementById("offcanvasRight");
+      // var offcanvasElement = document.getElementById("offcanvasRight");
 
-      var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
-      bsOffcanvas.hide();
+      // var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+      // bsOffcanvas.hide();
 
-      LoadSectionList();
+      // LoadSectionList();
+      window.location.href= "/OrderAppMenu/index?OrderId="+response.orderid;
 
-      selectedTables.clear();
+      // selectedTables.clear();
     },
     error: function (xhr, status, error) {
       console.error("Error assigning table:", error);

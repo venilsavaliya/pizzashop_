@@ -12,7 +12,7 @@
 
         @foreach (var i in Model)
         {
-            <tr>
+            <tr dish-id="@i.DishId">
                 <td class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input inner_checkbox_orderitem" type="checkbox" value="@i.DishId" ready-quantity="@i.ReadyQuantity"
@@ -41,12 +41,12 @@
                         <!-- Input Field -->
                         @if (i.PendingQuantity != null)
                         {
-                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner current_quantity"
+                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner current_quantity pendingstate"
                                 style="width: 60px;" max="@i.PendingQuantity" min="0" value="@i.PendingQuantity" />
                         }
                         else
                         {
-                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner current_quantity"
+                            <input type="number" class="form-control text-center border-0 rounded-0 no-spinner current_quantity readystate"
                                 style="width: 60px;" max="@i.ReadyQuantity" min="0" value="@i.ReadyQuantity" />
                         }
 

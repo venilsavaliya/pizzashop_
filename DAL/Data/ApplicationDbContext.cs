@@ -270,6 +270,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("dishritem");
 
             entity.Property(e => e.Dishid).HasColumnName("dishid");
+            entity.Property(e => e.Averageservingtime).HasColumnName("averageservingtime");
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
             entity.Property(e => e.Inprogressquantity)
                 .HasDefaultValueSql("0")
@@ -291,6 +292,8 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Readyquantity)
                 .HasDefaultValueSql("0")
                 .HasColumnName("readyquantity");
+            entity.Property(e => e.Servedquantity).HasColumnName("servedquantity");
+            entity.Property(e => e.Servingcount).HasColumnName("servingcount");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Dishritems)
                 .HasForeignKey(d => d.CategoryId)

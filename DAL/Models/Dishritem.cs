@@ -29,6 +29,12 @@ public partial class Dishritem
 
     public double? Itemtax { get; set; }
 
+    public int Servingcount { get; set; }
+
+    public int Servedquantity { get; set; }
+
+    public int Averageservingtime { get; set; }
+
     public virtual Category? Category { get; set; }
 
     public virtual ICollection<Dishrmodifier> Dishrmodifiers { get; } = new List<Dishrmodifier>();

@@ -80,6 +80,13 @@ public class OrderAppMenuController : OrderAppBaseController
         return PartialView("~/Views/OrderAppMenu/_MenuOrderItem.cshtml", model);
     }
 
+    //Get Order Status
+
+    public string GetOrderStatus(int orderid)
+    {
+        return _orderAppMenuservice.GetOrderStatus(orderid);
+    }
+
     public async Task<IActionResult> SaveOrder(string model)
     {
 
@@ -89,7 +96,7 @@ public class OrderAppMenuController : OrderAppBaseController
             SaveOrderItemsViewModel Model = JsonConvert.DeserializeObject<SaveOrderItemsViewModel>(model);
 
             var response = await _orderAppMenuservice.SaveOrderAsync(Model);
-            
+
             return Json(new { success = response.Success, message = response.Message });
         }
 
@@ -134,11 +141,27 @@ public class OrderAppMenuController : OrderAppBaseController
 
     // Save Instruction For Order Or Item
     [HttpPost]
-
     public async Task<IActionResult> SaveInstruction(InstructionViewModel model)
     {
         var response = await _orderAppMenuservice.SaveOrderInstruction(model);
 
         return Json(new { message = response.Message, success = response.Success });
+    }
+
+    [HttpPost]
+
+    public async Task<IActionResult> CompleteOrder(string model)
+    {
+        // deserialize the model to get viewmodel
+        if (!string.IsNullOrEmpty(model))
+        {
+            SaveOrderItemsViewModel Model = JsonConvert.DeserializeObject<SaveOrderItemsViewModel>(model);
+
+            var response = await _orderAppMenuservice.CompleteOrder(Model);
+
+            return Json(new { success = response.Success, message = response.Message });
+        }
+
+        return Json(new { message = "Error Occured!", success = false });
     }
 }

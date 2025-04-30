@@ -14,4 +14,6 @@ public class SaveOrderItemsViewModel
 
     public decimal TotalAmount {get;set;} = 0;
 
+    public string PaymentMode {get;set;} = "Cash";
+
 }

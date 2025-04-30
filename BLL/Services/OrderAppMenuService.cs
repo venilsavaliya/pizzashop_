@@ -72,6 +72,34 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
     }
 
+    // Get Status Of Order
+
+    public string GetOrderStatus(int orderid)
+    {
+        try
+        {
+            if (orderid == 0)
+            {
+                return "";
+            }
+
+            var order = _context.Orders.FirstOrDefault(i => i.OrderId == orderid);
+
+            if (order != null)
+            {
+                return order.OrderStatus;
+            }
+            else
+            {
+                return "";
+            }
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
     public async Task<OrderAppModifierItemList> GetModifierGroupsByItemId(int itemId)
     {
         try
@@ -227,6 +255,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 OrderId = order.OrderId,
                 CustomerId = order.CustomerId,
                 OrderComment = order.Instruction,
+                OrderStatus = order.OrderStatus,
                 TableList = order.Tableorders.Select(i => new TableCapacityList
                 {
                     TableId = i.TableId ?? 0,
@@ -299,10 +328,40 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
+             
+            // check that order is served or not
+            if (model.OrderId != 0)
+            {
+                var currentorder = _context.Orders.FirstOrDefault(o => o.OrderId == model.OrderId);
+
+                var OrderItems = _context.Dishritems
+                    .Where(d => d.Orderid == model.OrderId)
+                    .ToList();
+
+
+                bool isOrderServed = true;
+                foreach (var item in OrderItems)
+                {
+                    var dishitem = _context.Dishritems.FirstOrDefault(d => d.Dishid == item.Dishid);
+                    if (dishitem != null && dishitem.Pendingquantity > 0)
+                    {
+                        isOrderServed = false;
+                        break;
+                    }
+                }
+
+                if (isOrderServed)
+                {
+                    currentorder.OrderStatus = Constants.OrderServed;
+                }
+            }
+            
+            await _context.SaveChangesAsync();
+
             #region temporary Tax
             // storing tax in order tax table
 
-            var DbTaxList = await _context.Ordertaxes.ToListAsync();
+            var DbTaxList = await _context.Ordertaxes.Where(i=>i.OrderId==model.OrderId).ToListAsync();
 
             // 1.Remove Tax Record which is not in Model tax list 
 
@@ -379,9 +438,6 @@ public class OrderAppMenuService : IOrderAppMenuService
             await _context.SaveChangesAsync();
             #endregion
 
-            
-
-
             var existingOrders = _context.Dishritems.Where(d => d.Orderid == model.OrderId)
                                     .Include(d => d.Dishrmodifiers);
 
@@ -396,7 +452,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                 if (table.Status != runningStatusId)
                 {
                     table.Status = runningStatusId;
-                    _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                 }
             }
 
@@ -428,7 +484,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                                     .Include(d => d.Dishrmodifiers)
                                     .FirstOrDefaultAsync(d => d.Orderid == model.OrderId && d.Dishid == dbItem.DishId);
 
-                    if (dishItem.Readyquantity > 0)
+                    if (dishItem.Readyquantity > 0 || dishItem.Servedquantity > 0)
                     {
                         return new AuthResponse
                         {
@@ -444,6 +500,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                     }
                 }
             }
+
 
             // 2. Add or Update items from incoming model
             foreach (var item in model.OrderItems)
@@ -496,7 +553,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                         if (item.Quantity >= readyQty)
                         {
                             dbDishItem.Quantity = item.Quantity;
-                            dbDishItem.Pendingquantity = item.Quantity - dbDishItem.Readyquantity;
+                            dbDishItem.Pendingquantity = item.Quantity - (dbDishItem.Readyquantity + dbDishItem.Servedquantity);
                             dbDishItem.Itemprice = item.Rate;
                             dbDishItem.Instructions = item.ItemComment;
                             dbDishItem.Itemtax = item.TaxPercentage;
@@ -518,11 +575,12 @@ public class OrderAppMenuService : IOrderAppMenuService
 
             // Update Total Amount & Status Of Order
 
-            var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId && model.OrderItems.Any() );
+            var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId && model.OrderItems.Any());
             if (order != null)
             {
                 order.TotalAmount = model.TotalAmount;
                 order.OrderStatus = Constants.OrderInProgress;
+
                 await _context.SaveChangesAsync();
             }
 
@@ -540,6 +598,152 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
     }
 
+    public async Task<AuthResponse> CompleteOrder(SaveOrderItemsViewModel model)
+    {
+        try
+        {
+            if (model.OrderId == 0)
+            {
+                return new AuthResponse
+                {
+                    Message = "Invalid Order Id!",
+                    Success = false
+                };
+            }
+            else
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId);
+
+                if (order.OrderStatus != "Served")
+                {
+                    return new AuthResponse
+                    {
+                        Message = "Order Is Not Served Yet!",
+                        Success = false
+                    };
+                }
+
+                // Update The Database When Order Is Completed
+
+                #region temporary Tax
+                // storing tax in order tax table
+
+                var DbTaxList = await _context.Ordertaxes.ToListAsync();
+
+                // 1.Remove Tax Record which is not in Model tax list 
+
+                var modelTaxIds = new HashSet<int>(model.TaxList.Select(i => i.TaxId));
+
+                foreach (var tax in DbTaxList)
+                {
+                    if (!modelTaxIds.Contains(tax.Taxid ?? 0))
+                    {
+                        _context.Ordertaxes.Remove(tax);
+                    }
+                }
+
+                // 2. Add or Update Tax Record from incoming model
+
+                var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Select(i => i.Taxid ?? 0));
+                foreach (var tax in model.TaxList)
+                {
+                    if (!DbTaxIds.Contains(tax.TaxId))
+                    {
+                        Ordertax ordertax = new Ordertax
+                        {
+                            OrderId = model.OrderId,
+                            Taxid = tax.TaxId,
+                            Taxname = tax.TaxName,
+                            Taxtype = tax.Type,
+                            Taxamount = tax.TaxAmount
+                        };
+
+                        await _context.Ordertaxes.AddAsync(ordertax);
+                    }
+                    else
+                    {
+                        if (tax.TaxId == 0)
+                        {
+                            var existingtax = _context.Ordertaxes.FirstOrDefault(i => i.OrderId == model.OrderId && i.Taxid == null);
+
+                            if (existingtax != null)
+                            {
+                                existingtax.Taxtype = tax.Type;
+                                existingtax.Taxname = tax.TaxName;
+                                existingtax.Taxamount = tax.TaxAmount;
+                            }
+                            else
+                            {
+                                Ordertax ordertax = new Ordertax
+                                {
+                                    OrderId = model.OrderId,
+                                    Taxid = null,
+                                    Taxname = tax.TaxName,
+                                    Taxtype = tax.Type,
+                                    Taxamount = tax.TaxAmount
+                                };
+
+                                await _context.Ordertaxes.AddAsync(ordertax);
+                            }
+
+                        }
+                        else
+                        {
+                            var ordertax = await _context.Ordertaxes.FirstOrDefaultAsync(i => i.OrderId == model.OrderId && i.Taxid == tax.TaxId);
+                            if (ordertax != null)
+                            {
+                                ordertax.Taxtype = tax.Type;
+                                ordertax.Taxname = tax.TaxName;
+                                ordertax.Taxamount = tax.TaxAmount;
+                            }
+                        }
+
+
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                #endregion
+                
+
+                List<Diningtable> tables = _context.Diningtables.Where(i=>i.CurrentOrderId == model.OrderId).ToList();
+                foreach (var t in tables)
+                {
+                    t.CurrentOrderId = null;
+                    t.Customerid =null;
+                    t.AssignTime = null;
+                    t.Status = _context.Tablestatuses.FirstOrDefault(i => i.Statusname == Constants.Available)?.Id ?? 0;
+                }
+
+
+                order.OrderStatus = Constants.OrderCompleted;
+                order.CompletedTime = DateTime.Now;
+                order.TotalAmount = model.TotalAmount;
+                order.PaymentMode = model.PaymentMode;
+
+                //Generating New Invoice For This Order
+
+                Invoice invoice = new Invoice {
+                    OrderId = model.OrderId,
+                    Paidon = DateTime.Now
+                };
+
+                await _context.Invoices.AddAsync(invoice);
+
+                await _context.SaveChangesAsync();
+
+                return new AuthResponse{
+                    Message = "Order Completed Successfully!",
+                    Success = true
+                };
+            }
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
 
     public int GetReadyQuantityOfItem(int id)
     {
@@ -552,7 +756,7 @@ public class OrderAppMenuService : IOrderAppMenuService
 
             var orderitem = _context.Dishritems.FirstOrDefault(i => i.Dishid == id);
 
-            return orderitem.Readyquantity ?? 0;
+            return orderitem.Readyquantity + orderitem.Servedquantity ?? 0;
         }
         catch (System.Exception)
         {

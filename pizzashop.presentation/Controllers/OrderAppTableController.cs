@@ -40,11 +40,11 @@ public class OrderAppTableController : BaseController
 
     // Assign Table to Customer
 
-    public IActionResult AssignTable(TableAssignViewModel model)
+    public async Task<IActionResult> AssignTable(TableAssignViewModel model)
     {
-        var result = _OrderAppTableService.AssignTableAsync(model).Result;
+        var orderid = await _OrderAppTableService.AssignTableAsync(model);
 
-        return Json(new { success = result.Success, message = result.Message });
+        return Json(new { success = true, orderid });
     }
 
     // Get List of Waiting Token 

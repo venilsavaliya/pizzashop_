@@ -12,6 +12,8 @@ public class OrderAppMenuMainViewModel
 
     public string OrderComment {get;set;}
 
+    public string OrderStatus {get;set;} = "Unknown";
+
     public List<TableCapacityList> TableList {get;set;} = new List<TableCapacityList>();
 
     public List<MenuOrderItemViewModel> OrderItems = new List<MenuOrderItemViewModel>();

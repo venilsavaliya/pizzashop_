@@ -27,4 +27,8 @@ public interface IOrderAppMenuService
     public Task<AuthResponse> SaveOrderInstruction(InstructionViewModel model);
 
     public Task<InstructionViewModel> GetInstruction(int dishid = 0, int orderid = 0,int index=0,string Instruction="");
+
+    public Task<AuthResponse> CompleteOrder(SaveOrderItemsViewModel model);
+    
+    public string GetOrderStatus(int orderid);
 }
