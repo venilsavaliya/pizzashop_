@@ -68,5 +68,12 @@ public class AdminController : BaseController
     }
 
 
+    public async Task<IActionResult> GetDashboardData(DateTime startdate, DateTime enddate)
+    {
+        var data = await _adminService.GetDashboardData(startdate,enddate);
+        return PartialView("_DashboardPartial",data);
+        // return Ok(data);
+    }
+
 
 }

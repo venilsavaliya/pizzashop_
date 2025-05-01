@@ -10,4 +10,6 @@ public interface IOrderAppTableService
     public Task<int> AssignTableAsync(TableAssignViewModel model);
     
     public int GetOrderIdOfTable (int tableid);
+
+    
 }

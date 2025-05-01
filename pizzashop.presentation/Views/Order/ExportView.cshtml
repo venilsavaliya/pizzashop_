@@ -200,10 +200,11 @@
                                 <ul class="list-unstyled">
                                     @foreach (var addons in Model.ItemList[i].ModifierList)
                                     {
-                                        <li>@((addons.ModifierItemPrice * addons.ModifierItemQuantity)?.ToString("f2") ?? "0.00")</li>
-                                        {
-                                            Subtotal += (decimal)(addons.ModifierItemPrice * addons.ModifierItemQuantity);
-                                        }
+                                        <li>@((addons.ModifierItemPrice.GetValueOrDefault() * Model.ItemList[i].ItemQuantity.GetValueOrDefault()).ToString("f2"))</li>
+                                            {
+                                                Subtotal += addons.ModifierItemPrice.GetValueOrDefault() * Model.ItemList[i].ItemQuantity.GetValueOrDefault();
+                                            }
+
                                     }
                                 </ul>
                             </td>

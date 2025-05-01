@@ -218,6 +218,13 @@ function GetOrderItemList(orderid) {
 // for appending existing order item to view
 async function appendOrderItemPartialView() {
   $("#MenuOrderItemTable").empty();
+console.log(TempOrderItemList.length)
+  if(TempOrderItemList.length == 0){
+   console.log("hello")
+    $("#MenuOrderItemTable").append(
+      `<tr><td colspan="3" class="text-center">No Item(s) Added Yet!</td></tr>`);
+      return;
+  }
   for (var i of TempOrderItemList) {
     const data = await getPartialViewAsync(i);
     $("#MenuOrderItemTable").append(data);
@@ -342,7 +349,7 @@ function calculateAllTaxes(taxList, TempOrderItemList) {
   }
 }
 
-// Function To Increase Quantity
+// Function To Increase Quantity 
 function increaseQuantity(index) {
   const item = TempOrderItemList.find((x) => x.Index == index);
   if (item) {

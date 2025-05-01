@@ -328,7 +328,7 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
-             
+
             // check that order is served or not
             if (model.OrderId != 0)
             {
@@ -355,13 +355,13 @@ public class OrderAppMenuService : IOrderAppMenuService
                     currentorder.OrderStatus = Constants.OrderServed;
                 }
             }
-            
+
             await _context.SaveChangesAsync();
 
             #region temporary Tax
             // storing tax in order tax table
 
-            var DbTaxList = await _context.Ordertaxes.Where(i=>i.OrderId==model.OrderId).ToListAsync();
+            var DbTaxList = await _context.Ordertaxes.Where(i => i.OrderId == model.OrderId).ToListAsync();
 
             // 1.Remove Tax Record which is not in Model tax list 
 
@@ -377,7 +377,7 @@ public class OrderAppMenuService : IOrderAppMenuService
 
             // 2. Add or Update Tax Record from incoming model
 
-            var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Select(i => i.Taxid ?? 0));
+            var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Where(i => i.OrderId == model.OrderId).Select(i => i.Taxid ?? 0));
             foreach (var tax in model.TaxList)
             {
                 if (!DbTaxIds.Contains(tax.TaxId))
@@ -613,7 +613,14 @@ public class OrderAppMenuService : IOrderAppMenuService
             else
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId);
-
+                if (order.OrderStatus == "Completed")
+                {
+                    return new AuthResponse
+                    {
+                        Message = "Order Is Already Completed!",
+                        Success = false
+                    };
+                }
                 if (order.OrderStatus != "Served")
                 {
                     return new AuthResponse
@@ -704,13 +711,13 @@ public class OrderAppMenuService : IOrderAppMenuService
 
                 await _context.SaveChangesAsync();
                 #endregion
-                
 
-                List<Diningtable> tables = _context.Diningtables.Where(i=>i.CurrentOrderId == model.OrderId).ToList();
+
+                List<Diningtable> tables = _context.Diningtables.Where(i => i.CurrentOrderId == model.OrderId).ToList();
                 foreach (var t in tables)
                 {
                     t.CurrentOrderId = null;
-                    t.Customerid =null;
+                    t.Customerid = null;
                     t.AssignTime = null;
                     t.Status = _context.Tablestatuses.FirstOrDefault(i => i.Statusname == Constants.Available)?.Id ?? 0;
                 }
@@ -723,7 +730,8 @@ public class OrderAppMenuService : IOrderAppMenuService
 
                 //Generating New Invoice For This Order
 
-                Invoice invoice = new Invoice {
+                Invoice invoice = new Invoice
+                {
                     OrderId = model.OrderId,
                     Paidon = DateTime.Now
                 };
@@ -732,7 +740,8 @@ public class OrderAppMenuService : IOrderAppMenuService
 
                 await _context.SaveChangesAsync();
 
-                return new AuthResponse{
+                return new AuthResponse
+                {
                     Message = "Order Completed Successfully!",
                     Success = true
                 };
@@ -979,4 +988,62 @@ public class OrderAppMenuService : IOrderAppMenuService
             throw;
         }
     }
+
+    public async Task<AuthResponse> CancelOrder(int orderid)
+    {
+        try
+        {
+            if (orderid == 0)
+            {
+                return new AuthResponse
+                {
+                    Message = "Invalid OrderId",
+                    Success = false
+                };
+            }
+
+            var orderitems = _context.Dishritems.Where(i => i.Orderid == orderid).ToList();
+
+            foreach (var item in orderitems)
+            {
+                if (item.Readyquantity > 0 || item.Servedquantity > 0)
+                {
+                    return new AuthResponse
+                    {
+                        Message = "Some Item(s) Are Already Prepared!",
+                        Success = false
+                    };
+                }
+            }
+
+            var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == orderid);
+
+            order.OrderStatus = Constants.OrderCancelled;
+
+            var diningtable = await _context.Diningtables.Where(i => i.CurrentOrderId == orderid).ToListAsync();
+
+            foreach (var table in diningtable)
+            {
+                table.CurrentOrderId = null;
+                table.Customerid = null;
+                table.AssignTime = null;
+                table.Status = _context.Tablestatuses.FirstOrDefault(i => i.Statusname == Constants.Available)?.Id ?? 0;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Message = "Order Cancelled Successfully!",
+                Success = true
+            };
+        }
+        catch (System.Exception)
+        {
+
+            throw;
+        }
+    }
+
+    
 }

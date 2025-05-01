@@ -14,5 +14,7 @@ public interface IAdminService
 
     public  Task<AuthResponse> SavePermission(RolesPermissionListViewModel p);
 
+    public Task<DashboardViewModel> GetDashboardData(DateTime startdate, DateTime enddate);
+
     
 }

@@ -164,4 +164,10 @@ public class OrderAppMenuController : OrderAppBaseController
 
         return Json(new { message = "Error Occured!", success = false });
     }
+
+    public async Task<IActionResult> CancelOrder(int orderid)
+    {
+        var response = await _orderAppMenuservice.CancelOrder(orderid);
+        return Json(new {message=response.Message, success = response.Success });
+    }
 }
