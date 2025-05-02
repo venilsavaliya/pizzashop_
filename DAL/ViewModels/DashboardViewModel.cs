@@ -18,8 +18,8 @@ public class DashboardViewModel
     public List<string> Dates {get;set;}
 
 
-    public List<Dictionary<string,decimal>> RevenueList {get;set;}
-    public List<Dictionary<string,int>> CustomerGrowthCount {get;set;}
+    public Dictionary<string,decimal> RevenueList {get;set;}
+    public Dictionary<string,int> CustomerGrowthCount {get;set;}
 
     public List<SellingItemList> SellingItems {get;set;}
 }
@@ -28,7 +28,9 @@ public class SellingItemList
 {
     public string ItemName {get;set;}
 
-    public int TotalQuantity {get;set;}
+    public int ItemId {get;set;}
 
-    public string image {get;set;}
+    public int TotalOrder {get;set;}
+
+    public string Image {get;set;}
 }

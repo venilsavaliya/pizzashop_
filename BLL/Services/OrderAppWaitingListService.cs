@@ -37,14 +37,14 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             {
                 SectionId = s.SectionId,
                 SectionName = s.SectionName,
-                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Sectionid == s.SectionId && t.Completiontime == null).Count()
+                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Sectionid == s.SectionId && t.Completiontime == null && t.Isdeleted != true).Count()
 
             }).ToListAsync();
 
             var model = new WaitingListMainViewModel
             {
                 section = sectionList,
-                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Completiontime == null).Count()
+                TotalWaitingToken = _context.Waitingtokens.Where(t => t.Completiontime == null && t.Isdeleted !=true).Count()
             };
 
             return model;

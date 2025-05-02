@@ -3,6 +3,7 @@
     var totalSeconds = (int)Model.AverageWaitingTime;
     var hours = totalSeconds / 3600;
     var minutes = (totalSeconds % 3600) / 60;
+    var ct = 1;
 }
 
 <div class="container-fluid mt-3">
@@ -97,7 +98,7 @@
             <div class="d-flex flex-column bg-white shadow rounded p-2 h-100">
                 <h4>Revenue</h4>
                 <div class="chart">
-                    <canvas id="revenueChart"></canvas>
+                    <canvas id="revenueChart" height="300"></canvas>
                 </div>
             </div>
         </div>
@@ -105,62 +106,77 @@
             <div class="d-flex flex-column bg-white shadow rounded p-2 h-100">
                 <h4>Customer Growth</h4>
                 <div class="chart">
-                    <canvas id="customerGrowthChart"></canvas>
+                    <canvas id="customerGrowthChart" height="300"></canvas>
                 </div>
             </div>
         </div>
     </div>
     <div class="row d-flex mt-4">
         <div class="col-12 mt-2 col-sm-6 col-lg-3">
-            <div class="d-flex flex-column bg-white shadow rounded p-2 h-100">
+            <div class="d-flex flex-column bg-white shadow rounded p-2 overflow-auto" style="height: 200px;">
                 <h4>Top Selling Items</h4>
-                <div class="d-flex justify-content-start align-items-center">
-                    <span>#1</span>
-                    <img src="~/images/dining-menu.png" alt="" height="30" width="30">
-                    <div class="d-flex flex-column">
-                        <span>Grilled Burger</span>
-                        <div class="d-flex">
-                            <img src="~/images/sidebar icons/menu.png" alt="" width="20" height="20"> 1 Order
-                        </div>
-                    </div>
+                <div style="height: 180px;" class="overflow-auto">
+                    @for (var i = 0; i < Model.SellingItems.Count; i++)
+                    {
+                        var item = Model.SellingItems[i];
+
+                         if (item.TotalOrder != 0)
+                        {
+                            <div class="d-flex justify-content-start align-items-center">
+                                <span># @(i+1)</span>
+                                
+                                <img src="~/images/dining-menu.png" alt="" height="30" width="30">
+                                <div class="d-flex flex-column">
+                                    <span>@item.ItemName</span>
+                                    <div class="d-flex">
+                                        <img src="~/images/sidebar icons/menu.png" alt="" width="20" height="20">
+                                        @item.TotalOrder
+                                        Order
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        }
+
+
+                    }
                 </div>
-                <hr>
-                <div class="d-flex justify-content-start align-items-center">
-                    <span>#2</span>
-                    <img src="~/images/dining-menu.png" alt="" height="30" width="30">
-                    <div class="d-flex flex-column">
-                        <span>Grilled Burger</span>
-                        <div class="d-flex">
-                            <img src="~/images/sidebar icons/menu.png" alt="" width="20" height="20"> 1 Order
-                        </div>
-                    </div>
-                </div>
+
+
+
             </div>
         </div>
         <div class="col-12 mt-2 col-sm-6 col-lg-3">
-            <div class="d-flex flex-column bg-white shadow rounded p-2">
+            <div class="d-flex flex-column bg-white shadow rounded p-2 overflow-auto" style="height: 200px;">
                 <h4>Least Selling Items</h4>
-                <div class="d-flex justify-content-start align-items-center">
-                    <span>#1</span>
-                    <img src="~/images/dining-menu.png" alt="" height="30" width="30">
-                    <div class="d-flex flex-column">
-                        <span>Grilled Burger</span>
-                        <div class="d-flex">
-                            <img src="~/images/sidebar icons/menu.png" alt="" width="20" height="20"> 1 Order
-                        </div>
-                    </div>
+
+                <div class="overflow-auto" style="height: 180px;">
+                    @for (var i = Model.SellingItems.Count - 1; i >= 0; i--)
+                    {
+                        var item = Model.SellingItems[i];
+
+                        if (item.TotalOrder != 0)
+                        {
+                            <div class="d-flex justify-content-start align-items-center">
+                                <span># @ct</span>
+                                @{
+                                    ct++;
+                                }
+                                <img src="~/images/dining-menu.png" alt="" height="30" width="30">
+                                <div class="d-flex flex-column">
+                                    <span>@item.ItemName</span>
+                                    <div class="d-flex">
+                                        <img src="~/images/sidebar icons/menu.png" alt="" width="20" height="20">
+                                        @item.TotalOrder
+                                        Order
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        }
+                    }
                 </div>
-                <hr>
-                <div class="d-flex justify-content-start align-items-center">
-                    <span>#2</span>
-                    <img src="~/images/dining-menu.png" alt="" height="30" width="30">
-                    <div class="d-flex flex-column">
-                        <span>Grilled Burger</span>
-                        <div class="d-flex">
-                            <img src="~/images/sidebar icons/menu.png" alt="" width="20" height="20"> 1 Order
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
         <div class="col-12 mt-2 col-sm-6 col-lg-3">
@@ -211,89 +227,108 @@
 </div>
 
 <script>
+
+    function alignData(dates, dataList) {
+        const combinedData = {};
+
+        // Flatten all dictionaries into one object
+        dataList.forEach(dict => {
+            Object.entries(dict).forEach(([key, value]) => {
+                combinedData[key] = value;
+            });
+        });
+
+        // Map values in order of dates; put 0 if missing
+        return dates.map(date => combinedData[date] || 0);
+    }
     $(document).ready(function () {
 
-            var dates = @Html.Raw(Json.Serialize(Model.Dates));
+        var dates = @Html.Raw(Json.Serialize(Model.Dates));
 
-            var revenueData = @Html.Raw(Json.Serialize(
-                Model.RevenueList.SelectMany(d => d).Select(x => x.Value).ToList()
+        var revenueList = @Html.Raw(Json.Serialize(
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Model.RevenueList.Select(x => x.Value).ToList()
                         ));
 
-            var customerGrowthData = @Html.Raw(Json.Serialize(
-                Model.CustomerGrowthCount.SelectMany(d => d).Select(x => x.Value).ToList()
+        var customerGrowthList = @Html.Raw(Json.Serialize(
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Model.CustomerGrowthCount.Select(x => x.Value).ToList()
                         ));
 
+        console.log("hello", revenueList);
+        @* const revenueData = alignData(dates, revenueList);
 
-             const revenueCtx = document.getElementById("revenueChart").getContext("2d");
+        const customerGrowthData = alignData(dates, customerGrowthList); *@
 
-    new Chart(revenueCtx, {
-        type: "line",
-        data: {
-            labels: dates,
-            datasets: [{
-                label: "Revenue (₹)",
-                data: revenueData,
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
-                borderColor: "rgba(75, 192, 192, 1)",
-                borderWidth: 2,
-                fill: true,
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: "Date"
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: "Revenue (₹)"
+
+        const revenueCtx = document.getElementById("revenueChart").getContext("2d");
+
+        new Chart(revenueCtx, {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: "Revenue (₹)",
+                    data: revenueList,
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Date"
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Revenue (₹)"
+                        }
                     }
                 }
             }
-        }
-    });
+        });
 
 
-    const growthCtx = document.getElementById("customerGrowthChart").getContext("2d");
+        const growthCtx = document.getElementById("customerGrowthChart").getContext("2d");
 
-    new Chart(growthCtx, {
-        type: "line",
-        data: {
-            labels: dates,
-            datasets: [{
-                label: "Customer Growth",
-                data: customerGrowthData,
-                backgroundColor: "rgba(54, 162, 235, 0.2)",
-                borderColor: "rgba(54, 162, 235, 1)",
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: "Date"
+        new Chart(growthCtx, {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: "Customer Growth",
+                    data: customerGrowthList,
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Date"
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
                     }
-                },
-                y: {
-                    beginAtZero: true
                 }
             }
-        }
-    });
+        });
 
     })
 </script>

@@ -638,6 +638,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("orders");
 
             entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.CompletedTime)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("completed_time");
@@ -738,11 +739,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("ordertax_order_id_fkey");
-
-            entity.HasOne(d => d.Tax).WithMany(p => p.Ordertaxes)
-                .HasForeignKey(d => d.Taxid)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("ordertax_taxid_fkey");
         });
 
         modelBuilder.Entity<PaymentMode>(entity =>

@@ -19,6 +19,7 @@ function loadcategories() {
     //   data: { cat: id },
     success: function (data) {
       $("#category_list").html(data);
+      $("#CategoryOffcanvas").find('.offcanvas-body').html(data);
       ToggleActiveClass();
     },
   });
@@ -285,7 +286,7 @@ function calculateAllTaxes(taxList, TempOrderItemList) {
   if (otherTaxSpan) {
     otherTaxSpan.textContent = `₹ ${otherTax.toFixed(2)}`;
     TempTaxList.push({
-      TaxId: 0,
+      TaxId: -1,
       Type: "Flat Amount",
       TaxAmount: otherTax,
       TaxName: "Item Tax",
@@ -347,6 +348,7 @@ function calculateAllTaxes(taxList, TempOrderItemList) {
   if (totalSpan) {
     totalSpan.textContent = `₹ ${total.toFixed(2)}`;
   }
+
 }
 
 // Function To Increase Quantity 

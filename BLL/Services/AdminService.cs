@@ -103,11 +103,11 @@ public class AdminService : IAdminService
             var totalSales = await _context.Orders.Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date).SumAsync(i => i.TotalAmount);
 
             decimal AverageOrderValue = 0;
-            if(totalOrder !=0)
+            if (totalOrder != 0)
             {
                 AverageOrderValue = totalSales / totalOrder;
             }
-             
+
 
             // var orders = _context.Dishritems.Include(i => i.Order).Include(i => i.Item);
 
@@ -119,13 +119,13 @@ public class AdminService : IAdminService
 
 
             // Group by Orderid and compute max(Averageservingtime) per order
-       var groupedOrders = ordersList
-    .GroupBy(i => i.Orderid)
-    .ToList();
+            var groupedOrders = ordersList
+         .GroupBy(i => i.Orderid)
+         .ToList();
 
-var averageWaitingTime = groupedOrders.Any()
-    ? groupedOrders.Average(g => g.Max(i => i.Averageservingtime))
-    : 0;
+            var averageWaitingTime = groupedOrders.Any()
+                ? groupedOrders.Average(g => g.Max(i => i.Averageservingtime))
+                : 0;
 
             // var AverageWaitingTime = await orders.Where(i => i.Order.OrderDate >= startdate && i.Order.OrderDate <= enddate)
             // .GroupBy(i => i.Orderid).AverageAsync(i => i.Max(j => j.Averageservingtime));
@@ -144,10 +144,12 @@ var averageWaitingTime = groupedOrders.Any()
     .Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date)
     .GroupBy(i => i.OrderDate.Date)
     .OrderBy(g => g.Key)
-    .Select(g => new Dictionary<string, decimal>
+    .Select(g => new
     {
-        { g.Key.ToString("yyyy-MM-dd"), g.Sum(i => i.TotalAmount) }
-    }).ToListAsync();
+        Date = g.Key.ToString("yyyy-MM-dd"),
+        Total = g.Sum(i => i.TotalAmount)
+    }
+    ).ToListAsync();
 
 
             // var CustomerGrowthCount = await _context.Customers
@@ -160,11 +162,47 @@ var averageWaitingTime = groupedOrders.Any()
     .Where(i => i.Createddate.Date >= startdate.Date && i.Createddate.Date <= enddate.Date)
     .GroupBy(i => i.Createddate.Date)
     .OrderBy(g => g.Key)
-    .Select(g => new Dictionary<string, int>
-    {
-        { g.Key.ToString("yyyy-MM-dd"), g.Count() }
-    }).ToListAsync();
+    .Select(g => new
 
+    { Date = g.Key.ToString("yyyy-MM-dd"), Total = g.Count() }
+    ).ToListAsync();
+
+
+            var RevenueData = new Dictionary<string, decimal>();
+            var CustomerGrowthData = new Dictionary<string, int>();
+
+            var customerGrowthDict = customerGrowthList.ToDictionary(x=> x.Date,x=> x.Total);
+
+            // Step 1: Fill dictionary with dates and initial value 0
+             var customerTotal =0;
+            for (DateTime date = startdate.Date; date <= enddate.Date; date = date.AddDays(1))
+            {   
+                var currdate = date.ToString("yyyy-MM-dd");
+                RevenueData[currdate] = 0;
+
+                if(customerGrowthDict.ContainsKey(currdate))
+                {
+                    customerTotal += customerGrowthDict[currdate];
+                }
+                CustomerGrowthData[currdate] = customerTotal;
+            }
+
+            foreach (var revenue in revenueList)
+            {
+                RevenueData[revenue.Date] = revenue.Total;
+            }
+            
+            // var customerTotal =0;
+            // foreach(var customer in customerGrowthList)
+            // {
+            //     // customerTotal += customer.Total;
+            //     CustomerGrowthData[customer.Date]=customerTotal;
+            // }
+
+            
+
+            
+            
 
             var dateList = new List<string>();
 
@@ -179,21 +217,34 @@ var averageWaitingTime = groupedOrders.Any()
             //     TotalQuantity = (int)ordersList.Where(j => j.Order.OrderDate >= startdate && j.Order.OrderDate <= enddate && j.Itemid == i.Itemid).Sum(i => i.Quantity),
             //     image = i.Item.Image
             // }).ToList();
-          
-        //   var sellingitems = await _context.Dishritems
-        //                       .GroupBy(i=>i.Itemid).Distinct(i=>i.Orderid);
 
-    //        var sellingItemLists = await _context.Dishritems
-    // .Include(i => i.Order)
-    // .Include(i => i.Item)
-    // .Where(i => i.Order.OrderDate >= startdate && i.Order.OrderDate <= enddate)
-    // .GroupBy(i=>i.Orderid)
-    // .Select(i=> new SellingItemList
-    // {
-    //     ItemName = 
-    // })
-    // .ToListAsync();
+            //   var sellingitems = await _context.Dishritems
+            //                       .GroupBy(i=>i.Itemid).Distinct(i=>i.Orderid);
 
+            //        var sellingItemLists = await _context.Dishritems
+            // .Include(i => i.Order)
+            // .Include(i => i.Item)
+            // .Where(i => i.Order.OrderDate >= startdate && i.Order.OrderDate <= enddate)
+            // .GroupBy(i=>i.Orderid)
+            // .Select(i=> new SellingItemList
+            // {
+            //     ItemName = 
+            // })
+            // .ToListAsync();
+
+            var sellingItemLists = (from d in _context.Dishritems
+             join i in _context.Items on d.Itemid equals i.ItemId into joined
+             from i in joined.DefaultIfEmpty()
+             group d by new { d.Itemid, i.ItemName, i.Image } into g
+             select new SellingItemList
+             {
+                 ItemId = g.Key.Itemid,
+                 ItemName = g.Key.ItemName,
+                 Image = g.Key.Image,
+                 TotalOrder = g.Where(i=>i.Order.OrderDate.Date>=startdate.Date && i.Order.OrderDate.Date<=enddate.Date).Select(x => x.Orderid).Distinct().Count()
+             })
+            .OrderByDescending(x => x.TotalOrder)
+            .ToList();
 
 
             return new DashboardViewModel
@@ -203,11 +254,11 @@ var averageWaitingTime = groupedOrders.Any()
                 TotalSales = totalSales,
                 AverageWaitingTime = (decimal)averageWaitingTime,
                 WaitingListCount = WaitingListCount,
-                CustomerGrowthCount = customerGrowthList,
+                CustomerGrowthCount = CustomerGrowthData,
                 Dates = dateList,
                 NewCustomerCount = NewCustomerCount,
-                RevenueList = revenueList,
-                // SellingItems = sellingitems,
+                RevenueList = RevenueData,
+                SellingItems = sellingItemLists,
             };
         }
         catch (System.Exception)

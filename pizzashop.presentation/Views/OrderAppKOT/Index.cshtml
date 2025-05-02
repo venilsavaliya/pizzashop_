@@ -29,7 +29,7 @@
 
     </div>
 
-    <div class="order_list_container shadow mt-3 bg-white">
+    <div class="order_list_container shadow mt-3 bg-white overflow-hidden">
         <div class="category_name_row d-flex flex-column flex-sm-row justify-content-between" style="padding: 15px;">
             <div>
                 <h2 class="custom-blue" id="activecategoryName">All</h2>
@@ -48,7 +48,7 @@
 
         </div>
         <div class="carousel-container">
-            <div class="card-wrapper" id="cardWrapper">
+            <div class="card-wrapper overflow-x-hidden" id="cardWrapper">
                 @* ======== *@
                 @* partial view of card *@
                 @* ======== *@
@@ -403,7 +403,7 @@
 
     let currentSlide = 0;
     const cardsToShow = 1; // Number of cards to slide at once
-    const cardWidth = 420; // Width of each card + margin
+    const cardWidth = 305; // Width of each card + margin
 
     function nextSlide() {
         const cardWrapper = document.getElementById("cardWrapper");

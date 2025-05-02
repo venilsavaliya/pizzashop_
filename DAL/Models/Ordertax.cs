@@ -18,6 +18,4 @@ public partial class Ordertax
     public decimal? Taxamount { get; set; }
 
     public virtual Order? Order { get; set; }
-
-    public virtual Taxis? Tax { get; set; }
 }

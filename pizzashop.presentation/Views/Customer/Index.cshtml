@@ -237,9 +237,7 @@
         // submit cuastom date form 
         $("#customeDateForm").submit(function (e) {
             e.preventDefault();
-            console.log("dub")
-            console.log($("#fromDate"));
-            console.log($("#toDate").val());
+           
 
             if ($("#fromDate").val() == "" || $("#toDate").val() == "") {
                 toastr.warning("Please select valid date");

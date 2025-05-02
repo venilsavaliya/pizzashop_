@@ -170,4 +170,11 @@ public class OrderAppMenuController : OrderAppBaseController
         var response = await _orderAppMenuservice.CancelOrder(orderid);
         return Json(new {message=response.Message, success = response.Success });
     }
+
+    public async Task<IActionResult> OrderReview(OrderReviewViewModel model)
+    {
+        var response = await _orderAppMenuservice.OrderReview(model);
+
+        return Json(new { message = response.Message, success = response.Success});
+    }
 }

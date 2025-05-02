@@ -374,14 +374,15 @@ public class OrderAppMenuService : IOrderAppMenuService
                     _context.Ordertaxes.Remove(tax);
                 }
             }
-
+            await _context.SaveChangesAsync();
             // 2. Add or Update Tax Record from incoming model
 
-            var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Where(i => i.OrderId == model.OrderId).Select(i => i.Taxid ?? 0));
+            var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Where(i => i.OrderId == model.OrderId).Select(i => i.Taxid??0));
             foreach (var tax in model.TaxList)
             {
                 if (!DbTaxIds.Contains(tax.TaxId))
-                {
+                {   
+                    
                     Ordertax ordertax = new Ordertax
                     {
                         OrderId = model.OrderId,
@@ -395,9 +396,9 @@ public class OrderAppMenuService : IOrderAppMenuService
                 }
                 else
                 {
-                    if (tax.TaxId == 0)
+                    if (tax.TaxId == -1)
                     {
-                        var existingtax = _context.Ordertaxes.FirstOrDefault(i => i.OrderId == model.OrderId && i.Taxid == null);
+                        var existingtax = _context.Ordertaxes.FirstOrDefault(i => i.OrderId == model.OrderId && i.Taxid == -1);
 
                         if (existingtax != null)
                         {
@@ -410,7 +411,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                             Ordertax ordertax = new Ordertax
                             {
                                 OrderId = model.OrderId,
-                                Taxid = null,
+                                Taxid = -1,
                                 Taxname = tax.TaxName,
                                 Taxtype = tax.Type,
                                 Taxamount = tax.TaxAmount
@@ -1045,5 +1046,38 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
     }
 
-    
+    public async Task<AuthResponse> OrderReview(OrderReviewViewModel model)
+    {
+        try
+        {
+            if(model.OrderId==0)
+            {
+                return new AuthResponse
+                {
+                    Message = "Invalid OrderId",
+                    Success = false
+                };
+            }
+
+            var order = await _context.Orders.FirstOrDefaultAsync(i=> i.OrderId == model.OrderId);
+            if(order!=null)
+            {
+                order.Rating = (short?)((model.FoodRating + model.ServiceRating + model.AmbienceRating)/3);
+                order.Comment = model.Comments;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                Message = "Review Saved Succesfully!",
+                Success = true
+            };
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+    }
 }

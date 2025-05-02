@@ -32,6 +32,4 @@ public partial class Taxis
     public virtual ICollection<Invoicertax> Invoicertaxes { get; } = new List<Invoicertax>();
 
     public virtual User? ModifyiedbyNavigation { get; set; }
-
-    public virtual ICollection<Ordertax> Ordertaxes { get; } = new List<Ordertax>();
 }
