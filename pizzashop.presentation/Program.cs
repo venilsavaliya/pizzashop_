@@ -25,8 +25,6 @@ builder.Services.AddNotyf(config =>
 }
 );
 
-
-
 // Add DbContext using Dependency Injection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? ""));
@@ -110,11 +108,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddSingleton<ExcelExportService>();
-
-// Configure Rotativa
-// var rootPath = Directory.GetCurrentDirectory(); // Get the current directory
-// var wkhtmlPath = Path.Combine(rootPath, "wwwroot", "Rotativa"); // Combine paths
-// RotativaConfiguration.Setup(rootPath, wkhtmlPath); // Setup with root and executable path
 
 
 var app = builder.Build();

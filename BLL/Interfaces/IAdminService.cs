@@ -6,7 +6,7 @@ namespace BLL.Interfaces;
 
 public interface IAdminService
 {
-    public IEnumerable<Role> GetAllRoles();
+    public List<Role> GetAllRoles();
 
     public RolesPermissionListViewModel GetRolespermissionsByRoleId(string Roleid);
     

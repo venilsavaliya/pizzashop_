@@ -4,7 +4,6 @@ using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -21,7 +20,6 @@ public class AuthService : IAuthService
 
     private readonly IEmailService _emailservice;
 
-    private readonly IHttpContextAccessor _httpcontext;
     private readonly IWebHostEnvironment _env;
 
     public AuthService(ApplicationDbContext context, IJwtService jwtService, IEmailService emailService,
