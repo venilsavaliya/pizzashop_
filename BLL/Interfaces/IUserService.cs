@@ -10,6 +10,8 @@ public interface IUserService
 
     Userdetail GetUserDetailByemail(string email);
 
+    public string GetUserRoleByEmail(string email);
+
     Userdetail GetUserDetailById(string id);
 
     // public Task<UserListViewModel> GetUserList(string sortColumn, string sortOrder, int pageNumber = 1, int pageSize = 2, string searchKeyword = "");

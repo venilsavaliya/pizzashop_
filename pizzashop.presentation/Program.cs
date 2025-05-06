@@ -65,12 +65,12 @@ builder.Services.AddAuthentication(x =>
                 }
                 return Task.CompletedTask;
             },
-            OnForbidden = context =>
+            OnForbidden = context => // When User Is Authenticate But Not Authorized
             {
-                context.Response.Redirect("/Auth/Login"); // Redirect to login if forbidden
+                context.Response.Redirect("/Auth/AccessDenied"); // Redirect to AccessDenied if Not Authorized
                 return Task.CompletedTask;
             },
-             OnChallenge = context =>
+             OnChallenge = context => // When User Is Not Authenticate 
             {
                 // Prevent the default 401 response
                 context.HandleResponse();

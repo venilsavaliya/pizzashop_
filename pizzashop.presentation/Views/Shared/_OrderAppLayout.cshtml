@@ -34,48 +34,68 @@
                 <img src="~/images/icons/hamburger-md-svgrepo-com.svg" alt="" srcset=""
                     class="hamburger-img d-block d-md-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop"
                     aria-controls="offcanvasTop">
-                    <a asp-action="Index" asp-controller="Home" style="text-decoration: none;">
-                <div class="d-none d-md-block" >
-                    <div class="logo_div d-none d-md-flex align-items-center gap-2">
-                        <div class="bg-white">
-                            <img src="~/images/logos/pizzashop_logo.png" alt="" srcset="" height="50">
+                @if (ViewBag.role == "Chef")
+                {
+                    <div class="d-none d-md-block">
+                        <div class="logo_div d-none d-md-flex align-items-center gap-2">
+                            <div class="bg-white">
+                                <img src="~/images/logos/pizzashop_logo.png" alt="" srcset="" height="50">
+                            </div>
+                            <div class="text-white fs-5">PIZZASHOP</div>
                         </div>
-                        <div class="text-white fs-5">PIZZASHOP</div>
-                    </div>
 
-                </div>
-                </a>
+                    </div>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-controller="Home" style="text-decoration: none;">
+                        <div class="d-none d-md-block">
+                            <div class="logo_div d-none d-md-flex align-items-center gap-2">
+                                <div class="bg-white">
+                                    <img src="~/images/logos/pizzashop_logo.png" alt="" srcset="" height="50">
+                                </div>
+                                <div class="text-white fs-5">PIZZASHOP</div>
+                            </div>
+
+                        </div>
+                    </a>
+                }
+
                 <div class="dropdown d-flex gap-2 ">
                     <div class="nav-items d-none d-md-flex align-items-center gap-3 ">
-                        <a asp-action="Index" asp-controller="OrderAppKOT" class="text-decoration-none text-white">
-                            <div
-                                class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "KOT" ? "active_nav_item" : "")">
-                                <i class="bi bi-clipboard-minus-fill"></i>
-                                <div>KOT</div>
-                            </div>
-                        </a>
-                        <a asp-action="Index" asp-controller="OrderAppWaitingList"
-                            class="text-decoration-none text-white">
-                            <div
-                                class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "WaitingList" ? "active_nav_item" : "")">
-                                <i class="bi bi-clock-fill"></i>
-                                <div>Waiting List</div>
-                            </div>
-                        </a>
-                        <a asp-action="Index" asp-controller="OrderAppTable" class="text-decoration-none text-white">
-                            <div
-                                class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "Tables" ? "active_nav_item" : "")">
-                                <i class="bi bi-square-fill"></i>
-                                <div>Tables</div>
-                            </div>
-                        </a>
-                        <a asp-action="Index" asp-controller="OrderAppMenu" class="text-decoration-none text-white">
-                            <div
-                                class="nav-item d-flex border rounded-pill gap-1 px-2 py-1 text-white @(ViewBag.active == "Menu" ? "active_nav_item" : "")">
-                                <img src="~/images/sidebar icons/menu.png" alt="" height="25" class="invert_color">
-                                <div>Menu</div>
-                            </div>
-                        </a>
+                        @if (@ViewBag.role != "Chef")
+                        {
+                            <a asp-action="Index" asp-controller="OrderAppKOT" class="text-decoration-none text-white">
+                                <div
+                                    class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "KOT" ? "active_nav_item" : "")">
+                                    <i class="bi bi-clipboard-minus-fill"></i>
+                                    <div>KOT</div>
+                                </div>
+                            </a>
+                            <a asp-action="Index" asp-controller="OrderAppWaitingList"
+                                class="text-decoration-none text-white">
+                                <div
+                                    class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "WaitingList" ? "active_nav_item" : "")">
+                                    <i class="bi bi-clock-fill"></i>
+                                    <div>Waiting List</div>
+                                </div>
+                            </a>
+                            <a asp-action="Index" asp-controller="OrderAppTable" class="text-decoration-none text-white">
+                                <div
+                                    class="nav-item d-flex border rounded-pill gap-2 px-3 py-1 text-white @(ViewBag.active == "Tables" ? "active_nav_item" : "")">
+                                    <i class="bi bi-square-fill"></i>
+                                    <div>Tables</div>
+                                </div>
+                            </a>
+                            <a asp-action="Index" asp-controller="OrderAppMenu" class="text-decoration-none text-white">
+                                <div
+                                    class="nav-item d-flex border rounded-pill gap-1 px-2 py-1 text-white @(ViewBag.active == "Menu" ? "active_nav_item" : "")">
+                                    <img src="~/images/sidebar icons/menu.png" alt="" height="25" class="invert_color">
+                                    <div>Menu</div>
+                                </div>
+                            </a>
+                        }
+
                     </div>
 
                     <img class="me-2 dropdown-toggle rounded-circle border" data-bs-toggle="dropdown"
@@ -89,14 +109,19 @@
                         </li>
 
                         <div class="">
-                            <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
-                                    src="~/images/icons/person.svg" alt="" class="my-auto"
-                                    style="height: 20px !important;"><a class="dropdown-item text-black"
-                                    asp-action="Profile" asp-controller="User">My
-                                    Profile</a></li>
-                            <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
-                                    src="~/images/icons/arrow-clockwise.svg" alt=""> <a class="dropdown-item text-black"
-                                    asp-action="ChangePassword" asp-controller="User">Change Password</a></li>
+                            @if (@ViewBag.role != "Chef")
+                            {
+
+                                <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
+                                        src="~/images/icons/person.svg" alt="" class="my-auto"
+                                        style="height: 20px !important;"><a class="dropdown-item text-black"
+                                        asp-action="Profile" asp-controller="User">My
+                                        Profile</a></li>
+                                <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"> <img
+                                        src="~/images/icons/arrow-clockwise.svg" alt=""> <a class="dropdown-item text-black"
+                                        asp-action="ChangePassword" asp-controller="User">Change Password</a></li>
+                            }
+
                             <li class="d-flex justify-content-start align-items-center gap-2 dropdown-item"
                                 data-bs-toggle="modal" data-bs-target="#LogoutModal"><img
                                     src="~/images/icons/box-arrow-right.svg" alt=""> <a class="dropdown-item text-black"
@@ -121,13 +146,13 @@
                 <h5 class="offcanvas-title" id="offcanvasTopLabel">
                     <a asp-action="Index" asp-controller="Home" style="text-decoration: none;">
                         <div class="logo_div d-flex align-items-center gap-2">
-                        <div class="bg-white">
-                            <img src="~/images/logos/pizzashop_logo.png" alt="" height="50">
+                            <div class="bg-white">
+                                <img src="~/images/logos/pizzashop_logo.png" alt="" height="50">
+                            </div>
+                            <div class="text-white fs-5">PIZZASHOP</div>
                         </div>
-                        <div class="text-white fs-5">PIZZASHOP</div>
-                    </div>
                     </a>
-                    
+
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
@@ -202,7 +227,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-    <script src="~/js/site.js" asp-append-version="true"></script> 
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @* @await Component.InvokeAsync("Notyf") *@
     @RenderSection("Scripts", required: false)
 
@@ -210,7 +235,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-        <script
+    <script
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 
     @await Html.PartialAsync("_Toaster.cshtml")

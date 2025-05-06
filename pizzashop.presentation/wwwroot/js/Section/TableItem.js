@@ -247,7 +247,7 @@ function setDeleteSectionId(Id) {
 $(document).ready(function () {
   loadsection();
   TableListPaginationAjax();
-
+ 
 
 
   // keyup search
@@ -330,9 +330,10 @@ $(document).ready(function () {
   });
 
   // mass delete of multiple table
-
-  $("#deletemultipleTableBtn").click(function (e) {
+  $(document).on('click','#deletemultipleTableBtn',function(e){
     e.preventDefault(); // Prevent the default action of the button
+
+    console.log("selected list",SelectedTableList)
 
     $.ajax({
       url: "/Section/DeleteTables",
@@ -360,7 +361,8 @@ $(document).ready(function () {
         console.error("Error deleting items:", error);
       },
     });
-  });
+  })
+
 
   $(document).on("submit", "#AddEditSectionForm", function (e) {
     e.preventDefault();

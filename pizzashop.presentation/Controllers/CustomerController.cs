@@ -30,7 +30,7 @@ public class CustomerController : BaseController
 
     // Return Partial View Of Filtered Order Table List
     [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
-    public async Task<IActionResult> GetCustomerList(string sortColumn = "", string sortOrder = "", int pageNumber = 1, int pageSize = 5, string searchKeyword = "", string startDate = null, string endDate = null)
+    public async Task<IActionResult> GetCustomerList(string sortColumn = "", string sortOrder = "", int pageNumber = 1, int pageSize = 5, string searchKeyword = "", string startDate = "", string endDate = "")
     {
 
         if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
@@ -48,17 +48,17 @@ public class CustomerController : BaseController
 
     // Export The List Of Orders
     [AuthorizePermission(PermissionName.Customers, ActionPermission.CanView)]
-    public async Task<IActionResult> ExportCustomers(string searchKeyword = "", string startDate = null, string endDate = null, string timeframe = "")
+    public async Task<IActionResult> ExportCustomers(ExportCustomerFilterViewModel model)
     {
         List<CustomerViewModel> customers;
 
-        if (!startDate.IsNullOrEmpty() && !endDate.IsNullOrEmpty())
+        if (!model.StartDate.IsNullOrEmpty() && !model.EndDate.IsNullOrEmpty())
         {
-            customers = await _customerservice.GetCustomerListForExport(searchKeyword, DateTime.Parse(startDate), DateTime.Parse(endDate));
+            customers = await _customerservice.GetCustomerListForExport(model.SearchKeyword??"", DateTime.Parse(model.StartDate), DateTime.Parse(model.EndDate));
         }
         else
         {
-            customers = await _customerservice.GetCustomerListForExport(searchKeyword);
+            customers = await _customerservice.GetCustomerListForExport(model.SearchKeyword??"");
         }
 
         if (customers == null || !customers.Any())
@@ -66,7 +66,7 @@ public class CustomerController : BaseController
             return BadRequest(new {success=false,message="No customers found for export."});
         }
 
-        byte[] fileContents = _excelExportService.ExportCustomerToExcel(customers, searchKeyword, timeframe);
+        byte[] fileContents = _excelExportService.ExportCustomerToExcel(customers, model.SearchKeyword, model.Timeframe);
 
         return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Customers.xlsx");
     }

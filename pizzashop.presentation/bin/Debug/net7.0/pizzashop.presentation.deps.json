@@ -33,11 +33,11 @@
           }
         }
       },
-      "BCrypt.Net/0.1.0": {
+      "BCrypt.Net-Next/4.0.3": {
         "runtime": {
-          "lib/net35/BCrypt.Net.dll": {
-            "assemblyVersion": "0.1.4141.31969",
-            "fileVersion": "0.1.0.0"
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0"
           }
         }
       },
@@ -1273,7 +1273,7 @@
       },
       "BLL/1.0.0": {
         "dependencies": {
-          "BCrypt.Net": "0.1.0",
+          "BCrypt.Net-Next": "4.0.3",
           "ClosedXML": "0.104.2",
           "DAL": "1.0.0",
           "EPPlus": "7.7.0",
@@ -1283,10 +1283,7 @@
           "Newtonsoft.Json": "13.0.3"
         },
         "runtime": {
-          "BLL.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "BLL.dll": {}
         }
       },
       "DAL/1.0.0": {
@@ -1296,10 +1293,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL.Design": "1.1.0"
         },
         "runtime": {
-          "DAL.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DAL.dll": {}
         }
       }
     }
@@ -1317,12 +1311,12 @@
       "path": "aspnetcorehero.toastnotification/1.1.0",
       "hashPath": "aspnetcorehero.toastnotification.1.1.0.nupkg.sha512"
     },
-    "BCrypt.Net/0.1.0": {
+    "BCrypt.Net-Next/4.0.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-sST2w361Dxt9GGMfpOTiK50wXGV64Ybb1hiX3xjEWnhVYZNF43NuySGwADJa7X1R+bA53NsFR+tuDxcYiJeIOA==",
-      "path": "bcrypt.net/0.1.0",
-      "hashPath": "bcrypt.net.0.1.0.nupkg.sha512"
+      "sha512": "sha512-W+U9WvmZQgi5cX6FS5GDtDoPzUCV4LkBLkywq/kRZhuDwcbavOzcDAr3LXJFqHUi952Yj3LEYoWW0jbEUQChsA==",
+      "path": "bcrypt.net-next/4.0.3",
+      "hashPath": "bcrypt.net-next.4.0.3.nupkg.sha512"
     },
     "BouncyCastle.Cryptography/2.5.0": {
       "type": "package",

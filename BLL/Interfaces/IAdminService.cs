@@ -16,5 +16,4 @@ public interface IAdminService
 
     public Task<DashboardViewModel> GetDashboardData(DateTime startdate, DateTime enddate);
 
-    
 }

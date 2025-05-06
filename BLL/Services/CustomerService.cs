@@ -43,8 +43,6 @@ public class CustomerService : ICustomerService
                         TotalVisit = u.TotalVisit
                     };
 
-
-
         if (!string.IsNullOrEmpty(searchKeyword))
         {
             query = query.Where(u =>

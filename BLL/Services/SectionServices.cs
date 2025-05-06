@@ -423,15 +423,25 @@ public class SectionServices : ISectionServices
 
     // Delete Multiple Tables
 
-    public async Task<AuthResponse> DeleteTables(List<int> ids)
+    public async Task<AuthResponse> DeleteTables(List<TableMassDeleteViewModel> ids)
     {
         try
         {
             foreach (var i in ids)
             {
-                var item = _context.Diningtables.FirstOrDefault(itemInDb => itemInDb.TableId == i);
-                item.Isdeleted = true;
-                _context.Diningtables.Update(item);
+                if (i.Status != "Available")
+                {
+                    return new AuthResponse
+                    {
+                        Success = false,
+                        Message = "Some Table(s) Are Occupied!"
+                    };
+                }
+                else
+                {
+                    var item = _context.Diningtables.FirstOrDefault(itemInDb => itemInDb.TableId == i.Id);
+                    item.Isdeleted = true;
+                }
             }
             await _context.SaveChangesAsync();
 

@@ -1,11 +1,13 @@
 using BLL.Interfaces;
 using BLL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace pizzashop.presentation.Controllers;
 
+[Authorize(Roles = "Account Manager,Admin")]
 public class OrderAppMenuController : OrderAppBaseController
 {
     private readonly IMenuServices _menuservice;

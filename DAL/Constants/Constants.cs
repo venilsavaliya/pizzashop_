@@ -6,5 +6,6 @@ public static class Constants{
     public const string OrderServed = "Served";
     public const string OrderCompleted = "Completed";
     public const string OrderCancelled = "Cancelled";
+    public const string Unknown = "Unknown";
 
 }

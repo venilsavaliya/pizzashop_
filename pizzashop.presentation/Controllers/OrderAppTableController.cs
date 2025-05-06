@@ -4,9 +4,11 @@ using DAL.ViewModels;
 using DAL.Constants;
 using BLL.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace pizzashop.presentation.Controllers;
 
+[Authorize(Roles = "Account Manager,Admin")]
 public class OrderAppTableController : BaseController
 {
 
@@ -15,7 +17,7 @@ public class OrderAppTableController : BaseController
 
     private readonly IOrderAppWaitingListService _waitingservice;
 
-    public OrderAppTableController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IOrderAppTableService OrderAppTableService, IAuthorizationService authservice, ISectionServices sectioService, IOrderAppWaitingListService waitingservice) : base(jwtService, userService, adminservice, authservice)
+    public OrderAppTableController(IJwtService jwtService, IUserService userService, IAdminService adminservice, IOrderAppTableService OrderAppTableService, BLL.Interfaces.IAuthorizationService authservice, ISectionServices sectioService, IOrderAppWaitingListService waitingservice) : base(jwtService, userService, adminservice, authservice)
     {
         _OrderAppTableService = OrderAppTableService;
         _sectioService = sectioService;

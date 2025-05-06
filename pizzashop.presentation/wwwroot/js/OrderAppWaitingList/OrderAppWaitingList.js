@@ -187,7 +187,7 @@ function deleteToken(ele) {
       );
       modal.hide();
       var sectionid = $("#section_list").find(".active").attr("section-id");
-      LoadWaitingList(sectionid);
+      LoadSectionList(sectionid);
     },
   });
 }

@@ -152,7 +152,7 @@ public class SectionController : BaseController
   // POST : Delete Multiple Tables
   [HttpPost]
   [AuthorizePermission(PermissionName.TableAndSection, ActionPermission.CanDelete)]
-  public IActionResult DeleteTables(List<int> ids)
+  public IActionResult DeleteTables(List<TableMassDeleteViewModel> ids)
   {
 
     var AuthResponse = _sectionservice.DeleteTables(ids).Result;

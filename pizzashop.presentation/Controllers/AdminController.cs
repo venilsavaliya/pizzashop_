@@ -7,7 +7,7 @@ using BLL.Attributes;
 using Microsoft.AspNetCore.Mvc;
 namespace pizzashop.presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
+
 public class AdminController : BaseController
 {
     private readonly IAdminService _adminService;

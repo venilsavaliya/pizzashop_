@@ -41,6 +41,7 @@ public class AuthController : Controller
     // GET : Auth/Login
     public IActionResult Login()
     {
+
         if (Request.Cookies["jwt"] != null)
         {
             return RedirectToAction("Index", "Home");
@@ -97,6 +98,13 @@ public class AuthController : Controller
 
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = "Login Successfully!";
+
+        string role = _userService.GetUserRoleByEmail(model.Email);
+
+        if(role == "Chef")
+        {
+            return RedirectToAction("Index", "OrderAppKOT");
+        }
 
         return RedirectToAction("Index", "Home");
     }

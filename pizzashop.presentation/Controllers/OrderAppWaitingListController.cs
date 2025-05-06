@@ -1,10 +1,12 @@
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace pizzashop.presentation.Controllers;
 
+[Authorize(Roles = "Account Manager,Admin")]
 public class OrderAppWaitingListController : OrderAppBaseController
 {
     private readonly IOrderAppWaitingListService _waitingservice;

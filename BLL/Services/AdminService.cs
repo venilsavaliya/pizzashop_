@@ -31,6 +31,9 @@ public class AdminService : IAdminService
         _env = env;
     }
 
+
+
+
     // GET : List Of All Roles
     public List<Role> GetAllRoles()
     {
@@ -44,7 +47,7 @@ public class AdminService : IAdminService
 
             return new List<Role>();
         }
-        
+
     }
 
     // GET : Rolename Of User By RoleId
@@ -148,9 +151,9 @@ public class AdminService : IAdminService
 
         try
         {
-            var totalOrder = await _context.Orders.Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date).CountAsync();
+            var totalOrder = await _context.Orders.Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date && i.OrderStatus != Constants.OrderCancelled).CountAsync();
 
-            var totalSales = await _context.Orders.Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date).SumAsync(i => i.TotalAmount);
+            var totalSales = await _context.Orders.Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date && i.OrderStatus != Constants.OrderCancelled).SumAsync(i => i.TotalAmount);
 
             decimal AverageOrderValue = 0;
 
@@ -162,7 +165,7 @@ public class AdminService : IAdminService
             var ordersList = await _context.Dishritems
                                     .Include(i => i.Order)
                                     .Include(i => i.Item)
-                                    .Where(i => i.Order.OrderDate.Date >= startdate.Date && i.Order.OrderDate.Date <= enddate.Date)
+                                    .Where(i => i.Order.OrderDate.Date >= startdate.Date && i.Order.OrderDate.Date <= enddate.Date && i.Order.OrderStatus != Constants.OrderCancelled)
                                     .ToListAsync();
 
 
@@ -181,7 +184,7 @@ public class AdminService : IAdminService
 
 
             var revenueList = await _context.Orders
-                                        .Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date)
+                                        .Where(i => i.OrderDate.Date >= startdate.Date && i.OrderDate.Date <= enddate.Date && i.OrderStatus != Constants.OrderCancelled)
                                         .GroupBy(i => i.OrderDate.Date)
                                         .OrderBy(g => g.Key)
                                         .Select(g => new
@@ -205,6 +208,12 @@ public class AdminService : IAdminService
 
             var CustomerGrowthData = new Dictionary<string, int>();
 
+            // Fill Revenue Data in The Dictionary
+            foreach (var revenue in revenueList)
+            {
+                RevenueData[revenue.Date] = revenue.Total;
+            }
+
             // Convert customerGrowthList (List Of Object) In To Dictionary(List Of Key Value Pair)
             var customerGrowthDict = customerGrowthList.ToDictionary(x => x.Date, x => x.Total);
 
@@ -221,14 +230,15 @@ public class AdminService : IAdminService
                     customerTotal += customerGrowthDict[currdate];
                 }
                 CustomerGrowthData[currdate] = customerTotal;
+
+                if(!RevenueData.ContainsKey(currdate))
+                {
+                    RevenueData[currdate]=0;
+                }
             }
 
-             // Fill Revenue Data in The Dictionary
-            foreach (var revenue in revenueList)
-            {
-                RevenueData[revenue.Date] = revenue.Total;
-            }
-            
+
+
             // Fill Dates For Show In Labels In Charts
             var dateList = new List<string>();
 
@@ -247,7 +257,7 @@ public class AdminService : IAdminService
                                         ItemId = g.Key.Itemid,
                                         ItemName = g.Key.ItemName,
                                         Image = g.Key.Image,
-                                        TotalOrder = g.Where(i => i.Order.OrderDate.Date >= startdate.Date && i.Order.OrderDate.Date <= enddate.Date).Select(x => x.Orderid).Distinct().Count()
+                                        TotalOrder = g.Where(i => i.Order.OrderDate.Date >= startdate.Date && i.Order.OrderDate.Date <= enddate.Date && i.Order.OrderStatus != Constants.OrderCancelled).Select(x => x.Orderid).Distinct().Count()
                                     })
                                     .OrderByDescending(x => x.TotalOrder)
                                     .ToList();

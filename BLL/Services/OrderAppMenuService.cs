@@ -329,34 +329,7 @@ public class OrderAppMenuService : IOrderAppMenuService
         try
         {
 
-            // check that order is served or not
-            if (model.OrderId != 0)
-            {
-                var currentorder = _context.Orders.FirstOrDefault(o => o.OrderId == model.OrderId);
-
-                var OrderItems = _context.Dishritems
-                    .Where(d => d.Orderid == model.OrderId)
-                    .ToList();
-
-
-                bool isOrderServed = true;
-                foreach (var item in OrderItems)
-                {
-                    var dishitem = _context.Dishritems.FirstOrDefault(d => d.Dishid == item.Dishid);
-                    if (dishitem != null && dishitem.Pendingquantity > 0)
-                    {
-                        isOrderServed = false;
-                        break;
-                    }
-                }
-
-                if (isOrderServed)
-                {
-                    currentorder.OrderStatus = Constants.OrderServed;
-                }
-            }
-
-            await _context.SaveChangesAsync();
+           
 
             #region temporary Tax
             // storing tax in order tax table
@@ -377,12 +350,12 @@ public class OrderAppMenuService : IOrderAppMenuService
             await _context.SaveChangesAsync();
             // 2. Add or Update Tax Record from incoming model
 
-            var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Where(i => i.OrderId == model.OrderId).Select(i => i.Taxid??0));
+            var DbTaxIds = new HashSet<int>(_context.Ordertaxes.Where(i => i.OrderId == model.OrderId).Select(i => i.Taxid ?? 0));
             foreach (var tax in model.TaxList)
             {
                 if (!DbTaxIds.Contains(tax.TaxId))
-                {   
-                    
+                {
+
                     Ordertax ordertax = new Ordertax
                     {
                         OrderId = model.OrderId,
@@ -438,6 +411,7 @@ public class OrderAppMenuService : IOrderAppMenuService
 
             await _context.SaveChangesAsync();
             #endregion
+
 
             var existingOrders = _context.Dishritems.Where(d => d.Orderid == model.OrderId)
                                     .Include(d => d.Dishrmodifiers);
@@ -584,6 +558,35 @@ public class OrderAppMenuService : IOrderAppMenuService
 
                 await _context.SaveChangesAsync();
             }
+
+             // check that order is served or not if user save the already served order with diffrent tax value
+            if (model.OrderId != 0)
+            {
+                var currentorder = _context.Orders.FirstOrDefault(o => o.OrderId == model.OrderId);
+
+                var OrderItems = _context.Dishritems
+                    .Where(d => d.Orderid == model.OrderId)
+                    .ToList();
+
+
+                bool isOrderServed = true;
+                foreach (var item in OrderItems)
+                {
+                    var dishitem = _context.Dishritems.FirstOrDefault(d => d.Dishid == item.Dishid);
+                    if (dishitem != null && dishitem.Pendingquantity > 0)
+                    {
+                        isOrderServed = false;
+                        break;
+                    }
+                }
+
+                if (isOrderServed)
+                {
+                    currentorder.OrderStatus = Constants.OrderServed;
+                }
+            }
+
+            await _context.SaveChangesAsync();
 
             return new AuthResponse
             {
@@ -1050,7 +1053,7 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
-            if(model.OrderId==0)
+            if (model.OrderId == 0)
             {
                 return new AuthResponse
                 {
@@ -1059,10 +1062,10 @@ public class OrderAppMenuService : IOrderAppMenuService
                 };
             }
 
-            var order = await _context.Orders.FirstOrDefaultAsync(i=> i.OrderId == model.OrderId);
-            if(order!=null)
+            var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId);
+            if (order != null)
             {
-                order.Rating = (short?)((model.FoodRating + model.ServiceRating + model.AmbienceRating)/3);
+                order.Rating = (short?)((model.FoodRating + model.ServiceRating + model.AmbienceRating) / 3);
                 order.Comment = model.Comments;
             }
 
@@ -1076,7 +1079,7 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
         catch (System.Exception)
         {
-            
+
             throw;
         }
     }

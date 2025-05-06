@@ -41,6 +41,29 @@ public class UserService : IUserService
         return user;
     }
 
+    // GET : Get User Role By Email Id
+
+    public string GetUserRoleByEmail(string email)
+    {
+        try
+        {
+            if(string.IsNullOrEmpty(email))
+            {
+                return "Unknow";
+            }
+
+            var user = _context.Users.First(i=>i.Email == email);
+            var userDetail = _context.Userdetails.First(i=>i.UserId == user.Id);
+            var userRole = _context.Roles.First(i=>i.Roleid == userDetail.RoleId);
+
+            return userRole.Name??"Unknown";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetUserRoleByEmail : {ex.Message}");
+            return "Error";
+        }
+    }
 
 
 

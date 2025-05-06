@@ -26,7 +26,7 @@ public interface ISectionServices
 
     public Task<AuthResponse> DeleteTable(int id);
 
-    public Task<AuthResponse> DeleteTables(List<int> ids);
+    public Task<AuthResponse> DeleteTables(List<TableMassDeleteViewModel> ids);
 
     public int GetTableStatusIdByName(string name);
     public Task<int> GetBusyTableCountOfSection(int sectionid = 0);

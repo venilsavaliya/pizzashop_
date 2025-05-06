@@ -33,7 +33,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
     {
         try
         {
-            var sectionList = await _context.Sections.Select(s => new SectionListWaiting
+            var sectionList = await _context.Sections.Where(s=>s.Isdeleted != true).Select(s => new SectionListWaiting
             {
                 SectionId = s.SectionId,
                 SectionName = s.SectionName,
@@ -60,7 +60,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
 
     public async Task<AddEditWaitingTokenViewModel> GetAddEditWaitingTokenDetail(int id = 0)
     {
-        var sectionlist = _context.Sections.Select(i => new SectionNameViewModel
+        var sectionlist = _context.Sections.Where(s=> s.Isdeleted!=true).Select(i => new SectionNameViewModel
         {
             SectionId = i.SectionId,
             SectionName = i.SectionName,

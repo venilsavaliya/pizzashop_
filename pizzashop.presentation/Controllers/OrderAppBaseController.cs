@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace pizzashop.presentation.Controllers;
 
-[Authorize(Roles = "Account Manager,Admin")]
+[Authorize(Roles = "Account Manager,Admin,Chef")]
 public class OrderAppBaseController : Controller
 {
   private string username;

@@ -98,7 +98,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body container" id="customerHistoryListContainer">
-                
+
 
             </div>
 
@@ -116,20 +116,20 @@
 <script>
 
     // ajax call to fetch customer history partial view
-        function getCustomerHistory(customerid) {
-            $.ajax({
-                url: "/Customer/GetCustomerHistory",
-                data: { 'customerid': customerid },
-                type: "GET",
-                dataType: "html",
-                success: function (data) {
-                    $("#customerHistoryListContainer").html(data);
-                },
-                error: function () {
-                    $("#customerHistoryListContainer").html('An error has occurred');
-                }
-            });
-        }
+    function getCustomerHistory(customerid) {
+        $.ajax({
+            url: "/Customer/GetCustomerHistory",
+            data: { 'customerid': customerid },
+            type: "GET",
+            dataType: "html",
+            success: function (data) {
+                $("#customerHistoryListContainer").html(data);
+            },
+            error: function () {
+                $("#customerHistoryListContainer").html('An error has occurred');
+            }
+        });
+    }
 
     // open customer history modal
 
@@ -159,7 +159,7 @@
         });
 
 
-        
+
 
 
         // Export Customer detail to excel sheet
@@ -196,11 +196,11 @@
                     startDate = startDate.getFullYear() + "-" +
                         String(startDate.getMonth() + 1).padStart(2, '0') + "-" +
                         String(startDate.getDate()).padStart(2, '0');
-                    
+
                 }
             }
-            else{
-                timeframetext=`${startDate} To ${endDate}`
+            else {
+                timeframetext = `${startDate} To ${endDate}`
             }
 
 
@@ -208,24 +208,29 @@
             $.ajax({
                 url: "/Customer/ExportCustomers",
                 type: "GET",
-                data: { 'searchKeyword': searchkeyword, 'startDate': startDate, 'endDate': endDate, 'timeframe': timeframetext },
+                data: { 'SearchKeyword': searchkeyword, 'StartDate': startDate, 'EndDate': endDate, 'Timeframe': timeframetext },
                 xhrFields: {
                     responseType: "blob" // Expect a binary file (blob) as the response
                 },
                 success: function (data) {
                     var blob = new Blob([data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
                     var link = document.createElement("a");
+
+                    const now = new Date();
+                    const dateString = now.toISOString().split("T")[0]; // e.g., "2025-05-06"
+
+
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "Customers.xlsx";
+                    link.download = "Customers_" + dateString + ".xlsx";
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                 },
                 error: function (xhr) {
-                     if (xhr.status === 400) {
+                    if (xhr.status === 400) {
                         toastr.warning("No Customer(s) Found!")
-                     }
-                   
+                    }
+
                 }
             });
 
@@ -237,7 +242,7 @@
         // submit cuastom date form 
         $("#customeDateForm").submit(function (e) {
             e.preventDefault();
-           
+
 
             if ($("#fromDate").val() == "" || $("#toDate").val() == "") {
                 toastr.warning("Please select valid date");
@@ -260,7 +265,7 @@
         $("#timeframe").change(function () {
             if ($("#timeframe").val() == "4") {
                 handleOpenDateModal();
-                
+
             }
             else {
                 $("#fromDate").val("");

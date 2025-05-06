@@ -1,11 +1,13 @@
 using BLL.Interfaces;
 using BLL.Services;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace pizzashop.presentation.Controllers;
 
+[Authorize(Roles = "Account Manager,Admin,Chef")]
 public class OrderAppKOTController:OrderAppBaseController
 {
     private readonly IOrderAppKOTService _orderAppKOTService;

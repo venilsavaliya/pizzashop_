@@ -70,17 +70,17 @@ public class JwtService : IJwtService
         return jwtToken.ValidTo < DateTime.UtcNow; // Compare with current time
     }
 
-    public string GetEmailDetailsFromToken(string Token)
+    public string GetEmailDetailsFromToken(string? Token)
     {
         var handler = new JwtSecurityTokenHandler();
         if (Token == null)
         {
-            return "nothing";
+            return "Unkown";
         }
         var jwtToken = handler.ReadJwtToken(Token);
 
         var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-        return email;
+        return email??"Unkown";
     }
 
     public async Task<AuthResponse> AddTokenToDb(string token)
