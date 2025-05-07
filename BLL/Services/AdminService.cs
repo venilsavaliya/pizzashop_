@@ -178,7 +178,7 @@ public class AdminService : IAdminService
                 ? groupedOrders.Average(g => g.Max(i => i.Averageservingtime))
                 : 0;
 
-            var WaitingListCount = await _context.Waitingtokens.Where(i => i.Completiontime == null).CountAsync();
+            var WaitingListCount = await _context.Waitingtokens.Where(i => i.Completiontime == null && i.Isdeleted!=true).CountAsync();
 
             var NewCustomerCount = await _context.Customers.Where(i => i.Createddate.Date >= startdate.Date && i.Createddate.Date <= enddate.Date).CountAsync();
 

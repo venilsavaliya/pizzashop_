@@ -230,7 +230,11 @@ public class OrderService : IOrderService
             CustomerMobile = order.Customer?.Mobile ?? "Unknown",
             CustomerEmail = order.Customer?.Email ?? "Unknown",
             TotalPerson = order.TotalPerson,
-            TableName = order.Tableorders.FirstOrDefault()?.Table?.Name ?? "Unknown",
+            PaymentMode = order.PaymentMode,
+            TableName = order.Tableorders
+                            .Where(t => t.OrderId == id)
+                            .Select(t => t.Table?.Name ?? "Unknown")
+                            .ToList(),
             SectionName = order.Tableorders.FirstOrDefault()?.Table?.Section?.SectionName ?? "Unknown",
             ItemList = order.Dishritems.Select(i => new OrderItemViewModel
             {

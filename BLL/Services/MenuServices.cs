@@ -1125,11 +1125,24 @@ public class MenuServices : IMenuServices
                 .Where(m => m.ModifierGroupId == modifierGroupId);
             _context.ItemModifiergroupMappings.RemoveRange(relatedItemMappings);
 
+            //Remove related records from Itemsmodifiergroupminmaxmapping
+
+            var relatedModifiergroupminmaxMapping = _context.Itemsmodifiergroupminmaxmappings
+                .Where(m => m.ModifiergroupId == modifierGroupId);
+            _context.Itemsmodifiergroupminmaxmappings.RemoveRange(relatedModifiergroupminmaxMapping);
+
             // Save changes to remove dependencies
             await _context.SaveChangesAsync();
 
             // Now delete the modifier group
-            _context.Modifiersgroups.Remove(modifierGroup);
+            // _context.Modifiersgroups.Remove(modifierGroup);
+            var existingModifierGroup = await _context.Modifiersgroups
+            .FirstOrDefaultAsync(mg => mg.ModifiergroupId == modifierGroupId);
+
+            if (existingModifierGroup != null)
+            {
+                existingModifierGroup.Isdeleted = true;
+            }
             await _context.SaveChangesAsync();
 
             return new AuthResponse { Success = true, Message = "Modifier Group deleted successfully." };
@@ -1288,7 +1301,7 @@ public class MenuServices : IMenuServices
                     _context.Modifieritemsmodifiersgroups.Remove(item);
                 }
             }
-                await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             // Logic for update minmax value in menu item and its related modifier group after deleting modifier item of perticular modifier group
 
             int modifieritemcount = _context.Modifieritemsmodifiersgroups.Where(i => i.ModifiergroupId == ModifierGroupid).Count();

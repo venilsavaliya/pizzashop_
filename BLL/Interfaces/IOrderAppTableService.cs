@@ -11,5 +11,4 @@ public interface IOrderAppTableService
     
     public int GetOrderIdOfTable (int tableid);
 
-    
 }

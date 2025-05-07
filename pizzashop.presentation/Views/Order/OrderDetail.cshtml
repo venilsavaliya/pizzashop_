@@ -60,7 +60,12 @@
                     <h2 class=" ms-3 fs-4 me-2">Table Details</h2>
                 </div>
 
-                <p class="mb-2">Table: @Model.TableName</p>
+                <p class="mb-2">Table(s):
+                     @foreach (var table in Model.TableName)
+                    {
+                        @(table +" ")
+                    }
+                </p>
                 <p class="mb-2">Section: @Model.SectionName</p>
             </div>
         </div>

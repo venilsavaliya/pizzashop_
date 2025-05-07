@@ -144,11 +144,11 @@
                 <p><strong>Date:</strong> @Model.Placeon</p>
                 <p><strong>Section:</strong> @Model.SectionName</p>
                 <p><strong>Table:</strong>
-                    @* @foreach (var table in Model.TableDetails)
+                    @foreach (var table in Model.TableName)
                     {
-                        @table
-                    } *@
-                    @Model.TableName
+                        @(table +" ")
+                    }
+                   
                 </p>
             </div>
         </div>
@@ -243,7 +243,7 @@
 
         <div class=" payment-info">
                         <h5 class="blue_clr fw-bold">Payment Information</h5>
-                        <p><strong>Payment Method:</strong> Pending</p>
+                        <p><strong>Payment Method:</strong> @Model.PaymentMode</p>
         </div>
 
         <div class="footer">

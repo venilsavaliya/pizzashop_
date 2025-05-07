@@ -11,7 +11,6 @@ public interface ITaxService
 
     public Task<AuthResponse> AddTax(TaxViewModel model);
 
-
     public  Task<AuthResponse> EditTax(TaxViewModel model);
 
     public Task<AuthResponse> DeleteTax(int id);

@@ -19,7 +19,7 @@ function loadcategories() {
     //   data: { cat: id },
     success: function (data) {
       $("#category_list").html(data);
-      $("#CategoryOffcanvas").find('.offcanvas-body').html(data);
+      $("#CategoryOffcanvas").find(".offcanvas-body").html(data);
       ToggleActiveClass();
     },
   });
@@ -219,16 +219,21 @@ function GetOrderItemList(orderid) {
 // for appending existing order item to view
 async function appendOrderItemPartialView() {
   $("#MenuOrderItemTable").empty();
-console.log(TempOrderItemList.length)
-  if(TempOrderItemList.length == 0){
-   console.log("hello")
+
+  console.log(TempOrderItemList.length);
+  if (TempOrderItemList.length == 0) {
     $("#MenuOrderItemTable").append(
-      `<tr><td colspan="3" class="text-center">No Item(s) Added Yet!</td></tr>`);
-      return;
-  }
-  for (var i of TempOrderItemList) {
-    const data = await getPartialViewAsync(i);
-    $("#MenuOrderItemTable").append(data);
+      `<tr id="noItemSpan"><td colspan="3" class="text-center" >No Item(s) Added Yet!</td></tr>`
+    );
+    return;
+  } else {
+    debugger;
+    $("#noItemSpan").remove();
+   
+    for (var i of TempOrderItemList) {
+      const data = await getPartialViewAsync(i);
+      $("#MenuOrderItemTable").append(data);
+    }
   }
 }
 
@@ -348,10 +353,9 @@ function calculateAllTaxes(taxList, TempOrderItemList) {
   if (totalSpan) {
     totalSpan.textContent = `₹ ${total.toFixed(2)}`;
   }
-
 }
 
-// Function To Increase Quantity 
+// Function To Increase Quantity
 function increaseQuantity(index) {
   const item = TempOrderItemList.find((x) => x.Index == index);
   if (item) {
@@ -381,11 +385,8 @@ function decreaseQuantity(index, id) {
     url: "/OrderAppMenu/GetReadyQuantityOfItem",
     data: { id: id },
     success: function (readyQuantity) {
-
       if (item && item.Quantity > 1) {
-
         if (item.Quantity > readyQuantity) {
- 
           item.Quantity -= 1;
 
           // Update Quantity In Row
@@ -399,7 +400,6 @@ function decreaseQuantity(index, id) {
 
           // Recalculate totals
           calculateAllTaxes(TaxList, TempOrderItemList);
-
         } else {
           toastr.error(readyQuantity + " Items Already Prepared !");
         }
@@ -418,6 +418,14 @@ function removeItem(index) {
 
   // Recalculate totals
   calculateAllTaxes(TaxList, TempOrderItemList);
+
+  // Show message if no order item in list 
+  if(TempOrderItemList.length==0)
+  {
+    $("#MenuOrderItemTable").append(
+      `<tr id="noItemSpan"><td colspan="3" class="text-center" >No Item(s) Added Yet!</td></tr>`
+    );
+  }
 }
 
 // Event Lisner For Delete Order Item
@@ -431,16 +439,18 @@ $(document).on("click", ".delete-item", function () {
     data: { id: dishid },
     success: function (readyQuantity) {
       if (readyQuantity != 0) {
-        toastr.error("You can't Delete These Items(s) "+ readyQuantity + " Items Already Prepared !");
-      }
-      else{
+        toastr.error(
+          "You can't Delete These Items(s) " +
+            readyQuantity +
+            " Items Already Prepared !"
+        );
+      } else {
         if (index !== undefined) {
           removeItem(parseInt(index));
         }
       }
     },
   });
-  
 });
 
 // Event Lisner For Increasing Quantity Of Order Item

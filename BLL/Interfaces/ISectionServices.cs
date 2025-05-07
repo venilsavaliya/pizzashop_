@@ -11,11 +11,13 @@ public interface ISectionServices
     public IEnumerable<SectionNameViewModel> GetSectionList();
 
     public Task<AddTableViewmodel> GetTableDetailById(int id);
+
     public  Task<SectionNameViewModel> GetSectionDetailById(int id);
 
     public IEnumerable<Tablestatus> GetTableStatusList();
 
     public TableListPaginationViewModel GetDiningTablesListBySectionId(int sectionid, int pageNumber = 1, int pageSize = 2, string searchKeyword = "");
+    
     public Task<AuthResponse> AddTable(AddTableViewmodel model);
 
     public Task<AuthResponse> EditTable(AddTableViewmodel model);
@@ -29,5 +31,6 @@ public interface ISectionServices
     public Task<AuthResponse> DeleteTables(List<TableMassDeleteViewModel> ids);
 
     public int GetTableStatusIdByName(string name);
+
     public Task<int> GetBusyTableCountOfSection(int sectionid = 0);
 }

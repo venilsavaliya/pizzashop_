@@ -23,9 +23,11 @@ public class OrderDetailViewModel
 
     public int? TotalPerson { get; set; }
 
-    public string TableName { get; set; } = null!;
+    public List<string> TableName { get; set; } = null!;
 
     public string SectionName { get; set; } = null!;
+
+    public string PaymentMode {get;set;} = "Pending";
 
     public List<OrderItemViewModel> ItemList { get; set; }
 

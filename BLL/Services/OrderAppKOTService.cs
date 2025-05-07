@@ -33,8 +33,16 @@ public class OrderAppKOTService : IOrderAppKOTService
 
     public async Task<List<OrderDetailKOTViewModel>> GetOrderDetailsAsync(int categoryId, bool isPending = false)
     {
+        // var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderid);
+        // if (order != null)
+        // {
+        //     if (order.OrderStatus == Constants.OrderCancelled)
+        //     {
+        //         return new List<OrderDetailKOTViewModel>();
+        //     }
+        // }
         var orders = await _context.Orders
-       .Where(o => !o.Isdeleted)
+       .Where(o => !o.Isdeleted && o.OrderStatus != Constants.OrderCancelled)
        .Select(order => new OrderDetailKOTViewModel
        {
            OrderId = order.OrderId,
@@ -78,6 +86,7 @@ public class OrderAppKOTService : IOrderAppKOTService
 
     public async Task<List<OrderDishKOTViewModel>> GetOrderitemListAsync(int orderid, bool isPending = true)
     {
+
         var orderitems = await _context.Dishritems
             .Where(o => o.Orderid == orderid && ((!isPending && o.Readyquantity.HasValue && o.Readyquantity > 0) || (isPending && (o.Pendingquantity.HasValue && o.Pendingquantity > 0))))
             .Select(di => new OrderDishKOTViewModel
@@ -187,7 +196,7 @@ public class OrderAppKOTService : IOrderAppKOTService
                     order.OrderStatus = Constants.OrderServed;
                 }
             }
-            
+
             await _context.SaveChangesAsync();
         }
         return new AuthResponse

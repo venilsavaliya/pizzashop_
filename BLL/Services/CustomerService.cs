@@ -40,7 +40,7 @@ public class CustomerService : ICustomerService
                         Email = u.Email,
                         Mobile = u.Mobile,
                         JoinDate = u.Createddate,
-                        TotalVisit = u.TotalVisit
+                        TotalVisit = _context.Orders.Count(i=>i.CustomerId==u.CustomerId)
                     };
 
         if (!string.IsNullOrEmpty(searchKeyword))
@@ -156,7 +156,6 @@ public class CustomerService : ICustomerService
                 AverageOrderAmount = _context.Orders
                     .Where(i => i.CustomerId == c.CustomerId)
                     .Average(i => (decimal?)i.TotalAmount) ?? 0,
-                TotalVisit = c.TotalVisit,
                 JoinDate = c.Createddate,
                 // Leave Items null for now
             })
@@ -175,6 +174,8 @@ public class CustomerService : ICustomerService
                 Totalitems = _context.Dishritems.Count(j => j.Orderid == i.OrderId)
             })
             .ToListAsync();
+
+        customer.TotalVisit = customer.Items.Count();
 
         return customer;
     }
