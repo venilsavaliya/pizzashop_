@@ -25,7 +25,7 @@ public class AuthorizationService : IAuthorizationService
     public bool HasPermission(string module, ActionPermission action)
     {
     
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+        var token = _httpContext.HttpContext?.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
         if (userid == null)

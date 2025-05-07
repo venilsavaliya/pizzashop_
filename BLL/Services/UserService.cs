@@ -47,16 +47,16 @@ public class UserService : IUserService
     {
         try
         {
-            if(string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email))
             {
                 return "Unknow";
             }
 
-            var user = _context.Users.First(i=>i.Email == email);
-            var userDetail = _context.Userdetails.First(i=>i.UserId == user.Id);
-            var userRole = _context.Roles.First(i=>i.Roleid == userDetail.RoleId);
+            var user = _context.Users.First(i => i.Email == email);
+            var userDetail = _context.Userdetails.First(i => i.UserId == user.Id);
+            var userRole = _context.Roles.First(i => i.Roleid == userDetail.RoleId);
 
-            return userRole.Name??"Unknown";
+            return userRole.Name ?? "Unknown";
         }
         catch (Exception ex)
         {
@@ -83,7 +83,7 @@ public class UserService : IUserService
 
         var query = from u in _context.Userdetails
                     join user in _context.Users on u.UserId equals user.Id
-                    join role in _context.Roles on u.RoleId equals role.Roleid 
+                    join role in _context.Roles on u.RoleId equals role.Roleid
                     where u.Isdeleted == false
                     select new UserViewModel
                     {
@@ -149,7 +149,7 @@ public class UserService : IUserService
         // };
 
         model.Items = usersList;
-        model.SortColumn=sortColumn;
+        model.SortColumn = sortColumn;
         model.SortOrder = sortOrder;
         model.Page.SetPagination(totalCount, pageSize, pageNumber);
         return model;
@@ -157,13 +157,22 @@ public class UserService : IUserService
 
     public Guid GetUserIdfromToken(string token)
     {
-        var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(token);
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
 
-        var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-        var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
-        return user.Id;
+            return user != null ? user.Id : throw new Exception("User not found");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetUserIdFromToken: {ex.Message}");
+            return Guid.Empty;
+        }
+
     }
 
     public async Task<AuthResponse> AddUser(EditUserViewModel user)
@@ -219,9 +228,9 @@ public class UserService : IUserService
         user.State = statename?.StateName;
         user.City = cityname?.CityName;
 
-        string url ="";
+        string url = "";
 
-        if(user.Profile!=null)
+        if (user.Profile != null)
         {
             url = UploadFile(user.Profile);
         }
@@ -240,8 +249,8 @@ public class UserService : IUserService
         // fetch html template from root folder
         string htmltemplate = System.IO.File.ReadAllText(_env.WebRootPath + "/HtmlTemplate/AccountCreated.html");
 
-        htmltemplate=htmltemplate.Replace("_username_", user.UserName);
-        htmltemplate=htmltemplate.Replace("_password_", user.Password);
+        htmltemplate = htmltemplate.Replace("_username_", user.UserName);
+        htmltemplate = htmltemplate.Replace("_password_", user.Password);
 
 
         // send email to the newly created user
@@ -281,7 +290,6 @@ public class UserService : IUserService
             Message = "User Added Successfully"
         };
     }
-
 
     public Userdetail GetUserDetailById(string id)
     {

@@ -31,9 +31,6 @@ public class AdminService : IAdminService
         _env = env;
     }
 
-
-
-
     // GET : List Of All Roles
     public List<Role> GetAllRoles()
     {
