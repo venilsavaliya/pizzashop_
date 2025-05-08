@@ -63,7 +63,16 @@ $("#TableAssignOffcanvasForm").on("submit", "#AssignTableForm", function (e) {
       // bsOffcanvas.hide();
 
       // LoadSectionList();
-      window.location.href= "/OrderAppMenu/index?OrderId="+response.orderid;
+
+      if(response.orderid == 0)
+      {
+        toastr.error("Customer Has Already Assigned A Token!")
+        return;
+      }
+      else{
+        window.location.href= "/OrderAppMenu/index?OrderId="+response.orderid;
+      }
+     
 
       // selectedTables.clear();
     },

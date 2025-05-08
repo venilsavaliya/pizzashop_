@@ -15,7 +15,7 @@ public class OrderAppTableService : IOrderAppTableService
     private readonly IUserService _userservices;
 
 
-    public OrderAppTableService(ApplicationDbContext context, ICustomerService customerservice,IHttpContextAccessor httpContext,IUserService userService)
+    public OrderAppTableService(ApplicationDbContext context, ICustomerService customerservice, IHttpContextAccessor httpContext, IUserService userService)
     {
         _context = context;
         _customerservice = customerservice;
@@ -69,8 +69,24 @@ public class OrderAppTableService : IOrderAppTableService
             else
             {
                 var customer = model.Customer;
+
+                if (customer != null)
+                {   
+                    var customerInDB = await _context.Customers.FirstOrDefaultAsync(c=>c.Email == customer.Email);
+                    customerid = customerInDB?.CustomerId ?? 0;
+                    
+                    //Check If Customer Is Already in Waiting List For Another Section
+                    var isWaiting = await _context.Waitingtokens.FirstOrDefaultAsync(i => i.Customerid == customerid && i.Isdeleted != true && i.Completiontime == null);
+
+                    if (isWaiting != null)
+                    {
+                        return 0;
+                    }
+                }
                 //this will return id of newly created customer or existing customer
                 customerid = await _customerservice.AddCustomer(customer);
+
+
             }
 
             // this will create new order for the customer 
@@ -113,9 +129,9 @@ public class OrderAppTableService : IOrderAppTableService
         }
     }
 
-    public int GetOrderIdOfTable (int tableid)
+    public int GetOrderIdOfTable(int tableid)
     {
-        return _context.Diningtables.First(i=>i.TableId==tableid).CurrentOrderId??0;
+        return _context.Diningtables.First(i => i.TableId == tableid).CurrentOrderId ?? 0;
     }
 
 }

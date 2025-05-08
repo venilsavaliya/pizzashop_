@@ -42,7 +42,7 @@ public class OrderAppKOTService : IOrderAppKOTService
         //     }
         // }
         var orders = await _context.Orders
-       .Where(o => !o.Isdeleted && o.OrderStatus != Constants.OrderCancelled)
+       .Where(o => !o.Isdeleted && o.OrderStatus != Constants.OrderCancelled && o.OrderStatus != Constants.OrderCompleted)
        .Select(order => new OrderDetailKOTViewModel
        {
            OrderId = order.OrderId,

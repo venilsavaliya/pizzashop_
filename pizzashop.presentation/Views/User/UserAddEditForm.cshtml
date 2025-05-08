@@ -246,12 +246,14 @@
 
 
         $("#AddEditUserForm").on('submit',function (e){
-        console.log("in")
+      
         e.preventDefault();
         var form = $(this);
         if (!form.valid()) {
             return;
         }
+
+        $("#loading-overlay").show();
 
         var formData = new FormData(this);
         $.ajax({
@@ -267,9 +269,13 @@
                 else {
                     toastr.error(response.message);
                 }
+
+                $("#loading-overlay").hide();
             },
             error: function (err) {
                 console.log('error occured!')
+                
+                $("#loading-overlay").hide();
             },
         });
         

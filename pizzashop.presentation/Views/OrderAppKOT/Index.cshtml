@@ -238,6 +238,7 @@
             data: { categoryid: categoryid, isPending: true },
             success: function (data) {
                 $("#cardWrapper").html(data);
+
             },
             error: function (error) {
                 console.log("Error loading in-progress orders:", error);

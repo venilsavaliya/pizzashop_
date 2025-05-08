@@ -32,9 +32,9 @@ public class AuthController : Controller
     }
 
     // Access Denied Page
-    public IActionResult AccessDenied()
+    public IActionResult AccessDenied(int statuscode)
     {
-        return View();
+        return View(statuscode);
     }
 
     #region Login

@@ -1,6 +1,8 @@
 @model List<DAL.ViewModels.OrderDetailKOTViewModel>;
 @{
     int count = 1;
+
+    bool isAnyCard = false;
 }
 
 @foreach (var item in Model)
@@ -9,6 +11,9 @@
     {
         continue;
     }
+
+    isAnyCard = true;
+
     <div class="OrderDetailCard d-flex flex-column" onclick="LoadOrderStatusItem(this)" order-id="@item.OrderId" >
         <div class="custom-bg-grey flex-column" style="height: 70px;">
             <div class="d-flex justify-content-between m-2">
@@ -16,6 +21,7 @@
                 <div class="d-flex gap-1 text-secondary fw-"><span><i class="bi bi-stopwatch"></i></span> <span class="live-timer" data-createdat="@item.OrderDate.ToString("yyyy-MM-ddTHH:mm:ss")"> </span></div>
             </div>
             <div class="m-2 fw-semibold">
+
 
                 <span>@item.SectionName</span>
                 <span><i class="bi bi-dot"></i></span>
@@ -64,5 +70,12 @@
             }
 
         </div>
+    </div>
+}
+
+@if(!isAnyCard)
+{
+    <div class="w-100 d-flex justify-content-center align-items-center">
+        <h6 class="border p-3 rounded">No Current Order For This</h6>
     </div>
 }

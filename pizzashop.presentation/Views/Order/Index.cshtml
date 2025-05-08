@@ -132,11 +132,8 @@
         var startDate = $("#fromDate").val();
 
         var endDate = $("#toDate").val();
-        console.log("njdbwej")
+
         var timeframevalue = $("#timeframe").val();
-
-
-
 
         if (!startDate && !endDate && timeframevalue) {
 
@@ -181,15 +178,20 @@
         });
     }
 
-    @* Handle Search  *@
+    // Handle Search  
 
         function HandleSearch() {
             let searchkeyword = $("#orderitem-search-field").val();
             let status = $("#OrderStatus").val();
-            console.log(typeof $("#fromDate").val());
 
             OrderListPaginationAjax();
         }
+
+    // Call Serach Function When Input Stroke on Search Field
+    $(document).on("input","#orderitem-search-field",function(){HandleSearch()})
+
+    // Call Serach Function When Status Of Search Field Change
+    $(document).on("change","#OrderStatus",function(){HandleSearch()})
 
     @* Clear Field Of All Filters *@
 
@@ -212,7 +214,7 @@
         var startDate = $("#fromDate").val();
 
         var endDate = $("#toDate").val();
-        console.log("njdbwej")
+  
         var timeframevalue = $("#timeframe").val();
         var timeframetext = $("#timeframe option:selected").text();
 

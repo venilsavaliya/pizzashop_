@@ -88,4 +88,6 @@ $(document).ready(function () {
   $(document).ajaxComplete(function () {
     reinitializeValidation();
   });
+
+ 
 });

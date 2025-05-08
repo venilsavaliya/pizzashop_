@@ -185,6 +185,10 @@
       "PackagePath": "staticwebassets\\images\\icons\\x.svg"
     },
     {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\images\\loader.gif",
+      "PackagePath": "staticwebassets\\images\\loader.gif"
+    },
+    {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\images\\logos\\icons8-facebook-48.png",
       "PackagePath": "staticwebassets\\images\\logos\\icons8-facebook-48.png"
     },
@@ -615,6 +619,10 @@
     {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\385e016f-b712-4c6e-9189-f55e16f78bf6.jpg",
       "PackagePath": "staticwebassets\\profile_images\\385e016f-b712-4c6e-9189-f55e16f78bf6.jpg"
+    },
+    {
+      "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\3d5d74ec-ca6a-478b-8cb4-57ae194a78c1.jfif",
+      "PackagePath": "staticwebassets\\profile_images\\3d5d74ec-ca6a-478b-8cb4-57ae194a78c1.jfif"
     },
     {
       "Id": "D:\\pizzashop_main\\pizzashop_\\pizzashop.presentation\\wwwroot\\profile_images\\3de113b3-384f-45ff-83b8-0857a2fcf3bf.jfif",

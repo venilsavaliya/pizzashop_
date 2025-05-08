@@ -557,8 +557,6 @@
                 Comments: comment
             };
 
-            console.log("Model", model);
-
             $.ajax({
                 url: '/OrderAppMenu/OrderReview',
                 type: 'POST',
@@ -583,6 +581,7 @@
 
         //handle save order
         function SaveOrder() {
+
             var SaveOrder = JSON.stringify({
                 OrderId:@Model.OrderId,
                 OrderInstruction: "",
@@ -590,8 +589,6 @@
                 TaxList: TempTaxList,
                 TotalAmount: $("#grandTotal").text().replace("₹", "").trim(),
             });
-
-
 
             $.ajax({
                 type: "Post",
@@ -647,7 +644,6 @@
                 toastr.warning("Please Select A Payment Method!");
                 return;
             } 
-
 
             var completeOrder = JSON.stringify({
                 OrderId:@Model.OrderId,
