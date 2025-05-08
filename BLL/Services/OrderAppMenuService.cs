@@ -12,8 +12,6 @@ public class OrderAppMenuService : IOrderAppMenuService
     private readonly ApplicationDbContext _context;
     private readonly IMenuServices _menuservice;
 
-
-
     public OrderAppMenuService(ApplicationDbContext context, IMenuServices menuservice)
     {
         _context = context;
@@ -73,7 +71,6 @@ public class OrderAppMenuService : IOrderAppMenuService
     }
 
     // Get Status Of Order
-
     public string GetOrderStatus(int orderid)
     {
         try
@@ -100,6 +97,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             throw;
         }
     }
+    
     public async Task<OrderAppModifierItemList> GetModifierGroupsByItemId(int itemId)
     {
         try
@@ -231,7 +229,6 @@ public class OrderAppMenuService : IOrderAppMenuService
         }
     }
 
-
     public async Task<OrderAppMenuMainViewModel> GetOrderDetailByOrderId(int orderid)
     {
 
@@ -328,8 +325,6 @@ public class OrderAppMenuService : IOrderAppMenuService
     {
         try
         {
-
-           
 
             #region temporary Tax
             // storing tax in order tax table
@@ -472,6 +467,7 @@ public class OrderAppMenuService : IOrderAppMenuService
                     {
                         _context.Dishrmodifiers.RemoveRange(dishItem.Dishrmodifiers);
                         _context.Dishritems.Remove(dishItem);
+                        await _context.SaveChangesAsync();
                     }
                 }
             }
@@ -1065,7 +1061,7 @@ public class OrderAppMenuService : IOrderAppMenuService
             var order = await _context.Orders.FirstOrDefaultAsync(i => i.OrderId == model.OrderId);
             if (order != null)
             {
-                order.Rating = (short?)((model.FoodRating + model.ServiceRating + model.AmbienceRating) / 3);
+                order.Rating = (short?)Math.Round((decimal)(model.FoodRating + model.ServiceRating + model.AmbienceRating) / 3,0);
                 order.Comment = model.Comments;
             }
 

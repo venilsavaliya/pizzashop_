@@ -20,6 +20,7 @@ public class AdminController : BaseController
 
     private readonly INotyfService _notyf;
 
+
     public AdminController(IAdminService adminService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice,BLL.Interfaces.IAuthorizationService authservice) : base(jwtService, userService, adminservice,authservice)
     {
         _adminService = adminService;

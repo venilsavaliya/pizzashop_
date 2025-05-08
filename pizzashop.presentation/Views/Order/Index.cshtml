@@ -120,7 +120,20 @@
 
 
         OrderListPaginationAjax();
-    })
+    });
+
+    function handleGenerateInvoice(orderStatus,orderId)
+    {
+        if(orderStatus != "Completed")
+        {
+            toastr.warning("Order is Not Completed!");
+        }
+        else
+        {
+            window.location.href = '/Order/ExportToPdf?id=' + orderId;
+
+        }
+    }
 
     function OrderListPaginationAjax(pageSize, pageNumber, sortColumn, sortOrder) {
 
@@ -208,6 +221,9 @@
     // Handle Export Of Dat in Excel sheet
 
     $("#exportbtn").on("click", () => {
+
+
+
         let searchkeyword = $("#orderitem-search-field").val();
         var selectedText = $("#OrderStatus option:selected").text();
 

@@ -9,9 +9,17 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Rotativa.AspNetCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtConfig = builder.Configuration.GetSection("jwt");
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day,restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+ )
+    .CreateLogger();
+builder.Logging.AddSerilog(Log.Logger);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -70,17 +78,17 @@ builder.Services.AddAuthentication(x =>
                 context.Response.Redirect("/Auth/AccessDenied"); // Redirect to AccessDenied if Not Authorized
                 return Task.CompletedTask;
             },
-             OnChallenge = context => // When User Is Not Authenticate 
-            {
-                // Prevent the default 401 response
-                context.HandleResponse();
+            OnChallenge = context => // When User Is Not Authenticate 
+           {
+               // Prevent the default 401 response
+               context.HandleResponse();
 
-                // Redirect the user to login page
-                context.Response.Redirect("/Auth/Login"); // Change to your actual login route
-                
-                return Task.CompletedTask;
-            }
-            
+               // Redirect the user to login page
+               context.Response.Redirect("/Auth/Login"); // Change to your actual login route
+
+               return Task.CompletedTask;
+           }
+
         };
     }
 );
@@ -93,14 +101,14 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ISectionServices, SectionServices>();
-builder.Services.AddScoped<IMenuServices,MenuServices>();
-builder.Services.AddScoped<ITaxService,TaxService>();
-builder.Services.AddScoped<IOrderService,OrderService>();
-builder.Services.AddScoped<ICustomerService,CustomerService>();
-builder.Services.AddScoped<IOrderAppKOTService,OrderAppKOTService>();
-builder.Services.AddScoped<IOrderAppMenuService,OrderAppMenuService>();
-builder.Services.AddScoped<IOrderAppWaitingListService,OrderAppWaitingListService>();
-builder.Services.AddScoped<IOrderAppTableService,OrderAppTableService>();
+builder.Services.AddScoped<IMenuServices, MenuServices>();
+builder.Services.AddScoped<ITaxService, TaxService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderAppKOTService, OrderAppKOTService>();
+builder.Services.AddScoped<IOrderAppMenuService, OrderAppMenuService>();
+builder.Services.AddScoped<IOrderAppWaitingListService, OrderAppWaitingListService>();
+builder.Services.AddScoped<IOrderAppTableService, OrderAppTableService>();
 builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();

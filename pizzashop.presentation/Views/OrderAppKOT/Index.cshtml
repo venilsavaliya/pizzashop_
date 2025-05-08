@@ -128,7 +128,8 @@
 
             const itemlist = getSelectedItemsWithQuantities();
             var isPending = $("#InProgressBtn").hasClass("active");
-            console.log("venil", isPending, itemlist);
+
+            console.log("venil", isPending, OrderItemList,itemlist);
 
 
             // AJAX call to your backend
@@ -152,11 +153,14 @@
                         LoadReadyOrders();
                         toastr.success('Items marked as InProgress!');
                     }
+
+                    OrderItemList = []; //clear the list of selected checkbox after form submission
                 },
                 error: function (err) {
                     // handle error
                     console.error(err);
                     alert('Something went wrong');
+                    OrderItemList = []; //clear the list of selected checkbox after form submission
                 }
             });
         });
@@ -329,6 +333,8 @@
         if(!$("#MarkAsServedBtn").hasClass("d-none")){
              $("#MarkAsServedBtn").addClass("d-none");
         }
+
+        OrderItemList = []; // clear the list of selected checkbox before opening modal
         
     }
 

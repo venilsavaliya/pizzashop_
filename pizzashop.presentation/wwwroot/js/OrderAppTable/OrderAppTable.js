@@ -224,19 +224,56 @@ function openAssignOffcanvas(ele) {
 function attachEventListnerForRadio() {
   $(".RadionBtn").on("change", function () {
     var obj = $(this).data("obj");
-    console.log(obj);
-    console.log("helo");
 
-    $("#AssignTableForm input[name='Customer.Email']").val(obj.email);
-    $("#AssignTableForm input[name='Customer.Name']").val(obj.name);
-    $("#AssignTableForm input[name='Customer.Mobile']").val(obj.mobile);
+ 
+
+    $("#AssignTableForm input[name='Customer.Email']").val(obj.email).addClass('disabled-toggle');
+    $("#AssignTableForm input[name='Customer.Name']").val(obj.name).addClass('disabled-toggle');
+    $("#AssignTableForm input[name='Customer.Mobile']").val(obj.mobile).addClass('disabled-toggle');
     $("#AssignTableForm input[name='Customer.TotalPerson']").val(
       obj.totalperson
-    );
-    $("#AssignTableForm input[name='Tokenid']").val(obj.tokenid);
+    ).addClass('disabled-toggle');
+    $("#AssignTableForm input[name='Tokenid']").val(obj.tokenid).addClass('disabled-toggle');
   });
 }
 
 $(document).ready(function () {
   LoadSectionList();
 });
+
+
+// logic for fill detail of already existed customer in waiting token form
+$(document).on(
+  "input",
+  "#AddEditWaitingTokenForm input[name='Customer.Email'], #AssignTableForm input[name='Customer.Email']",
+  function (e) {
+    const email = $(this).val();
+
+    const regex = /^[^@]+@[^@]+\.[^@]+$/;
+
+    if (regex.test(email)) {
+      $.ajax({
+        type: "GET",
+        url: "/Customer/GetCustomerDetail",
+        data: {
+          email: email,
+        },
+        success: function (data) {
+         
+          $("#AddEditWaitingTokenForm input[name='Customer.Name']").val(
+            data.customer.name
+          );
+          $("#AddEditWaitingTokenForm input[name='Customer.Mobile']").val(
+            data.customer.mobile
+          );
+          $("#AssignTableForm input[name='Customer.Name']").val(
+            data.customer.name
+          );
+          $("#AssignTableForm input[name='Customer.Mobile']").val(
+            data.customer.mobile
+          );
+        },
+      });
+    }
+  }
+);

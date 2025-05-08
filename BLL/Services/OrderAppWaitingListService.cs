@@ -122,7 +122,7 @@ public class OrderAppWaitingListService : IOrderAppWaitingListService
             else
             {
                 // first we check if there is already running token exist with same email
-                var existingtoken = _context.Waitingtokens.FirstOrDefault(t => t.Customerid == customerid && t.Completiontime == null);
+                var existingtoken = _context.Waitingtokens.FirstOrDefault(t => t.Customerid == customerid && t.Completiontime == null && t.Isdeleted != true);
 
                 if (existingtoken != null)
                 {

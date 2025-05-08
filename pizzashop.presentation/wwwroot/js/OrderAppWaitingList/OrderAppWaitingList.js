@@ -11,6 +11,12 @@ function openAddEditWaitingTokenModal(id) {
         document.getElementById("AddEditWaitingTokenModal")
       );
       modal.show();
+
+      if(id)
+      {
+        $("#AddEditWaitingTokenForm input[name='Customer.Email']").addClass('disabled-toggle');
+      }
+     
     },
   });
 }

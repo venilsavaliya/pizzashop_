@@ -18,10 +18,10 @@ public class DashboardViewModel
     public List<string> Dates {get;set;}
 
 
-    public Dictionary<string,decimal> RevenueList {get;set;}
-    public Dictionary<string,int> CustomerGrowthCount {get;set;}
+    public Dictionary<string,decimal> RevenueList {get;set;} = new Dictionary<string, decimal>();
+    public Dictionary<string,int> CustomerGrowthCount {get;set;} = new Dictionary<string, int>();
 
-    public List<SellingItemList> SellingItems {get;set;}
+    public List<SellingItemList> SellingItems {get;set;} = new List<SellingItemList>();
 }
 
 public class SellingItemList

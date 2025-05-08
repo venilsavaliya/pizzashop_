@@ -78,7 +78,9 @@ public class OrderAppTableService : IOrderAppTableService
                     //Check If Customer Is Already in Waiting List For Another Section
                     var isWaiting = await _context.Waitingtokens.FirstOrDefaultAsync(i => i.Customerid == customerid && i.Isdeleted != true && i.Completiontime == null);
 
-                    if (isWaiting != null)
+                    var isAlreadyAssigned = await _context.Diningtables.FirstOrDefaultAsync(i=> i.Customerid == customerid && i.Isdeleted !=true);
+
+                    if (isWaiting != null || isAlreadyAssigned !=null)
                     {
                         return 0;
                     }

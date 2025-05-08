@@ -5,6 +5,7 @@ using DAL.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 
 namespace BLL.Services;
@@ -19,7 +20,9 @@ public class AdminService : IAdminService
     private readonly IEmailService _emailService;
 
     private readonly IWebHostEnvironment _env;
-    public AdminService(ApplicationDbContext context, IHttpContextAccessor contextAccessor, IEmailService emailService, IWebHostEnvironment env)
+
+    private readonly ILogger<AdminService> _logger;
+    public AdminService(ApplicationDbContext context, IHttpContextAccessor contextAccessor, IEmailService emailService, IWebHostEnvironment env, ILogger<AdminService> logger)
     {
 
         _context = context;
@@ -29,6 +32,8 @@ public class AdminService : IAdminService
         _emailService = emailService;
 
         _env = env;
+
+        _logger = logger;
     }
 
     // GET : List Of All Roles
@@ -40,7 +45,8 @@ public class AdminService : IAdminService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in GetAllRoles: {ex.Message}");
+
+            _logger.LogError("Error in GetAllRoles:" + ex.Message);
 
             return new List<Role>();
         }
@@ -58,7 +64,7 @@ public class AdminService : IAdminService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in GetRoleNameByRoleId: {ex.Message}");
+            _logger.LogError("Error in GetRoleNameByRoleId:" + ex.Message);
 
             return "Error";
         }
@@ -92,7 +98,7 @@ public class AdminService : IAdminService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in GetRolespermissionsByRoleId: {ex.Message}");
+            _logger.LogError("Error in GetRolespermissionsByRoleId:" + ex.Message);
 
             return new RolesPermissionListViewModel();
         }
@@ -131,7 +137,7 @@ public class AdminService : IAdminService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in SavePermission: {ex.Message}");
+            _logger.LogError("Error in GetRolespermissionsByRoleId:" + ex.Message);
 
             return new AuthResponse
             {
@@ -175,7 +181,7 @@ public class AdminService : IAdminService
                 ? groupedOrders.Average(g => g.Max(i => i.Averageservingtime))
                 : 0;
 
-            var WaitingListCount = await _context.Waitingtokens.Where(i => i.Completiontime == null && i.Isdeleted!=true).CountAsync();
+            var WaitingListCount = await _context.Waitingtokens.Where(i => i.Completiontime == null && i.Isdeleted != true).CountAsync();
 
             var NewCustomerCount = await _context.Customers.Where(i => i.Createddate.Date >= startdate.Date && i.Createddate.Date <= enddate.Date).CountAsync();
 
@@ -200,10 +206,21 @@ public class AdminService : IAdminService
                                         { Date = g.Key.ToString("yyyy-MM-dd"), Total = g.Count() }
                                         ).ToListAsync();
 
-
             var RevenueData = new Dictionary<string, decimal>();
 
             var CustomerGrowthData = new Dictionary<string, int>();
+
+            // Fill Dates For Show In Labels In Charts
+            var dateList = new List<string>();
+
+            for (var date = startdate; date <= enddate; date = date.AddDays(1))
+            {   
+                var currdate = date.ToString("yyyy-MM-dd");
+                dateList.Add(currdate);
+                RevenueData[currdate] =0;
+            }
+
+
 
             // Fill Revenue Data in The Dictionary
             foreach (var revenue in revenueList)
@@ -228,21 +245,14 @@ public class AdminService : IAdminService
                 }
                 CustomerGrowthData[currdate] = customerTotal;
 
-                if(!RevenueData.ContainsKey(currdate))
+                if (!RevenueData.ContainsKey(currdate))
                 {
-                    RevenueData[currdate]=0;
+                    RevenueData[currdate] = 0;
                 }
             }
 
 
 
-            // Fill Dates For Show In Labels In Charts
-            var dateList = new List<string>();
-
-            for (var date = startdate; date <= enddate; date = date.AddDays(1))
-            {
-                dateList.Add(date.ToString("yyyy-MM-dd"));
-            }
 
             // List Of Selling Item Order By Total Order Of That Item
             var sellingItemLists = (from d in _context.Dishritems
@@ -276,7 +286,7 @@ public class AdminService : IAdminService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in GetDashboardData: {ex.Message}");
+            _logger.LogError("Error in GetDashboardData:" + ex.Message);
 
             return new DashboardViewModel();
         }

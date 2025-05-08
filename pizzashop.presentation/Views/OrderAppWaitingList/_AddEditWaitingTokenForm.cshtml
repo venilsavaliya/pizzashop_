@@ -13,7 +13,7 @@
     <form id="@formId" class="d-flex flex-column gap-3"> 
         <input type="text" class="form-control" asp-for="Tokenid" hidden>
         <div class="form-floating">
-            <input type="email" class="form-control" asp-for="Customer.Email" placeholder="name@example.com">
+            <input type="email" class="form-control " asp-for="Customer.Email" placeholder="name@example.com">
             <label>Email</label>
              <span class="text-danger" asp-validation-for="Customer.Email"></span>
         </div>

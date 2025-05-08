@@ -1,25 +1,37 @@
 @model List<DAL.ViewModels.WaitingTokenViewModel>
 
-<table class="table">
-    <tr>
-        <th></th>
-        <th class="text-center">ID</th>
-        <th class="text-center">Name</th>
-        <th class="text-center">No Of Person</th>
 
-
-    </tr>
-
-
-    @foreach (var u in Model)
-    {
+@if (Model.Count == 0)
+{
+    <div class="mb-4">
+        <h6 class="text-center"> No Waiting Tokens!</h6>
+    </div>
+}
+else
+{
+    <table class="table">
         <tr>
-            <td class=" text-center align-middle"><input class="form-check-input RadionBtn" type="radio" name="radioDefault" id='radioDefault@(u.Tokenid)' data-obj='@Html.Raw(Json.Serialize(u))'></td>
-            <td class="table-row text-center">#@u.Tokenid</td>
-            <td class="table-row text-center">@u.Name</td>
-            <td class="table-row text-center">@u.Totalperson</td>   
+            <th></th>
+            <th class="text-center">ID</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">No Of Person</th>
+
+
         </tr>
-    }
 
 
-</table>
+
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td class=" text-center align-middle"><input class="form-check-input RadionBtn" type="radio" name="radioDefault"
+                        id='radioDefault@(u.Tokenid)' data-obj='@Html.Raw(Json.Serialize(u))'></td>
+                <td class="table-row text-center">#@u.Tokenid</td>
+                <td class="table-row text-center">@u.Name</td>
+                <td class="table-row text-center">@u.Totalperson</td>
+            </tr>
+        }
+
+
+    </table>
+}

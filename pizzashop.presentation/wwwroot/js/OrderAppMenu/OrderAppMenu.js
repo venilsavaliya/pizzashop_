@@ -227,7 +227,6 @@ async function appendOrderItemPartialView() {
     );
     return;
   } else {
-    debugger;
     $("#noItemSpan").remove();
    
     for (var i of TempOrderItemList) {

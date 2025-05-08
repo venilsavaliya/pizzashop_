@@ -13,7 +13,7 @@
 
     <div class="d-flex flex-column bg-white position-fixed d-none d-lg-block"
         style="width: 250px;font-weight: 600;height: 92.5vh;" id="category_list">
-        
+
         <!--pv of category list -->
     </div>
 
@@ -47,7 +47,7 @@
         <div class=" row">
             <div id="menuitems_card"
                 class="d-flex gap-3 flex-wrap @(Model.OrderId != 0 ? "col-xl-7 col-lg-5" : "") overflow-auto invisible-scrollbar mb-3 mb-lg-0"
-                style="max-height: 82vh;">
+                style="max-height: 82vh; height:fit-content">
                 @* pv of menuitems *@
             </div>
             @if (Model.OrderId != 0)
@@ -456,11 +456,15 @@
 
             const existing = TempOrderItemList.find(x =>
                 x.ItemId === alldata.itemId &&
-                JSON.stringify(x.ModifierItems) === JSON.stringify(modifierItems.flat())
+                JSON.stringify([...x.ModifierItems].sort) === JSON.stringify([...modifierItems.flat()].sort)
             );
 
             if (existing) {
                 increaseQuantity(existing.Index);
+
+                var modal = bootstrap.Modal.getInstance($("#selectmodifieritemmodal"));
+                modal.hide();
+                
             } else {
 
                 TempOrderItemList.push({
@@ -643,13 +647,13 @@
             if (!selectedPayment) {
                 toastr.warning("Please Select A Payment Method!");
                 return;
-            } 
+            }
 
             var completeOrder = JSON.stringify({
                 OrderId:@Model.OrderId,
                 TaxList: TempTaxList,
                 TotalAmount: $("#grandTotal").text().replace("₹", "").trim(),
-                PaymentMode:selectedPayment.value
+                PaymentMode: selectedPayment.value
             });
 
             $.ajax({
