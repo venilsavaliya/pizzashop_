@@ -12,6 +12,7 @@ function openAddEditWaitingTokenModal(id) {
       );
       modal.show();
 
+      // If id preset it means it it edit form and that is why we disable email field
       if(id)
       {
         $("#AddEditWaitingTokenForm input[name='Customer.Email']").addClass('disabled-toggle');

@@ -205,13 +205,13 @@ public class MenuServices : IMenuServices
 
         var category = new Category
         {
-            Name = model.Name,
+            Name = model.Name.Trim(),
             Description = model.Description,
             Createdby = userid,
 
         };
 
-        var existingcategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+        var existingcategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Trim().ToLower() == model.Name.Trim().ToLower());
 
         if (existingcategory != null)
         {
@@ -257,7 +257,7 @@ public class MenuServices : IMenuServices
             var ExistingCategory = _context.Categories.FirstOrDefault(c => c.CategoryId == model.Id);
 
             //finding existing name in the category list
-            var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower() && c.CategoryId != model.Id);
+            var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Trim().ToLower() == model.Name.Trim().ToLower() && c.CategoryId != model.Id);
 
             if (existingcategoryname != null)
             {
@@ -270,7 +270,7 @@ public class MenuServices : IMenuServices
                         Message = "Category Already Existed!"
                     };
                 }
-                ExistingCategory.Name = model.Name;
+                ExistingCategory.Name = model.Name.Trim();
                 ExistingCategory.Description = model.Description;
                 ExistingCategory.Modifyiedby = userid;
 
@@ -284,7 +284,7 @@ public class MenuServices : IMenuServices
                 };
             }
 
-            ExistingCategory.Name = model.Name;
+            ExistingCategory.Name = model.Name.Trim();
             ExistingCategory.Description = model.Description;
             ExistingCategory.Modifyiedby = userid;
 
@@ -498,14 +498,14 @@ public class MenuServices : IMenuServices
 
         }
 
-        var existingnameitem = await _context.Items.FirstOrDefaultAsync(i => i.ItemName.ToLower() == model.ItemName.ToLower() && i.CategoryId == model.CategoryId);
+        var existingnameitem = await _context.Items.FirstOrDefaultAsync(i => i.ItemName.Trim().ToLower() == model.ItemName.Trim().ToLower() && i.CategoryId == model.CategoryId);
 
         if (existingnameitem != null)
         {
             if (existingnameitem.Isdeleted == true)
             {
                 existingnameitem.Isdeleted = false;
-                existingnameitem.ItemName = model.ItemName;
+                existingnameitem.ItemName = model.ItemName.Trim();
                 existingnameitem.Type = model.Type;
                 existingnameitem.Rate = model.Rate;
                 existingnameitem.Quantity = model.Quantity;
@@ -543,7 +543,7 @@ public class MenuServices : IMenuServices
 
         var item = new Item
         {
-            ItemName = model.ItemName,
+            ItemName = model.ItemName.Trim(),
             Type = model.Type,
             Rate = model.Rate,
             Quantity = model.Quantity,
@@ -596,7 +596,7 @@ public class MenuServices : IMenuServices
 
             var existingitem = _context.Items.FirstOrDefault(i => i.ItemId == model.Id);
 
-            var existinitemwithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName.ToLower() == model.ItemName.ToLower() && i.Isdeleted != true);
+            var existinitemwithsamename = _context.Items.FirstOrDefault(i => i.ItemId != model.Id && i.ItemName.Trim().ToLower() == model.ItemName.Trim().ToLower() && i.Isdeleted != true);
 
             string img = "";
             if (model.Image != null)
@@ -608,7 +608,7 @@ public class MenuServices : IMenuServices
             if (existingitem != null && existinitemwithsamename == null)
             {
                 existingitem.CategoryId = model.CategoryId;
-                existingitem.ItemName = model.ItemName;
+                existingitem.ItemName = model.ItemName.Trim();
                 existingitem.Type = model.Type;
                 existingitem.Rate = model.Rate;
                 existingitem.Quantity = model.Quantity;
@@ -635,7 +635,7 @@ public class MenuServices : IMenuServices
                     existingitem.Isdeleted = false;
 
                     existinitemwithsamename.CategoryId = model.CategoryId;
-                    existinitemwithsamename.ItemName = model.ItemName;
+                    existinitemwithsamename.ItemName = model.ItemName.Trim();
                     existinitemwithsamename.Type = model.Type;
                     existinitemwithsamename.Rate = model.Rate;
                     existinitemwithsamename.Quantity = model.Quantity;
@@ -649,7 +649,6 @@ public class MenuServices : IMenuServices
                     {
                         existinitemwithsamename.Image = img;
                     }
-
                 }
                 else
                 {
@@ -809,7 +808,7 @@ public class MenuServices : IMenuServices
 
         // Check if a modifier group with the same name already exists (excluding the current one)
         var isDuplicate = await _context.Modifiersgroups
-            .FirstOrDefaultAsync(mg => mg.Name.ToLower() == model.Name.ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted != true);
+            .FirstOrDefaultAsync(mg => mg.Name.ToLower() == model.Name.Trim().ToLower() && mg.ModifiergroupId != model.ModifierId && mg.Isdeleted != true);
 
         if (isDuplicate != null)
         {
@@ -870,7 +869,7 @@ public class MenuServices : IMenuServices
 
         // Check if a modifier group with the same name already exists (case insensitive)
         var existingModifierGroup = await _context.Modifiersgroups
-            .FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+            .FirstOrDefaultAsync(c => c.Name.Trim().ToLower() == model.Name.Trim().ToLower());
 
         if (existingModifierGroup != null && existingModifierGroup.Isdeleted == false)
         {
@@ -884,12 +883,12 @@ public class MenuServices : IMenuServices
         // Create a new modifier group
         var newModifierGroup = new Modifiersgroup
         {
-            Name = model.Name,
+            Name = model.Name.Trim(),
             Description = model.Description,
             Createdby = userId,  // Assuming you have a CreatedBy field
         };
 
-        var existingmodifiergroup = await _context.Modifiersgroups.FirstOrDefaultAsync(c => c.Name.ToLower() == model.Name.ToLower());
+        var existingmodifiergroup = await _context.Modifiersgroups.FirstOrDefaultAsync(c => c.Name.Trim().ToLower() == model.Name.Trim().ToLower());
 
         if (existingmodifiergroup != null)
         {
@@ -1158,10 +1157,21 @@ public class MenuServices : IMenuServices
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
 
+        var existingModifierItem = await _context.Modifieritems
+            .FirstOrDefaultAsync(c => c.ModifierName.Trim().ToLower() == model.ModifierName.Trim().ToLower());
+
+        if (existingModifierItem != null && existingModifierItem.Isdeleted != true)
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Modifier Item already exists!"
+            };
+        }
 
         var item = new Modifieritem
         {
-            ModifierName = model.ModifierName,
+            ModifierName = model.ModifierName.Trim(),
             Rate = model.Rate,
             Quantity = model.Quantity,
             Unit = model.Unit,
@@ -1196,6 +1206,18 @@ public class MenuServices : IMenuServices
     {
         var token = _httpContext.HttpContext.Request.Cookies["jwt"];
         var userid = _userservices.GetUserIdfromToken(token);
+
+        var existingModifierItem = await _context.Modifieritems
+            .FirstOrDefaultAsync(c => c.ModifierName.Trim().ToLower() == model.ModifierName.Trim().ToLower());
+
+        if (existingModifierItem != null && existingModifierItem.Isdeleted != true)
+        {
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Modifier Item already exists!"
+            };
+        }
 
         var item = _context.Modifieritems.FirstOrDefault(mi => mi.ModifierId == model.ModifierId);
 

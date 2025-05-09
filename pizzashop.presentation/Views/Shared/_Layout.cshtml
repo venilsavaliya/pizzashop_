@@ -31,7 +31,7 @@
 
             <div class="sidebar-options-list  d-flex flex-column align-items-start  gap-1 fw-medium">
                 <div class="sidebar-option px-2 py-1">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
+                    <a asp-controller="Home" asp-action="Index" class="sidebar-link">
                         <div class=" d-flex  justify-content-start align-items-center gap-3 mt-2">
                             <img src="~/images/logos/pizzashop_logo.png" alt="" class="w-25">
                             <h5 class="custom-skyblue">PIZZASHOP</h5>
@@ -150,17 +150,17 @@
                     <div class="dropdown">
 
                         <a asp-action="Index" asp-controller="OrderAppTable">
-                            <img src="~/images/icons/phone.svg" style="height: 35px; filter: invert(1);" class="my-auto"
+                            <img src="~/images/icons/phone.svg" style="height: 35px; filter: invert(1); object-fit: cover;" class="my-auto"
                                 alt="">
                         </a>
 
                         <img class="me-2 dropdown-toggle rounded-circle border" data-bs-toggle="dropdown"
-                            aria-expanded="false" width="50" height="50" src="@ViewBag.Profile" alt="">
+                            aria-expanded="false" width="50" height="50" src="@ViewBag.Profile" alt="" style="object-fit: cover;">
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li
                                 class="d-flex justify-content-start gap-2 align-items-center border py-2 border-top-0 dropdown-item">
-                                <img src="@ViewBag.Profile" alt="" class="my-auto" height="40">
+                                <img src="@ViewBag.Profile" alt="" class="my-auto" height="40" style="object-fit: cover;">
                                 <div>@ViewBag.Username</div>
                             </li>
 
@@ -197,7 +197,7 @@
             aria-labelledby="offcanvasExampleLabel">
             <div class="offcanvas-header align-items-center">
                 <div class="sidebar-option">
-                    <a href="./superadmindashboard.html" class="sidebar-link">
+                    <a asp-controller="Home" asp-action="Index" class="sidebar-link">
                         <div class=" d-flex  justify-content-start align-items-center gap-3 mt-2">
                             <img src="~/images/logos/pizzashop_logo.png" alt="" class="w-25">
                             <h6 class="custom-skyblue">PIZZASHOP</h6>

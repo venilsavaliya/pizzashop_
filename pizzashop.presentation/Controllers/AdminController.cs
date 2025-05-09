@@ -1,12 +1,9 @@
-using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using DAL.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using DAL.Constants;
 using BLL.Attributes;
 using Microsoft.AspNetCore.Mvc;
 namespace pizzashop.presentation.Controllers;
-
 
 public class AdminController : BaseController
 {
@@ -18,16 +15,12 @@ public class AdminController : BaseController
 
     private readonly IEmailService _emailService;
 
-    private readonly INotyfService _notyf;
-
-
-    public AdminController(IAdminService adminService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, INotyfService notyf, IJwtService jwtService, IUserService userService, IAdminService adminservice,BLL.Interfaces.IAuthorizationService authservice) : base(jwtService, userService, adminservice,authservice)
+    public AdminController(IAdminService adminService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, IJwtService jwtService, IUserService userService, IAdminService adminservice,BLL.Interfaces.IAuthorizationService authservice) : base(jwtService, userService, adminservice,authservice)
     {
         _adminService = adminService;
         _authservice = authService;
         _env = env;
         _emailService = emailService;
-        _notyf = notyf;
     }
 
 
@@ -40,11 +33,14 @@ public class AdminController : BaseController
 
         return View(roles);
     }
+    
     [AuthorizePermission(PermissionName.RolesAndPermission, ActionPermission.CanAddEdit)]
     public IActionResult Permission(string id)
     {
         var rolesandpermission = _adminService.GetRolespermissionsByRoleId(id);
+
         ViewBag.RoleName = _adminService.GetRoleNameByRoleId(id);
+
         return View(rolesandpermission);
     }
 
@@ -60,11 +56,13 @@ public class AdminController : BaseController
         {
             TempData["ToastrType"] = "success";
             TempData["ToastrMessage"] = AuthResponse.Message;
+
             return RedirectToAction("Roles", "Admin");
         }
 
         TempData["ToastrType"] = "error";
         TempData["ToastrMessage"] = AuthResponse.Message;
+
         return RedirectToAction("Roles", "Admin");
     }
 
@@ -73,7 +71,6 @@ public class AdminController : BaseController
     {
         var data = await _adminService.GetDashboardData(startdate,enddate);
         return PartialView("_DashboardPartial",data);
-        // return Ok(data);
     }
 
 

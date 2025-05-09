@@ -258,7 +258,7 @@ public class AdminService : IAdminService
             var sellingItemLists = (from d in _context.Dishritems
                                     join i in _context.Items on d.Itemid equals i.ItemId into joined
                                     from i in joined.DefaultIfEmpty()
-                                    group d by new { d.Itemid, i.ItemName, i.Image } into g
+                                    group d by new { d.Itemid, i.ItemName, i.Image } into g 
                                     select new SellingItemList
                                     {
                                         ItemId = g.Key.Itemid,
@@ -268,6 +268,9 @@ public class AdminService : IAdminService
                                     })
                                     .OrderByDescending(x => x.TotalOrder)
                                     .ToList();
+
+
+           
 
 
             return new DashboardViewModel

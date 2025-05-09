@@ -179,7 +179,7 @@ public class UserService : IUserService
     {
 
         // logic for checking unique username
-        if (_context.Userdetails.Any(u => u.UserName == user.UserName))
+        if (_context.Userdetails.Any(u => u.UserName.Trim().ToLower() == user.UserName.Trim().ToLower()))
         {
             return new AuthResponse
             {
@@ -197,7 +197,7 @@ public class UserService : IUserService
             };
         }
         // logic for checking unique email
-        if (_context.Users.Any(u => u.Email == user.Email))
+        if (_context.Users.Any(u => u.Email.Trim().ToLower() == user.Email.Trim().ToLower()))
         {
             return new AuthResponse
             {

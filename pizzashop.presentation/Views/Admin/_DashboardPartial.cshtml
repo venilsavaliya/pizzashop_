@@ -4,6 +4,7 @@
     var hours = totalSeconds / 3600;
     var minutes = (totalSeconds % 3600) / 60;
     var ct = 1;
+    bool isListEmpty = true;
 }
 
 <div class="container-fluid mt-3">
@@ -114,12 +115,17 @@
             <div class="d-flex flex-column bg-white shadow rounded p-2 overflow-auto" style="height: 200px;">
                 <h4>Top Selling Items</h4>
                 <div style="height: 180px;" class="overflow-auto">
+                     
+                    
                     @for (var i = 0; i < Model.SellingItems.Count; i++)
                     {
                         var item = Model.SellingItems[i];
 
                         if (item.TotalOrder != 0)
-                        {
+                        {   
+                            {
+                                isListEmpty = false;
+                            }
                             <div class="d-flex justify-content-start align-items-center">
                                 <span># @(i + 1)</span>
 
@@ -135,8 +141,12 @@
                             </div>
                             <hr>
                         }
-
-
+                    }
+                     @if(isListEmpty)
+                    {
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <span class="fw-bold p-2 border rounded">No Items</span>
+                        </div>
                     }
                 </div>
 
@@ -149,12 +159,14 @@
                 <h4>Least Selling Items</h4>
 
                 <div class="overflow-auto" style="height: 180px;">
+                    
                     @for (var i = Model.SellingItems.Count - 1; i >= 0; i--)
                     {
                         var item = Model.SellingItems[i];
 
                         if (item.TotalOrder != 0)
-                        {
+                        {   
+                           
                             <div class="d-flex justify-content-start align-items-center">
                                 <span># @ct</span>
                                 @{
@@ -172,6 +184,12 @@
                             </div>
                             <hr>
                         }
+                    }
+                    @if(isListEmpty)
+                    {
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <span class="fw-bold p-2 border rounded">No Items</span>
+                        </div>
                     }
                 </div>
 

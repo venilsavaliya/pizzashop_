@@ -3,11 +3,11 @@
     ViewData["Title"] = "Profile";
 
     var email = Context.Request.Cookies["email"];
-     ViewBag.active = "Users";
+    ViewBag.active = "Users";
 }
 
-    <div class="add-user-container p-3">
-        <div class="head-section d-flex justify-content-between align-items-center">
+<div class="add-user-container p-3">
+    <div class="head-section d-flex justify-content-between align-items-center">
         <h2 class="custom-blue fw-bold">My Profile</h2>
         <div class="search-section d-flex gap-2">
 
@@ -38,26 +38,37 @@
                 <div class=""
                     style="height:50px; background-image: url('@Url.Content("~/images/profile_div_bg.jpg")');background-size: cover;">
                 </div>
-                <div class="d-flex justify-content-between align-items-center position-relative " style="">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center position-relative "
+                    style="">
                     <div class="d-flex">
                         @* <img src="@Model.Profile" alt="" class="admin-img position-relative img-fluid"> *@
-                        <div style="background-image: url(@Model.Profile); height:100px; width: 100px; background-size: cover;border-radius: 100%; border: 1px solid black;position: relative; " class="admin-img">
-                             <input type="file" asp-for="Profile" class="position-absolute opacity-0" style="right:0px; bottom:15px;width:20px;z-index:100"/>
-                             <img src="~/images/icons/camera.svg" alt="" class="position-absolute bg-white border round-circle" style="right:0px; bottom:15px;width:30px; border-radius: 100%; padding: 5px; ">
+                        <div style="background-image: url(@Model.Profile); height:100px; width: 100px; background-size: cover;border-radius: 100%; border: 1px solid black;position: relative; "
+                            class="admin-img">
+                            <input type="file" asp-for="Profile"
+                                onchange="ValidateImage('UserProfile','filename','imageValidationspan')"
+                                class="position-absolute opacity-0"
+                                style="right:0px; bottom:15px;width:20px;z-index:100" id="UserProfile" />
+                            <img src="~/images/icons/camera.svg" alt=""
+                                class="position-absolute bg-white border round-circle"
+                                style="right:0px; bottom:15px;width:30px; border-radius: 100%; padding: 5px; ">
                         </div>
 
-                        
                         <div class="ms-3" style="top: 90px; left: 30px;">
                             <h1>@(Model.FirstName)</h1>
-                            <span>@ViewBag.Role</span>                         
-                        </div>  
+                            <span>@ViewBag.Role</span>
+                        </div>
+
                     </div>
 
-                    <div class="me-4">
+                    <div class="me-4 mb-4 mb-sm-0">
                         <span>@ViewBag.email</span>
-
                     </div>
 
+                </div>
+
+                <div>
+                    <span id="imageValidationspan" class="text-danger"></span>
+                    <span id="filename"></span>
                 </div>
 
             </div>
@@ -70,7 +81,7 @@
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
 
-                
+
                 <div class="form-floating mb-3 col">
                     <input asp-for="LastName" type="text" class="form-control" id="floatingInput"
                         placeholder="name@example.com">
@@ -133,8 +144,8 @@
             </div>
             <div class="d-flex gap-2 mt-3">
                 <button type="submit" class="custom-btn-bg text-white p-2 border rounded">Update User</button>
-                <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a asp-action="index" asp-controller="Home"
-                        class="custom-blue" style="text-decoration: none;">cancel</a></button>
+                <button class="bg-white custom-blue-border rounded p-2 custom-blue"><a asp-action="index"
+                        asp-controller="Home" class="custom-blue" style="text-decoration: none;">cancel</a></button>
             </div>
         </form>
     </div>

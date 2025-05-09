@@ -38,7 +38,7 @@ public class AuthService : IAuthService
         try
         {
             // Check if the user exists in the database
-            var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email.Trim().ToLower() == model.Email.Trim().ToLower());
 
             if (existingUser == null)
             {

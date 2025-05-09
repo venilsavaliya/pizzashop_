@@ -27,7 +27,7 @@
                     <span class="orderStatusBox">@Model.OrderStatus</span>
                 </div>
                 <a class="btn w-auto my-1 my-lg-0 ms-1 d-flex align-items-center justify-content-center text-white"
-                    id="exportOrderBtn" style="background-color:#0066a7; max-width: 150px;" asp-controller="Order" asp-action="ExportToPdf" asp-route-id=@Model.OrderId>
+                    id="exportOrderBtn" style="background-color:#0066a7; max-width: 150px;" onclick="handleGenerateInvoice('@Model.OrderStatus',@Model.OrderId)">
                     <img src="/images/icons/export.png" width="30px" style="filter: invert(1);">
                     Export
                 </a>
@@ -162,3 +162,18 @@
         </div>
     </div>
 </div>
+
+<script>
+    function handleGenerateInvoice(orderStatus,orderId)
+    {
+        if(orderStatus != "Completed")
+        {
+            toastr.warning("Order is Not Completed!");
+        }
+        else
+        {
+            window.location.href = '/Order/ExportToPdf?id=' + orderId;
+
+        }
+    }
+</script>

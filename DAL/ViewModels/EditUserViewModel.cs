@@ -25,7 +25,6 @@ public partial class EditUserViewModel
 
     public bool Status { get; set; }
     
-   
     public string? Country { get; set; }="";
 
     [RequiredIfCountryPresent("Country")]

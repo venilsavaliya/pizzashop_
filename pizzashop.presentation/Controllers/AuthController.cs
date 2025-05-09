@@ -17,17 +17,14 @@ public class AuthController : Controller
 
     private readonly IEmailService _emailService;
 
-    private readonly INotyfService _notyfy;
-
     private readonly IJwtService _jwtService;
 
-    public AuthController(IUserService userService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, INotyfService notyfy, IJwtService jwtService, IAdminService adminservice)
+    public AuthController(IUserService userService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, IJwtService jwtService, IAdminService adminservice)
     {
         _userService = userService;
         _authservice = authService;
         _env = env;
         _emailService = emailService;
-        _notyfy = notyfy;
         _jwtService = jwtService;
     }
 
@@ -37,7 +34,6 @@ public class AuthController : Controller
         return View(statuscode);
     }
 
-    #region Login
     // GET : Auth/Login
     public IActionResult Login()
     {
@@ -109,9 +105,6 @@ public class AuthController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    #endregion
-
-
     // GET : Auth/ForgotPassword
     public IActionResult ForgotPassword(string email)
     {
@@ -150,9 +143,7 @@ public class AuthController : Controller
         return View("ForgotPassword", model);
     }
 
-
     // GET : Auth/ResetPassword
-
     public IActionResult ResetPassword(string token)
     {
         if (_jwtService.IsTokenExpired(token))
@@ -185,21 +176,22 @@ public class AuthController : Controller
 
         if (AuthResponse.Success && response.Success)
         {
-            Console.WriteLine("Password Reset Successfully");
+            
             TempData["ToastrType"] = "success";
             TempData["ToastrMessage"] = "Password Reset Successfully!";
+
             return RedirectToAction("Login", "Auth");
         }
         else
         {
             ModelState.AddModelError("CustomeError", AuthResponse.Message ?? "Could Not Change Password");
+
             TempData["ToastrType"] = "error";
             TempData["ToastrMessage"] = AuthResponse.Message;
         }
 
         return View();
     }
-
 
     // GET: Auth/Logout
     public IActionResult Logout()
@@ -208,6 +200,7 @@ public class AuthController : Controller
 
         TempData["ToastrType"] = "success";
         TempData["ToastrMessage"] = "Logout Successfully!";
+
         return RedirectToAction("Login", "Auth");
     }
 
