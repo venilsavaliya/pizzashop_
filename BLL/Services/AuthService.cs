@@ -1,4 +1,3 @@
-using System;
 using BLL.Interfaces;
 using BLL.Models;
 using DAL.Models;
@@ -124,8 +123,6 @@ public class AuthService : IAuthService
             Token = null,
             Message = "Reset Password Link Sent to Your Email"
         };
-
-
     }
 
     //  ---------------------------------- Reset Password Functionality ----------------------------------

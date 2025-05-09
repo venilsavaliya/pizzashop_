@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 var jwtConfig = builder.Configuration.GetSection("jwt");
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
+    .WriteTo.Console(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
     .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day,restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
  )
     .CreateLogger();

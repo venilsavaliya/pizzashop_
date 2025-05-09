@@ -579,3 +579,4 @@ System.InvalidOperationException: Multiple constructors accepting all given argu
    at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-05-09 17:07:57.278 +05:30 [ERR] Error in GetDashboardData:Test Excception

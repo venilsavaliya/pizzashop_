@@ -5,7 +5,7 @@ using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Ocsp;
+using Microsoft.Extensions.Logging;
 
 namespace BLL.Services;
 
@@ -16,23 +16,25 @@ public class MenuServices : IMenuServices
 
     private readonly IHttpContextAccessor _httpContext;
 
-    private readonly IJwtService _jwtservices;
+    private readonly ILogger<MenuServices> _logger;
 
     private readonly IUserService _userservices;
 
-    public MenuServices(ApplicationDbContext dbcontext, IHttpContextAccessor httpContext, IUserService userService, IJwtService jwtservices)
+    public MenuServices(ApplicationDbContext dbcontext, IHttpContextAccessor httpContext, IUserService userService, ILogger<MenuServices> logger)
     {
         _context = dbcontext;
         _httpContext = httpContext;
         _userservices = userService;
-        _jwtservices = jwtservices;
-    }
+        _logger = logger;
 
+    }
+    // For Getting Category List
     public IEnumerable<CategoryNameViewModel> GetCategoryList()
     {
-
-        var categories = _context.Categories
-                         .Where(c => !(bool)c.Isdeleted) // Exclude deleted categories
+        try
+        {
+            var categories = _context.Categories
+                         .Where(c => c.Isdeleted != true)
                          .Select(c => new CategoryNameViewModel
                          {
                              Id = c.CategoryId,
@@ -41,16 +43,24 @@ public class MenuServices : IMenuServices
                          })
                          .OrderBy(c => c.Id).ToList();
 
-        categories = new List<CategoryNameViewModel>(categories);
-        return categories;
+            return new List<CategoryNameViewModel>(categories);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetCategoryList: " + ex.Message);
+
+            return new List<CategoryNameViewModel>();
+        }
+
     }
 
     // For Getting ModifiersGroup List
     public IEnumerable<ModifierGroupNameViewModel> GetModifiersGroupList()
     {
-
-        var ModifierGroups = _context.Modifiersgroups
-                         .Where(c => c.Isdeleted != true) // Exclude deleted Modifiergroup
+        try
+        {
+            var ModifierGroups = _context.Modifiersgroups
+                         .Where(c => c.Isdeleted != true)
                          .Select(c => new ModifierGroupNameViewModel
                          {
                              ModifiergroupId = c.ModifiergroupId,
@@ -59,19 +69,32 @@ public class MenuServices : IMenuServices
                          })
                          .OrderBy(c => c.ModifiergroupId).ToList();
 
-        ModifierGroups = new List<ModifierGroupNameViewModel>(ModifierGroups);
-        return ModifierGroups;
+            return new List<ModifierGroupNameViewModel>(ModifierGroups);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetModifiersGroupList: " + ex.Message);
+
+            return new List<ModifierGroupNameViewModel>();
+        }
     }
 
     // Get All Units List
-
     public List<Unit> GetAllUnitsList()
     {
-        return _context.Units.ToList();
+        try
+        {
+            return _context.Units.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetAllUnitsList: " + ex.Message);
+
+            return new List<Unit>();
+        }
     }
 
-    // Get Menu Item Detail By Id 
-
+    // Get Existing Menu Item Detail By Id 
     public AddItemViewModel GetMenuItemDetailById(int id)
     {
         try
@@ -112,36 +135,46 @@ public class MenuServices : IMenuServices
                 };
             }
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Error in GetMenuItemDetailById: " + ex.Message);
 
-            throw;
+            return new AddItemViewModel();
         }
     }
 
-
-    // Get Category DEtail By Id
-
+    // Get Existing Category Detail By Id
     public CategoryNameViewModel GetCategoryDetailById(int id)
     {
         try
         {
             var data = _context.Categories.FirstOrDefault(i => i.CategoryId == id);
-            return new CategoryNameViewModel
-            {
-                Name = data.Name,
-                Description = data.Description,
-                Id = data.CategoryId
-            };
-        }
-        catch (System.Exception)
-        {
 
-            throw;
+            if (data != null)
+            {
+                return new CategoryNameViewModel
+                {
+                    Name = data.Name,
+                    Description = data.Description,
+                    Id = data.CategoryId
+                };
+            }
+
+            else
+            {
+                return new CategoryNameViewModel();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetCategoryDetailById: " + ex.Message);
+
+            return new CategoryNameViewModel();
         }
     }
 
-    // Get Modifier Group Detail By Id
+    // Get Existing Modifier Group Detail By Id
     public AddModifierGroupViewModel GetModifierGroupDetailById(int id)
     {
         try
@@ -155,13 +188,15 @@ public class MenuServices : IMenuServices
                 ModifierItems = _context.Modifieritemsmodifiersgroups.Where(i => i.ModifiergroupId == id).Select(i => i.ModifierId ?? 0).ToList()
             };
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Error in GetModifierGroupDetailById: " + ex.Message);
 
-            throw;
+            return new AddModifierGroupViewModel();
         }
     }
-    // Get Modifier Group Detail By Id
+
+    // Get Existing Modifier Group Detail By Id
     public AddModifierItemViewModel GetModifierItemDetailById(int id)
     {
         try
@@ -175,58 +210,87 @@ public class MenuServices : IMenuServices
             else
             {
                 var data = _context.Modifieritems.FirstOrDefault(i => i.ModifierId == id);
-                return new AddModifierItemViewModel
+                if (data != null)
                 {
-                    ModifierId = id,
-                    Description = data.Description,
-                    ModifierName = data.ModifierName,
-                    Quantity = data.Quantity ?? 0,
-                    Rate = data.Rate ?? 0,
-                    Unit = data.Unit,
-                    UnitsList = _context.Units.ToList()
-
-                };
+                    return new AddModifierItemViewModel
+                    {
+                        ModifierId = id,
+                        Description = data.Description,
+                        ModifierName = data.ModifierName,
+                        Quantity = data.Quantity ?? 0,
+                        Rate = data.Rate ?? 0,
+                        Unit = data.Unit ?? "Unknown",
+                        UnitsList = _context.Units.ToList()
+                    };
+                }
+                else
+                {
+                    return new AddModifierItemViewModel();
+                }
             }
-
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Error in GetModifierItemDetailById: " + ex.Message);
 
-            throw;
+            return new AddModifierItemViewModel();
         }
     }
 
+    // Add New Category
     public async Task<AuthResponse> AddCategory(CategoryNameViewModel model)
     {
-        var token = _httpContext.HttpContext.Request.Cookies["jwt"];
-
-        var userid = _userservices.GetUserIdfromToken(token);
-
-
-        var category = new Category
+        try
         {
-            Name = model.Name.Trim(),
-            Description = model.Description,
-            Createdby = userid,
+            var token = _httpContext.HttpContext?.Request.Cookies["jwt"];
 
-        };
-
-        var existingcategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Trim().ToLower() == model.Name.Trim().ToLower());
-
-        if (existingcategory != null)
-        {
-
-            if (existingcategory.Isdeleted != true)
+            if (token == null)
             {
                 return new AuthResponse
                 {
                     Success = false,
-                    Message = "Category Already Existed!"
+                    Message = "User Not Authenticated!"
                 };
             }
-            existingcategory.Isdeleted = false;
-            existingcategory.Description = model.Description;
 
+            var userid = _userservices.GetUserIdfromToken(token);
+
+            var category = new Category
+            {
+                Name = model.Name.Trim(),
+                Description = model.Description,
+                Createdby = userid,
+
+            };
+
+            // Check If Same Name Category Already Existed Or Not
+
+            var existingcategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Trim().ToLower() == model.Name.Trim().ToLower());
+
+            if (existingcategory != null)
+            {
+
+                if (existingcategory.Isdeleted != true)
+                {
+                    return new AuthResponse
+                    {
+                        Success = false,
+                        Message = "Category Already Existed!"
+                    };
+                }
+                existingcategory.Isdeleted = false;
+                existingcategory.Description = model.Description;
+
+                await _context.SaveChangesAsync();
+
+                return new AuthResponse
+                {
+                    Success = true,
+                    Message = "Category Added Succesfully !"
+                };
+            }
+
+            _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
             return new AuthResponse
@@ -235,46 +299,56 @@ public class MenuServices : IMenuServices
                 Message = "Category Added Succesfully !"
             };
         }
-
-        _context.Categories.Add(category);
-        await _context.SaveChangesAsync();
-
-        return new AuthResponse
+        catch (Exception ex)
         {
-            Success = true,
-            Message = "Category Added Succesfully !"
-        };
+            _logger.LogError("Error in AddCategory: " + ex.Message);
+
+            return new AuthResponse
+            {
+                Success = false,
+                Message = "Error in Add Category!"
+            };
+        }
     }
 
+    // Edit Existing Category
     public async Task<AuthResponse> EditCategory(CategoryNameViewModel model)
     {
         try
         {
-            var token = _httpContext.HttpContext.Request.Cookies["jwt"];
+            var token = _httpContext.HttpContext?.Request.Cookies["jwt"];
+
+            if (token == null)
+            {
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "User Not Authenticated!"
+                };
+            }
 
             var userid = _userservices.GetUserIdfromToken(token);
 
             var ExistingCategory = _context.Categories.FirstOrDefault(c => c.CategoryId == model.Id);
 
-            //finding existing name in the category list
+            //Finding Existing Name In The Category List
             var existingcategoryname = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Trim().ToLower() == model.Name.Trim().ToLower() && c.CategoryId != model.Id);
 
-            if (existingcategoryname != null)
+            if (existingcategoryname != null && existingcategoryname.Isdeleted != true)
             {
-
-                if (existingcategoryname.Isdeleted != true)
+                return new AuthResponse
                 {
-                    return new AuthResponse
-                    {
-                        Success = false,
-                        Message = "Category Already Existed!"
-                    };
-                }
+                    Success = false,
+                    Message = "Category Already Existed!"
+                };
+            }
+
+            if (ExistingCategory != null)
+            {
                 ExistingCategory.Name = model.Name.Trim();
                 ExistingCategory.Description = model.Description;
                 ExistingCategory.Modifyiedby = userid;
 
-                _context.Categories.Update(ExistingCategory);
                 await _context.SaveChangesAsync();
 
                 return new AuthResponse
@@ -283,19 +357,14 @@ public class MenuServices : IMenuServices
                     Message = "Category Updated Succesfully !"
                 };
             }
-
-            ExistingCategory.Name = model.Name.Trim();
-            ExistingCategory.Description = model.Description;
-            ExistingCategory.Modifyiedby = userid;
-
-            _context.Categories.Update(ExistingCategory);
-            await _context.SaveChangesAsync();
-
-            return new AuthResponse
+            else
             {
-                Success = true,
-                Message = "Category Updated Succesfully"
-            };
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Category Not Found !"
+                };
+            }
         }
         catch (Exception ex)
         {
@@ -308,146 +377,180 @@ public class MenuServices : IMenuServices
         }
     }
 
-
+    // Delete Category 
     public async Task<AuthResponse> DeleteCategory(string id)
     {
-        var category = _context.Categories.FirstOrDefault(c => c.CategoryId.ToString() == id);
-
-        if (category != null)
+        try
         {
-            // Fetch all items that belong to this category
-            var items = _context.Items.Where(i => i.CategoryId.ToString() == id).ToList();
+            var category = _context.Categories.FirstOrDefault(c => c.CategoryId.ToString() == id);
 
-            // Mark all items as deleted
-            foreach (var item in items)
+            if (category != null)
             {
-                item.Isdeleted = true;
+                // Fetch all items that belong to this category
+                var items = _context.Items.Where(i => i.CategoryId.ToString() == id).ToList();
+
+                // Mark all items as deleted
+                foreach (var item in items)
+                {
+                    item.Isdeleted = true;
+                }
+
+                category.Isdeleted = true;
+
+                await _context.SaveChangesAsync();
+
+                return new AuthResponse
+                {
+                    Success = true,
+                    Message = "Category Deleted Successfully"
+                };
             }
-
-            category.Isdeleted = true;
-
-            await _context.SaveChangesAsync();
-
-            return new AuthResponse
+            else
             {
-                Success = true,
-                Message = "category Deleted Successfully"
-            };
+                return new AuthResponse
+                {
+                    Success = false,
+                    Message = "Can't delete category"
+
+                };
+            }
         }
-        else
+        catch (Exception ex)
         {
+            _logger.LogError("Error in GetCategoryDetailById: " + ex.Message);
+
             return new AuthResponse
             {
                 Success = false,
-                Message = "cant delete category"
-
+                Message = "Error in Delete Category"
             };
         }
+
     }
 
+    // Get Paginated List Of Menu Items
     public MenuItemsPaginationViewModel GetItemsListByCategoryId(int categoryid, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
     {
-        MenuItemsPaginationViewModel model = new() { Page = new() };
-        searchKeyword = searchKeyword.ToLower();
-        // var categoryId = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryid)?.CategoryId;
-
-        var query = from i in _context.Items
-                    where i.Isdeleted != true && i.CategoryId == categoryid
-                    select new ItemViewModel
-                    {
-                        ItemId = i.ItemId,
-                        ItemName = i.ItemName,
-                        Type = i.Type,
-                        Rate = i.Rate,
-                        Quantity = i.Quantity,
-                        Unit = i.Unit ?? 0,
-                        Isavailable = i.Isavailable,
-                        Image = i.Image,
-                        DefaultTax = i.DefaultTax,
-                        TaxPercentage = i.TaxPercentage,
-                        ShortCode = i.ShortCode,
-                        Description = i.Description
-                    };
-
-        if (!string.IsNullOrEmpty(searchKeyword))
+        try
         {
-            query = query.Where(i => i.ItemName.ToLower().Contains(searchKeyword));
+            MenuItemsPaginationViewModel model = new() { Page = new() };
+
+            searchKeyword = searchKeyword.ToLower();
+
+            var query = from i in _context.Items
+                        where i.Isdeleted != true && i.CategoryId == categoryid
+                        select new ItemViewModel
+                        {
+                            ItemId = i.ItemId,
+                            ItemName = i.ItemName,
+                            Type = i.Type,
+                            Rate = i.Rate,
+                            Quantity = i.Quantity,
+                            Unit = i.Unit ?? 0,
+                            Isavailable = i.Isavailable,
+                            Image = i.Image,
+                            DefaultTax = i.DefaultTax,
+                            TaxPercentage = i.TaxPercentage,
+                            ShortCode = i.ShortCode,
+                            Description = i.Description
+                        };
+
+            if (!string.IsNullOrEmpty(searchKeyword))
+            {
+                query = query.Where(i => i.ItemName.ToLower().Contains(searchKeyword));
+            }
+
+            // Pagination
+            int totalCount = query.Count();
+
+            // if pagenumber is exceed the limit page than .
+            var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            if (pageNumber > maxPageNumber && totalCount != 0)
+            {
+                pageNumber = maxPageNumber;
+            }
+
+            query = query.OrderBy(i => i.ItemName);
+            var items = query.Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToList();
+
+            model.Items = items;
+            model.CategoryId = categoryid;
+            model.Page.SetPagination(totalCount, pageSize, pageNumber);
+
+            return model;
+        }
+        catch (Exception ex)
+        {
+
+            _logger.LogError("Error in GetCategoryDetailById: " + ex.Message);
+
+            return new MenuItemsPaginationViewModel();
         }
 
-        // Pagination
-        int totalCount = query.Count();
-
-        // if pagenumber is exceed the limit page than .
-        var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
-        if (pageNumber > maxPageNumber && totalCount != 0)
-        {
-            pageNumber = maxPageNumber;
-        }
-
-        query = query.OrderBy(i => i.ItemName);
-        var items = query.Skip((pageNumber - 1) * pageSize)
-                             .Take(pageSize)
-                             .ToList();
-
-        model.Items = items;
-        model.CategoryId = categoryid;
-        model.Page.SetPagination(totalCount, pageSize, pageNumber);
-
-        return model;
     }
 
-    // Get ModifierItem List from ModifierGroup id
-
+    // Get Paginated List Of ModifierItems By ModifierGroup id
     public ModifierItemsPagination GetModifierItemsListByModifierGroupId(int modifiergroup_id, int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
     {
-        ModifierItemsPagination model = new() { Page = new() };
-        searchKeyword = searchKeyword.ToLower();
-        // var categoryId = _context.Modifieritems.FirstOrDefault(c => c.ModifierId == modifiergroup_id)?.ModifierId;
-
-        var query = from i in _context.Modifieritems
-                    join m in _context.Modifieritemsmodifiersgroups
-                    on i.ModifierId equals m.ModifierId
-                    where i.Isdeleted != true && m.ModifiergroupId == modifiergroup_id
-                    select new ModifierItemsViewModel
-                    {
-                        ModifierId = i.ModifierId,
-                        Name = i.ModifierName,
-                        Rate = i.Rate,
-                        Quantity = i.Quantity,
-                        Unit = _context.Units.FirstOrDefault(u => u.Id.ToString() == i.Unit).Name,
-                        Description = i.Description,
-
-                    };
-
-        if (!string.IsNullOrEmpty(searchKeyword))
+        try
         {
-            query = query.Where(i => i.Name.ToLower().Contains(searchKeyword));
+            ModifierItemsPagination model = new() { Page = new() };
+
+            searchKeyword = searchKeyword.ToLower();
+
+            var query = from i in _context.Modifieritems
+                        join m in _context.Modifieritemsmodifiersgroups
+                        on i.ModifierId equals m.ModifierId
+                        where i.Isdeleted != true && m.ModifiergroupId == modifiergroup_id
+                        select new ModifierItemsViewModel
+                        {
+                            ModifierId = i.ModifierId,
+                            Name = i.ModifierName,
+                            Rate = i.Rate,
+                            Quantity = i.Quantity,
+                            Unit = _context.Units.FirstOrDefault(u => u.Id.ToString() == i.Unit).Name??"Unknown",
+                            Description = i.Description,
+
+                        };
+
+            if (!string.IsNullOrEmpty(searchKeyword))
+            {
+                query = query.Where(i => i.Name.ToLower().Contains(searchKeyword));
+            }
+
+            // Pagination
+            int totalCount = query.Count();
+
+            // if pagenumber is exceed the limit page than.
+
+            var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
+            if (pageNumber > maxPageNumber && totalCount != 0)
+            {
+                pageNumber = maxPageNumber;
+            }
+            query = query.OrderBy(i => i.Name);
+            var items = query.Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToList();
+
+            model.Items = items;
+            model.ModifierGroupId = modifiergroup_id;
+            model.Page.SetPagination(totalCount, pageSize, pageNumber);
+            return model;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error in GetCategoryDetailById: " + ex.Message);
+
+            return new ModifierItemsPagination();
         }
 
-        // Pagination
-        int totalCount = query.Count();
-
-        // if pagenumber is exceed the limit page than.
-
-        var maxPageNumber = (int)Math.Ceiling((double)totalCount / pageSize);
-        if (pageNumber > maxPageNumber && totalCount != 0)
-        {
-            pageNumber = maxPageNumber;
-        }
-        query = query.OrderBy(i => i.Name);
-        var items = query.Skip((pageNumber - 1) * pageSize)
-                             .Take(pageSize)
-                             .ToList();
-
-        model.Items = items;
-        model.ModifierGroupId = modifiergroup_id;
-        model.Page.SetPagination(totalCount, pageSize, pageNumber);
-        return model;
     }
 
-
     // Get all Modifier Items list
-
     public ModifierItemModalPagination GetAllModifierItemsList(int pageNumber = 1, int pageSize = 2, string searchKeyword = "")
     {
         ModifierItemModalPagination model = new() { Page = new() };

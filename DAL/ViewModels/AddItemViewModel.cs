@@ -11,10 +11,10 @@ public class AddItemViewModel
     public int CategoryId { get; set; }
 
     [Required(ErrorMessage = "Item Name is required")]
-    public string ItemName { get; set; } 
+    public string ItemName { get; set; } = null!;
 
     [Required(ErrorMessage = "Please select The Type")]
-    public string Type { get; set; } 
+    public string Type { get; set; } = null!;
 
     [Range(0, short.MaxValue, ErrorMessage = "Rate cannot be negative")]
     public short Rate { get; set; }
@@ -40,12 +40,13 @@ public class AddItemViewModel
 
     public List<int>? Modifiers {get;set;}
 
-    public List<ModifierGroup>? ModifierGroups { get; set; }
+    public List<ModifierGroup>? ModifierGroups { get; set; } = new List<ModifierGroup>();
 
-    public List<CategoryNameViewModel> Categories {get;set;}
-    public List<ModifierGroupNameViewModel> ModifierGroupNames {get;set;}
+    public List<CategoryNameViewModel> Categories {get;set;} = new List<CategoryNameViewModel>();
 
-    public List<Unit> UnitsList {get;set;}
+    public List<ModifierGroupNameViewModel> ModifierGroupNames {get;set;} = new List<ModifierGroupNameViewModel>();
+
+    public List<Unit> UnitsList {get;set;} = new List<Unit>();
 
     // public DateTime Createddate { get; set; } = DateTime.Now;
 }

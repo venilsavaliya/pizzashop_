@@ -80,7 +80,6 @@ public class CustomerService : ICustomerService
             query = query.OrderBy(u => u.CustomerId); // **Apply a default ordering if no sort is provided**
         }
 
-
         // Pagination
         int totalCount = query.Count();
         var customerList = query.Skip((pageNumber - 1) * pageSize)
@@ -99,7 +98,6 @@ public class CustomerService : ICustomerService
     {
         searchKeyword = searchKeyword.ToLower();
 
-
         var query = from u in _context.Customers
                     select new CustomerViewModel
                     {
@@ -110,8 +108,6 @@ public class CustomerService : ICustomerService
                         JoinDate = u.Createddate,
                         TotalVisit = u.TotalVisit
                     };
-
-
 
         if (!string.IsNullOrEmpty(searchKeyword))
         {
@@ -126,11 +122,7 @@ public class CustomerService : ICustomerService
             query = query.Where(u => u.JoinDate >= startDate.Value.Date && u.JoinDate.Date <= endDate.Value.Date);
         }
 
-
-
         query = query.OrderBy(u => u.CustomerId); // **Apply a default ordering if no sort is provided**
-
-
 
         // Pagination
         int totalCount = query.Count();
@@ -180,7 +172,6 @@ public class CustomerService : ICustomerService
         return customer;
     }
 
-
     // Add New Customer
 
     public async Task<int> AddCustomer(AddCustomerViewModel model)
@@ -227,10 +218,7 @@ public class CustomerService : ICustomerService
                 {
                     return 0;
                 }
-
-
             }
-
         }
         catch (Exception e)
         {
@@ -238,7 +226,6 @@ public class CustomerService : ICustomerService
 
             return 0;
         }
-
     }
 
     // Get Detail Of Customer From Email
@@ -268,9 +255,8 @@ public class CustomerService : ICustomerService
 
             return new CustomerViewModel();
         }
-        catch (System.Exception)
+        catch (Exception)
         {
-
             return new CustomerViewModel();
         }
     }

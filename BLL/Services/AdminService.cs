@@ -2,8 +2,6 @@ using BLL.Interfaces;
 using BLL.Models;
 using DAL.Models;
 using DAL.ViewModels;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -15,23 +13,12 @@ public class AdminService : IAdminService
 
     private readonly ApplicationDbContext _context;
 
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    private readonly IEmailService _emailService;
-
-    private readonly IWebHostEnvironment _env;
-
     private readonly ILogger<AdminService> _logger;
-    public AdminService(ApplicationDbContext context, IHttpContextAccessor contextAccessor, IEmailService emailService, IWebHostEnvironment env, ILogger<AdminService> logger)
+
+    public AdminService(ApplicationDbContext context,ILogger<AdminService> logger)
     {
 
         _context = context;
-
-        _httpContextAccessor = contextAccessor;
-
-        _emailService = emailService;
-
-        _env = env;
 
         _logger = logger;
     }

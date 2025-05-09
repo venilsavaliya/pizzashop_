@@ -16,7 +16,7 @@
 </head>
 
 @{
-    Layout = null; @*For not using Shared Layout*@
+    Layout = null;
 }
 
 @model DAL.ViewModels.LoginViewModel;
@@ -76,22 +76,8 @@
                     <span><a onclick="handleForgotPassword()"
                             style="text-decoration: none; color: blue; cursor: pointer;">Forget
                             Password?</a></span>
-
                 </div>
                 <input type="submit" value="Login" class="custom-btn-bg text-white py-2 border w-100 h-auto "></input>
-
-
-                @*--------Need to add ViewContext to acces ModelState--------*@
-
-                @*This is shown when there is custom error*@
-
-                @* @if (ViewContext.ModelState.ContainsKey("InvalidCredentials"))
-                {
-                    <div class="text-danger">
-                        @ViewContext.ModelState["InvalidCredentials"]?.Errors[0].ErrorMessage
-                    </div>
-                } *@
-
             </form>
         </div>
         <script src="~/js/site.js" asp-append-version="true"></script>
@@ -99,7 +85,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         @await Html.PartialAsync("~/Views/Shared/_Toaster.cshtml")
-     
+
 
 
     </div>
@@ -108,7 +94,7 @@
 
 
     <script>
-        
+
         document.addEventListener("DOMContentLoaded", function () {
             var notyf = new Notyf({
                 duration: 5000,

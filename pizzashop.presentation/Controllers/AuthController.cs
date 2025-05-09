@@ -1,7 +1,3 @@
-
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using AspNetCoreHero.ToastNotification.Abstractions;
 using BLL.Interfaces;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +9,16 @@ public class AuthController : Controller
 
     private readonly IAuthService _authservice;
 
-    private readonly IWebHostEnvironment _env;
-
-    private readonly IEmailService _emailService;
-
     private readonly IJwtService _jwtService;
 
-    public AuthController(IUserService userService, IAuthService authService, IWebHostEnvironment env, IEmailService emailService, IJwtService jwtService, IAdminService adminservice)
+    private readonly ILogger<AuthController> _logger;
+
+    public AuthController(IUserService userService, IAuthService authService, IJwtService jwtService,ILogger<AuthController> logger)
     {
         _userService = userService;
         _authservice = authService;
-        _env = env;
-        _emailService = emailService;
         _jwtService = jwtService;
+        _logger = logger;
     }
 
     // Access Denied Page
@@ -37,12 +30,11 @@ public class AuthController : Controller
     // GET : Auth/Login
     public IActionResult Login()
     {
-
         if (Request.Cookies["jwt"] != null)
         {
             return RedirectToAction("Index", "Home");
         }
-
+        
         return View();
     }
 
@@ -62,10 +54,9 @@ public class AuthController : Controller
         // if user is not authenticated then return to the login page
         if (!AuthResponse.Success)
         {
-            // ModelState.AddModelError("InvalidCredentials", AuthResponse.Message ?? "Invalid Credentials");
-
             TempData["ToastrType"] = "error";
             TempData["ToastrMessage"] = "Invalid email or password.";
+
             return View(model);
         }
 
@@ -97,7 +88,7 @@ public class AuthController : Controller
 
         string role = _userService.GetUserRoleByEmail(model.Email);
 
-        if(role == "Chef")
+        if (role == "Chef")
         {
             return RedirectToAction("Index", "OrderAppKOT");
         }
@@ -176,7 +167,7 @@ public class AuthController : Controller
 
         if (AuthResponse.Success && response.Success)
         {
-            
+
             TempData["ToastrType"] = "success";
             TempData["ToastrMessage"] = "Password Reset Successfully!";
 
